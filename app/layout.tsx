@@ -1,15 +1,34 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import {
+  Geist,
+  Geist_Mono,
+  Roboto,
+  Roboto_Condensed,
+  Unbounded,
+} from "next/font/google";
 import "./globals.css";
+import Header from "@/features/header/header";
+import Footer from "@/features/footer/footer";
+import BottomTab from "@/features/bottom-tab/bottom-tab";
+import { QuestionChat } from "@/entities/question-chat/question-chat";
+import HeaderWrapper from "@/features/header/header-wrapper";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const roboto = Roboto({
+  variable: "--font-roboto",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const robotoCondensed = Roboto_Condensed({
+  variable: "--font-roboto-condensed",
   subsets: ["latin"],
+  weight: ["300", "400", "700"],
+});
+
+const unbounded = Unbounded({
+  variable: "--font-unbounded",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -25,9 +44,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`
+          ${roboto.variable}
+          ${robotoCondensed.variable}
+          ${unbounded.variable}
+          antialiased
+          px-[11px]
+        `}
       >
+        <HeaderWrapper />
         {children}
+        <QuestionChat />
+        <BottomTab />
+        <Footer />
       </body>
     </html>
   );
