@@ -1,7 +1,6 @@
-import GameCard from "@/entities/game-card/game-card";
+import GameCard from "@/entities/games/ui/game-card/game-card";
 import SectionTitle from "@/shared/ui/section-title/section-title";
 import { GamepadIcon } from "lucide-react";
-import React from "react";
 
 export const MobileGamesBlock = () => {
   const services = [

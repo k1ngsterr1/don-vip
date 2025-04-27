@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import google from "@/assets/google.webp";
 import logo from "@/assets/Logo.webp";
 import ru from "@/assets/RU.webp";
+import SearchBar from "@/entities/search-bar/search-bar";
 import Image from "next/image";
 import Link from "next/link";
-import google from "@/assets/google.webp";
-import SearchBar from "@/entities/search-bar/search-bar";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface IHeader {
   isSearchBar?: boolean;
@@ -14,6 +15,7 @@ interface IHeader {
 
 export default function Header({ isSearchBar = true }: IHeader) {
   const [language, setLanguage] = useState("ru");
+  const navigate = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (value: string) => {
@@ -26,6 +28,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
       <div className="flex justify-between items-center px-4 py-[9px]">
         <div className="flex items-center">
           <Image
+            onClick={() => navigate.push("/")}
             src={logo.src || "/placeholder.svg"}
             width={161}
             height={31}
@@ -40,7 +43,10 @@ export default function Header({ isSearchBar = true }: IHeader) {
             height={32}
             alt="RU"
           />
-          <Link href="/login" className="text-[15px] text-dark font-condensed">
+          <Link
+            href="/auth/login"
+            className="text-[15px] text-dark font-condensed"
+          >
             ВОЙТИ
           </Link>
           <button className="w-[22px] h-[22px] flex items-center justify-center rounded-[4px] border-[1px] border-black/5 p-[2px]">

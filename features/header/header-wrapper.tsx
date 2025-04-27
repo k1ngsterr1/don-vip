@@ -16,11 +16,13 @@ export default function HeaderWrapper() {
     "/auth/register",
     "/auth/login",
     "/auth/forgot-password",
-
     "/contact",
+    "/coupons+",
   ];
 
-  const isSearchBar = !hideSearchBarPaths.includes(pathname);
+  const isProfilePath = pathname.startsWith("/profile");
+
+  const isSearchBar = !(hideSearchBarPaths.includes(pathname) || isProfilePath);
 
   return <Header isSearchBar={isSearchBar} />;
 }
