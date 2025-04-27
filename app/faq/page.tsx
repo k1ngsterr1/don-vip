@@ -1,4 +1,3 @@
-import Header from "@/features/header/header";
 import FAQBlock from "@/widgets/ui/faq-page/faq-info/faq-info";
 
 export default function PrivacyPolicy() {

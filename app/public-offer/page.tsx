@@ -1,4 +1,3 @@
-import Header from "@/features/header/header";
 import Link from "next/link";
 
 export default function PublicOffer() {

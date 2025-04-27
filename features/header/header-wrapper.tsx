@@ -11,6 +11,12 @@ export default function HeaderWrapper() {
     "/privacy-policy",
     "/terms",
     "/offer",
+    "/reviews",
+    "/send-review",
+    "/auth/register",
+    "/auth/login",
+    "/auth/forgot-password",
+
     "/contact",
   ];
 

@@ -1,6 +1,6 @@
-import Image from "next/image";
 import logo from "@/assets/Logo.webp";
 import tbank from "@/assets/T-Bank.webp";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Footer() {
@@ -14,7 +14,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-white px-4 mt-[24px] py-6 border-t border-gray-100">
+    <footer className="bg-white px-4 mt-[24px] py-6 pb-32 border-t border-gray-100">
       <div className="flex items-center mb-4">
         <Image
           src={logo.src || "/placeholder.svg"}
