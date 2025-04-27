@@ -1,17 +1,10 @@
-import type { Metadata } from "next";
-import {
-  Geist,
-  Geist_Mono,
-  Roboto,
-  Roboto_Condensed,
-  Unbounded,
-} from "next/font/google";
-import "./globals.css";
-import Header from "@/features/header/header";
-import Footer from "@/features/footer/footer";
-import BottomTab from "@/features/bottom-tab/bottom-tab";
 import { QuestionChat } from "@/entities/question-chat/question-chat";
+import BottomTab from "@/features/bottom-tab/bottom-tab";
+import Footer from "@/features/footer/footer";
 import HeaderWrapper from "@/features/header/header-wrapper";
+import type { Metadata } from "next";
+import { Roboto, Roboto_Condensed, Unbounded } from "next/font/google";
+import "./globals.css";
 
 const roboto = Roboto({
   variable: "--font-roboto",
