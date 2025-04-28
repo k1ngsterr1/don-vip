@@ -39,7 +39,7 @@ export function ProfileEditWidget({ user, onSave }: ProfileEditWidgetProps) {
           </Button>
         )}
       </div>
-      <ProfileEditForm user={user} onUpdate={handleUpdate} />
+      <ProfileEditForm user={user} />
       {isEditing && (
         <div className="mt-6 flex justify-end">
           <Button
