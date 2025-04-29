@@ -1,6 +1,8 @@
 "use client";
 
-import { Home, Search, User } from "lucide-react";
+import HomeIcon from "@/shared/icons/home-icon";
+import UserIcon from "@/shared/icons/user-icon";
+import { Search } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function BottomTab() {
@@ -8,9 +10,9 @@ export default function BottomTab() {
   const pathname = usePathname();
 
   const tabs = [
-    { id: "home", icon: Home, path: "/" },
+    { id: "home", icon: HomeIcon, path: "/" },
     { id: "search", icon: Search, path: "/search" },
-    { id: "profile", icon: User, path: "/profile/1" },
+    { id: "profile", icon: UserIcon, path: "/profile/1" },
   ];
 
   const handleTabClick = (tabPath: string) => {
@@ -26,6 +28,8 @@ export default function BottomTab() {
             pathname === tab.path ||
             (tab.id === "profile" && pathname.startsWith("/profile"));
 
+          const iconColor = isActive ? "#3B82F6" : "#AAAAAB"; // Blue when active, gray when inactive
+
           return (
             <button
               key={tab.id}
@@ -34,7 +38,11 @@ export default function BottomTab() {
               }`}
               onClick={() => handleTabClick(tab.path)}
             >
-              <Icon size={24} />
+              {tab.id === "search" ? (
+                <Icon size={24} color={iconColor} />
+              ) : (
+                <Icon size={24} color={iconColor} />
+              )}
             </button>
           );
         })}

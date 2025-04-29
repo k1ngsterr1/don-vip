@@ -63,15 +63,15 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
 
   return (
     <div
-      className="relative w-full h-48 overflow-hidden bg-gray-100"
+      className="relative w-full h-[221px] overflow-hidden mt-[12px] bg-gray-100"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
       <div className="hidden">
         {slides.map((slide) => (
           <Image
-            width={211}
-            height={166}
+            width={377}
+            height={211}
             key={`preload-${slide.id}`}
             src={slide.image || "/placeholder.svg"}
             alt="Preload"

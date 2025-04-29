@@ -24,7 +24,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
   };
 
   return (
-    <header className="bg-white border-b border-gray-100">
+    <header className="bg-white border-b border-gray-100 px-[11px]">
       <div className="flex justify-between items-center px-4 py-[9px]">
         <div className="flex items-center">
           <Image
@@ -33,10 +33,10 @@ export default function Header({ isSearchBar = true }: IHeader) {
             width={161}
             height={31}
             alt="DON-VIP Logo"
-            className="w-[161px] h-[31px]"
+            className=" xxs:h-[24px] xxs:w-[121px] xs:w-[161px] xs:h-[31px]"
           />
         </div>
-        <div className="flex gap-[18px] items-center justify-center">
+        <div className="flex gap-[18px] xxs:w-[24px] xxs:h-[24px] items-center justify-center">
           <Image
             src={ru.src || "/placeholder.svg"}
             width={32}
@@ -59,13 +59,11 @@ export default function Header({ isSearchBar = true }: IHeader) {
         </div>
       </div>
       {isSearchBar && (
-        <div className="px-4 py-2">
-          <SearchBar
-            placeholder="Найти сервис, либо игру"
-            onSearch={handleSearch}
-            height="72px"
-          />
-        </div>
+        <SearchBar
+          placeholder="Найти сервис, либо игру"
+          onSearch={handleSearch}
+          height="72px"
+        />
       )}
     </header>
   );
