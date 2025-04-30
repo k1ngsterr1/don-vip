@@ -73,8 +73,8 @@ export function LoginForm() {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="max-w-md   mx-auto">
+      <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
         <AuthInput
           type="email"
           placeholder="mail@gmail.com"
@@ -111,7 +111,7 @@ export function LoginForm() {
           <div className="flex justify-end">
             <Link
               href="/auth/forgot-password"
-              className="text-xs text-blue hover:underline"
+              className="text-xs md:text-sm text-blue hover:underline"
               aria-label="Забыли пароль"
             >
               Забыли пароль?
@@ -121,7 +121,7 @@ export function LoginForm() {
 
         <Button
           type="submit"
-          className={`w-full rounded-full text-white ${
+          className={`w-full rounded-full text-white py-3 md:py-4 text-sm md:text-base ${
             isFormFilled && !isLoading
               ? "bg-blue hover:bg-blue/90"
               : "bg-[#AAAAAB] hover:bg-[#AAAAAB]/90"
@@ -133,10 +133,10 @@ export function LoginForm() {
         </Button>
       </form>
 
-      <div className="mt-6 text-center text-xs text-gray-500">
+      <div className="mt-6 text-center text-xs md:text-sm text-gray-500">
         <p>
           Продолжая, вы соглашаетесь с{" "}
-          <Link href="#" className="text-blue hover:underline">
+          <Link href="#" className="text-black hover:underline">
             условиями конфиденциальности
           </Link>
         </p>
@@ -145,11 +145,11 @@ export function LoginForm() {
       <SocialAuth />
 
       <div className="mt-8 text-center">
-        <p className="text-sm">
+        <p className="text-sm md:text-base text-[#929294]">
           Нет аккаунта?{" "}
           <Link
             href="/auth/register"
-            className="text-blue font-medium hover:underline"
+            className="text-black font-medium hover:underline"
           >
             Зарегистрироваться
           </Link>

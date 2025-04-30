@@ -18,6 +18,7 @@ export default function HeaderWrapper() {
     "/auth/forgot-password",
     "/contact",
     "/coupons+",
+    "/order+",
   ];
 
   const isProfilePath = pathname.startsWith("/profile");

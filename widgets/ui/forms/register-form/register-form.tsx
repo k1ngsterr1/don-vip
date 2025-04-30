@@ -83,7 +83,7 @@ export function RegisterForm() {
       <div className="mt-6 text-center text-xs text-gray-500">
         <p>
           Продолжая, вы соглашаетесь с{" "}
-          <Link href="#" className="text-blue">
+          <Link href="#" className="text-black">
             условиями конфиденциальности
           </Link>
         </p>

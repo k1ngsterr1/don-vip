@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useMediaQuery } from "@/shared/hooks/use-media-query";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 interface Slide {
   id: number;
@@ -17,6 +18,7 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [direction, setDirection] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const isMobile = useMediaQuery("(max-width: 640px)");
 
   // Auto-advance slides
   useEffect(() => {
@@ -63,9 +65,12 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
 
   return (
     <div
-      className="relative w-full h-[221px] overflow-hidden mt-[12px] bg-gray-100"
+      className="relative w-full overflow-hidden bg-gray-100"
+      style={{ height: isMobile ? "180px" : "421px" }}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={() => setIsPaused(true)}
+      onTouchEnd={() => setIsPaused(false)}
     >
       <div className="hidden">
         {slides.map((slide) => (
@@ -102,15 +107,59 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
           }}
         >
           <Image
-            width={211}
-            height={166}
             src={slides[currentSlide].image || "/placeholder.svg"}
             alt="Slide"
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            priority={currentSlide === 0}
           />
         </motion.div>
       </AnimatePresence>
-      <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-1 z-10">
+
+      {/* Navigation arrows - Hidden on small mobile */}
+      <div className="hidden sm:block">
+        <button
+          onClick={handlePrev}
+          className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 rounded-full p-2 z-10"
+          aria-label="Previous slide"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
+        <button
+          onClick={handleNext}
+          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 rounded-full p-2 z-10"
+          aria-label="Next slide"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Dots navigation */}
+      <div className="absolute bottom-3 left-0 right-0 flex justify-center space-x-1 z-10">
         {slides.map((_, index) => (
           <button
             key={index}

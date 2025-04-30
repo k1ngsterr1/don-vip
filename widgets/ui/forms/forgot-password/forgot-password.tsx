@@ -30,25 +30,30 @@ export function ForgotPasswordForm() {
   };
 
   return (
-    <div>
-      <p className="text-sm text-gray-600 mb-6">
+    <div className="max-w-md mx-auto md:bg-white md:rounded-lg md:shadow-sm md:border md:border-gray-100 md:p-8">
+      <p className="text-sm md:text-base text-gray-600 mb-6 md:mb-8 md:text-center">
         Введите e-mail или номер телефона и мы отправим вам ссылку для сброса
         пароля
       </p>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
         <AuthInput
           type="email"
           placeholder="mail@gmail.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          label="Email"
         />
-        {error && <p className="text-[#ff272c] text-xs">{error}</p>}
+        {error && <p className="text-[#ff272c] text-xs md:text-sm">{error}</p>}
         {successMessage && (
-          <p className="text-green-600 text-xs">{successMessage}</p>
+          <div className="bg-green-50 border border-green-200 rounded-md p-3 md:p-4">
+            <p className="text-green-600 text-xs md:text-sm">
+              {successMessage}
+            </p>
+          </div>
         )}
         <Button
           type="submit"
-          className={`w-full rounded-full text-white ${
+          className={`w-full rounded-full text-white py-3 md:py-4 text-sm md:text-base ${
             isFormFilled
               ? "bg-blue hover:bg-blue/90"
               : "bg-[#AAAAAB] hover:bg-[#AAAAAB]/90"
@@ -58,15 +63,27 @@ export function ForgotPasswordForm() {
           Отправить
         </Button>
       </form>
-      <div className="mt-6 text-center text-xs text-gray-500">
+      <div className="mt-6 md:mt-8 text-center text-xs md:text-sm text-gray-500">
         <p>
           Продолжая, вы соглашаетесь с{" "}
-          <Link href="#" className="text-blue">
+          <Link href="#" className="text-blue hover:underline">
             условиями конфиденциальности
           </Link>
         </p>
       </div>
       <SocialAuth />
+
+      <div className="mt-8 md:mt-10 text-center">
+        <p className="text-sm md:text-base">
+          Вспомнили пароль?{" "}
+          <Link
+            href="/auth/login"
+            className="text-blue font-medium hover:underline"
+          >
+            Войти
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

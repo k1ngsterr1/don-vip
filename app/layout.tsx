@@ -1,11 +1,11 @@
-import { QuestionChat } from "@/entities/question-chat/question-chat";
+import QuestionChatWrapper from "@/entities/question-chat/question-chat-wrapper";
 import BottomTab from "@/features/bottom-tab/bottom-tab";
 import Footer from "@/features/footer/footer";
 import HeaderWrapper from "@/features/header/header-wrapper";
+import ClientLayout from "@/shared/ui/client-layout/client-layout";
 import type { Metadata } from "next";
 import { Roboto, Roboto_Condensed, Unbounded } from "next/font/google";
 import "./globals.css";
-import HeroBanner from "@/widgets/ui/main-page/hero-banner/hero-banner";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -68,12 +68,13 @@ export default function RootLayout({
           antialiased
         `}
       >
-        <HeaderWrapper />
-
-        {children}
-        <QuestionChat />
-        <BottomTab />
-        <Footer />
+        <ClientLayout>
+          <HeaderWrapper />
+          {children}
+          <QuestionChatWrapper />
+          <BottomTab />
+          <Footer />
+        </ClientLayout>
       </body>
     </html>
   );

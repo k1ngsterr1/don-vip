@@ -1,7 +1,6 @@
 import GameCard from "@/entities/games/ui/game-card/game-card";
 import JoystickIcon from "@/shared/icons/joystick-icon";
 import SectionTitle from "@/shared/ui/section-title/section-title";
-import { GamepadIcon } from "lucide-react";
 
 export const MobileGamesBlock = () => {
   const services = [
@@ -40,9 +39,9 @@ export const MobileGamesBlock = () => {
   ];
 
   return (
-    <div className="w-full flex flex-col px-4 py-3">
+    <div className="w-full">
       <SectionTitle icon={<JoystickIcon />} title="мобильные игры" />
-      <div className="grid grid-cols-2 gap-3 mb-6">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
         {services.map((service: any) => (
           <GameCard
             key={service.id}
@@ -53,6 +52,13 @@ export const MobileGamesBlock = () => {
             badge={service.badge}
           />
         ))}
+      </div>
+
+      {/* View all button - Mobile optimized */}
+      <div className="mt-4 text-center">
+        <button className="bg-gray-100 text-dark text-xs px-4 py-2 rounded-full hover:bg-gray-200 transition-colors">
+          Показать все игры
+        </button>
       </div>
     </div>
   );

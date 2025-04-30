@@ -1,7 +1,6 @@
 import GameCard from "@/entities/games/ui/game-card/game-card";
 import CardsIcon from "@/shared/icons/cards-icon";
 import SectionTitle from "@/shared/ui/section-title/section-title";
-import { DicesIcon } from "lucide-react";
 
 export const ServicesBlock = () => {
   const services = [
@@ -18,9 +17,9 @@ export const ServicesBlock = () => {
   ];
 
   return (
-    <div className="w-full flex flex-col mt-[24px] px-4 py-3">
+    <div className="w-full">
       <SectionTitle icon={<CardsIcon />} title="сервисы" />
-      <div className="grid grid-cols-2 gap-3 mb-6">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {services.map((service: any) => (
           <GameCard
             key={service.id}
