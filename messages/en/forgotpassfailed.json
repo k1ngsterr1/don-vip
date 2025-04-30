@@ -1,0 +1,18 @@
+{
+  "forgotpassword_auth": {
+    "forgotPassword": {
+      "description": "Enter your email or phone number and we'll send you a password reset link",
+      "emailLabel": "Email",
+      "emailPlaceholder": "mail@gmail.com",
+      "error": {
+        "emptyFields": "Please enter email or phone number"
+      },
+      "submitButton": "Submit",
+      "successMessage": "Password reset instructions have been sent to your email",
+      "privacyText": "By continuing, you agree to our",
+      "privacyLink": "privacy policy",
+      "rememberPassword": "Remember your password?",
+      "loginLink": "Sign in"
+    }
+  }
+}

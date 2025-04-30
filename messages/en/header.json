@@ -1,0 +1,10 @@
+{
+  "Header": {
+    "searchPlaceholder": "Find service or game",
+    "games": "GAMES",
+    "services": "SERVICES",
+    "reviews": "REVIEWS",
+    "faq": "FAQ",
+    "login": "LOGIN"
+  }
+}

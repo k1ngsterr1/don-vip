@@ -1,8 +1,12 @@
+"use client";
+import { useTranslations } from "next-intl";
 import SectionTitle from "@/shared/ui/section-title/section-title";
 import { ArrowLeft, Ticket } from "lucide-react";
 import Link from "next/link";
 
 export function CouponsHeaderWidget() {
+  const i18n = useTranslations("coupons");
+
   return (
     <>
       <div className="flex items-center mb-4 mt-[24px] md:mt-0">
@@ -14,16 +18,16 @@ export function CouponsHeaderWidget() {
             size={16}
             className="mr-1 group-hover:-translate-x-1 transition-transform"
           />
-          <span className="hover:underline">Вернуться</span>
+          <span className="hover:underline">{i18n("backLink")}</span>
         </Link>
       </div>
 
       <div className="flex items-center mb-6 md:mb-10">
         <SectionTitle
           icon={<Ticket className="text-blue" size={20} />}
-          title="купоны"
+          title={i18n("title")}
           className="md:text-center md:justify-center md:w-full"
-          description="Используйте купоны для получения скидок на ваши любимые игры и сервисы"
+          description={i18n("description")}
         />
       </div>
     </>

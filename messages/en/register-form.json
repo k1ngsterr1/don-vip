@@ -1,0 +1,21 @@
+{
+  "register-form_auth": {
+    "registerForm": {
+      "emailPlaceholder": "mail@gmail.com",
+      "passwordPlaceholder": "Enter your password",
+      "confirmPasswordPlaceholder": "Confirm password",
+      "submitButton": "Register",
+      "forgotPassword": "Forgot password?",
+      "privacyText": "By continuing, you agree to our",
+      "privacyLink": "privacy policy",
+      "haveAccountText": "Already have an account?",
+      "loginLink": "Sign in",
+      "successMessage": "Registration for {email} completed",
+      "errors": {
+        "emailRequired": "Enter email",
+        "passwordRequired": "Enter password",
+        "passwordMismatch": "Passwords don't match"
+      }
+    }
+  }
+}

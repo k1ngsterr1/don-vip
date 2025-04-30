@@ -1,7 +1,6 @@
 "use client";
-
 import type React from "react";
-
+import { useTranslations } from "next-intl";
 import { AuthInput } from "@/shared/ui/auth-input/auth-input";
 import { Button } from "@/shared/ui/button/button";
 import { SocialAuth } from "@/shared/ui/social-input/social-input";
@@ -9,6 +8,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 export function ForgotPasswordForm() {
+  const i18n = useTranslations("forgotpassword_auth.forgotPassword");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
@@ -20,28 +20,26 @@ export function ForgotPasswordForm() {
     e.preventDefault();
 
     if (!email && !phone) {
-      setError("Введите email или номер телефона");
+      setError(i18n("error.emptyFields"));
       return;
     }
 
-    // In a real app, this would call a password reset API
-    setSuccessMessage("Письмо с инструкциями отправлено на указанный адрес");
+    setSuccessMessage(i18n("successMessage"));
     setError("");
   };
 
   return (
     <div className="max-w-md mx-auto md:bg-white md:rounded-lg md:shadow-sm md:border md:border-gray-100 md:p-8">
       <p className="text-sm md:text-base text-gray-600 mb-6 md:mb-8 md:text-center">
-        Введите e-mail или номер телефона и мы отправим вам ссылку для сброса
-        пароля
+        {i18n("description")}
       </p>
       <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
         <AuthInput
           type="email"
-          placeholder="mail@gmail.com"
+          placeholder={i18n("emailPlaceholder")}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          label="Email"
+          label={i18n("emailLabel")}
         />
         {error && <p className="text-[#ff272c] text-xs md:text-sm">{error}</p>}
         {successMessage && (
@@ -60,14 +58,14 @@ export function ForgotPasswordForm() {
           }`}
           disabled={!isFormFilled}
         >
-          Отправить
+          {i18n("submitButton")}
         </Button>
       </form>
       <div className="mt-6 md:mt-8 text-center text-xs md:text-sm text-gray-500">
         <p>
-          Продолжая, вы соглашаетесь с{" "}
+          {i18n("privacyText")}{" "}
           <Link href="#" className="text-blue hover:underline">
-            условиями конфиденциальности
+            {i18n("privacyLink")}
           </Link>
         </p>
       </div>
@@ -75,12 +73,12 @@ export function ForgotPasswordForm() {
 
       <div className="mt-8 md:mt-10 text-center">
         <p className="text-sm md:text-base">
-          Вспомнили пароль?{" "}
+          {i18n("rememberPassword")}{" "}
           <Link
             href="/auth/login"
             className="text-blue font-medium hover:underline"
           >
-            Войти
+            {i18n("loginLink")}
           </Link>
         </p>
       </div>

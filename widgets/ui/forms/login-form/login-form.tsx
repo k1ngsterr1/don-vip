@@ -1,15 +1,13 @@
 "use client";
-
-import type React from "react";
-
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
-
 import { AuthInput } from "@/shared/ui/auth-input/auth-input";
 import { Button } from "@/shared/ui/button/button";
 import { SocialAuth } from "@/shared/ui/social-input/social-input";
 
 export function LoginForm() {
+  const i18n = useTranslations("login-form_auth.loginForm");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -26,23 +24,19 @@ export function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Reset errors
     setErrors({});
 
-    // Validation
     const newErrors: { email?: string; password?: string } = {};
-
     if (!email.trim()) {
-      newErrors.email = "Введите email";
+      newErrors.email = i18n("errors.emailRequired");
     } else if (!validateEmail(email)) {
-      newErrors.email = "Введите корректный email";
+      newErrors.email = i18n("errors.emailInvalid");
     }
 
     if (!password.trim()) {
-      newErrors.password = "Введите пароль";
+      newErrors.password = i18n("errors.passwordRequired");
     } else if (password.length < 6) {
-      newErrors.password = "Пароль должен содержать минимум 6 символов";
+      newErrors.password = i18n("errors.passwordLength");
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -52,69 +46,54 @@ export function LoginForm() {
 
     try {
       setIsLoading(true);
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // In a real app, this would call an authentication API
-      console.log(`Login attempt with: ${email}`);
-
-      // Success handling
-      alert(`Успешный вход: ${email}`);
-
-      // Reset form after successful login
-      // setEmail("")
-      // setPassword("")
+      alert(i18n("successMessage", { email }));
     } catch (error) {
-      console.error("Login error:", error);
-      alert("Ошибка при входе. Пожалуйста, попробуйте снова.");
+      alert(i18n("errorMessage"));
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md   mx-auto">
+    <div className="max-w-md mx-auto">
       <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
         <AuthInput
           type="email"
-          placeholder="mail@gmail.com"
+          placeholder={i18n("emailPlaceholder")}
           value={email}
           onChange={(e) => {
             setEmail(e.target.value);
-            // Clear error when user types
-            if (errors.email) {
+            if (errors.email)
               setErrors((prev) => ({ ...prev, email: undefined }));
-            }
           }}
           error={errors.email}
           disabled={isLoading}
-          aria-label="Email"
+          aria-label={i18n("ariaLabels.email")}
         />
 
         <div className="space-y-1">
           <AuthInput
             type="password"
-            placeholder="Введите ваш пароль"
+            placeholder={i18n("passwordPlaceholder")}
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
-              // Clear error when user types
-              if (errors.password) {
+              if (errors.password)
                 setErrors((prev) => ({ ...prev, password: undefined }));
-              }
             }}
             showPasswordToggle
             error={errors.password}
             disabled={isLoading}
-            aria-label="Пароль"
+            aria-label={i18n("ariaLabels.password")}
           />
           <div className="flex justify-end">
             <Link
               href="/auth/forgot-password"
               className="text-xs md:text-sm text-blue hover:underline"
-              aria-label="Забыли пароль"
+              aria-label={i18n("ariaLabels.forgotPassword")}
             >
-              Забыли пароль?
+              {i18n("forgotPassword")}
             </Link>
           </div>
         </div>
@@ -127,17 +106,17 @@ export function LoginForm() {
               : "bg-[#AAAAAB] hover:bg-[#AAAAAB]/90"
           }`}
           disabled={!isFormFilled || isLoading}
-          aria-label="Войти"
+          aria-label={i18n("ariaLabels.submit")}
         >
-          {isLoading ? "Вход..." : "Войти"}
+          {isLoading ? i18n("loadingText") : i18n("submitButton")}
         </Button>
       </form>
 
       <div className="mt-6 text-center text-xs md:text-sm text-gray-500">
         <p>
-          Продолжая, вы соглашаетесь с{" "}
+          {i18n("privacyText")}{" "}
           <Link href="#" className="text-black hover:underline">
-            условиями конфиденциальности
+            {i18n("privacyLink")}
           </Link>
         </p>
       </div>
@@ -146,12 +125,12 @@ export function LoginForm() {
 
       <div className="mt-8 text-center">
         <p className="text-sm md:text-base text-[#929294]">
-          Нет аккаунта?{" "}
+          {i18n("noAccountText")}{" "}
           <Link
             href="/auth/register"
             className="text-black font-medium hover:underline"
           >
-            Зарегистрироваться
+            {i18n("registerLink")}
           </Link>
         </p>
       </div>

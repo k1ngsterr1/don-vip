@@ -1,0 +1,29 @@
+{
+  "login-form_auth": {
+    "loginForm": {
+      "emailPlaceholder": "mail@gmail.com",
+      "passwordPlaceholder": "Enter your password",
+      "forgotPassword": "Forgot password?",
+      "submitButton": "Sign in",
+      "loadingText": "Signing in...",
+      "privacyText": "By continuing, you agree to our",
+      "privacyLink": "privacy policy",
+      "noAccountText": "Don't have an account?",
+      "registerLink": "Register",
+      "successMessage": "Successful login: {email}",
+      "errorMessage": "Login error. Please try again.",
+      "errors": {
+        "emailRequired": "Enter email",
+        "emailInvalid": "Enter valid email",
+        "passwordRequired": "Enter password",
+        "passwordLength": "Password must be at least 6 characters"
+      },
+      "ariaLabels": {
+        "email": "Email",
+        "password": "Password",
+        "forgotPassword": "Forgot password",
+        "submit": "Sign in"
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "login-form_auth": {
+    "loginForm": {
+      "emailPlaceholder": "mail@gmail.com",
+      "passwordPlaceholder": "Введите ваш пароль",
+      "forgotPassword": "Забыли пароль?",
+      "submitButton": "Войти",
+      "loadingText": "Вход...",
+      "privacyText": "Продолжая, вы соглашаетесь с",
+      "privacyLink": "условиями конфиденциальности",
+      "noAccountText": "Нет аккаунта?",
+      "registerLink": "Зарегистрироваться",
+      "successMessage": "Успешный вход: {email}",
+      "errorMessage": "Ошибка при входе. Пожалуйста, попробуйте снова.",
+      "errors": {
+        "emailRequired": "Введите email",
+        "emailInvalid": "Введите корректный email",
+        "passwordRequired": "Введите пароль",
+        "passwordLength": "Пароль должен содержать минимум 6 символов"
+      },
+      "ariaLabels": {
+        "email": "Email",
+        "password": "Пароль",
+        "forgotPassword": "Забыли пароль",
+        "submit": "Войти"
+      }
+    }
+  }
+}

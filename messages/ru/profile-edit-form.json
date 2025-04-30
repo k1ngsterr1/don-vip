@@ -1,0 +1,30 @@
+{
+  "ProfileEditForm": {
+    "fields": {
+      "firstName": "Имя",
+      "lastName": "Фамилия",
+      "gender": "Пол",
+      "birthDate": "Дата рождения",
+      "birthDatePlaceholder": "ДД.ММ.ГГГГ",
+      "phone": "Телефон",
+      "email": "Электронная почта"
+    },
+    "genderOptions": {
+      "male": "Мужской",
+      "female": "Женский",
+      "other": "Другой"
+    },
+    "buttons": {
+      "change": "Изменить",
+      "saveChanges": "Сохранить изменения",
+      "saving": "Сохранение...",
+      "cancel": "Отмена"
+    },
+    "alerts": {
+      "changePhone": "Изменение телефона",
+      "changeEmail": "Изменение email"
+    },
+    "successMessage": "Профиль успешно обновлен",
+    "errorMessage": "Произошла ошибка при обновлении профиля"
+  }
+}

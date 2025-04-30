@@ -1,0 +1,9 @@
+{
+  "ReviewForm": {
+    "placeholder": "Поделитесь своими впечатлениями о нашем сервисе",
+    "positiveLabel": "Положительный отзыв",
+    "negativeLabel": "Отрицательный отзыв",
+    "submitButton": "Оставить отзыв",
+    "submissionAlert": "Отзыв отправлен: {reviewText}, Оценка: {sentiment}"
+  }
+}

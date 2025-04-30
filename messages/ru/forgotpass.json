@@ -1,0 +1,7 @@
+{
+  "password_auth": {
+    "forgot_password": {
+      "title": "Забыли пароль?"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "ProfileMenu": {
+    "items": {
+      "purchases": {
+        "label": "Purchases",
+        "description": "Your order and purchase history"
+      },
+      "coupons": {
+        "label": "Coupons",
+        "description": "Your active coupons and discounts"
+      },
+      "chatBot": {
+        "label": "Chat bot",
+        "description": "Communication with our support bot"
+      },
+      "settings": {
+        "label": "Settings",
+        "description": "Account and application settings"
+      },
+      "logout": {
+        "label": "Log out",
+        "description": "Sign out of current session"
+      }
+    }
+  }
+}

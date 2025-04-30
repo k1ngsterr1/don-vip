@@ -1,3 +1,5 @@
+"use client";
+import { useTranslations } from "next-intl";
 import {
   ChevronRight,
   LogOut,
@@ -9,45 +11,47 @@ import {
 import Link from "next/link";
 
 export function ProfileMenu() {
+  const i18n = useTranslations("ProfileMenu");
+
   const menuItems = [
     {
       icon: <ShoppingBag size={20} className="text-orange" />,
-      label: "Покупки",
+      label: i18n("items.purchases.label"),
       href: "/profile/purchases",
       color: "bg-orange/10",
-      description: "История ваших заказов и покупок",
+      description: i18n("items.purchases.description"),
     },
     {
       icon: <Ticket size={20} className="text-blue" />,
-      label: "Купоны",
+      label: i18n("items.coupons.label"),
       href: "/profile/coupons",
       color: "bg-blue/10",
-      description: "Ваши активные купоны и скидки",
+      description: i18n("items.coupons.description"),
     },
     {
       icon: <MessageCircle size={20} className="text-[#37aee2]" />,
-      label: "Чат-бот",
+      label: i18n("items.chatBot.label"),
       href: "/profile/chat",
       color: "bg-[#37aee2]/10",
-      description: "Общение с нашим чат-ботом поддержки",
+      description: i18n("items.chatBot.description"),
     },
     {
       icon: <Settings size={20} className="text-gray-600" />,
-      label: "Настройки",
+      label: i18n("items.settings.label"),
       href: "/profile/settings",
       color: "bg-gray-100",
-      description: "Настройки аккаунта и приложения",
+      description: i18n("items.settings.description"),
     },
     {
       icon: <LogOut size={20} className="text-[#ff272c]" />,
-      label: "Выйти из аккаунта",
+      label: i18n("items.logout.label"),
       href: "/auth/logout",
       color: "bg-[#ff272c]/10",
-      description: "Выход из текущей сессии",
+      description: i18n("items.logout.description"),
     },
   ];
 
-  // Mobile version (unchanged)
+  // Mobile version
   const mobileMenu = (
     <nav className="space-y-3 md:hidden">
       {menuItems.map((item, index) => (

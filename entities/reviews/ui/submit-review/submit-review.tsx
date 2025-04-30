@@ -1,20 +1,20 @@
 "use client";
 
 import type React from "react";
-
 import { Button } from "@/shared/ui/button/button";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 export function ReviewForm() {
   const [reviewText, setReviewText] = useState("");
   const [sentiment, setSentiment] = useState<"positive" | "negative" | null>(
     null
   );
+  const i18n = useTranslations("ReviewForm");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert(`Review submitted: ${reviewText}, Sentiment: ${sentiment}`);
     setReviewText("");
     setSentiment(null);
   };
@@ -25,8 +25,8 @@ export function ReviewForm() {
         <textarea
           value={reviewText}
           onChange={(e) => setReviewText(e.target.value)}
-          placeholder="Поделитесь своими впечатлениями о нашем сервисе"
-          className="w-full  p-4 min-h-[150px] outline-none resize-none"
+          placeholder={i18n("placeholder")}
+          className="w-full p-4 min-h-[150px] outline-none resize-none"
         />
       </div>
 
@@ -38,6 +38,7 @@ export function ReviewForm() {
             className={`p-2 rounded-full ${
               sentiment === "positive" ? "bg-[#eafff4]" : ""
             }`}
+            aria-label={i18n("positiveLabel")}
           >
             <ThumbsUp
               className={
@@ -52,6 +53,7 @@ export function ReviewForm() {
             className={`p-2 rounded-full ${
               sentiment === "negative" ? "bg-[#ffeeee]" : ""
             }`}
+            aria-label={i18n("negativeLabel")}
           >
             <ThumbsDown
               className={
@@ -70,7 +72,7 @@ export function ReviewForm() {
           }`}
           disabled={!reviewText.trim() || sentiment === null}
         >
-          Оставить отзыв
+          {i18n("submitButton")}
         </Button>
       </div>
     </form>

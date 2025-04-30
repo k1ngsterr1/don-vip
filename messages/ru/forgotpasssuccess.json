@@ -1,0 +1,9 @@
+{
+  "forgotpasssuccess_auth": {
+    "forgotPasswordSuccess": {
+      "alt": "Успешный сброс пароля",
+      "title": "Запрос на сброс пароля принят",
+      "message": "Ссылка для сброса отправлена на вашу почту"
+    }
+  }
+}

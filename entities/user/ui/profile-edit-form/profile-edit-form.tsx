@@ -1,7 +1,5 @@
 "use client";
-
-import type React from "react";
-
+import { useTranslations } from "next-intl";
 import type { User } from "@/entities/user/model/types";
 import { Button } from "@/shared/ui/button/button";
 import { FormField } from "@/shared/ui/form-field/form-field";
@@ -29,6 +27,7 @@ export function ProfileEditForm({
   onCancel,
   redirectAfterSubmit = "/profile/1",
 }: ProfileEditFormProps) {
+  const i18n = useTranslations("ProfileEditForm");
   const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: user.firstName,
@@ -55,8 +54,7 @@ export function ProfileEditForm({
       if (onSubmit) {
         await onSubmit(formData);
       } else {
-        // Default behavior if no onSubmit provided
-        alert("Профиль успешно обновлен");
+        alert(i18n("successMessage"));
       }
 
       if (redirectAfterSubmit) {
@@ -64,7 +62,7 @@ export function ProfileEditForm({
       }
     } catch (error) {
       console.error("Error updating profile:", error);
-      alert("Произошла ошибка при обновлении профиля");
+      alert(i18n("errorMessage"));
     } finally {
       setIsSubmitting(false);
     }
@@ -82,7 +80,7 @@ export function ProfileEditForm({
   const mobileForm = (
     <form onSubmit={handleSubmit} className="space-y-5 md:hidden">
       <FormField
-        label="Имя"
+        label={i18n("fields.firstName")}
         name="firstName"
         value={formData.firstName}
         onChange={handleChange}
@@ -91,7 +89,7 @@ export function ProfileEditForm({
       />
 
       <FormField
-        label="Фамилия"
+        label={i18n("fields.lastName")}
         name="lastName"
         value={formData.lastName}
         onChange={handleChange}
@@ -100,7 +98,9 @@ export function ProfileEditForm({
       />
 
       <div>
-        <label className="block text-sm font-medium mb-1">Пол</label>
+        <label className="block text-sm font-medium mb-1">
+          {i18n("fields.gender")}
+        </label>
         <div className="relative">
           <select
             name="gender"
@@ -108,9 +108,9 @@ export function ProfileEditForm({
             onChange={handleChange}
             className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200 appearance-none"
           >
-            <option value="male">Мужской</option>
-            <option value="female">Женский</option>
-            <option value="other">Другой</option>
+            <option value="male">{i18n("genderOptions.male")}</option>
+            <option value="female">{i18n("genderOptions.female")}</option>
+            <option value="other">{i18n("genderOptions.other")}</option>
           </select>
           <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
             <ChevronDown size={18} className="text-gray-500" />
@@ -119,17 +119,19 @@ export function ProfileEditForm({
       </div>
 
       <FormField
-        label="Дата рождения"
+        label={i18n("fields.birthDate")}
         name="birthDate"
         value={formData.birthDate}
         onChange={handleChange}
         type="text"
-        placeholder="ДД.ММ.ГГГГ"
+        placeholder={i18n("fields.birthDatePlaceholder")}
         className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
       />
 
       <div>
-        <label className="block text-sm font-medium mb-1">Телефон</label>
+        <label className="block text-sm font-medium mb-1">
+          {i18n("fields.phone")}
+        </label>
         <div className="flex items-center relative">
           <input
             type="tel"
@@ -142,14 +144,14 @@ export function ProfileEditForm({
             type="button"
             className="ml-2 absolute right-4 text-blue font-medium"
           >
-            Изменить
+            {i18n("buttons.change")}
           </button>
         </div>
       </div>
 
       <div>
         <label className="block text-sm font-medium mb-1">
-          Электронная почта
+          {i18n("fields.email")}
         </label>
         <div className="flex items-center relative">
           <div className="flex-1 p-3 bg-gray-50 rounded-lg border border-gray-200 flex items-center">
@@ -160,7 +162,7 @@ export function ProfileEditForm({
             type="button"
             className="ml-2 absolute right-4 text-blue font-medium"
           >
-            Изменить
+            {i18n("buttons.change")}
           </button>
         </div>
       </div>
@@ -171,7 +173,7 @@ export function ProfileEditForm({
           className="w-full bg-blue text-white rounded-full"
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Сохранение..." : "Сохранить изменения"}
+          {isSubmitting ? i18n("buttons.saving") : i18n("buttons.saveChanges")}
         </Button>
       </div>
     </form>
@@ -183,7 +185,7 @@ export function ProfileEditForm({
       <div className="grid grid-cols-2 gap-6">
         <div className="space-y-6">
           <FormField
-            label="Имя"
+            label={i18n("fields.firstName")}
             name="firstName"
             value={formData.firstName}
             onChange={handleChange}
@@ -193,7 +195,7 @@ export function ProfileEditForm({
           />
 
           <FormField
-            label="Фамилия"
+            label={i18n("fields.lastName")}
             name="lastName"
             value={formData.lastName}
             onChange={handleChange}
@@ -204,7 +206,7 @@ export function ProfileEditForm({
 
           <div>
             <label className="block text-sm font-medium mb-2 text-gray-700">
-              Пол
+              {i18n("fields.gender")}
             </label>
             <div className="relative">
               <select
@@ -213,9 +215,9 @@ export function ProfileEditForm({
                 onChange={handleChange}
                 className="w-full p-3 pl-10 bg-gray-50 rounded-lg border border-gray-200 appearance-none focus:border-blue focus:ring-1 focus:ring-blue focus:outline-none transition-colors"
               >
-                <option value="male">Мужской</option>
-                <option value="female">Женский</option>
-                <option value="other">Другой</option>
+                <option value="male">{i18n("genderOptions.male")}</option>
+                <option value="female">{i18n("genderOptions.female")}</option>
+                <option value="other">{i18n("genderOptions.other")}</option>
               </select>
               <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
                 <svg
@@ -250,40 +252,40 @@ export function ProfileEditForm({
 
         <div className="space-y-6">
           <FormField
-            label="Дата рождения"
+            label={i18n("fields.birthDate")}
             name="birthDate"
             value={formData.birthDate}
             onChange={handleChange}
             type="text"
-            placeholder="ДД.ММ.ГГГГ"
+            placeholder={i18n("fields.birthDatePlaceholder")}
             icon={<Calendar size={18} />}
             className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
           />
 
           <FormField
-            label="Телефон"
+            label={i18n("fields.phone")}
             name="phone"
             value={formData.phone}
             onChange={handleChange}
             type="tel"
             icon={<Phone size={18} />}
             actionButton={{
-              text: "Изменить",
-              onClick: () => alert("Изменение телефона"),
+              text: i18n("buttons.change"),
+              onClick: () => alert(i18n("alerts.changePhone")),
             }}
             className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
           />
 
           <FormField
-            label="Электронная почта"
+            label={i18n("fields.email")}
             name="email"
             value={user.email}
             readOnly
             type="email"
             icon={<Mail size={18} />}
             actionButton={{
-              text: "Изменить",
-              onClick: () => alert("Изменение email"),
+              text: i18n("buttons.change"),
+              onClick: () => alert(i18n("alerts.changeEmail")),
             }}
             className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200 text-gray-500"
           />
@@ -296,14 +298,14 @@ export function ProfileEditForm({
           onClick={handleCancel}
           className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
         >
-          Отмена
+          {i18n("buttons.cancel")}
         </button>
         <Button
           type="submit"
           className="px-8 py-3 bg-blue text-white rounded-lg hover:bg-blue-600 transition-colors shadow-sm hover:shadow"
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Сохранение..." : "Сохранить изменения"}
+          {isSubmitting ? i18n("buttons.saving") : i18n("buttons.saveChanges")}
         </Button>
       </div>
     </form>

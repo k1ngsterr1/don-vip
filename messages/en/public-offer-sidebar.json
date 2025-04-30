@@ -1,0 +1,20 @@
+{
+  "PublicOfferSidebar": {
+    "contents": {
+      "title": "Contents",
+      "sections": {
+        "general": "General provisions",
+        "subject": "Subject of the agreement",
+        "order": "Order placement",
+        "payment": "Payment",
+        "changes": "Order changes",
+        "other": "Other provisions"
+      }
+    },
+    "documents": {
+      "title": "Documents",
+      "privacyPolicy": "Privacy Policy",
+      "terms": "Terms of Service"
+    }
+  }
+}

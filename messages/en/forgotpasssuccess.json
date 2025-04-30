@@ -1,0 +1,9 @@
+{
+  "forgotpasssuccess_auth": {
+    "forgotPasswordSuccess": {
+      "alt": "Password reset success",
+      "title": "Password reset requested",
+      "message": "Reset link has been sent to your email"
+    }
+  }
+}

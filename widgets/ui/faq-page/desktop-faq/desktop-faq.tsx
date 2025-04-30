@@ -1,5 +1,5 @@
 "use client";
-
+import { useTranslations } from "next-intl";
 import { faqItems } from "@/shared/data/faq-data";
 import FAQItem from "@/shared/ui/faq-item/faq-item";
 import { ArrowLeft, HelpCircle, Search } from "lucide-react";
@@ -8,11 +8,11 @@ import { useState } from "react";
 import FAQCategories from "../faq-categories/faq-categories";
 
 export default function DesktopFAQ() {
+  const i18n = useTranslations("DesktopFAQ");
   const [searchQuery, setSearchQuery] = useState("");
   const [openItem, setOpenItem] = useState<number | null>(1);
   const [activeCategory, setActiveCategory] = useState("all");
 
-  // Filter FAQs based on search query and category
   const filteredFAQs = faqItems.filter((item) => {
     const matchesSearch = item.question
       .toLowerCase()
@@ -23,11 +23,7 @@ export default function DesktopFAQ() {
   });
 
   const toggleItem = (index: number) => {
-    if (openItem === index) {
-      setOpenItem(null);
-    } else {
-      setOpenItem(index);
-    }
+    setOpenItem(openItem === index ? null : index);
   };
 
   return (
@@ -43,18 +39,15 @@ export default function DesktopFAQ() {
               size={16}
               className="mr-2 group-hover:-translate-x-1 transition-transform"
             />
-            <span className="text-base">Вернуться</span>
+            <span className="text-base">{i18n("backLink")}</span>
           </Link>
         </div>
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl lg:text-4xl font-unbounded font-medium text-gray-800">
-              Часто задаваемые вопросы
+              {i18n("title")}
             </h1>
-            <p className="text-gray-500 mt-2 max-w-2xl">
-              Найдите ответы на самые распространенные вопросы о наших услугах и
-              продуктах
-            </p>
+            <p className="text-gray-500 mt-2 max-w-2xl">{i18n("subtitle")}</p>
           </div>
           <div className="hidden lg:flex items-center justify-center w-16 h-16 bg-blue-50 rounded-full">
             <HelpCircle className="text-blue w-8 h-8" />
@@ -72,7 +65,7 @@ export default function DesktopFAQ() {
             />
             <input
               type="text"
-              placeholder="Поиск по вопросам..."
+              placeholder={i18n("searchPlaceholder")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
@@ -109,10 +102,10 @@ export default function DesktopFAQ() {
               <Search className="text-gray-400" size={24} />
             </div>
             <h3 className="text-xl font-medium text-gray-800 mb-2">
-              По вашему запросу ничего не найдено
+              {i18n("noResults.title")}
             </h3>
             <p className="text-gray-500 max-w-md mx-auto">
-              Попробуйте изменить поисковый запрос или выбрать другую категорию
+              {i18n("noResults.description")}
             </p>
             <button
               onClick={() => {
@@ -121,7 +114,7 @@ export default function DesktopFAQ() {
               }}
               className="mt-4 px-4 py-2 bg-blue text-white rounded-lg hover:bg-blue-600 transition-colors"
             >
-              Сбросить фильтры
+              {i18n("noResults.resetButton")}
             </button>
           </div>
         )}
@@ -132,24 +125,22 @@ export default function DesktopFAQ() {
         <div className="flex flex-col lg:flex-row items-center justify-between">
           <div className="mb-6 lg:mb-0">
             <h2 className="text-2xl font-medium text-gray-800 mb-2">
-              Не нашли ответ на свой вопрос?
+              {i18n("contact.title")}
             </h2>
-            <p className="text-gray-600">
-              Свяжитесь с нашей службой поддержки, и мы поможем вам
-            </p>
+            <p className="text-gray-600">{i18n("contact.description")}</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-4">
             <a
               href="mailto:hoyakap@gmail.com"
               className="px-6 py-3 bg-white text-blue border border-blue rounded-lg hover:bg-blue-50 transition-colors text-center"
             >
-              Написать на Email
+              {i18n("contact.emailButton")}
             </a>
             <a
               href="https://t.me/Davo_dior55"
               className="px-6 py-3 bg-blue text-white rounded-lg hover:bg-blue-600 transition-colors text-center"
             >
-              Написать в Telegram
+              {i18n("contact.telegramButton")}
             </a>
           </div>
         </div>

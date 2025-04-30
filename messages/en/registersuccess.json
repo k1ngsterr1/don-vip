@@ -1,0 +1,9 @@
+{
+  "registersuccess_auth": {
+    "registrationSuccess": {
+      "imageAlt": "Successful registration",
+      "title": "Thank you for registering",
+      "message": "Profile activation link has been sent to your email"
+    }
+  }
+}

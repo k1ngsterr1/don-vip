@@ -1,0 +1,10 @@
+{
+  "Header": {
+    "searchPlaceholder": "Найти сервис, либо игру",
+    "games": "ИГРЫ",
+    "services": "СЕРВИСЫ",
+    "reviews": "ОТЗЫВЫ",
+    "faq": "FAQ",
+    "login": "ВОЙТИ"
+  }
+}

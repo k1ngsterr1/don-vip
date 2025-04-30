@@ -1,0 +1,19 @@
+{
+  "DesktopFAQ": {
+    "backLink": "Back",
+    "title": "Frequently Asked Questions",
+    "subtitle": "Find answers to the most common questions about our services and products",
+    "searchPlaceholder": "Search questions...",
+    "noResults": {
+      "title": "No results found",
+      "description": "Try changing your search query or select another category",
+      "resetButton": "Reset filters"
+    },
+    "contact": {
+      "title": "Didn't find the answer to your question?",
+      "description": "Contact our support team and we'll help you",
+      "emailButton": "Send Email",
+      "telegramButton": "Message on Telegram"
+    }
+  }
+}

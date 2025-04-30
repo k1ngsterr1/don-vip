@@ -1,0 +1,18 @@
+{
+  "forgotpassword_auth": {
+    "forgotPassword": {
+      "description": "Введите e-mail или номер телефона и мы отправим вам ссылку для сброса пароля",
+      "emailLabel": "Email",
+      "emailPlaceholder": "mail@gmail.com",
+      "error": {
+        "emptyFields": "Введите email или номер телефона"
+      },
+      "submitButton": "Отправить",
+      "successMessage": "Письмо с инструкциями отправлено на указанный адрес",
+      "privacyText": "Продолжая, вы соглашаетесь с",
+      "privacyLink": "условиями конфиденциальности",
+      "rememberPassword": "Вспомнили пароль?",
+      "loginLink": "Войти"
+    }
+  }
+}

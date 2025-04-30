@@ -1,0 +1,30 @@
+{
+  "ProfileEditForm": {
+    "fields": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "gender": "Gender",
+      "birthDate": "Birth date",
+      "birthDatePlaceholder": "DD.MM.YYYY",
+      "phone": "Phone",
+      "email": "Email"
+    },
+    "genderOptions": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    },
+    "buttons": {
+      "change": "Change",
+      "saveChanges": "Save changes",
+      "saving": "Saving...",
+      "cancel": "Cancel"
+    },
+    "alerts": {
+      "changePhone": "Changing phone",
+      "changeEmail": "Changing email"
+    },
+    "successMessage": "Profile updated successfully",
+    "errorMessage": "Error updating profile"
+  }
+}
