@@ -12,7 +12,6 @@ export default function DesktopFAQ() {
   const [openItem, setOpenItem] = useState<number | null>(1);
   const [activeCategory, setActiveCategory] = useState("all");
 
-  // Filter FAQs based on search query and category
   const filteredFAQs = faqItems.filter((item) => {
     const matchesSearch = item.question
       .toLowerCase()
@@ -32,7 +31,6 @@ export default function DesktopFAQ() {
 
   return (
     <div className="hidden md:block max-w-7xl mx-auto px-6 lg:px-8 py-8 lg:py-12">
-      {/* Header section */}
       <div className="mb-8 lg:mb-12">
         <div className="flex items-center mb-4">
           <Link
@@ -61,8 +59,6 @@ export default function DesktopFAQ() {
           </div>
         </div>
       </div>
-
-      {/* Search and categories */}
       <div className="flex flex-col lg:flex-row gap-8 mb-8">
         <div className="lg:w-2/3">
           <div className="relative">
@@ -86,8 +82,6 @@ export default function DesktopFAQ() {
           />
         </div>
       </div>
-
-      {/* FAQ content */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 lg:p-8">
         {filteredFAQs.length > 0 ? (
           <div className="space-y-4">
@@ -126,8 +120,6 @@ export default function DesktopFAQ() {
           </div>
         )}
       </div>
-
-      {/* Contact section */}
       <div className="mt-12 bg-blue-50 rounded-xl p-8">
         <div className="flex flex-col lg:flex-row items-center justify-between">
           <div className="mb-6 lg:mb-0">

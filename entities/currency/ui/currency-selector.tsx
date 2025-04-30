@@ -11,6 +11,7 @@ interface CurrencySelectorProps {
   currencyImage: string;
   selectedId: number | null;
   onSelect: (id: number) => void;
+  enhanced?: boolean;
 }
 
 export function CurrencySelector({
@@ -19,10 +20,12 @@ export function CurrencySelector({
   currencyImage,
   selectedId,
   onSelect,
+  enhanced = false,
 }: CurrencySelectorProps) {
-  return (
-    <div className="px-4 mb-6">
-      <h2 className="text-dark font-roboto text-[16px] font-medium mb-4">
+  // Mobile version (unchanged)
+  const mobileSelector = (
+    <div className={enhanced ? "hidden" : "px-4 mb-6"}>
+      <h2 className="text-dark font-medium mb-4">
         1 ВЫБЕРИТЕ СУММУ ПОПОЛНЕНИЯ
       </h2>
       <div className="grid grid-cols-2 gap-3">
@@ -30,10 +33,12 @@ export function CurrencySelector({
           <button
             key={item.id}
             className={cn(
-              "bg-[#EEEFF3] h-[104px] w-full shadow-md p-3 rounded-lg flex flex-col items-start relative overflow-hidden"
+              "bg-[#EEEFF3] shadow-md p-3 rounded-lg flex flex-col items-start relative overflow-hidden",
+              selectedId === item.id && "ring-1 ring-gray-300"
             )}
             onClick={() => onSelect(item.id)}
           >
+            {/* Green triangle with checkmark only on selected item */}
             {selectedId === item.id && (
               <div className="absolute top-0 right-0 w-[50px] h-[50px] overflow-hidden">
                 <div className="absolute top-0 right-0 w-0 h-0 border-t-[50px] border-t-green-500 border-l-[50px] border-l-transparent"></div>
@@ -51,15 +56,65 @@ export function CurrencySelector({
               </span>
               <Image
                 src={currencyImage || "/placeholder.svg"}
-                width={42}
-                height={31}
+                width={30}
+                height={30}
                 alt={currencyName}
-                className="object-contain absolute right-2 bottom-2"
+                className="object-contain"
               />
             </div>
           </button>
         ))}
       </div>
     </div>
+  );
+
+  // Desktop version
+  const desktopSelector = (
+    <div className={enhanced ? "" : "hidden"}>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        {options.map((item) => (
+          <button
+            key={item.id}
+            className={cn(
+              "bg-white border border-gray-200 p-4 rounded-lg flex flex-col items-start relative overflow-hidden transition-all",
+              selectedId === item.id
+                ? "ring-2 ring-blue shadow-md"
+                : "hover:border-blue/30 hover:shadow-sm"
+            )}
+            onClick={() => onSelect(item.id)}
+          >
+            {selectedId === item.id && (
+              <div className="absolute top-3 right-3 w-6 h-6 bg-blue rounded-full flex items-center justify-center">
+                <Check className="text-white" size={14} />
+              </div>
+            )}
+
+            <div className="flex items-center mb-2">
+              <Image
+                src={currencyImage || "/placeholder.svg"}
+                width={36}
+                height={36}
+                alt={currencyName}
+                className="object-contain mr-2"
+              />
+              <span className="text-gray-700 font-medium">
+                {item.amount} {currencyName}
+              </span>
+            </div>
+
+            <span className="text-2xl font-bold text-gray-900">
+              {item.price}
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      {mobileSelector}
+      {desktopSelector}
+    </>
   );
 }
