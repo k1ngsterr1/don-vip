@@ -1,6 +1,5 @@
 import HeroBanner from "@/widgets/ui/main-page/hero-banner/hero-banner";
 import { MobileGamesBlock } from "@/widgets/ui/main-page/mobile-games/mobile-games";
-import { PopularCategories } from "@/widgets/ui/main-page/popular-categories/popular-categories";
 import { ServicesBlock } from "@/widgets/ui/main-page/services-block/services-block";
 
 export default function Home() {
@@ -36,9 +35,7 @@ export default function Home() {
         <div className="mt-6 sm:mt-8">
           <ServicesBlock />
         </div>
-        <div className="hidden xxs:block mt-6 sm:mt-8">
-          <PopularCategories />
-        </div>
+
         <div className="mt-6 sm:mt-10">
           <MobileGamesBlock />
         </div>
