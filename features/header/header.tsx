@@ -1,9 +1,9 @@
 "use client";
 
+import en from "@/assets/EN.webp";
 import google from "@/assets/google.webp";
 import logo from "@/assets/Logo.webp";
 import ru from "@/assets/RU.webp";
-import en from "@/assets/EN.webp"; // Добавьте изображение английского флага
 import SearchBar from "@/entities/search-bar/search-bar";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, Menu } from "lucide-react";
