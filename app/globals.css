@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme inline {
-  --breakpoint-xxs: 320px;
-  --breakpoint-xs: 480px;
+  --breakpoint-xxs: 200px;
+  --breakpoint-xs: 400px;
   --color-background: var(--background);
   --color-dark: rgba(33, 37, 41, 1);
   --color-gray-light: rgba(122, 122, 122, 1);

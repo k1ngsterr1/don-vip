@@ -43,6 +43,7 @@ export default function RootLayout({
           ${robotoCondensed.variable}
           ${unbounded.variable}
           antialiased
+          w-full
         `}
       >
         <ClientLayout>
