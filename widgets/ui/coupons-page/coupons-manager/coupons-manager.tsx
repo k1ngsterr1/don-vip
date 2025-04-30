@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { ActivatedCouponWidget } from "../activated-coupon/activated-coupon";
 import { AppliedCouponWidget } from "../applied-coupon/applied-coupon";
@@ -53,24 +54,86 @@ export function CouponsManagerWidget() {
     setCouponData(null);
   };
 
+  // Animation variants - only for desktop
+  const containerVariants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+    exit: { opacity: 0, y: -20, transition: { duration: 0.3 } },
+  };
+
   return (
-    <>
-      {state === "empty" && (
-        <EmptyCouponsWidget onShowInput={handleShowInput} />
-      )}
+    <div className="md:max-w-2xl md:mx-auto">
+      {/* Use AnimatePresence only for desktop */}
+      <div className="block md:hidden">
+        {state === "empty" && (
+          <EmptyCouponsWidget onShowInput={handleShowInput} />
+        )}
+        {state === "input" && <CouponInputWidget onApply={handleApplyCode} />}
+        {state === "applied" && couponData && (
+          <AppliedCouponWidget
+            couponData={couponData}
+            onActivate={handleActivate}
+          />
+        )}
+        {state === "activated" && (
+          <ActivatedCouponWidget onGoToStore={handleGoToStore} />
+        )}
+      </div>
 
-      {state === "input" && <CouponInputWidget onApply={handleApplyCode} />}
+      <div className="hidden md:block">
+        <AnimatePresence mode="wait">
+          {state === "empty" && (
+            <motion.div
+              key="empty"
+              variants={containerVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <EmptyCouponsWidget onShowInput={handleShowInput} />
+            </motion.div>
+          )}
 
-      {state === "applied" && couponData && (
-        <AppliedCouponWidget
-          couponData={couponData}
-          onActivate={handleActivate}
-        />
-      )}
+          {state === "input" && (
+            <motion.div
+              key="input"
+              variants={containerVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <CouponInputWidget onApply={handleApplyCode} />
+            </motion.div>
+          )}
 
-      {state === "activated" && (
-        <ActivatedCouponWidget onGoToStore={handleGoToStore} />
-      )}
-    </>
+          {state === "applied" && couponData && (
+            <motion.div
+              key="applied"
+              variants={containerVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <AppliedCouponWidget
+                couponData={couponData}
+                onActivate={handleActivate}
+              />
+            </motion.div>
+          )}
+
+          {state === "activated" && (
+            <motion.div
+              key="activated"
+              variants={containerVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <ActivatedCouponWidget onGoToStore={handleGoToStore} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
   );
 }

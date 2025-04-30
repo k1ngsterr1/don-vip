@@ -53,7 +53,6 @@ export default function Header({ isSearchBar = true }: IHeader) {
 
   const handleSearch = (value: string) => {
     setSearchQuery(value);
-    // Additional search logic can be added here
   };
 
   const handleMenuToggle = (menu: "games" | "services") => {
