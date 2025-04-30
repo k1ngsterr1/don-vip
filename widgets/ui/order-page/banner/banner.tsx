@@ -1,32 +1,54 @@
-import React from "react";
+import { Check } from "lucide-react";
+import Image from "next/image";
 
 interface BannerProps {
   backgroundImage: string;
-
-  height?: string;
-  overlay?: boolean;
-  children?: React.ReactNode;
+  height: string;
 }
 
-export const Banner: React.FC<BannerProps> = ({
-  backgroundImage,
-
-  height = "400px",
-  overlay = true,
-  children,
-}) => {
-  return (
-    <div
-      className="relative flex items-center justify-center text-white text-center px-4"
-      style={{
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        height,
-      }}
-    >
-      {overlay && <div className="absolute inset-0 z-0"></div>}
-      <div className="relative z-10">{children}</div>
+export function Banner({ backgroundImage, height }: BannerProps) {
+  // Mobile version (unchanged)
+  const mobileBanner = (
+    <div className="relative w-full md:hidden" style={{ height }}>
+      <Image
+        src={backgroundImage || "/placeholder.svg"}
+        alt="Game banner"
+        fill
+        className="object-cover"
+      />
+      <div className="absolute bottom-4 left-4 bg-blue text-white text-xs py-1 px-2 rounded-full flex items-center">
+        <Check size={12} className="mr-1" />
+        Мгновенная доставка
+      </div>
     </div>
   );
-};
+
+  // Desktop version
+  const desktopBanner = (
+    <div
+      className="hidden md:block relative w-full rounded-lg overflow-hidden shadow-md"
+      style={{ height }}
+    >
+      <Image
+        src={backgroundImage || "/placeholder.svg"}
+        alt="Game banner"
+        fill
+        className="object-cover"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+      <div className="absolute bottom-6 left-6">
+        <div className="bg-blue text-white text-sm py-1.5 px-3 rounded-full flex items-center mb-2 w-fit">
+          <Check size={14} className="mr-1.5" />
+          Мгновенная доставка
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      {mobileBanner}
+      {desktopBanner}
+    </>
+  );
+}

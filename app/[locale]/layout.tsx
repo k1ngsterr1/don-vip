@@ -1,13 +1,13 @@
-import { NextIntlClientProvider, hasLocale } from "next-intl";
-import { notFound } from "next/navigation";
-import { routing } from "@/i18n/routing";
 import QuestionChatWrapper from "@/entities/question-chat/question-chat-wrapper";
 import BottomTab from "@/features/bottom-tab/bottom-tab";
 import Footer from "@/features/footer/footer";
 import HeaderWrapper from "@/features/header/header-wrapper";
+import { routing } from "@/i18n/routing";
 import ClientLayout from "@/shared/ui/client-layout/client-layout";
 import type { Metadata } from "next";
+import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { Roboto, Roboto_Condensed, Unbounded } from "next/font/google";
+import { notFound } from "next/navigation";
 import "./globals.css";
 
 const roboto = Roboto({
@@ -40,7 +40,6 @@ export default async function LocaleLayout({
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  // Ensure that the incoming `locale` is valid
   const { locale } = params;
   if (!hasLocale(routing.locales, locale)) {
     notFound();

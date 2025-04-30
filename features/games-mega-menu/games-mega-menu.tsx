@@ -259,27 +259,6 @@ export function ServicesMegaMenu() {
             className="w-64 pl-8 border-l border-gray-100"
             variants={itemVariants}
           >
-            <div className="mb-6">
-              <motion.h3
-                className="font-medium text-sm uppercase text-gray-500 mb-2"
-                variants={itemVariants}
-              >
-                Категории
-              </motion.h3>
-              <ul className="space-y-2">
-                {categories.map((category, index) => (
-                  <motion.li key={index} variants={linkVariants} custom={index}>
-                    <Link
-                      href={category.link}
-                      className="text-dark hover:text-blue-600 transition-colors"
-                    >
-                      {category.name}
-                    </Link>
-                  </motion.li>
-                ))}
-              </ul>
-            </div>
-
             <div>
               <motion.h3
                 className="font-medium text-sm uppercase text-gray-500 mb-2"

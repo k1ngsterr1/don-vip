@@ -1,6 +1,5 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface ProductInfoProps {
@@ -14,39 +13,29 @@ export function ProductInfo({
   onToggle,
   description,
 }: ProductInfoProps) {
-  return (
-    <div className="w-[344px] xxs:w-[90%] mt-[24px] mx-auto mb-6">
-      <motion.div
-        className="rounded-[12px] bg-blue text-white overflow-hidden"
-        animate={{ height: isExpanded ? "auto" : "60px" }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
+  // Mobile version (unchanged)
+  const mobileInfo = (
+    <div className="md:hidden">
+      <button
+        className="w-full bg-blue text-white py-3 px-4 flex items-center justify-center mb-6"
+        onClick={onToggle}
       >
-        <button
-          className="w-full  h-[60px] px-4 flex items-center justify-center"
-          onClick={onToggle}
-        >
-          <span>Информация о товаре</span>
-          {isExpanded ? (
-            <ChevronUp className="ml-2" size={18} />
-          ) : (
-            <ChevronDown className="ml-2" size={18} />
-          )}
-        </button>
+        <span>Информация о товаре</span>
+        {isExpanded ? (
+          <ChevronUp className="ml-2" size={18} />
+        ) : (
+          <ChevronDown className="ml-2" size={18} />
+        )}
+      </button>
 
-        <AnimatePresence>
-          {isExpanded && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="px-4 pb-4"
-            >
-              <p className="text-sm">{description}</p>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
+      {isExpanded && (
+        <div className="px-4 py-3 bg-blue/10 mb-6 text-sm">
+          <p>{description}</p>
+        </div>
+      )}
     </div>
   );
+
+  // Desktop version is not needed as we're displaying the description directly in the main content area
+  return mobileInfo;
 }
