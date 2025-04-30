@@ -1,11 +1,11 @@
-import FAQBlock from "@/widgets/ui/faq-page/faq-info/faq-info";
+import DesktopFAQ from "@/widgets/ui/faq-page/desktop-faq/desktop-faq";
+import MobileFAQ from "@/widgets/ui/faq-page/mobile-faq/mobile-faq";
 
-export default function PrivacyPolicy() {
+export default function FAQPage() {
   return (
     <>
-      <div className="w-full px-[11px] mt-[24px] flex flex-col items-center">
-        <FAQBlock />
-      </div>
+      <MobileFAQ />
+      <DesktopFAQ />
     </>
   );
 }

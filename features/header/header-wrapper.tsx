@@ -8,6 +8,7 @@ export default function HeaderWrapper() {
 
   const hideSearchBarPaths = [
     "/faq",
+    "/public-offer",
     "/privacy-policy",
     "/terms",
     "/offer",
