@@ -304,23 +304,6 @@ export function ServicesMegaMenu() {
                 ))}
               </ul>
             </div>
-
-            {/* Special promo card with animation */}
-            <motion.div
-              className="mt-6 bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-lg"
-              variants={itemVariants}
-              whileHover={{ scale: 1.03 }}
-            >
-              <h4 className="font-medium text-sm mb-2">
-                Специальное предложение
-              </h4>
-              <p className="text-xs text-gray-700 mb-2">
-                Получите скидку 10% на первый заказ
-              </p>
-              <Link href="/promo" className="text-xs text-blue hover:underline">
-                Узнать больше →
-              </Link>
-            </motion.div>
           </motion.div>
         </div>
       </div>

@@ -4,15 +4,31 @@ import type React from "react";
 
 import type { User } from "@/entities/user/model/types";
 import { Button } from "@/shared/ui/button/button";
-import { ChevronDown, Mail } from "lucide-react";
+import { FormField } from "@/shared/ui/form-field/form-field";
+import {
+  Calendar,
+  ChevronDown,
+  Mail,
+  Phone,
+  UserIcon,
+  UserRound,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface ProfileEditFormProps {
   user: User;
+  onSubmit?: (userData: Partial<User>) => Promise<void> | void;
+  onCancel?: () => void;
+  redirectAfterSubmit?: string;
 }
 
-export function ProfileEditForm({ user }: ProfileEditFormProps) {
+export function ProfileEditForm({
+  user,
+  onSubmit,
+  onCancel,
+  redirectAfterSubmit = "/profile/1",
+}: ProfileEditFormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: user.firstName,
@@ -22,6 +38,7 @@ export function ProfileEditForm({ user }: ProfileEditFormProps) {
     phone: user.phone || "+7 903 000 00 00",
     email: user.email,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -30,40 +47,57 @@ export function ProfileEditForm({ user }: ProfileEditFormProps) {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
-    // In a real app, this would call an API to update the user profile
-    console.log("Updating profile with:", formData);
-    alert("Профиль успешно обновлен");
+    try {
+      if (onSubmit) {
+        await onSubmit(formData);
+      } else {
+        // Default behavior if no onSubmit provided
+        alert("Профиль успешно обновлен");
+      }
 
-    // Navigate back to profile page
-    router.push("/profile");
+      if (redirectAfterSubmit) {
+        router.push(redirectAfterSubmit);
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("Произошла ошибка при обновлении профиля");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      <div>
-        <label className="block text-sm font-medium mb-1">Имя</label>
-        <input
-          type="text"
-          name="firstName"
-          value={formData.firstName}
-          onChange={handleChange}
-          className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
-        />
-      </div>
+  const handleCancel = () => {
+    if (onCancel) {
+      onCancel();
+    } else {
+      router.back();
+    }
+  };
 
-      <div>
-        <label className="block text-sm font-medium mb-1">Фамилия</label>
-        <input
-          type="text"
-          name="lastName"
-          value={formData.lastName}
-          onChange={handleChange}
-          className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
-        />
-      </div>
+  // Mobile version
+  const mobileForm = (
+    <form onSubmit={handleSubmit} className="space-y-5 md:hidden">
+      <FormField
+        label="Имя"
+        name="firstName"
+        value={formData.firstName}
+        onChange={handleChange}
+        type="text"
+        className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
+      />
+
+      <FormField
+        label="Фамилия"
+        name="lastName"
+        value={formData.lastName}
+        onChange={handleChange}
+        type="text"
+        className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
+      />
 
       <div>
         <label className="block text-sm font-medium mb-1">Пол</label>
@@ -84,17 +118,15 @@ export function ProfileEditForm({ user }: ProfileEditFormProps) {
         </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium mb-1">Дата рождения</label>
-        <input
-          type="text"
-          name="birthDate"
-          value={formData.birthDate}
-          onChange={handleChange}
-          placeholder="ДД.ММ.ГГГГ"
-          className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
-        />
-      </div>
+      <FormField
+        label="Дата рождения"
+        name="birthDate"
+        value={formData.birthDate}
+        onChange={handleChange}
+        type="text"
+        placeholder="ДД.ММ.ГГГГ"
+        className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
+      />
 
       <div>
         <label className="block text-sm font-medium mb-1">Телефон</label>
@@ -137,10 +169,150 @@ export function ProfileEditForm({ user }: ProfileEditFormProps) {
         <Button
           type="submit"
           className="w-full bg-blue text-white rounded-full"
+          disabled={isSubmitting}
         >
-          Сохранить изменения
+          {isSubmitting ? "Сохранение..." : "Сохранить изменения"}
         </Button>
       </div>
     </form>
+  );
+
+  // Desktop version
+  const desktopForm = (
+    <form onSubmit={handleSubmit} className="hidden md:block">
+      <div className="grid grid-cols-2 gap-6">
+        <div className="space-y-6">
+          <FormField
+            label="Имя"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+            type="text"
+            icon={<UserIcon size={18} />}
+            className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
+          />
+
+          <FormField
+            label="Фамилия"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+            type="text"
+            icon={<UserRound size={18} />}
+            className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
+          />
+
+          <div>
+            <label className="block text-sm font-medium mb-2 text-gray-700">
+              Пол
+            </label>
+            <div className="relative">
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                className="w-full p-3 pl-10 bg-gray-50 rounded-lg border border-gray-200 appearance-none focus:border-blue focus:ring-1 focus:ring-blue focus:outline-none transition-colors"
+              >
+                <option value="male">Мужской</option>
+                <option value="female">Женский</option>
+                <option value="other">Другой</option>
+              </select>
+              <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z"
+                    stroke="#9CA3AF"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M12 22V12"
+                    stroke="#9CA3AF"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                <ChevronDown size={18} className="text-gray-500" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <FormField
+            label="Дата рождения"
+            name="birthDate"
+            value={formData.birthDate}
+            onChange={handleChange}
+            type="text"
+            placeholder="ДД.ММ.ГГГГ"
+            icon={<Calendar size={18} />}
+            className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
+          />
+
+          <FormField
+            label="Телефон"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            type="tel"
+            icon={<Phone size={18} />}
+            actionButton={{
+              text: "Изменить",
+              onClick: () => alert("Изменение телефона"),
+            }}
+            className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
+          />
+
+          <FormField
+            label="Электронная почта"
+            name="email"
+            value={user.email}
+            readOnly
+            type="email"
+            icon={<Mail size={18} />}
+            actionButton={{
+              text: "Изменить",
+              onClick: () => alert("Изменение email"),
+            }}
+            className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200 text-gray-500"
+          />
+        </div>
+      </div>
+
+      <div className="mt-8 pt-6 border-t border-gray-100 flex items-center justify-between">
+        <button
+          type="button"
+          onClick={handleCancel}
+          className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+          Отмена
+        </button>
+        <Button
+          type="submit"
+          className="px-8 py-3 bg-blue text-white rounded-lg hover:bg-blue-600 transition-colors shadow-sm hover:shadow"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Сохранение..." : "Сохранить изменения"}
+        </Button>
+      </div>
+    </form>
+  );
+
+  return (
+    <>
+      {mobileForm}
+      {desktopForm}
+    </>
   );
 }
