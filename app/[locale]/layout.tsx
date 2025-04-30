@@ -1,3 +1,6 @@
+import { NextIntlClientProvider, hasLocale } from "next-intl";
+import { notFound } from "next/navigation";
+import { routing } from "@/i18n/routing";
 import QuestionChatWrapper from "@/entities/question-chat/question-chat-wrapper";
 import BottomTab from "@/features/bottom-tab/bottom-tab";
 import Footer from "@/features/footer/footer";
@@ -53,13 +56,21 @@ const heroSlides = [
   },
 ];
 
-export default function RootLayout({
+export default async function LocaleLayout({
   children,
-}: Readonly<{
+  params,
+}: {
   children: React.ReactNode;
-}>) {
+  params: { locale: string };
+}) {
+  // Ensure that the incoming `locale` is valid
+  const { locale } = params;
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body
         className={`
           ${roboto.variable}
@@ -68,13 +79,15 @@ export default function RootLayout({
           antialiased
         `}
       >
-        <ClientLayout>
-          <HeaderWrapper />
-          {children}
-          <QuestionChatWrapper />
-          <BottomTab />
-          <Footer />
-        </ClientLayout>
+        <NextIntlClientProvider locale={locale}>
+          <ClientLayout>
+            <HeaderWrapper />
+            {children}
+            <QuestionChatWrapper />
+            <BottomTab />
+            <Footer />
+          </ClientLayout>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

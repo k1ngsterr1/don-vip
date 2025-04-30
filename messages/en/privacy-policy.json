@@ -1,0 +1,85 @@
+{
+  "privacyPolicy": {
+    "back": "Back",
+    "title": "Privacy Policy",
+    "date": "April 1, 2025",
+    "site": "www.don-vip.com",
+    "email": "hoyakap@gmail.com",
+    "sections": {
+      "intro": [
+        "This Privacy Policy for personal data (hereinafter referred to as the Privacy Policy) is an integral part of the Public Offer posted on the website at: www.don-vip.com (hereinafter referred to as the Site).",
+        "Site Services are interactive (dialog) software components on the Site pages used for integration with information systems and providing Site users with certain capabilities for accessing information on the Site, namely: to a personal account (hereinafter referred to as Services, Site Services).",
+        "The use of the Site's services means the User's unconditional consent to this Policy and the terms of processing his personal information specified therein; in case of disagreement with these terms, the User must refrain from using the services."
+      ],
+      "generalProvisions": {
+        "title": "1. GENERAL PROVISIONS",
+        "content": [
+          "1.1. Within the framework of this Policy, the User's personal information means:",
+          "1.1.1. Personal information that the User provides about himself independently when registering (creating an account) or in the process of using the Services, including the User's personal data (last name, first name, email address)",
+          "1.1.2. This Privacy Policy applies only to the Site www.don-vip.com. The Site www.don-vip.com does not control and is not responsible for third-party sites that the User can access via links available on the Site www.don-vip.com."
+        ]
+      },
+      "processingPurposes": {
+        "title": "2. PURPOSES OF PROCESSING USERS' PERSONAL INFORMATION",
+        "content": [
+          "2.1. The Site collects and stores only that personal information that is necessary to provide services or fulfill agreements and contracts with the User, except in cases where the law provides for mandatory storage of personal information for a period specified by law. If the User withdraws consent to the processing of personal data, the Site stops processing the User's personal data within a period not exceeding 10 working days from the date of receipt. The notice of withdrawal of consent to the processing of personal data is sent to the email address: hoyakap@gmail.com.",
+          "2.2. The Site processes the User's personal information for the following purposes:",
+          "2.2.1. Providing the User with access to personalized Site resources.",
+          "2.2.2. Establishing feedback with the User, including sending notifications, requests regarding the use of the Site, provision of services, processing requests and applications from the User.",
+          "2.2.3. Providing the User with effective customer and technical support in case of problems related to the use of the Site.",
+          "2.2.4. Carrying out advertising activities with the User's consent."
+        ]
+      },
+      "processingConditions": {
+        "title": "3. CONDITIONS FOR PROCESSING USERS' PERSONAL INFORMATION AND ITS TRANSFER TO THIRD PARTIES",
+        "content": [
+          "3.1. The Site stores Users' personal information and does not transfer it to third parties.",
+          "3.2. In case of sale of the Site, all obligations to comply with the terms of this Policy in relation to the personal information received by it are transferred to the acquirer.",
+          "3.3. Processing of the User's personal data is carried out without limitation by the following methods: collection, recording, systematization, accumulation, storage, clarification (updating, changing), retrieval, use, depersonalization, blocking, deletion, destruction of personal data, including in personal data information systems using automation tools or without using such tools. Processing of Users' personal data is carried out in accordance with Federal Law No. 152-FZ of July 27, 2006 On Personal Data",
+          "3.4. The Site Administration takes all necessary organizational and technical measures to protect the User's personal information from unlawful or accidental access, destruction, modification, blocking, copying, distribution, as well as from other unlawful actions of third parties."
+        ]
+      },
+      "obligations": {
+        "title": "4. OBLIGATIONS OF THE PARTIES",
+        "content": [
+          "4.1. The User is obliged to:",
+          "4.1.1. Provide information about personal data necessary to use the Site.",
+          "4.1.2. Update the provided information about personal data in case of changes to this information.",
+          "4.2. The Site Administration is obliged to:",
+          "4.2.1. Use the information received solely for the purposes specified in this Privacy Policy.",
+          "4.2.2. Ensure the storage of confidential information in secret, not disclose, as well as not sell, exchange, publish or disclose in other possible ways the transferred personal data of the User.",
+          "4.2.3. Organizational and technical measures have been taken to protect the User's personal data during their processing from unauthorized, unlawful or accidental access to personal data, destruction, modification, blocking, copying, provision, distribution of personal data, as well as from other unlawful actions in relation to personal data.",
+          "4.2.4. Block personal data related to the relevant User from the moment of application or request of the User or his legal representative or authorized body for the protection of the rights of personal data subjects for the period of verification in case of detection of inaccurate personal data or unlawful actions."
+        ]
+      },
+      "liability": {
+        "title": "5. LIABILITY OF THE PARTIES",
+        "content": [
+          "5.1. The Site Administration that has not fulfilled its obligations is liable for losses incurred by the User in connection with the unlawful use of personal data, in accordance with the legislation of the Russian Federation.",
+          "5.2. In case of loss or disclosure of confidential information, the Site Administration is not responsible if this confidential information:",
+          "5.2.1. Became public domain before its loss or disclosure.",
+          "5.2.2. Was received from a third party before it was received by the Site Administration.",
+          "5.2.3. Was disclosed with the consent of the User."
+        ]
+      },
+      "disputeResolution": {
+        "title": "6. DISPUTE RESOLUTION",
+        "content": [
+          "6.1. Before going to court with a claim for disputes arising from the relationship between the Site User and the Site Administration, it is mandatory to submit a claim (a written proposal for voluntary settlement of the dispute).",
+          "6.2. The recipient of the claim, within 10 calendar days from the date of receipt of the claim, notifies the claimant in writing of the results of the consideration of the claim.",
+          "6.3. The current legislation of the Russian Federation applies to this Privacy Policy and the relationship between the User and the Site Administration."
+        ]
+      },
+      "additionalTerms": {
+        "title": "7. ADDITIONAL TERMS",
+        "content": [
+          "7.1. The Site Administration has the right to make changes to this Privacy Policy without the User's consent.",
+          "7.2. The new Privacy Policy comes into force from the moment it is posted on the Site, unless otherwise provided by the new version of the Privacy Policy.",
+          "7.3. All suggestions or questions regarding this Privacy Policy should be reported to the email address hoyakap@gmail.com.",
+          "7.4. The current Privacy Policy is posted on the page at: www.don-vip.com.",
+          "7.5. This Privacy Policy is an integral part of the Public Offer and the Agreement on the use of the Site, posted on the page at: www.don-vip.com"
+        ]
+      }
+    }
+  }
+}

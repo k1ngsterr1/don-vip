@@ -3,6 +3,7 @@
 import google from "@/assets/google.webp";
 import logo from "@/assets/Logo.webp";
 import ru from "@/assets/RU.webp";
+import en from "@/assets/EN.webp"; // Добавьте изображение английского флага
 import SearchBar from "@/entities/search-bar/search-bar";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, Menu } from "lucide-react";
@@ -17,8 +18,28 @@ interface IHeader {
   isSearchBar?: boolean;
 }
 
+// Тексты для разных языков
+const translations = {
+  ru: {
+    searchPlaceholder: "Найти сервис, либо игру",
+    games: "ИГРЫ",
+    services: "СЕРВИСЫ",
+    reviews: "ОТЗЫВЫ",
+    faq: "FAQ",
+    login: "ВОЙТИ",
+  },
+  en: {
+    searchPlaceholder: "Find service or game",
+    games: "GAMES",
+    services: "SERVICES",
+    reviews: "REVIEWS",
+    faq: "FAQ",
+    login: "LOGIN",
+  },
+};
+
 export default function Header({ isSearchBar = true }: IHeader) {
-  const [language, setLanguage] = useState("ru");
+  const [language, setLanguage] = useState<"ru" | "en">("ru");
   const navigate = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -54,6 +75,10 @@ export default function Header({ isSearchBar = true }: IHeader) {
     menuTimeoutRef.current = setTimeout(() => {
       setActiveMenu(null);
     }, 200);
+  };
+
+  const toggleLanguage = () => {
+    setLanguage(language === "ru" ? "en" : "ru");
   };
 
   // Check scroll position to apply different styles
@@ -111,7 +136,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
           {isSearchBar && (
             <div className="hidden md:block md:flex-1 mx-8 max-w-xl">
               <SearchBar
-                placeholder="Найти сервис, либо игру"
+                placeholder={translations[language].searchPlaceholder}
                 onSearch={handleSearch}
                 height="44px"
                 className="md:rounded-full"
@@ -137,7 +162,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
                 }`}
                 onClick={() => handleMenuToggle("games")}
               >
-                ИГРЫ
+                {translations[language].games}
                 <ChevronDown
                   size={16}
                   className={`ml-1 transition-transform duration-300 ${
@@ -165,7 +190,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
                 }`}
                 onClick={() => handleMenuToggle("services")}
               >
-                СЕРВИСЫ
+                {translations[language].services}
                 <ChevronDown
                   size={16}
                   className={`ml-1 transition-transform duration-300 ${
@@ -187,7 +212,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
                 href="/reviews"
                 className="text-dark font-condensed hover:text-blue-600 transition-colors text-base"
               >
-                ОТЗЫВЫ
+                {translations[language].reviews}
               </Link>
             </div>
 
@@ -196,18 +221,18 @@ export default function Header({ isSearchBar = true }: IHeader) {
                 href="/faq"
                 className="text-dark font-condensed hover:text-blue-600 transition-colors text-base"
               >
-                FAQ
+                {translations[language].faq}
               </Link>
             </div>
           </div>
 
           <div className="relative flex items-center gap-2 ml-9 group">
-            <button className="flex items-center">
+            <button className="flex items-center" onClick={toggleLanguage}>
               <Image
-                src={ru.src || "/placeholder.svg"}
+                src={language === "ru" ? ru.src : en.src || "/placeholder.svg"}
                 width={32}
                 height={32}
-                alt="RU"
+                alt={language === "ru" ? "RU" : "EN"}
                 className="md:w-[28px] md:h-[28px] rounded-full border border-transparent group-hover:border-gray-200"
               />
             </button>
@@ -217,7 +242,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
               href="/auth/login"
               className="text-[15px] md:text-base text-dark font-condensed hover:text-blue-600 transition-colors md:bg-transparent md:hover:bg-gray-50 md:px-4 md:py-2 md:rounded-full"
             >
-              ВОЙТИ
+              {translations[language].login}
             </Link>
 
             {/* Google button */}
@@ -263,7 +288,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
         {isSearchBar && (
           <div className="md:hidden py-2 px-4">
             <SearchBar
-              placeholder="Найти сервис, либо игру"
+              placeholder={translations[language].searchPlaceholder}
               onSearch={handleSearch}
               height="56px"
               className="rounded-lg"
@@ -276,16 +301,16 @@ export default function Header({ isSearchBar = true }: IHeader) {
           <div className="md:hidden bg-white py-2 px-4 border-t border-gray-100">
             <nav className="space-y-3">
               <Link href="/games" className="block text-dark font-condensed">
-                ИГРЫ
+                {translations[language].games}
               </Link>
               <Link href="/services" className="block text-dark font-condensed">
-                СЕРВИСЫ
+                {translations[language].services}
               </Link>
               <Link href="/reviews" className="block text-dark font-condensed">
-                ОТЗЫВЫ
+                {translations[language].reviews}
               </Link>
               <Link href="/faq" className="block text-dark font-condensed">
-                FAQ
+                {translations[language].faq}
               </Link>
             </nav>
           </div>
