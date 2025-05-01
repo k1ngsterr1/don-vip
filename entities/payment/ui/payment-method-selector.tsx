@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 interface PaymentMethodSelectorProps {
   enhanced?: boolean;
@@ -7,21 +10,23 @@ interface PaymentMethodSelectorProps {
 export function PaymentMethodSelector({
   enhanced = false,
 }: PaymentMethodSelectorProps) {
+  const i18n = useTranslations("PaymentMethodSelector");
+
   const paymentMethods = [
-    { id: "tbank", name: "T-Bank (SBP)", icon: "/assets/T-Bank.webp" },
-    { id: "card", name: "Банковская карта", icon: "/credit-card-icon.png" },
-    { id: "qiwi", name: "QIWI", icon: "/qiwi-icon.png" },
+    { id: "tbank", name: i18n("methods.tbank"), icon: "/assets/T-Bank.webp" },
+    { id: "card", name: i18n("methods.card"), icon: "/credit-card-icon.png" },
+    { id: "qiwi", name: i18n("methods.qiwi"), icon: "/qiwi-icon.png" },
   ];
 
-  // Mobile version (unchanged)
+  // Mobile version
   const mobileSelector = (
     <div className={enhanced ? "hidden" : "px-4 mb-6"}>
-      <h2 className="text-dark font-medium mb-4">3 ВЫБЕРИТЕ СПОСОБ ОПЛАТЫ</h2>
+      <h2 className="text-dark font-medium mb-4">{i18n("titleMobile")}</h2>
       <div className="border border-gray-200 rounded-lg p-3 flex items-center">
         <div className="w-8 h-8 bg-yellow-400 rounded-md flex items-center justify-center mr-3">
           <span className="text-white font-bold">₸</span>
         </div>
-        <span>T-Bank (SBP)</span>
+        <span>{i18n("defaultMethod")}</span>
       </div>
     </div>
   );
@@ -30,7 +35,7 @@ export function PaymentMethodSelector({
   const desktopSelector = (
     <div className={enhanced ? "" : "hidden"}>
       <h2 className="text-lg font-medium text-gray-800 mb-4">
-        3. Выберите способ оплаты
+        {i18n("titleDesktop")}
       </h2>
       <div className="space-y-3">
         {paymentMethods.map((method) => (
@@ -58,7 +63,7 @@ export function PaymentMethodSelector({
               <span className="font-medium text-gray-800">{method.name}</span>
               {method.id === "tbank" && (
                 <p className="text-xs text-gray-500 mt-1">
-                  Быстрый и безопасный способ оплаты
+                  {i18n("tbankDescription")}
                 </p>
               )}
             </div>

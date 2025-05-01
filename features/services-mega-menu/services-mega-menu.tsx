@@ -3,8 +3,11 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export function GamesMegaMenu() {
+  const t = useTranslations();
+
   const featuredGames = [
     {
       id: 1,
@@ -37,24 +40,24 @@ export function GamesMegaMenu() {
   ];
 
   const categories = [
-    { name: "Все игры", link: "/games" },
-    { name: "Мобильные игры", link: "/games/mobile" },
-    { name: "PC игры", link: "/games/pc" },
-    { name: "Консольные игры", link: "/games/console" },
-    { name: "Новинки", link: "/games/new" },
-    { name: "Популярные", link: "/games/popular" },
+    { name: t("games_mega_menu.all_games"), link: "/games" },
+    { name: t("games_mega_menu.mobile_games"), link: "/games/mobile" },
+    { name: t("games_mega_menu.pc_games"), link: "/games/pc" },
+    { name: t("games_mega_menu.console_games"), link: "/games/console" },
+    { name: t("games_mega_menu.new_games"), link: "/games/new" },
+    { name: t("games_mega_menu.popular_games"), link: "/games/popular" },
   ];
 
   const helpLinks = [
-    { name: "Помощь с выбором", link: "/help/choose-game" },
-    { name: "Как пополнить счет", link: "/help/top-up" },
-    { name: "Сравнить цены", link: "/help/compare-prices" },
-    { name: "Акции и скидки", link: "/promotions" },
-    { name: "Купоны", link: "/coupons" },
-    { name: "Часто задаваемые вопросы", link: "/faq" },
+    { name: t("games_mega_menu.help_choose"), link: "/help/choose-game" },
+    { name: t("games_mega_menu.how_to_topup"), link: "/help/top-up" },
+    { name: t("games_mega_menu.compare_prices"), link: "/help/compare-prices" },
+    { name: t("games_mega_menu.promotions"), link: "/promotions" },
+    { name: t("games_mega_menu.coupons"), link: "/coupons" },
+    { name: t("games_mega_menu.faq"), link: "/faq" },
   ];
 
-  // Animation variants
+  // Animation variants (same as before)
   const containerVariants = {
     hidden: {
       opacity: 0,
@@ -166,12 +169,6 @@ export function GamesMegaMenu() {
       initial="hidden"
       animate="visible"
       exit="exit"
-      onMouseEnter={() => {
-        // This will be handled by the parent container
-      }}
-      onMouseLeave={() => {
-        // This will be handled by the parent container
-      }}
     >
       <div className="max-w-7xl mx-auto px-8 py-6">
         <div className="flex">
@@ -215,7 +212,7 @@ export function GamesMegaMenu() {
                       href={game.learnLink}
                       className="text-blue hover:underline"
                     >
-                      Подробнее
+                      {t("games_mega_menu.learn_more")}
                     </Link>
                   </motion.div>
                   <motion.div variants={linkVariants}>
@@ -223,7 +220,7 @@ export function GamesMegaMenu() {
                       href={game.orderLink}
                       className="text-blue hover:underline"
                     >
-                      Заказать
+                      {t("games_mega_menu.order_now")}
                     </Link>
                   </motion.div>
                 </div>

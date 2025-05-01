@@ -1,0 +1,30 @@
+{
+  "ServicesMegaMenu": {
+    "featured": {
+      "popularBadge": "Popular",
+      "learnMore": "Learn more",
+      "order": "Order"
+    },
+    "categories": {
+      "all": "All services",
+      "streaming": "Streaming platforms",
+      "social": "Social networks",
+      "entertainment": "Entertainment",
+      "new": "New arrivals",
+      "popular": "Popular"
+    },
+    "help": {
+      "title": "Help",
+      "topUp": "How to top up balance",
+      "compare": "Compare prices",
+      "promotions": "Promotions & discounts",
+      "coupons": "Coupons",
+      "faq": "FAQ"
+    },
+    "services": {
+      "bigo": "BIGO LIVE",
+      "tiktok": "TikTok Coins",
+      "likee": "Likee Diamonds"
+    }
+  }
+}

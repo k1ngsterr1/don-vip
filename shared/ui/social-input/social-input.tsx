@@ -2,13 +2,16 @@
 
 import google from "@/assets/google.webp";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 export function SocialAuth() {
+  const t = useTranslations();
+
   return (
     <div className="w-full mt-[24px] md:mt-8">
       <div className="flex w-full justify-center items-center my-4">
         <p className="mx-4 text-[13px] md:text-sm text-gray-400 text-center">
-          Войти с помощью
+          {t("social_auth.login_with")}
         </p>
       </div>
       <div className="flex justify-center space-x-4">

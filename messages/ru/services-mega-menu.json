@@ -1,0 +1,19 @@
+{
+  "games_mega_menu": {
+    "featured_games": "Рекомендуемые игры",
+    "all_games": "Все игры",
+    "mobile_games": "Мобильные игры",
+    "pc_games": "PC игры",
+    "console_games": "Консольные игры",
+    "new_games": "Новинки",
+    "popular_games": "Популярные",
+    "help_choose": "Помощь с выбором",
+    "how_to_topup": "Как пополнить счет",
+    "compare_prices": "Сравнить цены",
+    "promotions": "Акции и скидки",
+    "coupons": "Купоны",
+    "faq": "Часто задаваемые вопросы",
+    "learn_more": "Подробнее",
+    "order_now": "Заказать"
+  }
+}

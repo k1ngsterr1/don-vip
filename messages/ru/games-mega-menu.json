@@ -1,0 +1,30 @@
+{
+  "ServicesMegaMenu": {
+    "featured": {
+      "popularBadge": "Популярно",
+      "learnMore": "Подробнее",
+      "order": "Заказать"
+    },
+    "categories": {
+      "all": "Все сервисы",
+      "streaming": "Стриминговые платформы",
+      "social": "Социальные сети",
+      "entertainment": "Развлечения",
+      "new": "Новинки",
+      "popular": "Популярные"
+    },
+    "help": {
+      "title": "Помощь",
+      "topUp": "Как пополнить баланс",
+      "compare": "Сравнить цены",
+      "promotions": "Акции и скидки",
+      "coupons": "Купоны",
+      "faq": "Часто задаваемые вопросы"
+    },
+    "services": {
+      "bigo": "BIGO LIVE",
+      "tiktok": "TikTok Coins",
+      "likee": "Likee Diamonds"
+    }
+  }
+}

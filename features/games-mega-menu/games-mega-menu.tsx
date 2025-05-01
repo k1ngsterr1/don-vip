@@ -3,60 +3,68 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
+
+interface ServiceItem {
+  id: string;
+  nameKey: string;
+  image: string;
+  learnLink: string;
+  orderLink: string;
+}
+
+interface NavLink {
+  id: string;
+  link: string;
+}
 
 export function ServicesMegaMenu() {
-  const featuredServices = [
+  const t = useTranslations("ServicesMegaMenu");
+
+  const featuredServices: ServiceItem[] = [
     {
-      id: 1,
-      name: "BIGO LIVE",
+      id: "bigo",
+      nameKey: "services.bigo",
       image: "/feature-card.webp",
       learnLink: "/services/bigo-live",
       orderLink: "/order/bigo-live",
     },
     {
-      id: 2,
-      name: "TikTok Coins",
+      id: "tiktok",
+      nameKey: "services.tiktok",
       image: "/feature-card.webp",
       learnLink: "/services/tiktok",
       orderLink: "/order/tiktok",
     },
     {
-      id: 3,
-      name: "Likee Diamonds",
+      id: "likee",
+      nameKey: "services.likee",
       image: "/feature-card.webp",
       learnLink: "/services/likee",
       orderLink: "/order/likee",
     },
   ];
 
-  const categories = [
-    { name: "Все сервисы", link: "/services" },
-    { name: "Стриминговые платформы", link: "/services/streaming" },
-    { name: "Социальные сети", link: "/services/social" },
-    { name: "Развлечения", link: "/services/entertainment" },
-    { name: "Новинки", link: "/services/new" },
-    { name: "Популярные", link: "/services/popular" },
+  const categories: NavLink[] = [
+    { id: "all", link: "/services" },
+    { id: "streaming", link: "/services/streaming" },
+    { id: "social", link: "/services/social" },
+    { id: "entertainment", link: "/services/entertainment" },
+    { id: "new", link: "/services/new" },
+    { id: "popular", link: "/services/popular" },
   ];
 
-  const helpLinks = [
-    { name: "Как пополнить баланс", link: "/help/top-up-service" },
-    { name: "Сравнить цены", link: "/help/compare-service-prices" },
-    { name: "Акции и скидки", link: "/promotions" },
-    { name: "Купоны", link: "/coupons" },
-    { name: "Часто задаваемые вопросы", link: "/faq" },
+  const helpLinks: NavLink[] = [
+    { id: "topUp", link: "/help/top-up-service" },
+    { id: "compare", link: "/help/compare-service-prices" },
+    { id: "promotions", link: "/promotions" },
+    { id: "coupons", link: "/coupons" },
+    { id: "faq", link: "/faq" },
   ];
 
   // Animation variants
   const containerVariants = {
-    hidden: {
-      opacity: 0,
-      y: -20,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 24,
-      },
-    },
+    hidden: { opacity: 0, y: -20 },
     visible: {
       opacity: 1,
       y: 0,
@@ -75,8 +83,6 @@ export function ServicesMegaMenu() {
         type: "spring",
         stiffness: 500,
         damping: 30,
-        staggerChildren: 0.05,
-        staggerDirection: -1,
       },
     },
   };
@@ -92,15 +98,6 @@ export function ServicesMegaMenu() {
         damping: 24,
       },
     },
-    exit: {
-      opacity: 0,
-      y: 10,
-      transition: {
-        type: "spring",
-        stiffness: 500,
-        damping: 30,
-      },
-    },
   };
 
   const linkVariants = {
@@ -108,15 +105,6 @@ export function ServicesMegaMenu() {
     visible: {
       opacity: 1,
       x: 0,
-      transition: {
-        type: "spring",
-        stiffness: 500,
-        damping: 30,
-      },
-    },
-    exit: {
-      opacity: 0,
-      x: -5,
       transition: {
         type: "spring",
         stiffness: 500,
@@ -151,7 +139,6 @@ export function ServicesMegaMenu() {
     },
   };
 
-  // Special animation for the highlight effect
   const highlightVariants = {
     hidden: { opacity: 0, scale: 0.8 },
     visible: {
@@ -164,13 +151,6 @@ export function ServicesMegaMenu() {
         delay: 0.3,
       },
     },
-    exit: {
-      opacity: 0,
-      scale: 0.8,
-      transition: {
-        duration: 0.2,
-      },
-    },
   };
 
   return (
@@ -180,16 +160,10 @@ export function ServicesMegaMenu() {
       initial="hidden"
       animate="visible"
       exit="exit"
-      onMouseEnter={() => {
-        // This will be handled by the parent container
-      }}
-      onMouseLeave={() => {
-        // This will be handled by the parent container
-      }}
     >
       <div className="max-w-7xl mx-auto px-8 py-6">
         <div className="flex">
-          {/* Featured Services with Images */}
+          {/* Featured Services */}
           <div className="flex-1 grid grid-cols-3 gap-6">
             {featuredServices.map((service, index) => (
               <motion.div
@@ -200,13 +174,12 @@ export function ServicesMegaMenu() {
                 whileHover="hover"
                 initial="rest"
               >
-                {/* Special highlight for first item */}
                 {index === 0 && (
                   <motion.div
                     className="absolute -top-2 -right-2 bg-blue text-white text-xs px-2 py-1 rounded-full z-10"
                     variants={highlightVariants}
                   >
-                    Популярно
+                    {t("featured.popularBadge")}
                   </motion.div>
                 )}
 
@@ -214,31 +187,27 @@ export function ServicesMegaMenu() {
                   className="relative w-full aspect-square rounded-lg overflow-hidden mb-2 shadow-sm"
                   variants={cardVariants}
                 >
-                  <motion.div
-                    className="w-full h-full"
-                    variants={imageHoverVariants}
-                  >
+                  <motion.div variants={imageHoverVariants}>
                     <Image
-                      src={service.image || "/placeholder.svg"}
-                      alt={service.name}
+                      src={service.image}
+                      alt={t(service.nameKey)}
                       fill
                       className="object-cover"
                     />
                   </motion.div>
                 </motion.div>
-                <motion.h3
-                  className="font-medium text-sm mb-1"
-                  variants={itemVariants}
-                >
-                  {service.name}
+
+                <motion.h3 className="font-medium text-sm mb-1">
+                  {t(service.nameKey)}
                 </motion.h3>
+
                 <div className="flex justify-center space-x-4 text-xs">
                   <motion.div variants={linkVariants}>
                     <Link
                       href={service.learnLink}
                       className="text-blue hover:underline"
                     >
-                      Подробнее
+                      {t("featured.learnMore")}
                     </Link>
                   </motion.div>
                   <motion.div variants={linkVariants}>
@@ -246,7 +215,7 @@ export function ServicesMegaMenu() {
                       href={service.orderLink}
                       className="text-blue hover:underline"
                     >
-                      Заказать
+                      {t("featured.order")}
                     </Link>
                   </motion.div>
                 </div>
@@ -254,35 +223,31 @@ export function ServicesMegaMenu() {
             ))}
           </div>
 
-          {/* Right sidebar with links */}
+          {/* Help Links */}
           <motion.div
             className="w-64 pl-8 border-l border-gray-100"
             variants={itemVariants}
           >
-            <div>
-              <motion.h3
-                className="font-medium text-sm uppercase text-gray-500 mb-2"
-                variants={itemVariants}
-              >
-                Помощь
-              </motion.h3>
-              <ul className="space-y-2">
-                {helpLinks.map((link, index) => (
-                  <motion.li
-                    key={index}
-                    variants={linkVariants}
-                    custom={index + categories.length}
+            <motion.h3 className="font-medium text-sm uppercase text-gray-500 mb-2">
+              {t("help.title")}
+            </motion.h3>
+
+            <ul className="space-y-2">
+              {helpLinks.map((link, index) => (
+                <motion.li
+                  key={link.id}
+                  variants={linkVariants}
+                  custom={index + categories.length}
+                >
+                  <Link
+                    href={link.link}
+                    className="text-dark hover:text-blue-600 transition-colors"
                   >
-                    <Link
-                      href={link.link}
-                      className="text-dark hover:text-blue-600 transition-colors"
-                    >
-                      {link.name}
-                    </Link>
-                  </motion.li>
-                ))}
-              </ul>
-            </div>
+                    {t(`help.${link.id}`)}
+                  </Link>
+                </motion.li>
+              ))}
+            </ul>
           </motion.div>
         </div>
       </div>

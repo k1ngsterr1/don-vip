@@ -1,0 +1,13 @@
+{
+  "PaymentMethodSelector": {
+    "titleMobile": "3 ВЫБЕРИТЕ СПОСОБ ОПЛАТЫ",
+    "titleDesktop": "3. Выберите способ оплаты",
+    "defaultMethod": "T-Bank (SBP)",
+    "tbankDescription": "Быстрый и безопасный способ оплаты",
+    "methods": {
+      "tbank": "T-Bank (SBP)",
+      "card": "Банковская карта",
+      "qiwi": "QIWI"
+    }
+  }
+}

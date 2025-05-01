@@ -1,0 +1,13 @@
+{
+  "PaymentMethodSelector": {
+    "titleMobile": "3 SELECT PAYMENT METHOD",
+    "titleDesktop": "3. Select payment method",
+    "defaultMethod": "T-Bank (SBP)",
+    "tbankDescription": "Fast and secure payment method",
+    "methods": {
+      "tbank": "T-Bank (SBP)",
+      "card": "Bank card",
+      "qiwi": "QIWI"
+    }
+  }
+}

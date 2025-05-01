@@ -1,0 +1,21 @@
+{
+  "Footer": {
+    "links": {
+      "terms": "TERMS OF SERVICE",
+      "privacy": "PRIVACY POLICY",
+      "offer": "PUBLIC OFFER",
+      "contact": "CONTACT US",
+      "reviews": "REVIEWS",
+      "faq": "FAQ"
+    },
+    "copyright": "© Don-Vip.com 2025. All rights reserved.",
+    "copyrightLinks": {
+      "terms": "Terms of Use",
+      "privacy": "Privacy"
+    },
+    "altText": {
+      "logo": "DON-VIP logo",
+      "tbank": "T-Bank logo"
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "faq": {
+    "paymentError": {
+      "question": "I'm getting a payment error. What should I do?",
+      "answer": "If you encounter a payment error, please check the following:\n\n1. Do you have sufficient funds on your card\n2. Are the card details entered correctly\n3. Is your card blocked for online payments\n\nIf the problem persists, please contact us:\n\nTelegram: @Davo_dior55\nWhatsApp: +7 (924) 004 0070\nE-mail: hoyakap@gmail.com"
+    },
+    "wrongUid": {
+      "question": "What should I do if I entered the wrong UID?",
+      "answer": "If you noticed the error before payment - just go back and enter the correct ID.\n\nIf you've already paid - contact support immediately:\n\nTelegram: @Davo_dior55\nWhatsApp: +7 (924) 004 0070\nE-mail: hoyakap@gmail.com\n\nThe faster you write, the higher the chance to correct the order before shipping."
+    },
+    "cancelOrder": {
+      "question": "Can I cancel or return my order?",
+      "answer": "Refund or order cancellation is only possible before its processing.\n\nIf your order has not yet been processed, contact us as soon as possible:\n\nTelegram: @Davo_dior55\nWhatsApp: +7 (924) 004 0070\nE-mail: hoyakap@gmail.com\n\nPlease note that after order processing has begun, cancellation is not possible according to our policy."
+    },
+    "orderProcessing": {
+      "question": "What to do if the order is 'in processing'?",
+      "answer": "If your order is in \"Processing\" status, it means we've already started working on it.\n\nUsually processing takes from 5 to 30 minutes during working hours (from 09:00 to 21:00 MSK).\n\nIf more time has passed and the status hasn't changed, contact us:\n\nTelegram: @Davo_dior55\nWhatsApp: +7 (924) 004 0070\nE-mail: hoyakap@gmail.com"
+    },
+    "paymentNoDiamonds": {
+      "question": "What to do if the payment went through but diamonds didn't arrive?",
+      "answer": "If your payment was successful but diamonds didn't appear in your account, don't worry. Sometimes it takes some time to process the payment and credit the diamonds.\n\nWe recommend:\n\n1. Wait 10-15 minutes and restart the app\n2. Check if the entered ID is correct\n3. Check the order status in your account\n\nIf diamonds still haven't arrived after this, contact us:\n\nTelegram: @Davo_dior55\nWhatsApp: +7 (924) 004 0070\nE-mail: hoyakap@gmail.com"
+    },
+    "whatAreDiamonds": {
+      "question": "What are Bigo Live diamonds and what are they for?",
+      "answer": "Bigo Live diamonds are the internal currency of the Bigo Live app, which is used for:\n\n• Sending virtual gifts to streamers\n• Increasing your account level\n• Participating in special events\n• Purchasing premium features and content\n\nDiamonds allow you to support your favorite streamers and get additional features in the app."
+    },
+    "howToTopUp": {
+      "question": "How to top up Bigo Live balance on your website?",
+      "answer": "Topping up your Bigo Live balance on our website is very simple:\n\n1. Find your Bigo Live ID (instructions in a separate question)\n2. Select the desired amount of diamonds on our website\n3. Enter your Bigo Live ID in the appropriate field\n4. Choose a convenient payment method\n5. Complete the payment\n\nAfter successful payment, diamonds will be credited to your account within minutes."
+    },
+    "findBigoId": {
+      "question": "Where to find my Bigo Live ID?",
+      "answer": "To find your Bigo Live ID, follow these steps:\n\n1. Open the Bigo Live app\n2. Go to your profile (tap the avatar in the bottom right corner)\n3. Your ID will be displayed under your name in the format \"ID: XXXXXXXX\"\n\nYou can also find your ID:\n\n• In profile settings\n• When tapping the \"Share profile\" button\n\nImportant: The ID consists only of numbers. Don't confuse it with your username."
+    },
+    "deliveryTime": {
+      "question": "How fast are diamonds delivered?",
+      "answer": "Diamond delivery happens automatically and usually takes:\n\n• 1 to 5 minutes during working hours (09:00-21:00 MSK)\n• Up to 30 minutes outside working hours\n\nIn rare cases, during high server load or maintenance, delivery may take up to 1 hour.\n\nIf diamonds haven't arrived within the specified time, please contact our support team."
+    },
+    "paymentMethods": {
+      "question": "What payment methods are available?",
+      "answer": "Our website offers the following payment methods:\n\n• Bank cards (Visa, MasterCard, Mir)\n• E-wallets (YooMoney, QIWI)\n• Mobile payments (from phone balance)\n• Cryptocurrencies (Bitcoin, Ethereum, USDT)\n• Fast payment systems (FPS)\n\nAll payments go through secure communication channels and are processed instantly."
+    },
+    "isItSafe": {
+      "question": "Is it safe to order from you?",
+      "answer": "Yes, ordering from us is completely safe:\n\n• We've been operating officially since 2020\n• We use secure SSL connection for all transactions\n• We don't store your bank card details\n• We have thousands of positive customer reviews\n• We provide receipts and confirmations for every purchase\n\nYou can check our customer reviews in the \"Reviews\" section or on independent platforms."
+    },
+    "howProductsDelivered": {
+      "question": "How are products purchased from you delivered?",
+      "answer": "All our products (diamonds, in-game currency and other virtual goods) are delivered digitally:\n\n• Bigo Live diamonds are credited directly to your account by ID\n• Activation codes and keys are sent to your specified email\n• In-game items are transferred through the respective game's gifting system\n\nPhysical delivery is not required as all our products are virtual."
+    },
+    "hasBot": {
+      "question": "Do you have a helper bot?",
+      "answer": "Yes, we have an automatic helper bot on Telegram that can:\n\n• Accept and process orders\n• Answer frequently asked questions\n• Check your order status\n• Provide information about our services\n\nYou can find our bot at: @DonVipBot on Telegram.\n\nFor complex questions, live support is always available."
+    },
+    "orderDeliveryTime": {
+      "question": "How long does order delivery take?",
+      "answer": "Order delivery time depends on the product type:\n\n• Bigo Live diamonds: 1-30 minutes\n• In-game currency: 5-60 minutes\n• Activation keys: instantly after payment\n\nDuring working hours (09:00-21:00 MSK) delivery is faster.\n\nIf your order hasn't been delivered within the specified time, please contact our support team."
+    },
+    "contactSupport": {
+      "question": "How to contact support?",
+      "answer": "You can contact our support team in any convenient way:\n\nTelegram: @Davo_dior55\nWhatsApp: +7 (924) 004 0070\nE-mail: hoyakap@gmail.com\n\nSupport working hours: daily from 09:00 to 21:00 Moscow time.\n\nOutside working hours you can leave a message and we'll respond at the beginning of the next working day."
+    }
+  }
+}

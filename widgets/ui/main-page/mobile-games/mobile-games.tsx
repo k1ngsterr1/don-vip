@@ -1,8 +1,13 @@
+"use client";
+
 import GameCard from "@/entities/games/ui/game-card/game-card";
 import JoystickIcon from "@/shared/icons/joystick-icon";
 import SectionTitle from "@/shared/ui/section-title/section-title";
+import { useTranslations } from "next-intl";
 
 export const MobileGamesBlock = () => {
+  const t = useTranslations();
+
   const services = [
     {
       id: 1,
@@ -40,7 +45,7 @@ export const MobileGamesBlock = () => {
 
   return (
     <div className="w-full">
-      <SectionTitle icon={<JoystickIcon />} title="мобильные игры" />
+      <SectionTitle icon={<JoystickIcon />} title={t("mobile_games.title")} />
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
         {services.map((service: any) => (
           <GameCard
@@ -57,7 +62,7 @@ export const MobileGamesBlock = () => {
       {/* View all button - Mobile optimized */}
       <div className="mt-4 text-center">
         <button className="bg-gray-100 text-dark text-xs px-4 py-2 rounded-full hover:bg-gray-200 transition-colors">
-          Показать все игры
+          {t("mobile_games.view_all")}
         </button>
       </div>
     </div>

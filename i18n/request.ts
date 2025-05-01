@@ -33,6 +33,13 @@ export default getRequestConfig(async ({ requestLocale }) => {
       ...(await import(`../messages/${locale}/public-offer-content.json`)),
       ...(await import(`../messages/${locale}/public-offer-footer.json`)),
       ...(await import(`../messages/${locale}/sumbit-review.json`)),
+      ...(await import(`../messages/${locale}/currency-selector.json`)),
+      ...(await import(`../messages/${locale}/payment-method-selector.json`)),
+      ...(await import(`../messages/${locale}/footer.json`)),
+      ...(await import(`../messages/${locale}/games-mega-menu.json`)),
+      ...(await import(`../messages/${locale}/services-mega-menu.json`)),
+      ...(await import(`../messages/${locale}/social-input.json`)),
+      ...(await import(`../messages/${locale}/mobile-games.json`)),
     },
   };
 });

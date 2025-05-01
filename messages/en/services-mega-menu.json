@@ -1,0 +1,19 @@
+{
+  "games_mega_menu": {
+    "featured_games": "Featured Games",
+    "all_games": "All Games",
+    "mobile_games": "Mobile Games",
+    "pc_games": "PC Games",
+    "console_games": "Console Games",
+    "new_games": "New Releases",
+    "popular_games": "Popular",
+    "help_choose": "Help Choosing",
+    "how_to_topup": "How to Top Up",
+    "compare_prices": "Compare Prices",
+    "promotions": "Promotions",
+    "coupons": "Coupons",
+    "faq": "FAQ",
+    "learn_more": "Learn More",
+    "order_now": "Order Now"
+  }
+}

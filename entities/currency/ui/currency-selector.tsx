@@ -4,6 +4,7 @@ import type { CurrencyOption } from "@/entities/currency/model/types";
 import { cn } from "@/shared/utils/cn";
 import { Check } from "lucide-react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 interface CurrencySelectorProps {
   options: CurrencyOption[];
@@ -22,12 +23,12 @@ export function CurrencySelector({
   onSelect,
   enhanced = false,
 }: CurrencySelectorProps) {
-  // Mobile version (unchanged)
+  const i18n = useTranslations("CurrencySelector");
+
+  // Mobile version
   const mobileSelector = (
     <div className={enhanced ? "hidden" : "px-4 mb-6"}>
-      <h2 className="text-dark font-medium mb-4">
-        1 ВЫБЕРИТЕ СУММУ ПОПОЛНЕНИЯ
-      </h2>
+      <h2 className="text-dark font-medium mb-4">{i18n("title")}</h2>
       <div className="grid grid-cols-2 gap-3">
         {options.map((item) => (
           <button
@@ -38,7 +39,6 @@ export function CurrencySelector({
             )}
             onClick={() => onSelect(item.id)}
           >
-            {/* Green triangle with checkmark only on selected item */}
             {selectedId === item.id && (
               <div className="absolute top-0 right-0 w-[50px] h-[50px] overflow-hidden">
                 <div className="absolute top-0 right-0 w-0 h-0 border-t-[50px] border-t-green-500 border-l-[50px] border-l-transparent"></div>
@@ -52,13 +52,16 @@ export function CurrencySelector({
             <span className="text-dark font-bold text-lg">{item.price}</span>
             <div className="flex items-center justify-between w-full mt-1">
               <span className="text-sm text-gray-600">
-                {item.amount} {currencyName}
+                {i18n("amountWithCurrency", {
+                  amount: item.amount,
+                  currencyName,
+                })}
               </span>
               <Image
                 src={currencyImage || "/placeholder.svg"}
                 width={30}
                 height={30}
-                alt={currencyName}
+                alt={i18n("currencyIconAlt", { currencyName })}
                 className="object-contain"
               />
             </div>
@@ -94,11 +97,14 @@ export function CurrencySelector({
                 src={currencyImage || "/placeholder.svg"}
                 width={36}
                 height={36}
-                alt={currencyName}
+                alt={i18n("currencyIconAlt", { currencyName })}
                 className="object-contain mr-2"
               />
               <span className="text-gray-700 font-medium">
-                {item.amount} {currencyName}
+                {i18n("amountWithCurrency", {
+                  amount: item.amount,
+                  currencyName,
+                })}
               </span>
             </div>
 
