@@ -1,0 +1,10 @@
+{
+  "FAQCategories": {
+    "all": "Все вопросы",
+    "payment": "Оплата",
+    "delivery": "Доставка",
+    "account": "Аккаунт",
+    "products": "Товары",
+    "support": "Поддержка"
+  }
+}

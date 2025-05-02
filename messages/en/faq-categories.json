@@ -1,0 +1,10 @@
+{
+  "FAQCategories": {
+    "all": "All questions",
+    "payment": "Payment",
+    "delivery": "Delivery",
+    "account": "Account",
+    "products": "Products",
+    "support": "Support"
+  }
+}

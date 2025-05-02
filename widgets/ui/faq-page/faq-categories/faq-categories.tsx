@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 interface FAQCategoriesProps {
   activeCategory: string;
@@ -9,12 +10,15 @@ export default function FAQCategories({
   activeCategory,
   setActiveCategory,
 }: FAQCategoriesProps) {
+  const t = useTranslations("FAQCategories");
+
   const categories = [
-    { id: "all", name: "Все вопросы" },
-    { id: "payment", name: "Оплата" },
-    { id: "delivery", name: "Доставка" },
-    { id: "account", name: "Аккаунт" },
-    { id: "products", name: "Товары" },
+    { id: "all", name: t("all") },
+    { id: "payment", name: t("payment") },
+    { id: "delivery", name: t("delivery") },
+    { id: "account", name: t("account") },
+    { id: "products", name: t("products") },
+    { id: "support", name: t("support") },
   ];
 
   return (

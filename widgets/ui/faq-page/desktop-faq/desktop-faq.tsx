@@ -1,6 +1,6 @@
 "use client";
 import { useTranslations } from "next-intl";
-import { faqItems } from "@/shared/data/faq-data";
+import { useFAQData } from "@/shared/data/faq-data";
 import FAQItem from "@/shared/ui/faq-item/faq-item";
 import { ArrowLeft, HelpCircle, Search } from "lucide-react";
 import Link from "next/link";
@@ -13,12 +13,15 @@ export default function DesktopFAQ() {
   const [openItem, setOpenItem] = useState<number | null>(1);
   const [activeCategory, setActiveCategory] = useState("all");
 
+  // Use the translated FAQ data
+  const faqItems = useFAQData();
+
   const filteredFAQs = faqItems.filter((item) => {
     const matchesSearch = item.question
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
     const matchesCategory =
-      activeCategory === "all" || (item as any).category === activeCategory;
+      activeCategory === "all" || item.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
 

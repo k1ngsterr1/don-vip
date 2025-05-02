@@ -1,7 +1,7 @@
 "use client";
 import { useTranslations } from "next-intl";
 import SearchBar from "@/entities/search-bar/search-bar";
-import { faqItems } from "@/shared/data/faq-data";
+import { useFAQData } from "@/shared/data/faq-data";
 import FAQItem from "@/shared/ui/faq-item/faq-item";
 import Link from "next/link";
 import { useState } from "react";
@@ -10,6 +10,9 @@ export default function MobileFAQ() {
   const i18n = useTranslations("MobileFAQ");
   const [searchQuery, setSearchQuery] = useState("");
   const [openItem, setOpenItem] = useState<number | null>(1);
+
+  // Use the translated FAQ data
+  const faqItems = useFAQData();
 
   const filteredFAQs = faqItems.filter((item) =>
     item.question.toLowerCase().includes(searchQuery.toLowerCase())
@@ -39,7 +42,7 @@ export default function MobileFAQ() {
           onSearch={setSearchQuery}
         />
         <div className="space-y-3 mt-[24px]">
-          {filteredFAQs.map((item: any, index: number) => (
+          {filteredFAQs.map((item, index) => (
             <FAQItem
               key={index}
               question={item.question}

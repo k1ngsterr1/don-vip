@@ -1,7 +1,8 @@
 "use client";
 
+import React from "react";
+
 import { Plus, X } from "lucide-react";
-import type React from "react";
 
 interface FAQItemProps {
   question: string;
@@ -20,7 +21,19 @@ export default function FAQItem({
   onToggle,
   enhanced = false,
 }: FAQItemProps) {
-  // Mobile version (unchanged)
+  // Format the answer text with proper line breaks
+  const formatAnswer = (text: React.ReactNode): React.ReactNode => {
+    if (typeof text !== "string") return text;
+
+    return text.split("\n").map((line, i) => (
+      <React.Fragment key={i}>
+        {line}
+        {i < text.split("\n").length - 1 && <br />}
+      </React.Fragment>
+    ));
+  };
+
+  // Mobile version
   const mobileItem = (
     <div className={`border rounded-lg overflow-hidden border-blue`}>
       <button
@@ -37,7 +50,9 @@ export default function FAQItem({
       </button>
 
       {isOpen && (
-        <div className="px-4 py-3 text-gray-700 text-sm">{answer}</div>
+        <div className="px-4 py-3 text-gray-700 text-sm">
+          {formatAnswer(answer)}
+        </div>
       )}
     </div>
   );
@@ -62,7 +77,9 @@ export default function FAQItem({
 
       {isOpen && (
         <div className="px-6 py-4 border-t border-gray-100 bg-gray-50">
-          <div className="prose max-w-none text-gray-700">{answer}</div>
+          <div className="prose max-w-none text-gray-700">
+            {formatAnswer(answer)}
+          </div>
         </div>
       )}
     </div>
