@@ -1,0 +1,11 @@
+{
+  "couponsEmpty": {
+    "empty": {
+      "title": "You don't have any coupons yet",
+      "shortDescription": "Get discount coupons for purchases",
+      "fullDescription": "Get discount coupons for purchases and use them to save on future orders",
+      "enterPromoCode": "Enter promo code",
+      "imageAlt": "No coupons"
+    }
+  }
+}

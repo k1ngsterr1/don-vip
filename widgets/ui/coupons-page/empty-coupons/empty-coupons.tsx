@@ -3,34 +3,35 @@
 import diamond from "@/assets/sad-icon.webp";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 interface EmptyCouponsWidgetProps {
   onShowInput: () => void;
 }
 
 export function EmptyCouponsWidget({ onShowInput }: EmptyCouponsWidgetProps) {
-  // Mobile version (unchanged)
+  const t = useTranslations("couponsEmpty");
+
+  // Mobile version
   const mobileVersion = (
     <div className="bg-gray-50 p-6 rounded-lg flex flex-col items-center text-center">
       <div className="mb-4">
         <Image
           src={diamond || "/placeholder.svg"}
-          alt="No coupons"
+          alt={t("empty.imageAlt")}
           width={80}
           height={80}
         />
       </div>
-      <h3 className="font-medium text-lg mb-2">У вас еще нет купонов</h3>
+      <h3 className="font-medium text-lg mb-2">{t("empty.title")}</h3>
       <p className="text-sm text-gray-600 mb-4">
-        Получайте купоны со скидками
-        <br />
-        за покупки
+        {t("empty.shortDescription")}
       </p>
       <button
         onClick={onShowInput}
         className="px-6 py-3 bg-blue text-white rounded-full font-medium mt-2 hover:bg-blue-600 transition-colors"
       >
-        Ввести промокод
+        {t("empty.enterPromoCode")}
       </button>
     </div>
   );
@@ -48,7 +49,7 @@ export function EmptyCouponsWidget({ onShowInput }: EmptyCouponsWidgetProps) {
         >
           <Image
             src={diamond || "/placeholder.svg"}
-            alt="No coupons"
+            alt={t("empty.imageAlt")}
             width={120}
             height={120}
             className="drop-shadow-md"
@@ -56,11 +57,10 @@ export function EmptyCouponsWidget({ onShowInput }: EmptyCouponsWidgetProps) {
         </motion.div>
       </div>
       <h3 className="font-medium text-2xl mb-4 font-unbounded text-gray-800">
-        У вас еще нет купонов
+        {t("empty.title")}
       </h3>
       <p className="text-lg text-gray-600 mb-8 max-w-md">
-        Получайте купоны со скидками за покупки и используйте их для экономии на
-        будущих заказах
+        {t("empty.fullDescription")}
       </p>
       <motion.button
         whileHover={{ scale: 1.05 }}
@@ -68,7 +68,7 @@ export function EmptyCouponsWidget({ onShowInput }: EmptyCouponsWidgetProps) {
         onClick={onShowInput}
         className="px-8 py-4 bg-blue text-white rounded-full font-medium text-lg shadow-md hover:shadow-lg hover:bg-blue-600 transition-all duration-300 flex items-center"
       >
-        <span className="mr-2">Ввести промокод</span>
+        <span className="mr-2">{t("empty.enterPromoCode")}</span>
         <svg
           width="16"
           height="16"

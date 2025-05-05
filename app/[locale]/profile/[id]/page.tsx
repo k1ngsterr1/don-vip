@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/entities/auth/hooks/use-auth";
+import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useProfile } from "@/entities/user/hooks/use-profile";
 import { useUpdateUser } from "@/entities/user/hooks/use-update-user";
 import { ProfileHeaderEditable } from "@/entities/user/ui/profile-header-editable/profile-header-editable";
@@ -11,7 +11,7 @@ import { useState } from "react";
 
 export default function ProfilePage() {
   const { id } = useParams();
-  const { isAuthenticated, user: currentUser } = useAuth();
+  const { isAuthenticated, user: currentUser } = useAuthStore();
   const { data: user, isLoading, error } = useProfile(id as string);
   const updateUser = useUpdateUser();
   const [avatarFile, setAvatarFile] = useState<File | null>(null);

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface CouponInputWidgetProps {
   onApply: (code: string) => void;
@@ -16,6 +17,7 @@ export function CouponInputWidget({
   isLoading = false,
   error = null,
 }: CouponInputWidgetProps) {
+  const t = useTranslations("couponsInput.input");
   const [inputCode, setInputCode] = useState("");
   const [isFocused, setIsFocused] = useState(false);
 
@@ -34,7 +36,7 @@ export function CouponInputWidget({
           type="text"
           value={inputCode}
           onChange={(e) => setInputCode(e.target.value)}
-          placeholder="Введите промокод"
+          placeholder={t("placeholder")}
           className="flex-1 p-3 bg-white rounded-lg border border-gray-200 mr-2 w-full"
           disabled={isLoading}
         />
@@ -51,7 +53,7 @@ export function CouponInputWidget({
           {isLoading ? (
             <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
           ) : (
-            "Применить"
+            t("applyButton")
           )}
         </button>
       </form>
@@ -63,11 +65,9 @@ export function CouponInputWidget({
     <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-10 shadow-sm border border-gray-200">
       <div className="mb-8">
         <h3 className="text-2xl font-medium text-gray-800 mb-3 font-unbounded">
-          Введите ваш промокод
+          {t("title")}
         </h3>
-        <p className="text-gray-600">
-          Введите промокод, чтобы получить скидку на ваш следующий заказ
-        </p>
+        <p className="text-gray-600">{t("description")}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -88,7 +88,7 @@ export function CouponInputWidget({
               onChange={(e) => setInputCode(e.target.value)}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
-              placeholder="Например: SUMMER2025"
+              placeholder={t("placeholderExample")}
               className="w-full p-4 pl-12 bg-white rounded-lg border border-gray-200 text-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
               disabled={isLoading}
             />
@@ -115,20 +115,20 @@ export function CouponInputWidget({
           {isLoading ? (
             <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
           ) : (
-            "Применить промокод"
+            t("applyButtonLong")
           )}
         </motion.button>
       </form>
 
       <div className="mt-6 pt-6 border-t border-gray-200">
         <h4 className="text-sm font-medium text-gray-700 mb-2">
-          Где найти промокоды?
+          {t("whereToFind.title")}
         </h4>
         <ul className="text-sm text-gray-600 space-y-1">
-          <li>• В нашем Telegram-канале</li>
-          <li>• В email-рассылке</li>
-          <li>• После совершения покупок</li>
-          <li>• В специальных акциях и предложениях</li>
+          <li>• {t("whereToFind.telegram")}</li>
+          <li>• {t("whereToFind.email")}</li>
+          <li>• {t("whereToFind.purchases")}</li>
+          <li>• {t("whereToFind.promotions")}</li>
         </ul>
       </div>
     </div>

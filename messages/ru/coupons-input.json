@@ -1,0 +1,19 @@
+{
+  "couponsInput": {
+    "input": {
+      "title": "Введите ваш промокод",
+      "description": "Введите промокод, чтобы получить скидку на ваш следующий заказ",
+      "placeholder": "Введите промокод",
+      "placeholderExample": "Например: SUMMER2025",
+      "applyButton": "Применить",
+      "applyButtonLong": "Применить промокод",
+      "whereToFind": {
+        "title": "Где найти промокоды?",
+        "telegram": "В нашем Telegram-канале",
+        "email": "В email-рассылке",
+        "purchases": "После совершения покупок",
+        "promotions": "В специальных акциях и предложениях"
+      }
+    }
+  }
+}

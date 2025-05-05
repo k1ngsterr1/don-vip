@@ -1,0 +1,19 @@
+{
+  "couponsInput": {
+    "input": {
+      "title": "Enter your promo code",
+      "description": "Enter a promo code to get a discount on your next order",
+      "placeholder": "Enter promo code",
+      "placeholderExample": "For example: SUMMER2025",
+      "applyButton": "Apply",
+      "applyButtonLong": "Apply promo code",
+      "whereToFind": {
+        "title": "Where to find promo codes?",
+        "telegram": "In our Telegram channel",
+        "email": "In email newsletters",
+        "purchases": "After making purchases",
+        "promotions": "In special promotions and offers"
+      }
+    }
+  }
+}

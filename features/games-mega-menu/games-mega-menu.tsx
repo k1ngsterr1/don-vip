@@ -55,9 +55,6 @@ export function ServicesMegaMenu() {
   ];
 
   const helpLinks: NavLink[] = [
-    { id: "topUp", link: "/help/top-up-service" },
-    { id: "compare", link: "/help/compare-service-prices" },
-    { id: "promotions", link: "/promotions" },
     { id: "coupons", link: "/coupons" },
     { id: "faq", link: "/faq" },
   ];
