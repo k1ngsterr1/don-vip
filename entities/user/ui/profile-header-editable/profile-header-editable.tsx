@@ -3,49 +3,110 @@
 import type React from "react";
 
 import type { User } from "@/entities/user/model/types";
-import { Camera, Copy, Upload } from "lucide-react";
+import { useUpdateUser } from "@/entities/user/hooks/use-update-user";
+import { Camera, Copy, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
 
 interface ProfileHeaderEditableProps {
   user: User;
-  onAvatarChange?: (avatarUrl: string) => void;
+  onAvatarChange?: (file: File) => Promise<void>;
+  readOnly?: boolean;
 }
 
 export function ProfileHeaderEditable({
   user,
   onAvatarChange,
+  readOnly = false,
 }: ProfileHeaderEditableProps) {
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(user.avatar);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fullName = `${user.firstName} ${user.lastName}`;
 
+  // Use our standardized hook if no custom handler is provided
+  const updateUser = useUpdateUser();
+
   const handleAvatarClick = () => {
+    if (readOnly || isUploading) return;
+
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (!file) return;
+
+    // Validate file type
+    const validTypes = [
+      "image/png",
+      "image/jpeg",
+      "image/webp",
+      "image/svg+xml",
+    ];
+
+    try {
+      setIsUploading(true);
+
+      // Show preview immediately for better UX
       const reader = new FileReader();
       reader.onloadend = () => {
-        const newAvatarUrl = reader.result as string;
-        setAvatarUrl(newAvatarUrl);
-
-        if (onAvatarChange) {
-          onAvatarChange(newAvatarUrl);
-        }
+        const previewUrl = reader.result as string;
+        setAvatarUrl(previewUrl);
       };
       reader.readAsDataURL(file);
+
+      // Use provided handler or default to our hook
+      if (onAvatarChange) {
+        await onAvatarChange(file);
+      } else {
+        await updateUser.mutateAsync({ avatar: file });
+      }
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+
+      // Revert to original avatar on error
+      setAvatarUrl(user.avatar);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleRemoveAvatar = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (readOnly || isUploading || !avatarUrl) return;
+
+    try {
+      setIsUploading(true);
+
+      // Preview removal immediately
+      setAvatarUrl(undefined);
+
+      // Use provided handler or default to our hook
+      if (onAvatarChange) {
+        // Pass null to indicate avatar removal
+        await onAvatarChange(null as any);
+      } else {
+        await updateUser.mutateAsync({ avatar: null });
+      }
+    } catch (error) {
+      console.error("Error removing avatar:", error);
+
+      // Revert to original avatar on error
+      setAvatarUrl(user.avatar);
+    } finally {
+      setIsUploading(false);
     }
   };
 
   return (
     <div className="flex flex-col items-center py-6 md:py-4">
       <div
-        className="relative w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden mb-3 cursor-pointer group"
+        className={`relative w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden mb-3 ${
+          readOnly ? "" : "cursor-pointer"
+        } group`}
         onClick={handleAvatarClick}
       >
         {avatarUrl ? (
@@ -57,32 +118,60 @@ export function ProfileHeaderEditable({
               height={128}
               className="object-cover w-full h-full"
             />
-            <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <Upload size={24} className="text-white" />
-            </div>
+            {!readOnly && (
+              <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                {isUploading ? (
+                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+                ) : (
+                  <Upload size={24} className="text-white" />
+                )}
+              </div>
+            )}
+
+            {/* Remove avatar button */}
+            {!readOnly && avatarUrl && (
+              <button
+                onClick={handleRemoveAvatar}
+                className="absolute top-0 right-0 bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                aria-label="Remove avatar"
+              >
+                <X size={14} />
+              </button>
+            )}
           </>
         ) : (
           <div className="w-full h-full border-2 border-blue rounded-full flex items-center justify-center bg-gray-50 md:shadow-inner">
-            <Camera
-              size={32}
-              className="text-gray-400 md:text-gray-500 md:w-10 md:h-10"
-            />
+            {isUploading ? (
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue"></div>
+            ) : (
+              <Camera
+                size={32}
+                className="text-gray-400 md:text-gray-500 md:w-10 md:h-10"
+              />
+            )}
           </div>
         )}
 
         {/* Desktop-only upload button */}
-        <div className="hidden md:flex absolute bottom-0 right-0 bg-blue text-white w-8 h-8 rounded-full items-center justify-center shadow-md cursor-pointer hover:bg-blue-600 transition-colors">
-          <Upload size={16} />
-        </div>
+        {!readOnly && (
+          <div className="hidden md:flex absolute bottom-0 right-0 bg-blue text-white w-8 h-8 rounded-full items-center justify-center shadow-md cursor-pointer hover:bg-blue-600 transition-colors">
+            {isUploading ? (
+              <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
+            ) : (
+              <Upload size={16} />
+            )}
+          </div>
+        )}
       </div>
 
       <input
         type="file"
         ref={fileInputRef}
         onChange={handleFileChange}
-        accept="image/*"
+        accept="image/png,image/jpeg,image/webp,image/svg+xml"
         className="hidden"
         aria-label="Upload avatar"
+        disabled={isUploading || readOnly}
       />
 
       <div className="text-center md:mt-2">
@@ -90,7 +179,12 @@ export function ProfileHeaderEditable({
           <span className="md:text-xs md:bg-gray-100 md:px-2 md:py-1 md:rounded-full">
             Don-Vip ID: {user.id}
           </span>
-          <button className="ml-1 text-gray-400 md:ml-2">
+          <button
+            className="ml-1 text-gray-400 md:ml-2"
+            onClick={() => {
+              navigator.clipboard.writeText(user.id.toString());
+            }}
+          >
             <Copy
               className="text-[#383838] md:hover:text-blue transition-colors"
               size={9}
@@ -104,19 +198,21 @@ export function ProfileHeaderEditable({
       <div className="hidden md:block mt-6 w-full">
         <div className="bg-gray-50 rounded-lg p-4 text-center">
           <p className="text-sm text-gray-600">Последнее обновление профиля:</p>
-          <p className="text-sm font-medium">15 апреля 2025</p>
+          <p className="text-sm font-medium">
+            {new Date().toLocaleDateString()}
+          </p>
         </div>
       </div>
-
-      {/* Desktop-only edit button */}
-      <div className="hidden md:block mt-6 w-full">
-        <a
-          href="/profile/1/edit"
-          className="block w-full py-3 bg-blue text-white text-center rounded-lg hover:bg-blue-600 transition-colors"
-        >
-          Редактировать профиль
-        </a>
-      </div>
+      {!readOnly && (
+        <div className="hidden md:block mt-6 w-full">
+          <a
+            href={`/profile/${user.id}/edit/`}
+            className="block w-full py-3 bg-blue text-white text-center rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            Редактировать профиль
+          </a>
+        </div>
+      )}
     </div>
   );
 }

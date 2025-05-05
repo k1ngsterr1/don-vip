@@ -9,11 +9,11 @@ import { ServicesMegaMenu } from "@/features/games-mega-menu/games-mega-menu";
 import { GamesMegaMenu } from "@/features/services-mega-menu/services-mega-menu";
 import { useTranslations } from "next-intl";
 import { Logo } from "./logo";
-import { useAuth } from "@/entities/auth/hooks/queries/use-auth";
 import { DesktopNav } from "./desktop-nav";
 import { LanguageSwitcher } from "./language-switcher";
 import { AuthMenu } from "./auth-menu";
 import { MobileNav } from "./mobile-nav";
+import { useAuthStore } from "@/entities/auth/store/auth.store";
 
 interface IHeader {
   isSearchBar?: boolean;
@@ -22,7 +22,7 @@ interface IHeader {
 export default function Header({ isSearchBar = true }: IHeader) {
   const t = useTranslations("Header");
   const router = useRouter();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuthStore();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

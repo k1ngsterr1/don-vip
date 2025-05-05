@@ -1,23 +1,24 @@
-// app/[locale]/profile/[id]/page.tsx
 "use client";
 
-import { useAuth } from "@/entities/auth/hooks/queries/use-auth";
-import { useUpdateUser } from "@/entities/user/hooks/mutations/use-update-profile.mutation";
-import { useProfile } from "@/entities/user/hooks/queries/use-profile";
+import { useAuth } from "@/entities/auth/hooks/use-auth";
+import { useProfile } from "@/entities/user/hooks/use-profile";
+import { useUpdateUser } from "@/entities/user/hooks/use-update-user";
 import { ProfileHeaderEditable } from "@/entities/user/ui/profile-header-editable/profile-header-editable";
 import { ProfileMenu } from "@/entities/user/ui/profile-menu/profile-menu";
+import { ProfileLoading } from "@/widgets/ui/profile-page/profile-skeleton/profile-skeleton";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 
 export default function ProfilePage() {
   const { id } = useParams();
   const { isAuthenticated, user: currentUser } = useAuth();
-  const { user, isLoading, error } = useProfile(id as string);
+  const { data: user, isLoading, error } = useProfile(id as string);
   const updateUser = useUpdateUser();
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   // Check if this is the current user's profile
-  const isCurrentUserProfile = isAuthenticated && currentUser?.id === id;
+  const isCurrentUserProfile =
+    isAuthenticated && currentUser?.id?.toString() === id?.toString();
 
   // Handle avatar change
   const handleAvatarChange = (avatarUrl: string) => {
@@ -37,11 +38,7 @@ export default function ProfilePage() {
 
   // Loading state
   if (isLoading) {
-    return (
-      <div className="md:max-w-6xl md:mx-auto md:px-8 md:py-8 lg:py-12 flex justify-center items-center min-h-[300px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue"></div>
-      </div>
-    );
+    return <ProfileLoading />;
   }
 
   // Error state

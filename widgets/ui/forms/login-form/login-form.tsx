@@ -8,9 +8,9 @@ import { AuthInput } from "@/shared/ui/auth-input/auth-input";
 import { Button } from "@/shared/ui/button/button";
 import { SocialAuth } from "@/shared/ui/social-input/social-input";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useLogin } from "@/entities/auth/hooks/mutations/use-auth.mutation";
 import { Loader2 } from "lucide-react";
 import { AuthLoadingOverlay } from "@/shared/ui/auth-loading/auth-loading";
+import { useLogin } from "@/entities/auth/hooks/use-auth";
 
 export function LoginForm() {
   const i18n = useTranslations("login-form_auth.loginForm");

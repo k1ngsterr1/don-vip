@@ -6,7 +6,8 @@ import { Button } from "@/shared/ui/button/button";
 import { SocialAuth } from "@/shared/ui/social-input/social-input";
 import Link from "next/link";
 import { useState } from "react";
-import { useChangePassword } from "@/entities/auth/hooks/mutations/use-auth.mutation";
+import { Loader2 } from "lucide-react";
+import { useChangePassword } from "@/entities/auth/hooks/use-auth";
 
 export function ForgotPasswordForm() {
   const i18n = useTranslations("forgotpassword_auth.forgotPassword");
@@ -14,11 +15,12 @@ export function ForgotPasswordForm() {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const changePasswordMutation = useChangePassword();
+  // Get password reset mutation from our auth API hooks
+  const { mutate: changePassword, isPending: isLoading } = useChangePassword();
 
   const isFormFilled = email.trim() !== "";
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email) {
@@ -26,13 +28,20 @@ export function ForgotPasswordForm() {
       return;
     }
 
-    try {
-      await changePasswordMutation.mutateAsync({ email });
-      setSuccessMessage(i18n("successMessage"));
-      setError("");
-    } catch (error) {
-      setError(i18n("error.emptyFields"));
-    }
+    // Call password reset mutation
+    changePassword(
+      { email },
+      {
+        onSuccess: () => {
+          setSuccessMessage(i18n("successMessage"));
+          setError("");
+        },
+        onError: (error: any) => {
+          setError(error.response?.data?.message || i18n("error.emptyFields"));
+          setSuccessMessage("");
+        },
+      }
+    );
   };
 
   return (
@@ -47,7 +56,7 @@ export function ForgotPasswordForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           label={i18n("emailLabel")}
-          disabled={changePasswordMutation.isPending}
+          disabled={isLoading}
         />
         {error && <p className="text-[#ff272c] text-xs md:text-sm">{error}</p>}
         {successMessage && (
@@ -60,15 +69,20 @@ export function ForgotPasswordForm() {
         <Button
           type="submit"
           className={`w-full rounded-full text-white py-3 md:py-4 text-sm md:text-base ${
-            isFormFilled && !changePasswordMutation.isPending
+            isFormFilled && !isLoading
               ? "bg-blue hover:bg-blue/90"
               : "bg-[#AAAAAB] hover:bg-[#AAAAAB]/90"
           }`}
-          disabled={!isFormFilled || changePasswordMutation.isPending}
+          disabled={!isFormFilled || isLoading}
         >
-          {changePasswordMutation.isPending
-            ? "Processing..."
-            : i18n("submitButton")}
+          {isLoading ? (
+            <span className="flex items-center justify-center">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {i18n("processingText") || "Processing..."}
+            </span>
+          ) : (
+            i18n("submitButton")
+          )}
         </Button>
       </form>
       <div className="mt-6 md:mt-8 text-center text-xs md:text-sm text-gray-500">

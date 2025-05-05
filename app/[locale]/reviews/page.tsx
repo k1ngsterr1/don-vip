@@ -1,5 +1,8 @@
+"use client";
+
 import { ReviewList } from "@/entities/reviews/ui/review-list/review-list";
 import { FeedbackPrompt } from "@/widgets/ui/reviews-page/prompt-block/prompt-block";
+import { useTranslations } from "next-intl";
 
 const reviews = [
   {
@@ -27,7 +30,6 @@ const reviews = [
     liked: true,
     avatar: "/mavrodi.png",
   },
-
   {
     id: "5",
     author: "Davo Marshal",
@@ -36,7 +38,6 @@ const reviews = [
     liked: true,
     avatar: "/mavrodi.png",
   },
-
   {
     id: "7",
     author: "Алексей Петров",
@@ -56,18 +57,20 @@ const reviews = [
 ];
 
 export default function Reviews() {
+  const t = useTranslations("reviews");
+
   return (
     <>
-      <div className="w-full  m-auto px-[11px] mt-[24px] flex flex-col items-center">
+      <div className="w-full md:max-w-[1680px] m-auto px-[11px] mt-[24px] flex flex-col items-center">
         <FeedbackPrompt />
         <div className="w-full flex items-start justify-start">
           <button className="w-[78px] h-[30px] text-[10px] bg-gray-50 rounded-md mb-2">
-            Все отзывы
+            {t("filters.all")}
           </button>
         </div>
         <ReviewList reviews={reviews} />
         <button className="w-[194px] fixed bottom-[75px] h-[42px] rounded-full font-roboto font-medium text-[12px] text-white bg-blue">
-          Оставить отзыв
+          {t("page.leaveReview")}
         </button>
       </div>
     </>

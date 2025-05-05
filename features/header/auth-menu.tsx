@@ -7,10 +7,10 @@ import { useRef, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import google from "@/assets/google.webp";
-import { useAuth } from "@/entities/auth/hooks/queries/use-auth";
+import { useAuthStore } from "@/entities/auth/store/auth.store";
 
 export function AuthMenu() {
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout } = useAuthStore();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();

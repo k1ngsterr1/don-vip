@@ -6,7 +6,7 @@ export const ServicesBlock = () => {
   const services = [
     {
       id: 1,
-      title: "BIGO LIVE",
+      title: "PUBG MOBILE",
       image: "/feature-card.webp",
     },
     {

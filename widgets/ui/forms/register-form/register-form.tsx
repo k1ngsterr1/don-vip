@@ -7,10 +7,10 @@ import { Button } from "@/shared/ui/button/button";
 import { SocialAuth } from "@/shared/ui/social-input/social-input";
 import Link from "next/link";
 import { useState } from "react";
-import { useRegister } from "@/entities/auth/hooks/mutations/use-auth.mutation";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { AuthLoadingOverlay } from "@/shared/ui/auth-loading/auth-loading";
+import { useRegister } from "@/entities/auth/hooks/use-auth";
 
 export function RegisterForm() {
   const i18n = useTranslations("register-form_auth.registerForm");
