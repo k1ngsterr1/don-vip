@@ -8,7 +8,7 @@ import { useAuthStore } from "../../store/auth.store";
 
 // Fetch user data from the backend
 const fetchCurrentUser = async () => {
-  const response = await apiClient.get("/users/me");
+  const response = await apiClient.get("/user/me");
   return response.data;
 };
 

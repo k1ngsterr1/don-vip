@@ -1,54 +1,163 @@
 "use client";
 
-import { useProfileEdit } from "@/entities/user/hooks/mutations/use-profile-edit";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiClient } from "@/shared/config/apiClient";
 import type { User } from "@/entities/user/model/types";
-import { ProfileEditForm } from "@/entities/user/ui/profile-edit-form/profile-edit-form";
-import { ProfileHeaderEditable } from "@/entities/user/ui/profile-header-editable/profile-header-editable";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/entities/auth/hooks/queries/use-auth";
+import { useAuthStore } from "@/entities/auth/store/auth.store";
 
-export default function ProfileEditPage() {
-  const { user, isLoading, handleAvatarChange, updateProfile } =
-    useProfileEdit();
+// Type for profile update payload
+interface UpdateProfilePayload {
+  firstName?: string;
+  lastName?: string;
+  bio?: string;
+  phone?: string;
+  email?: string;
+  telegramUsername?: string;
+  country?: string;
+  city?: string;
+  avatar?: File | null;
+}
 
-  if (isLoading) {
-    return (
-      <main className="px-4 md:px-8 lg:px-0 md:max-w-4xl md:mx-auto md:py-8">
-        <div className="flex justify-center items-center min-h-[300px]">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue"></div>
-        </div>
-      </main>
-    );
+// Function to update user profile
+const updateUserProfile = async (
+  userId: string | number,
+  data: UpdateProfilePayload
+): Promise<User> => {
+  // Create FormData for multipart/form-data requests (needed for file uploads)
+  const formData = new FormData();
+
+  // Add all text fields to FormData
+  Object.entries(data).forEach(([key, value]) => {
+    if (value !== undefined && key !== "avatar") {
+      formData.append(key, String(value));
+    }
+  });
+
+  // Add avatar file if provided
+  if (data.avatar) {
+    formData.append("avatar", data.avatar);
   }
 
-  return (
-    <main className="px-4 md:px-8 lg:px-0 md:max-w-4xl md:mx-auto md:py-8">
-      {/* Desktop background decorative elements - only visible on desktop */}
-      <div className="hidden md:block absolute top-0 right-0 w-1/3 h-64 bg-blue-50 opacity-50 -z-10"></div>
-      <div className="hidden md:block absolute top-64 left-0 w-1/4 h-96 bg-blue-50 opacity-50 -z-10"></div>
+  const response = await apiClient.patch<User>(`/users/${userId}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 
-      {/* Desktop card container - only visible on desktop */}
-      <div className="md:bg-white md:shadow-md md:rounded-xl md:p-8 md:border md:border-gray-100">
-        <div className="md:flex md:items-start">
-          {/* Left column with header on desktop */}
-          <div className="md:w-1/3 md:pr-8 md:border-r md:border-gray-100">
-            <ProfileHeaderEditable
-              user={user}
-              onAvatarChange={handleAvatarChange}
-            />
-          </div>
+  return response.data;
+};
 
-          {/* Right column with form on desktop */}
-          <div className="md:w-2/3 md:pl-8">
-            <h2 className="hidden md:block text-2xl font-unbounded font-medium mb-6 text-gray-800">
-              Редактирование профиля
-            </h2>
-            <ProfileEditForm
-              user={user}
-              onSubmit={updateProfile}
-              redirectAfterSubmit={`/profile/${user.id}`}
-            />
-          </div>
-        </div>
-      </div>
-    </main>
+// Function to update just the user avatar
+const updateUserAvatar = async (
+  userId: string | number,
+  file: File
+): Promise<User> => {
+  const formData = new FormData();
+  formData.append("avatar", file);
+
+  const response = await apiClient.patch<User>(
+    `/users/${userId}/avatar`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
+
+  return response.data;
+};
+
+// Hook for profile editing functionality
+export function useProfileEdit() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const { user, isLoading } = useAuth();
+  const { setUser } = useAuthStore();
+
+  // Local state for user data
+  const [userData, setUserData] = useState<User | null>(null);
+
+  // Update local state when user data is loaded
+  useEffect(() => {
+    if (user && !isLoading) {
+      setUserData(user);
+    }
+  }, [user, isLoading]);
+
+  // Mutation for updating profile
+  const updateProfileMutation = useMutation({
+    mutationFn: (data: UpdateProfilePayload) => {
+      if (!user?.id) throw new Error("User ID is required");
+      return updateUserProfile(user.id, data);
+    },
+    onSuccess: (updatedUser) => {
+      // Update auth store with new user data
+      setUser(updatedUser);
+
+      // Invalidate user queries to refetch data
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
+  });
+
+  // Mutation for updating avatar
+  const updateAvatarMutation = useMutation({
+    mutationFn: (file: File) => {
+      if (!user?.id) throw new Error("User ID is required");
+      return updateUserAvatar(user.id, file);
+    },
+    onSuccess: (updatedUser) => {
+      // Update auth store with new user data
+      setUser(updatedUser);
+
+      // Invalidate user queries to refetch data
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
+  });
+
+  // Function to handle avatar change
+  const handleAvatarChange = async (file: File) => {
+    try {
+      await updateAvatarMutation.mutateAsync(file);
+      return true;
+    } catch (error) {
+      console.error("Failed to upload avatar:", error);
+      return false;
+    }
+  };
+
+  // Function to update profile
+  const updateProfile = async (
+    data: UpdateProfilePayload,
+    redirectPath?: string
+  ) => {
+    try {
+      await updateProfileMutation.mutateAsync(data);
+
+      // Redirect after successful update if path is provided
+      if (redirectPath) {
+        router.push(redirectPath);
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+      return false;
+    }
+  };
+
+  return {
+    user: userData,
+    isLoading:
+      isLoading ||
+      updateProfileMutation.isPending ||
+      updateAvatarMutation.isPending,
+    updateProfile,
+    handleAvatarChange,
+    updateProfileError: updateProfileMutation.error,
+    updateAvatarError: updateAvatarMutation.error,
+  };
 }

@@ -1,4 +1,4 @@
-// lib/hooks/user/use-profile.ts
+// entities/user/hooks/queries/use-profile.ts
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/shared/config/apiClient";
 import type { User } from "@/entities/user/model/types";

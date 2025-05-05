@@ -7,20 +7,26 @@ import { useState } from "react";
 
 interface CouponInputWidgetProps {
   onApply: (code: string) => void;
+  isLoading?: boolean;
+  error?: string | null;
 }
 
-export function CouponInputWidget({ onApply }: CouponInputWidgetProps) {
+export function CouponInputWidget({
+  onApply,
+  isLoading = false,
+  error = null,
+}: CouponInputWidgetProps) {
   const [inputCode, setInputCode] = useState("");
   const [isFocused, setIsFocused] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (inputCode.trim()) {
+    if (inputCode.trim() && !isLoading) {
       onApply(inputCode);
     }
   };
 
-  // Mobile version (unchanged)
+  // Mobile version
   const mobileVersion = (
     <div className="bg-gray-50 p-6 rounded-lg">
       <form onSubmit={handleSubmit} className="flex items-center flex-col">
@@ -30,17 +36,23 @@ export function CouponInputWidget({ onApply }: CouponInputWidgetProps) {
           onChange={(e) => setInputCode(e.target.value)}
           placeholder="Введите промокод"
           className="flex-1 p-3 bg-white rounded-lg border border-gray-200 mr-2 w-full"
+          disabled={isLoading}
         />
+        {error && <p className="text-red-500 text-sm mt-2 w-full">{error}</p>}
         <button
           type="submit"
           className={`px-4 py-3 rounded-lg mt-3 w-full ${
-            inputCode.trim()
+            inputCode.trim() && !isLoading
               ? "bg-blue text-white hover:bg-blue-600"
               : "bg-gray-300 text-gray-700"
-          } transition-colors`}
-          disabled={!inputCode.trim()}
+          } transition-colors flex justify-center items-center`}
+          disabled={!inputCode.trim() || isLoading}
         >
-          Применить
+          {isLoading ? (
+            <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+          ) : (
+            "Применить"
+          )}
         </button>
       </form>
     </div>
@@ -78,22 +90,33 @@ export function CouponInputWidget({ onApply }: CouponInputWidgetProps) {
               onBlur={() => setIsFocused(false)}
               placeholder="Например: SUMMER2025"
               className="w-full p-4 pl-12 bg-white rounded-lg border border-gray-200 text-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+              disabled={isLoading}
             />
           </div>
         </div>
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
 
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           type="submit"
           className={`w-full py-4 rounded-lg text-lg font-medium transition-all duration-300 ${
-            inputCode.trim()
+            inputCode.trim() && !isLoading
               ? "bg-blue text-white hover:bg-blue-600 shadow-md hover:shadow-lg"
               : "bg-gray-300 text-gray-700"
-          }`}
-          disabled={!inputCode.trim()}
+          } flex justify-center items-center`}
+          disabled={!inputCode.trim() || isLoading}
         >
-          Применить промокод
+          {isLoading ? (
+            <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+          ) : (
+            "Применить промокод"
+          )}
         </motion.button>
       </form>
 

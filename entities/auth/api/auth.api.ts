@@ -48,7 +48,7 @@ export const authApi = {
   },
 
   fetchUser: async (): Promise<any> => {
-    const response = await apiClient.get("/users/me");
+    const response = await apiClient.get("/user/me");
     return response.data;
   },
 

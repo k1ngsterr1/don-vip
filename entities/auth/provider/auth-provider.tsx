@@ -29,7 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             queryKey: ["user"],
             queryFn: async () => {
               const { apiClient } = await import("@/shared/config/apiClient");
-              const response = await apiClient.get("/users/me");
+              const response = await apiClient.get("/user/me");
               return response.data;
             },
           });

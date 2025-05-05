@@ -2,7 +2,7 @@
 "use client";
 
 import { useAuth } from "@/entities/auth/hooks/queries/use-auth";
-import { useProfileEdit } from "@/entities/user/hooks/mutations/use-profile-edit";
+import { useUpdateUser } from "@/entities/user/hooks/mutations/use-update-profile.mutation";
 import { useProfile } from "@/entities/user/hooks/queries/use-profile";
 import { ProfileHeaderEditable } from "@/entities/user/ui/profile-header-editable/profile-header-editable";
 import { ProfileMenu } from "@/entities/user/ui/profile-menu/profile-menu";
@@ -13,7 +13,7 @@ export default function ProfilePage() {
   const { id } = useParams();
   const { isAuthenticated, user: currentUser } = useAuth();
   const { user, isLoading, error } = useProfile(id as string);
-  const updateUser = useProfileEdit();
+  const updateUser = useUpdateUser();
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   // Check if this is the current user's profile
@@ -30,7 +30,7 @@ export default function ProfilePage() {
           setAvatarFile(file);
 
           // Automatically update the avatar when changed
-          updateUser.updateProfile({ avatar: file as any });
+          updateUser.mutate({ avatar: file });
         });
     }
   };
