@@ -1,15 +1,14 @@
+// widgets/ui/reviews-page/prompt-block/prompt-block.tsx
 import { MessageSquare } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export function FeedbackPrompt() {
-  // Mobile version (unchanged)
+  const t = useTranslations("feedbackPrompt");
+
+  // Mobile version
   const mobilePrompt = (
     <div className="bg-gray-50 p-[24px] rounded-md my-4 md:hidden">
-      <p className="text-dark text-[11px] font-roboto">
-        Для нас крайне важно мнение наших клиентов! Мы постоянно стремимся
-        улучшать качество и ваш опыт использования нашего магазина. Поэтому
-        будем очень благодарны, если вы поделитесь своим отзывом с другими
-        пользователями! 😊
-      </p>
+      <p className="text-dark text-[11px] font-roboto">{t("description")} 😊</p>
     </div>
   );
 
@@ -22,13 +21,9 @@ export function FeedbackPrompt() {
         </div>
         <div className="flex-1">
           <h3 className="text-lg lg:text-xl font-medium text-gray-800 mb-2">
-            Ваше мнение важно для нас!
+            {t("title")}
           </h3>
-          <p className="text-gray-700 lg:text-base">
-            Мы постоянно стремимся улучшать качество и ваш опыт использования
-            нашего магазина. Будем очень благодарны, если вы поделитесь своим
-            отзывом с другими пользователями! 😊
-          </p>
+          <p className="text-gray-700 lg:text-base">{t("description")} 😊</p>
         </div>
       </div>
     </div>

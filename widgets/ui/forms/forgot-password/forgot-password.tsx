@@ -6,26 +6,33 @@ import { Button } from "@/shared/ui/button/button";
 import { SocialAuth } from "@/shared/ui/social-input/social-input";
 import Link from "next/link";
 import { useState } from "react";
+import { useChangePassword } from "@/entities/auth/hooks/mutations/use-auth.mutation";
 
 export function ForgotPasswordForm() {
   const i18n = useTranslations("forgotpassword_auth.forgotPassword");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const isFormFilled = email.trim() !== "" || phone.trim() !== "";
+  const changePasswordMutation = useChangePassword();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const isFormFilled = email.trim() !== "";
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!email && !phone) {
+    if (!email) {
       setError(i18n("error.emptyFields"));
       return;
     }
 
-    setSuccessMessage(i18n("successMessage"));
-    setError("");
+    try {
+      await changePasswordMutation.mutateAsync({ email });
+      setSuccessMessage(i18n("successMessage"));
+      setError("");
+    } catch (error) {
+      setError(i18n("error.emptyFields"));
+    }
   };
 
   return (
@@ -40,6 +47,7 @@ export function ForgotPasswordForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           label={i18n("emailLabel")}
+          disabled={changePasswordMutation.isPending}
         />
         {error && <p className="text-[#ff272c] text-xs md:text-sm">{error}</p>}
         {successMessage && (
@@ -52,13 +60,15 @@ export function ForgotPasswordForm() {
         <Button
           type="submit"
           className={`w-full rounded-full text-white py-3 md:py-4 text-sm md:text-base ${
-            isFormFilled
+            isFormFilled && !changePasswordMutation.isPending
               ? "bg-blue hover:bg-blue/90"
               : "bg-[#AAAAAB] hover:bg-[#AAAAAB]/90"
           }`}
-          disabled={!isFormFilled}
+          disabled={!isFormFilled || changePasswordMutation.isPending}
         >
-          {i18n("submitButton")}
+          {changePasswordMutation.isPending
+            ? "Processing..."
+            : i18n("submitButton")}
         </Button>
       </form>
       <div className="mt-6 md:mt-8 text-center text-xs md:text-sm text-gray-500">

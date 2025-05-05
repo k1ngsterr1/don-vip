@@ -16,7 +16,7 @@ import { useState } from "react";
 
 interface ProfileEditFormProps {
   user: User;
-  onSubmit?: (userData: Partial<User>) => Promise<void> | void;
+  onSubmit?: any;
   onCancel?: () => void;
   redirectAfterSubmit?: string;
 }

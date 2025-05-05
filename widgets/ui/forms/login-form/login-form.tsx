@@ -1,19 +1,33 @@
 "use client";
 import { useTranslations } from "next-intl";
+import type React from "react";
+
 import Link from "next/link";
 import { useState } from "react";
 import { AuthInput } from "@/shared/ui/auth-input/auth-input";
 import { Button } from "@/shared/ui/button/button";
 import { SocialAuth } from "@/shared/ui/social-input/social-input";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useLogin } from "@/entities/auth/hooks/mutations/use-auth.mutation";
+import { Loader2 } from "lucide-react";
+import { AuthLoadingOverlay } from "@/shared/ui/auth-loading/auth-loading";
 
 export function LoginForm() {
   const i18n = useTranslations("login-form_auth.loginForm");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {}
   );
+  const [isRedirecting, setIsRedirecting] = useState(false);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // Get login mutation from our auth API hooks
+  const { mutate: login, isPending: isLoading, error: loginError } = useLogin();
+
+  // Check if we have a return URL to redirect back to after login
+  const returnUrl = searchParams.get("returnUrl");
 
   const isFormFilled = email.trim() !== "" && password.trim() !== "";
 
@@ -44,19 +58,46 @@ export function LoginForm() {
       return;
     }
 
-    try {
-      setIsLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      alert(i18n("successMessage", { email }));
-    } catch (error) {
-      alert(i18n("errorMessage"));
-    } finally {
-      setIsLoading(false);
-    }
+    // Call login mutation with credentials
+    login(
+      { identifier: email, password },
+      {
+        onSuccess: () => {
+          // Set redirecting state to show loading overlay
+          setIsRedirecting(true);
+
+          // Redirect to return URL if available, or to profile page
+          setTimeout(() => {
+            if (returnUrl) {
+              router.push(decodeURIComponent(returnUrl));
+            } else {
+              router.push("/profile");
+            }
+          }, 800); // Small delay for a smoother transition
+        },
+        onError: (error: any) => {
+          // Handle login errors
+          setErrors({
+            email: error.response?.data?.message || i18n("errorMessage"),
+          });
+        },
+      }
+    );
   };
 
+  // Show loading overlay when loading or redirecting
+  const showLoadingOverlay = isLoading || isRedirecting;
+  const loadingState = isRedirecting ? "redirecting" : "loading";
+
   return (
-    <div className="max-w-md mx-auto">
+    <div className="max-w-md mx-auto relative">
+      {/* Reusable loading overlay */}
+      <AuthLoadingOverlay
+        isVisible={showLoadingOverlay}
+        state={loadingState}
+        message={isRedirecting ? i18n("redirectingText") : i18n("loadingText")}
+      />
+
       <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
         <AuthInput
           type="email"
@@ -68,7 +109,7 @@ export function LoginForm() {
               setErrors((prev) => ({ ...prev, email: undefined }));
           }}
           error={errors.email}
-          disabled={isLoading}
+          disabled={isLoading || isRedirecting}
           aria-label={i18n("ariaLabels.email")}
         />
 
@@ -84,7 +125,7 @@ export function LoginForm() {
             }}
             showPasswordToggle
             error={errors.password}
-            disabled={isLoading}
+            disabled={isLoading || isRedirecting}
             aria-label={i18n("ariaLabels.password")}
           />
           <div className="flex justify-end">
@@ -98,17 +139,34 @@ export function LoginForm() {
           </div>
         </div>
 
+        {loginError && !showLoadingOverlay && (
+          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
+            {loginError instanceof Error
+              ? loginError.message
+              : i18n("errorMessage")}
+          </div>
+        )}
+
         <Button
           type="submit"
           className={`w-full rounded-full text-white py-3 md:py-4 text-sm md:text-base ${
-            isFormFilled && !isLoading
+            isFormFilled && !showLoadingOverlay
               ? "bg-blue hover:bg-blue/90"
               : "bg-[#AAAAAB] hover:bg-[#AAAAAB]/90"
           }`}
-          disabled={!isFormFilled || isLoading}
+          disabled={!isFormFilled || showLoadingOverlay}
           aria-label={i18n("ariaLabels.submit")}
         >
-          {isLoading ? i18n("loadingText") : i18n("submitButton")}
+          {showLoadingOverlay ? (
+            <span className="flex items-center justify-center">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {isRedirecting
+                ? i18n("redirectingText") || "Redirecting..."
+                : i18n("loadingText") || "Logging in..."}
+            </span>
+          ) : (
+            i18n("submitButton")
+          )}
         </Button>
       </form>
 

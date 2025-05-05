@@ -1,9 +1,12 @@
+// app/[locale]/layout.tsx
+import type React from "react";
 import QuestionChatWrapper from "@/entities/question-chat/question-chat-wrapper";
 import BottomTab from "@/features/bottom-tab/bottom-tab";
 import Footer from "@/features/footer/footer";
 import HeaderWrapper from "@/features/header/header-wrapper";
 import { routing } from "@/i18n/routing";
 import ClientLayout from "@/shared/ui/client-layout/client-layout";
+import { ContentWrapper } from "@/shared/ui/content-wrapper/content-wrapper";
 import type { Metadata } from "next";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { Roboto, Roboto_Condensed, Unbounded } from "next/font/google";
@@ -59,7 +62,9 @@ export default async function LocaleLayout({
         <NextIntlClientProvider locale={locale}>
           <ClientLayout>
             <HeaderWrapper />
-            {children}
+            <main>
+              <ContentWrapper>{children}</ContentWrapper>
+            </main>
             <QuestionChatWrapper />
             <BottomTab />
             <Footer />

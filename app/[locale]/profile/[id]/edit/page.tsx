@@ -1,32 +1,23 @@
 "use client";
 
+import { useProfileEdit } from "@/entities/user/hooks/mutations/use-profile-edit";
 import type { User } from "@/entities/user/model/types";
 import { ProfileEditForm } from "@/entities/user/ui/profile-edit-form/profile-edit-form";
 import { ProfileHeaderEditable } from "@/entities/user/ui/profile-header-editable/profile-header-editable";
 
-// Mock user data
-const mockUser = {
-  id: "6758797",
-  firstName: "Винсент",
-  lastName: "Вега",
-  gender: "male" as const,
-  birthDate: "02.11.1992",
-  phone: "+7 903 000 00 00",
-  email: "mail@gmail.com",
-};
-
 export default function ProfileEditPage() {
-  // Example of custom submit handler
-  const handleProfileUpdate = async (userData: Partial<User>) => {
-    // In a real app, this would be an API call
-    console.log("Updating profile with:", userData);
+  const { user, isLoading, handleAvatarChange, updateProfile } =
+    useProfileEdit();
 
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Show success message
-    alert("Профиль успешно обновлен");
-  };
+  if (isLoading) {
+    return (
+      <main className="px-4 md:px-8 lg:px-0 md:max-w-4xl md:mx-auto md:py-8">
+        <div className="flex justify-center items-center min-h-[300px]">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue"></div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="px-4 md:px-8 lg:px-0 md:max-w-4xl md:mx-auto md:py-8">
@@ -39,7 +30,10 @@ export default function ProfileEditPage() {
         <div className="md:flex md:items-start">
           {/* Left column with header on desktop */}
           <div className="md:w-1/3 md:pr-8 md:border-r md:border-gray-100">
-            <ProfileHeaderEditable user={mockUser} />
+            <ProfileHeaderEditable
+              user={user}
+              onAvatarChange={handleAvatarChange}
+            />
           </div>
 
           {/* Right column with form on desktop */}
@@ -48,9 +42,9 @@ export default function ProfileEditPage() {
               Редактирование профиля
             </h2>
             <ProfileEditForm
-              user={mockUser}
-              onSubmit={handleProfileUpdate}
-              redirectAfterSubmit="/profile/1"
+              user={user}
+              onSubmit={updateProfile}
+              redirectAfterSubmit={`/profile/${user.id}`}
             />
           </div>
         </div>
