@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   experimental: {
     reactCompiler: true,
   },
+  images: {
+    domains: ["don-vip-backend-production.up.railway.app"],
+  },
 };
 
 const withNextIntl = createNextIntlPlugin();

@@ -7,34 +7,55 @@ import { ProfileHeaderEditable } from "@/entities/user/ui/profile-header-editabl
 import { ProfileMenu } from "@/entities/user/ui/profile-menu/profile-menu";
 import { ProfileLoading } from "@/widgets/ui/profile-page/profile-skeleton/profile-skeleton";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect } from "react";
 
 export default function ProfilePage() {
   const { id } = useParams();
   const { isAuthenticated, user: currentUser } = useAuthStore();
-  const { data: user, isLoading, error } = useProfile(id as string);
+  const { data: user, isLoading, error, refetch } = useProfile(id as string);
   const updateUser = useUpdateUser();
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   // Check if this is the current user's profile
   const isCurrentUserProfile =
     isAuthenticated && currentUser?.id?.toString() === id?.toString();
 
   // Handle avatar change
-  const handleAvatarChange = (avatarUrl: string) => {
-    // Convert data URL to File object
-    if (avatarUrl.startsWith("data:")) {
-      fetch(avatarUrl)
-        .then((res) => res.blob())
-        .then((blob) => {
-          const file = new File([blob], "avatar.jpg", { type: "image/jpeg" });
-          setAvatarFile(file);
+  const handleAvatarChange = async (avatarUrl: string) => {
+    if (!avatarUrl) return;
 
-          // Automatically update the avatar when changed
-          updateUser.mutate({ avatar: file });
-        });
+    try {
+      console.log("Avatar change initiated with URL:", avatarUrl);
+
+      // Convert data URL to File object
+      if (avatarUrl.startsWith("data:")) {
+        const res = await fetch(avatarUrl);
+        const blob = await res.blob();
+        const file = new File([blob], "avatar.jpg", { type: "image/jpeg" });
+
+        console.log("Avatar converted to file, uploading...");
+
+        // Update the avatar
+        await updateUser.mutateAsync({ avatar: file });
+
+        // Refetch user data to get updated avatar URL
+        await refetch();
+
+        console.log("Avatar updated successfully");
+      } else if (avatarUrl.startsWith("http")) {
+        // If it's already a URL (not a data URL), just use it directly
+        console.log("Using existing avatar URL:", avatarUrl);
+      }
+    } catch (error) {
+      console.error("Error updating avatar:", error);
     }
   };
+
+  // Effect to log when user data changes
+  useEffect(() => {
+    if (user) {
+      console.log("Profile user data loaded:", user);
+    }
+  }, [user]);
 
   // Loading state
   if (isLoading) {

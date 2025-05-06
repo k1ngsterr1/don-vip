@@ -1,6 +1,7 @@
 "use client";
-
 import { useTranslations } from "next-intl";
+import type React from "react";
+
 import { Button } from "@/shared/ui/button/button";
 import { FormField } from "@/shared/ui/form-field/form-field";
 import {
@@ -15,18 +16,20 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface User {
-  id: number;
+  id?: number;
+  first_name?: string | null;
+  last_name?: string | null;
+  gender?: string;
+  birth_date?: string | null;
+  phone?: string | null;
   identifier: string;
-  password?: string;
-  first_name: string | null;
-  last_name: string | null;
   avatar?: string;
-  role: string;
+  role?: string;
 }
 
 interface ProfileEditFormProps {
   user: User;
-  onSubmit: (data: any) => Promise<boolean>;
+  onSubmit?: (data: any) => Promise<any>;
   onCancel?: () => void;
   redirectAfterSubmit?: string;
 }
@@ -35,19 +38,19 @@ export function ProfileEditForm({
   user,
   onSubmit,
   onCancel,
-  redirectAfterSubmit = `/profile/${user.id}`,
+  redirectAfterSubmit = "/profile/1",
 }: ProfileEditFormProps) {
   const i18n = useTranslations("ProfileEditForm");
   const router = useRouter();
 
-  // Initialize form data from user object, mapping from backend to frontend field names
+  // Initialize form with user data, using the correct field names to match the DTO
   const [formData, setFormData] = useState({
     first_name: user.first_name || "",
     last_name: user.last_name || "",
-    gender: "other", // Default value since it's not in your data
-    birthDate: "", // Default empty since it's not in your data
-    phone: "+7", // Default value since it's not in your data
-    identifier: user.identifier,
+    gender: user.gender || "male",
+    birth_date: user.birth_date || "",
+    phone: user.phone || "+7 903 000 00 00",
+    identifier: user.identifier || "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,22 +62,42 @@ export function ProfileEditForm({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Function to convert DD.MM.YYYY to YYYY-MM-DD for ISO 8601 format
+  const formatDateToISO = (dateStr: string): string => {
+    if (!dateStr || !dateStr.includes(".")) return dateStr;
+
+    const parts = dateStr.split(".");
+    if (parts.length !== 3) return dateStr;
+
+    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      // Call the onSubmit handler with the form data
-      const success = await onSubmit(formData);
+      // Create payload with only non-empty values and correct date format
+      const payload = {
+        ...(user.id && { id: user.id }), // Include ID if it exists
+        ...(formData.first_name && { first_name: formData.first_name }),
+        ...(formData.last_name && { last_name: formData.last_name }),
+        ...(formData.gender && { gender: formData.gender }),
+        ...(formData.birth_date && {
+          birth_date: formatDateToISO(formData.birth_date),
+        }),
+        ...(formData.phone && { phone: formData.phone }),
+        identifier: formData.identifier, // Always include identifier
+      };
 
-      if (success) {
-        // If successful and redirectAfterSubmit is provided, navigate to that path
-        if (redirectAfterSubmit) {
-          router.push(redirectAfterSubmit);
-        }
+      if (onSubmit) {
+        await onSubmit(payload);
       } else {
-        // Handle unsuccessful submission
-        alert(i18n("errorMessage"));
+        alert(i18n("successMessage"));
+      }
+
+      if (redirectAfterSubmit) {
+        router.push(redirectAfterSubmit);
       }
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -136,8 +159,8 @@ export function ProfileEditForm({
 
       <FormField
         label={i18n("fields.birthDate")}
-        name="birthDate"
-        value={formData.birthDate}
+        name="birth_date"
+        value={formData.birth_date}
         onChange={handleChange}
         type="text"
         placeholder={i18n("fields.birthDatePlaceholder")}
@@ -270,8 +293,8 @@ export function ProfileEditForm({
         <div className="space-y-6">
           <FormField
             label={i18n("fields.birthDate")}
-            name="birthDate"
-            value={formData.birthDate}
+            name="birth_date"
+            value={formData.birth_date}
             onChange={handleChange}
             type="text"
             placeholder={i18n("fields.birthDatePlaceholder")}
@@ -292,13 +315,12 @@ export function ProfileEditForm({
               onClick: () => alert(i18n("alerts.changePhone")),
             }}
             className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
-            mask="phone"
           />
 
           <FormField
             label={i18n("fields.email")}
             name="identifier"
-            value={user.identifier}
+            value={formData.identifier}
             readOnly
             type="email"
             icon={<Mail size={18} />}
