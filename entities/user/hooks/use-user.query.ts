@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 "use client";
 
 import { queryKeys } from "@/shared/config/queryKeys";

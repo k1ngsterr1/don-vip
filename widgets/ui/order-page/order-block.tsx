@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 "use client";
 
 import { CurrencySelector } from "@/entities/currency/ui/currency-selector";

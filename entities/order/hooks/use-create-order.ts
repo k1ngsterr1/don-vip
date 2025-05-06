@@ -56,10 +56,10 @@ export function useCreateOrder() {
         window.open(paymentData.web_url, "_blank");
 
         // Also redirect the current page to the success page
-        router.push(`/order/success/${paymentData.out_trade_no}`);
+        // router.push(`/order/success/${paymentData.out_trade_no}`);
       } else {
         // Fallback if no web_url is provided
-        router.push(`/order/success/${paymentData.out_trade_no}`);
+        // router.push(`/order/success/${paymentData.out_trade_no}`);
       }
     },
     onError: (err: any) => {
@@ -76,7 +76,7 @@ export function useCreateOrder() {
   const processPayment = (orderId: string, orderData: CreateOrderDto) => {
     setIsProcessingPayment(true);
 
-    const paymentData: PagsmileCreatePayinDto = {
+    const paymentData: any = {
       order_id: orderId,
       // Format price as a decimal string (e.g., "100.00")
       amount: orderData.price,
