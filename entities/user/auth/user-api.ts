@@ -50,12 +50,12 @@ export const userApi = {
     userId: string | number,
     data: UpdateProfilePayload
   ): Promise<User> => {
-    const response = await apiClient.patch<User>(`/user/${userId}`, data);
+    const response = await apiClient.patch<User>(`/user/update-profile`, data);
     return response.data;
   },
 
   /**
-   * Upload user avatar
+   * Upload user ]
    */
   uploadAvatar: async (file: File): Promise<User> => {
     const formData = new FormData();

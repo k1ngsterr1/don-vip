@@ -16,9 +16,6 @@ export function ProfileEditSkeleton() {
               {/* Avatar skeleton */}
               <div className="relative mb-4">
                 <Skeleton className="h-24 w-24 md:h-32 md:w-32 rounded-full" />
-                <div className="absolute bottom-0 right-0 hidden md:block">
-                  <Skeleton className="h-8 w-8 rounded-full" />
-                </div>
               </div>
 
               {/* User ID skeleton */}

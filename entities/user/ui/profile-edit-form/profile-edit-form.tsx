@@ -1,6 +1,6 @@
 "use client";
+
 import { useTranslations } from "next-intl";
-import type { User } from "@/entities/user/model/types";
 import { Button } from "@/shared/ui/button/button";
 import { FormField } from "@/shared/ui/form-field/form-field";
 import {
@@ -14,9 +14,19 @@ import {
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+interface User {
+  id: number;
+  identifier: string;
+  password?: string;
+  first_name: string | null;
+  last_name: string | null;
+  avatar?: string;
+  role: string;
+}
+
 interface ProfileEditFormProps {
   user: User;
-  onSubmit?: any;
+  onSubmit: (data: any) => Promise<boolean>;
   onCancel?: () => void;
   redirectAfterSubmit?: string;
 }
@@ -25,18 +35,21 @@ export function ProfileEditForm({
   user,
   onSubmit,
   onCancel,
-  redirectAfterSubmit = "/profile/1",
+  redirectAfterSubmit = `/profile/${user.id}`,
 }: ProfileEditFormProps) {
   const i18n = useTranslations("ProfileEditForm");
   const router = useRouter();
+
+  // Initialize form data from user object, mapping from backend to frontend field names
   const [formData, setFormData] = useState({
-    firstName: user.firstName,
-    lastName: user.lastName,
-    gender: user.gender,
-    birthDate: user.birthDate || "",
-    phone: user.phone || "+7 903 000 00 00",
-    email: user.email,
+    first_name: user.first_name || "",
+    last_name: user.last_name || "",
+    gender: "other", // Default value since it's not in your data
+    birthDate: "", // Default empty since it's not in your data
+    phone: "+7", // Default value since it's not in your data
+    identifier: user.identifier,
   });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (
@@ -51,14 +64,17 @@ export function ProfileEditForm({
     setIsSubmitting(true);
 
     try {
-      if (onSubmit) {
-        await onSubmit(formData);
-      } else {
-        alert(i18n("successMessage"));
-      }
+      // Call the onSubmit handler with the form data
+      const success = await onSubmit(formData);
 
-      if (redirectAfterSubmit) {
-        router.push(redirectAfterSubmit);
+      if (success) {
+        // If successful and redirectAfterSubmit is provided, navigate to that path
+        if (redirectAfterSubmit) {
+          router.push(redirectAfterSubmit);
+        }
+      } else {
+        // Handle unsuccessful submission
+        alert(i18n("errorMessage"));
       }
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -81,8 +97,8 @@ export function ProfileEditForm({
     <form onSubmit={handleSubmit} className="space-y-5 md:hidden">
       <FormField
         label={i18n("fields.firstName")}
-        name="firstName"
-        value={formData.firstName}
+        name="first_name"
+        value={formData.first_name}
         onChange={handleChange}
         type="text"
         className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
@@ -90,8 +106,8 @@ export function ProfileEditForm({
 
       <FormField
         label={i18n("fields.lastName")}
-        name="lastName"
-        value={formData.lastName}
+        name="last_name"
+        value={formData.last_name}
         onChange={handleChange}
         type="text"
         className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
@@ -126,6 +142,7 @@ export function ProfileEditForm({
         type="text"
         placeholder={i18n("fields.birthDatePlaceholder")}
         className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
+        mask="date"
       />
 
       <div>
@@ -156,7 +173,7 @@ export function ProfileEditForm({
         <div className="flex items-center relative">
           <div className="flex-1 p-3 bg-gray-50 rounded-lg border border-gray-200 flex items-center">
             <Mail size={18} className="text-gray-400 mr-2" />
-            <span>{user.email}</span>
+            <span>{user.identifier}</span>
           </div>
           <button
             type="button"
@@ -186,8 +203,8 @@ export function ProfileEditForm({
         <div className="space-y-6">
           <FormField
             label={i18n("fields.firstName")}
-            name="firstName"
-            value={formData.firstName}
+            name="first_name"
+            value={formData.first_name}
             onChange={handleChange}
             type="text"
             icon={<UserIcon size={18} />}
@@ -196,8 +213,8 @@ export function ProfileEditForm({
 
           <FormField
             label={i18n("fields.lastName")}
-            name="lastName"
-            value={formData.lastName}
+            name="last_name"
+            value={formData.last_name}
             onChange={handleChange}
             type="text"
             icon={<UserRound size={18} />}
@@ -260,6 +277,7 @@ export function ProfileEditForm({
             placeholder={i18n("fields.birthDatePlaceholder")}
             icon={<Calendar size={18} />}
             className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
+            mask="date"
           />
 
           <FormField
@@ -274,12 +292,13 @@ export function ProfileEditForm({
               onClick: () => alert(i18n("alerts.changePhone")),
             }}
             className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
+            mask="phone"
           />
 
           <FormField
             label={i18n("fields.email")}
-            name="email"
-            value={user.email}
+            name="identifier"
+            value={user.identifier}
             readOnly
             type="email"
             icon={<Mail size={18} />}

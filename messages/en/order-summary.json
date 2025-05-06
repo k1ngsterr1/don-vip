@@ -1,0 +1,19 @@
+{
+  "orderSummary": {
+    "summary": {
+      "title": "Your Order",
+      "quantity": "Quantity",
+      "processing": "Loading...",
+      "cost": "Cost",
+      "userInfo": "User information",
+      "server": "Server",
+      "buyNow": "Buy Now",
+      "securityMessage": "Your payment is protected. We use modern encryption technologies to ensure the security of your data.",
+      "benefits": {
+        "instantDelivery": "Instant delivery",
+        "support": "24/7 Support",
+        "securePayment": "Secure payment"
+      }
+    }
+  }
+}

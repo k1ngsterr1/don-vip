@@ -151,17 +151,6 @@ export function ProfileHeaderEditable({
             )}
           </div>
         )}
-
-        {/* Desktop-only upload button */}
-        {!readOnly && (
-          <div className="hidden md:flex absolute bottom-0 right-0 bg-blue text-white w-8 h-8 rounded-full items-center justify-center shadow-md cursor-pointer hover:bg-blue-600 transition-colors">
-            {isUploading ? (
-              <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
-            ) : (
-              <Upload size={16} />
-            )}
-          </div>
-        )}
       </div>
 
       <input
@@ -173,7 +162,6 @@ export function ProfileHeaderEditable({
         aria-label="Upload avatar"
         disabled={isUploading || readOnly}
       />
-
       <div className="text-center md:mt-2">
         <div className="text-sm text-gray-500 mb-1 md:flex md:items-center md:justify-center">
           <span className="md:text-xs md:bg-gray-100 md:px-2 md:py-1 md:rounded-full">
@@ -193,8 +181,6 @@ export function ProfileHeaderEditable({
         </div>
         <h1 className="text-xl font-medium md:text-2xl md:mt-2">{fullName}</h1>
       </div>
-
-      {/* Desktop-only additional info */}
       <div className="hidden md:block mt-6 w-full">
         <div className="bg-gray-50 rounded-lg p-4 text-center">
           <p className="text-sm text-gray-600">Последнее обновление профиля:</p>

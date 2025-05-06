@@ -77,14 +77,14 @@ export function AuthMenu() {
             className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
             onClick={() => setUserMenuOpen(false)}
           >
-            Profile
+            {t("profile")}
           </Link>
           <button
             onClick={handleLogout}
             className="flex items-center w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
           >
             <LogOut size={16} className="mr-2" />
-            Logout
+            {t("logout")}
           </button>
         </div>
       )}

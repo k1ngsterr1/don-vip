@@ -7,7 +7,7 @@ export const ServicesBlock = () => {
     {
       id: 1,
       title: "PUBG MOBILE",
-      image: "/feature-card.webp",
+      image: "/PUBG.jpg",
     },
     {
       id: 2,
@@ -25,6 +25,7 @@ export const ServicesBlock = () => {
             key={service.id}
             title={service.title}
             image={service.image}
+            href={`/${service.id}`}
             hasGem={service.hasGem}
             gemColor={service.gemColor}
             badge={service.badge}

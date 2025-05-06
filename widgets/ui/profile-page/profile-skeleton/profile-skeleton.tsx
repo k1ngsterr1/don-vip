@@ -11,9 +11,6 @@ export function ProfileLoading() {
               {/* Avatar skeleton */}
               <div className="relative mb-4">
                 <Skeleton className="h-24 w-24 rounded-full" />
-                <div className="absolute bottom-0 right-0">
-                  <Skeleton className="h-8 w-8 rounded-full" />
-                </div>
               </div>
 
               {/* Name skeleton */}

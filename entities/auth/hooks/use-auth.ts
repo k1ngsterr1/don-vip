@@ -16,12 +16,9 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: (credentials: { identifier: string; password: string }) => {
       return authApi.login({
-        email: credentials.identifier.includes("@")
+        identifier: credentials.identifier.includes("@")
           ? credentials.identifier
-          : undefined,
-        phone: !credentials.identifier.includes("@")
-          ? credentials.identifier
-          : undefined,
+          : "",
         password: credentials.password,
       });
     },

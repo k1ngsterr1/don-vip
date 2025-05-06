@@ -2,8 +2,7 @@ import { apiClient } from "@/shared/config/apiClient";
 
 // Types
 export interface LoginDto {
-  email?: string;
-  phone?: string;
+  identifier: string;
   password: string;
 }
 

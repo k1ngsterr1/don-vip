@@ -2,6 +2,7 @@
 
 import { HelpCircle } from "lucide-react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 interface UserIdFormProps {
   requiresServer: boolean;
@@ -22,11 +23,14 @@ export function UserIdForm({
   onServerIdChange,
   onAgreeChange,
 }: UserIdFormProps) {
+  const t = useTranslations("orderBlock.user");
+
   return (
     <div className="px-4 mb-6">
       <div className="flex items-center mb-4">
         <h2 className="text-dark font-roboto font-medium">
-          2 ВВЕДИТЕ ВАШ ID {requiresServer ? "И СЕРВЕР" : "(НЕ ВВОДИТЕ «ID:»)"}
+          {t("step")}{" "}
+          {requiresServer ? t("enterIdAndServer") : t("enterIdNoPrefix")}
         </h2>
         <HelpCircle size={16} className="ml-2 text-gray-400" />
       </div>
@@ -34,12 +38,12 @@ export function UserIdForm({
       <div className="space-y-3">
         {!requiresServer && (
           <div className="relative">
-            <div className="absolute left-3 font-roboto font-black text-black text-[13px] top-1/2 transform -translate-y-1/2  text-sm">
-              ID:
+            <div className="absolute left-3 font-roboto font-black text-black text-[13px] top-1/2 transform -translate-y-1/2 text-sm">
+              {t("idPrefix")}
             </div>
             <input
               type="text"
-              placeholder="USER ID"
+              placeholder={t("userIdPlaceholder")}
               value={userId}
               onChange={(e) => onUserIdChange(e.target.value)}
               className="w-full p-3 pl-10 border border-gray-200 rounded-lg"
@@ -52,17 +56,17 @@ export function UserIdForm({
             id="terms"
             checked={agreeToTerms}
             onChange={() => onAgreeChange(!agreeToTerms)}
-            className=" mr-2 h-4 w-4 accent-blue-500"
+            className="mr-2 h-4 w-4 accent-blue-500"
           />
           <label htmlFor="terms" className="text-[11px] text-gray-600">
-            Я подтверждаю правильность ввода данных
+            {t("confirmDataCorrectness")}
           </label>
         </div>
         {requiresServer ? (
           <>
             <input
               type="text"
-              placeholder="USER ID"
+              placeholder={t("userIdPlaceholder")}
               value={userId}
               onChange={(e) => onUserIdChange(e.target.value)}
               className="w-full p-3 border border-gray-200 rounded-lg"
@@ -73,7 +77,7 @@ export function UserIdForm({
               </div>
               <input
                 type="text"
-                placeholder="USER SERVER"
+                placeholder={t("userServerPlaceholder")}
                 value={serverId}
                 onChange={(e) => onServerIdChange(e.target.value)}
                 className="w-full p-3 px-8 border border-gray-200 rounded-lg text-center"
@@ -87,20 +91,20 @@ export function UserIdForm({
           <>
             <div className="mt-4 mb-2">
               <h3 className="font-medium text-[16px] font-bold font-condensed mb-2">
-                ГДЕ НАЙТИ Bigo Live ID?
+                {t("findBigoId.title")}
               </h3>
               <ol className="text-[15px] font-condensed text-gray-600 space-y-1 list-decimal pl-5">
                 <li className="text-black text-[17px]">
-                  Войдите в приложение Bigo Live
+                  {t("findBigoId.step1")}
                 </li>
                 <li className="text-black font-condensed text-[17px]">
-                  Перейдите на страницу Я
+                  {t("findBigoId.step2")}
                 </li>
                 <li className="text-black font-condensed text-[17px]">
-                  Под вашим ником отобразится Bigo Live ID
+                  {t("findBigoId.step3")}
                 </li>
                 <li className="text-black font-condensed text-[17px]">
-                  Скопируйте и введите цифры на сайте
+                  {t("findBigoId.step4")}
                 </li>
               </ol>
             </div>
@@ -109,7 +113,7 @@ export function UserIdForm({
               width={250}
               height={46}
               className="w-[250px] h-[46px]"
-              alt="Check"
+              alt={t("checkImageAlt")}
             />
           </>
         )}

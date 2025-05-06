@@ -62,11 +62,11 @@ export default function ProfilePage() {
             {/* Only show editable version if it's the current user's profile */}
             {isCurrentUserProfile ? (
               <ProfileHeaderEditable
-                user={user}
-                onAvatarChange={handleAvatarChange}
+                user={user as any}
+                onAvatarChange={handleAvatarChange as any}
               />
             ) : (
-              <ProfileHeaderEditable user={user} />
+              <ProfileHeaderEditable user={user as any} />
             )}
           </div>
         </div>

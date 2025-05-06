@@ -2,6 +2,8 @@
   "Header": {
     "searchPlaceholder": "Find service or game",
     "games": "GAMES",
+    "profile": "Profile",
+    "logout": "Logout",
     "services": "SERVICES",
     "reviews": "REVIEWS",
     "faq": "FAQ",

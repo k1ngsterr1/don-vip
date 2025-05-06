@@ -1,0 +1,30 @@
+{
+  "orderBlock": {
+    "block": {
+      "selectAmount": "1. Select the amount to top up"
+    },
+    "user": {
+      "step": "2 ENTER YOUR ID",
+      "enterIdAndServer": "AND SERVER",
+      "enterIdNoPrefix": "(DO NOT ENTER \"ID:\")",
+      "idPrefix": "ID:",
+      "userIdPlaceholder": "USER ID",
+      "userServerPlaceholder": "USER SERVER",
+      "confirmDataCorrectness": "I confirm the correctness of the entered data",
+      "findBigoId": {
+        "title": "WHERE TO FIND Bigo Live ID?",
+        "step1": "Log in to the Bigo Live app",
+        "step2": "Go to the Me page",
+        "step3": "Your Bigo Live ID will be displayed under your nickname",
+        "step4": "Copy and enter the numbers on the website"
+      },
+      "checkImageAlt": "How to find Bigo Live ID",
+      "enterDetails": "Enter your details",
+      "userId": "User ID",
+      "enterUserId": "Enter your user ID",
+      "server": "Server",
+      "selectServer": "Select server",
+      "agreeToTerms": "I agree to the terms and conditions of the service"
+    }
+  }
+}

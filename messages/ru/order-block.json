@@ -1,0 +1,30 @@
+{
+  "orderBlock": {
+    "block": {
+      "selectAmount": "1. Выберите сумму пополнения"
+    },
+    "user": {
+      "step": "2 ВВЕДИТЕ ВАШ ID",
+      "enterIdAndServer": "И СЕРВЕР",
+      "enterIdNoPrefix": "(НЕ ВВОДИТЕ «ID:»)",
+      "idPrefix": "ID:",
+      "userIdPlaceholder": "USER ID",
+      "userServerPlaceholder": "USER SERVER",
+      "confirmDataCorrectness": "Я подтверждаю правильность ввода данных",
+      "findBigoId": {
+        "title": "ГДЕ НАЙТИ Bigo Live ID?",
+        "step1": "Войдите в приложение Bigo Live",
+        "step2": "Перейдите на страницу Я",
+        "step3": "Под вашим ником отобразится Bigo Live ID",
+        "step4": "Скопируйте и введите цифры на сайте"
+      },
+      "checkImageAlt": "Как найти Bigo Live ID",
+      "enterDetails": "Введите ваши данные",
+      "userId": "ID пользователя",
+      "enterUserId": "Введите ваш ID пользователя",
+      "server": "Сервер",
+      "selectServer": "Выберите сервер",
+      "agreeToTerms": "Я согласен с условиями предоставления услуг"
+    }
+  }
+}

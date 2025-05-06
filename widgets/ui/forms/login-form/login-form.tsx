@@ -62,7 +62,7 @@ export function LoginForm() {
     login(
       { identifier: email, password },
       {
-        onSuccess: () => {
+        onSuccess: (data: any) => {
           // Set redirecting state to show loading overlay
           setIsRedirecting(true);
 
@@ -71,7 +71,7 @@ export function LoginForm() {
             if (returnUrl) {
               router.push(decodeURIComponent(returnUrl));
             } else {
-              router.push("/profile");
+              router.push(`/profile/${data.id}`);
             }
           }, 800); // Small delay for a smoother transition
         },
@@ -101,6 +101,7 @@ export function LoginForm() {
       <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
         <AuthInput
           type="email"
+          name="identifier"
           placeholder={i18n("emailPlaceholder")}
           value={email}
           onChange={(e) => {

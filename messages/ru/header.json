@@ -2,6 +2,8 @@
   "Header": {
     "searchPlaceholder": "Найти сервис, либо игру",
     "games": "ИГРЫ",
+    "profile": "Профиль",
+    "logout": "Выйти",
     "services": "СЕРВИСЫ",
     "reviews": "ОТЗЫВЫ",
     "faq": "FAQ",

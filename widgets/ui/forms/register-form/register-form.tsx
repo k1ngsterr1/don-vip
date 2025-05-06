@@ -69,7 +69,7 @@ export function RegisterForm() {
 
           // Redirect to success page or login
           setTimeout(() => {
-            router.push("/auth/register/success");
+            router.push("/");
           }, 800); // Small delay for a smoother transition
         },
         onError: (error: any) => {
@@ -84,7 +84,6 @@ export function RegisterForm() {
     );
   };
 
-  // Show loading overlay when loading or redirecting
   const showLoadingOverlay = isLoading || isRedirecting;
   const loadingState = isRedirecting ? "redirecting" : "processing";
 
@@ -99,15 +98,10 @@ export function RegisterForm() {
             : i18n("processingText") || "Creating your account..."
         }
       />
-
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        {i18n("title") || "Регистрация"}
-      </h1>
-
       <form onSubmit={handleSubmit} className="space-y-5">
         <AuthInput
           type="text"
-          placeholder="Email or phone number"
+          placeholder="example@gmail.com"
           value={identifier}
           onChange={(e) => {
             setIdentifier(e.target.value);
@@ -139,7 +133,6 @@ export function RegisterForm() {
               : "Registration failed. Please try again."}
           </div>
         )}
-
         <div className="w-full flex justify-end">
           <Link
             className="text-[13px] text-right text-black"
@@ -149,7 +142,6 @@ export function RegisterForm() {
             {i18n("forgotPassword") || "Забыли пароль?"}
           </Link>
         </div>
-
         <Button
           type="submit"
           className={`w-full rounded-full text-white py-3 md:py-4 text-sm md:text-base ${
@@ -171,16 +163,6 @@ export function RegisterForm() {
           )}
         </Button>
       </form>
-
-      <div className="mt-8">
-        <div className="relative flex items-center">
-          <div className="flex-grow border-t border-gray-300"></div>
-          <span className="flex-shrink mx-4 text-gray-600 text-sm">
-            {i18n("orContinueWith") || "или продолжить с помощью"}
-          </span>
-          <div className="flex-grow border-t border-gray-300"></div>
-        </div>
-      </div>
 
       <SocialAuth />
 
