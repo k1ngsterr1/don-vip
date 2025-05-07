@@ -37,7 +37,7 @@ export function MobileNav({
         {isAuthenticated && (
           <button onClick={onLogout} className="flex items-center text-red-600">
             <LogOut size={16} className="mr-2" />
-            Logout
+            {t("logout")}
           </button>
         )}
       </nav>
