@@ -75,6 +75,7 @@ export function useGameData(gameSlug: string): {
     return [
       { id: 1, amount: 100, price: "100.00 руб", priceValue: 100.0 },
       { id: 2, amount: 200, price: "200.00 руб", priceValue: 200.0 },
+      { id: 3, amount: 1, price: "1.00 руб", priceValue: 1.0 },
     ];
   }, [gameSlug]);
 
