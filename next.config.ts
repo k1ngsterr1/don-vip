@@ -6,7 +6,12 @@ const nextConfig: NextConfig = {
     reactCompiler: true,
   },
   images: {
-    domains: ["don-vip-backend-production.up.railway.app"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "don-vip-backend-production.up.railway.app",
+      },
+    ],
   },
 };
 
