@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-
+import { useTranslations } from "next-intl";
 import SearchBar from "@/entities/search-bar/search-bar";
 import FAQItem from "@/shared/ui/faq-item/faq-item";
 import { faqItems } from "@/shared/data/faq-data";
 import Link from "next/link";
 
 export default function FAQBlock() {
+  const i18n = useTranslations("emptyFaq");
   const [searchQuery, setSearchQuery] = useState("");
   const [openItem, setOpenItem] = useState<number | null>(1); // Set the second item open by default
 
@@ -30,15 +31,15 @@ export default function FAQBlock() {
           href="/"
           className="text-blue font-roboto mt-[28px] text-[15px] text-left"
         >
-          Вернуться
+          {i18n("backLink")}
         </Link>
         <h1 className="font-unbounded mt-[24px] text-[14px] font-medium mb-[24px] text-dark">
-          FAQ
+          {i18n("title")}
         </h1>
       </div>
       <SearchBar
         height="48px"
-        placeholder="Найти вопрос"
+        placeholder={i18n("searchPlaceholder")}
         onSearch={setSearchQuery}
       />
       <div className="space-y-3 mt-[24px]">
@@ -54,8 +55,7 @@ export default function FAQBlock() {
         ))}
         {filteredFAQs.length === 0 && (
           <div className="text-center py-8 text-gray-500">
-            По вашему запросу ничего не найдено. Попробуйте изменить поисковый
-            запрос.
+            {i18n("noResults")}
           </div>
         )}
       </div>

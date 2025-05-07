@@ -12,6 +12,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { Roboto, Roboto_Condensed, Unbounded } from "next/font/google";
 import { notFound } from "next/navigation";
 import "./globals.css";
+import { getTranslations } from "next-intl/server";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -31,14 +32,21 @@ const unbounded = Unbounded({
   weight: ["400", "500", "600", "700"],
 });
 
-export const metadata: Metadata = {
-  title: "Делайте донаты просто: широкий выбор и выгодные цены",
-  description:
-    "Найдите идеальные алмазы на нашем сайте по выгодной цене. Купите сейчас и получите скидку до 50%. DON-VIP - Магазин для алмазов Bigo Live!",
-  icons: {
-    icon: "/favicon.png",
-  },
-};
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const t = await getTranslations({ locale, namespace: "Metadata" });
+
+  return {
+    title: t("title"),
+    description: t("description"),
+    icons: {
+      icon: "/favicon.png",
+    },
+  };
+}
 
 export default async function LocaleLayout({
   children,

@@ -14,7 +14,11 @@ export default getRequestConfig(async ({ requestLocale }) => {
     messages: {
       ...(await import(`../messages/${locale}/privacy-policy.json`)),
       ...(await import(`../messages/${locale}/login.json`)),
+      ...(await import(`../messages/${locale}/send-review.json`)),
+      ...(await import(`../messages/${locale}/empty-faq.json`)),
+      ...(await import(`../messages/${locale}/metadata.json`)),
       ...(await import(`../messages/${locale}/profile-edit.json`)),
+      ...(await import(`../messages/${locale}/review-card.json`)),
       ...(await import(`../messages/${locale}/password.json`)),
       ...(await import(`../messages/${locale}/services.json`)),
       ...(await import(`../messages/${locale}/order-summary.json`)),

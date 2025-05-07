@@ -4,6 +4,7 @@ import { ReviewList } from "@/entities/reviews/ui/review-list/review-list";
 import { ContentWrapper } from "@/shared/ui/content-wrapper/content-wrapper";
 import { FeedbackPrompt } from "@/widgets/ui/reviews-page/prompt-block/prompt-block";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 
 const reviews = [
   {
@@ -70,9 +71,12 @@ export default function Reviews() {
           </button>
         </div>
         <ReviewList reviews={reviews} />
-        <button className="w-[194px] fixed bottom-[75px] h-[42px] rounded-full font-roboto font-medium text-[12px] text-white bg-blue">
+        <Link
+          href="/send-review"
+          className="w-[194px] fixed flex items-center justify-center bottom-[75px] h-[42px] rounded-full font-roboto font-medium text-[12px] text-white bg-blue"
+        >
           {t("page.leaveReview")}
-        </button>
+        </Link>
       </div>
     </ContentWrapper>
   );

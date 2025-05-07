@@ -1,0 +1,9 @@
+{
+  "emptyFaq": {
+    "backLink": "Back",
+    "title": "FAQ",
+    "searchPlaceholder": "Find a question",
+    "noResults": "No results found for your search. Try changing your search query.",
+    "returnToHome": "Return to home"
+  }
+}

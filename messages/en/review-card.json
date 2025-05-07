@@ -1,0 +1,14 @@
+{
+  "reviewCard": {
+    "collapse": "Collapse",
+    "readMore": "Read more",
+    "reply": "Reply",
+    "idLabel": "ID: ",
+    "noAvatar": "No avatar",
+    "likedReview": "Positive review",
+    "dislikedReview": "Negative review",
+    "reviewFrom": "Review from",
+    "postedOn": "Posted on",
+    "gameReview": "Game review"
+  }
+}

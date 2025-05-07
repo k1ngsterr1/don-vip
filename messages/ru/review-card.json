@@ -1,0 +1,14 @@
+{
+  "reviewCard": {
+    "collapse": "Свернуть",
+    "readMore": "Читать полностью",
+    "reply": "Ответить",
+    "idLabel": "ID: ",
+    "noAvatar": "Нет аватара",
+    "likedReview": "Положительный отзыв",
+    "dislikedReview": "Отрицательный отзыв",
+    "reviewFrom": "Отзыв от",
+    "postedOn": "Опубликовано",
+    "gameReview": "Отзыв об игре"
+  }
+}

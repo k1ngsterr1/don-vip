@@ -43,9 +43,6 @@ export function AuthLoadingOverlay({
           <div className="h-16 w-16 rounded-full border-t-4 border-b-4 border-blue animate-spin"></div>
           <div className="absolute top-0 left-0 h-16 w-16 rounded-full border-t-4 border-blue opacity-30"></div>
         </div>
-        <p className="text-blue font-medium text-lg animate-pulse">
-          {message || getDefaultMessage()}
-        </p>
       </div>
     </div>
   );

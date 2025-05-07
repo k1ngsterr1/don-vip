@@ -4,6 +4,7 @@ import { MessageSquare, ThumbsDown, ThumbsUp } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import type { Review } from "../../model/types";
+import { useTranslations } from "next-intl";
 
 interface ReviewCardProps {
   review: Review;
@@ -11,6 +12,7 @@ interface ReviewCardProps {
 }
 
 export function ReviewCard({ review, isGrid = false }: ReviewCardProps) {
+  const i18n = useTranslations("reviewCard");
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Mobile version (unchanged)
@@ -41,6 +43,9 @@ export function ReviewCard({ review, isGrid = false }: ReviewCardProps) {
         <ThumbsUp
           className={`${review.liked ? "text-[#03cc60]" : "text-red-500"} `}
           size={20}
+          aria-label={
+            review.liked ? i18n("likedReview") : i18n("dislikedReview")
+          }
         />
       </div>
       {review.text && <p className="text-sm text-dark mt-2">{review.text}</p>}
@@ -73,7 +78,10 @@ export function ReviewCard({ review, isGrid = false }: ReviewCardProps) {
               className="object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-gray-300 flex items-center justify-center text-white">
+            <div
+              className="w-full h-full bg-gray-300 flex items-center justify-center text-white"
+              aria-label={i18n("noAvatar")}
+            >
               {review.author.charAt(0)}
             </div>
           )}
@@ -90,9 +98,17 @@ export function ReviewCard({ review, isGrid = false }: ReviewCardProps) {
             </div>
             <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-50">
               {review.liked ? (
-                <ThumbsUp className="text-[#03cc60]" size={16} />
+                <ThumbsUp
+                  className="text-[#03cc60]"
+                  size={16}
+                  aria-label={i18n("likedReview")}
+                />
               ) : (
-                <ThumbsDown className="text-red-500" size={16} />
+                <ThumbsDown
+                  className="text-red-500"
+                  size={16}
+                  aria-label={i18n("dislikedReview")}
+                />
               )}
             </div>
           </div>
@@ -129,7 +145,7 @@ export function ReviewCard({ review, isGrid = false }: ReviewCardProps) {
               onClick={() => setIsExpanded(!isExpanded)}
               className="text-blue text-xs mt-2 hover:underline"
             >
-              {isExpanded ? "Свернуть" : "Читать полностью"}
+              {isExpanded ? i18n("collapse") : i18n("readMore")}
             </button>
           )}
         </div>
@@ -138,9 +154,12 @@ export function ReviewCard({ review, isGrid = false }: ReviewCardProps) {
       <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center">
         <div className="flex items-center text-gray-500 text-sm">
           <MessageSquare size={14} className="mr-1" />
-          <span>Ответить</span>
+          <span>{i18n("reply")}</span>
         </div>
-        <div className="text-xs text-gray-400">ID: {review.id}</div>
+        <div className="text-xs text-gray-400">
+          {i18n("idLabel")}
+          {review.id}
+        </div>
       </div>
     </div>
   );
