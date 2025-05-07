@@ -104,7 +104,7 @@ export function OrderSummary({
               {t("summary.processing")}
             </div>
           ) : (
-            <>t("summary.buyNow")</>
+            t("summary.buyNow")
           )}
         </button>
 
