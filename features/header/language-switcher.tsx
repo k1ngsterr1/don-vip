@@ -21,7 +21,7 @@ export function LanguageSwitcher() {
 
   return (
     <button
-      className="flex h-[32px] items-center group"
+      className="flex cursor-pointer h-[32px] items-center group"
       onClick={switchLanguage}
     >
       <Image
@@ -29,7 +29,7 @@ export function LanguageSwitcher() {
         width={32}
         height={32}
         alt={locale === "ru" ? "RU" : "EN"}
-        className="h-[32px] w-[32px]  rounded-full border border-transparent group-hover:border-gray-200"
+        className="h-[32px] w-[32px] xxs:w-[24px] xxs:h-[24px] rounded-full border border-transparent group-hover:border-gray-200"
       />
     </button>
   );

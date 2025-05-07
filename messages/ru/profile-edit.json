@@ -1,0 +1,15 @@
+{
+  "profileEdit": {
+    "userId": "ID",
+    "lastUpdate": "Последнее обновление профиля",
+    "editProfile": "Редактировать профиль",
+    "uploadAvatar": "Загрузить аватар",
+    "removeAvatar": "Удалить аватар",
+    "uploadingAvatar": "Загрузка...",
+    "errorUploading": "Ошибка загрузки аватара",
+    "errorRemoving": "Ошибка удаления аватара",
+    "invalidFileType": "Недопустимый тип файла",
+    "copyId": "Копировать ID",
+    "acceptedFormats": "Допустимые форматы: PNG, JPEG, WebP, SVG"
+  }
+}

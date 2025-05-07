@@ -126,7 +126,6 @@ export function ProfileEditForm({
         type="text"
         className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
       />
-
       <FormField
         label={i18n("fields.lastName")}
         name="last_name"

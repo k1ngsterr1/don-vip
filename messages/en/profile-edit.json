@@ -1,0 +1,15 @@
+{
+  "profileEdit": {
+    "userId": "ID",
+    "lastUpdate": "Last profile update",
+    "editProfile": "Edit profile",
+    "uploadAvatar": "Upload avatar",
+    "removeAvatar": "Remove avatar",
+    "uploadingAvatar": "Uploading...",
+    "errorUploading": "Error uploading avatar",
+    "errorRemoving": "Error removing avatar",
+    "invalidFileType": "Invalid file type",
+    "copyId": "Copy ID",
+    "acceptedFormats": "Accepted formats: PNG, JPEG, WebP, SVG"
+  }
+}

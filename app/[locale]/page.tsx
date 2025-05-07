@@ -1,3 +1,4 @@
+import { ContentWrapper } from "@/shared/ui/content-wrapper/content-wrapper";
 import HeroBanner from "@/widgets/ui/main-page/hero-banner/hero-banner";
 import { MobileGamesBlock } from "@/widgets/ui/main-page/mobile-games/mobile-games";
 import { ServicesBlock } from "@/widgets/ui/main-page/services-block/services-block";
@@ -31,15 +32,17 @@ export default function Home() {
       <div className="w-full">
         <HeroBanner slides={heroSlides} />
       </div>
-      <div className="w-full max-w-[1680px] px-4 sm:px-6 md:px-8">
-        <div className="mt-6 sm:mt-8">
-          <ServicesBlock />
-        </div>
+      <ContentWrapper>
+        <div className="w-full max-w-[1680px] px-4 sm:px-6md:px-8 ">
+          <div className="mt-6 sm:mt-8">
+            <ServicesBlock />
+          </div>
 
-        <div className="mt-6 sm:mt-10">
-          <MobileGamesBlock />
+          <div className="mt-6 sm:mt-10">
+            <MobileGamesBlock />
+          </div>
         </div>
-      </div>
+      </ContentWrapper>
     </div>
   );
 }

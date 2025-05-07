@@ -8,14 +8,16 @@ import { AuthInput } from "@/shared/ui/auth-input/auth-input";
 import { Button } from "@/shared/ui/button/button";
 import { SocialAuth } from "@/shared/ui/social-input/social-input";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Loader2, Info } from "lucide-react";
 import { AuthLoadingOverlay } from "@/shared/ui/auth-loading/auth-loading";
 import { useLogin } from "@/entities/auth/hooks/use-auth";
+import { PasswordStrength } from "@/shared/ui/password-strength/password-strength";
 
 export function LoginForm() {
   const i18n = useTranslations("login-form_auth.loginForm");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPasswordHints, setShowPasswordHints] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {}
   );
@@ -49,8 +51,6 @@ export function LoginForm() {
 
     if (!password.trim()) {
       newErrors.password = i18n("errors.passwordRequired");
-    } else if (password.length < 6) {
-      newErrors.password = i18n("errors.passwordLength");
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -128,7 +128,21 @@ export function LoginForm() {
             error={errors.password}
             disabled={isLoading || isRedirecting}
             aria-label={i18n("ariaLabels.password")}
+            suffix={
+              <button
+                type="button"
+                className="text-gray-400 hover:text-gray-600"
+                onClick={() => setShowPasswordHints(!showPasswordHints)}
+                aria-label="Toggle password hints"
+              >
+                <Info className="h-4 w-4" />
+              </button>
+            }
           />
+
+          {/* Show password hints when button is clicked */}
+          {showPasswordHints && <PasswordStrength password={password} />}
+
           <div className="flex justify-end">
             <Link
               href="/auth/forgot-password"
@@ -174,7 +188,7 @@ export function LoginForm() {
       <div className="mt-6 text-center text-xs md:text-sm text-gray-500">
         <p>
           {i18n("privacyText")}{" "}
-          <Link href="#" className="text-black hover:underline">
+          <Link href="/privacy-policy" className="text-black hover:underline">
             {i18n("privacyLink")}
           </Link>
         </p>

@@ -14,6 +14,7 @@ import { LanguageSwitcher } from "./language-switcher";
 import { AuthMenu } from "./auth-menu";
 import { MobileNav } from "./mobile-nav";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
+import { TabletNav } from "./tablet-nav";
 
 interface IHeader {
   isSearchBar?: boolean;
@@ -85,10 +86,25 @@ export default function Header({ isSearchBar = true }: IHeader) {
     };
   }, []);
 
+  // Determine if we're on a tablet-sized screen
+  const [isTablet, setIsTablet] = useState(false);
+
+  useEffect(() => {
+    const checkTablet = () => {
+      setIsTablet(window.innerWidth >= 930 && window.innerWidth < 1024);
+    };
+
+    checkTablet(); // Call immediately to set initial value
+    window.addEventListener("resize", checkTablet);
+
+    return () => {
+      window.removeEventListener("resize", checkTablet);
+    };
+  }, []);
   return (
     <motion.header
-      className={`bg-white md:sticky top-0 border-b border-gray-100 relative z-50 transition-all duration-300 ${
-        isScrolled ? "md:shadow-md" : ""
+      className={`bg-white sticky top-0 border-b border-gray-100 relative z-50 transition-all duration-300 ${
+        isScrolled ? "shadow-md" : ""
       }`}
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -96,26 +112,26 @@ export default function Header({ isSearchBar = true }: IHeader) {
     >
       <div className="max-w-[1680px] mx-auto">
         <div
-          className={`flex justify-between items-center px-4 md:px-8 py-[9px] md:py-5 transition-all duration-300 ${
-            isScrolled ? "md:py-4" : ""
+          className={`flex justify-between items-center px-4 sm:px-6 lg:px-8 py-[9px] sm:py-4 lg:py-5 transition-all duration-300 ${
+            isScrolled ? "py-3 sm:py-3 lg:py-4" : ""
           }`}
         >
           <Logo />
 
           {isSearchBar && (
-            <div className="hidden md:block md:flex-1 mx-8 max-w-xl">
+            <div className="hidden sm:block flex-1 mx-4 lg:mx-8 max-w-xl">
               <SearchBar
                 placeholder={t("searchPlaceholder")}
                 onSearch={handleSearch}
-                height="44px"
-                className="md:rounded-full"
+                height={isTablet ? "40px" : "44px"}
+                className="rounded-full"
                 enhanced={true}
                 compact={true}
               />
             </div>
           )}
 
-          <div ref={menuRef}>
+          <div ref={menuRef} className="hidden lg:block">
             <DesktopNav
               activeMenu={activeMenu}
               onMenuToggle={handleMenuToggle}
@@ -124,16 +140,33 @@ export default function Header({ isSearchBar = true }: IHeader) {
             />
           </div>
 
-          <div className="relative flex items-center gap-2 ml-9 group">
+          {isTablet && (
+            <div className="hidden sm:block lg:hidden">
+              <TabletNav
+                activeMenu={activeMenu}
+                onMenuToggle={handleMenuToggle}
+              />
+            </div>
+          )}
+
+          <div className="relative flex items-center gap-2 ml-2 sm:ml-4 lg:ml-9 group">
             <LanguageSwitcher />
             <AuthMenu />
 
             <button
-              className="md:hidden ml-2"
+              className="sm:hidden ml-2"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle menu"
             >
               <Menu size={24} />
+            </button>
+
+            <button
+              className="hidden sm:block lg:hidden ml-2"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              <Menu size={22} />
             </button>
           </div>
         </div>
@@ -149,6 +182,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
               setActiveMenu(null);
             }, 200);
           }}
+          className="hidden lg:block"
         >
           <AnimatePresence>
             {activeMenu === "games" && <GamesMegaMenu />}
@@ -157,7 +191,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
         </div>
 
         {isSearchBar && (
-          <div className="md:hidden py-2 px-4">
+          <div className="sm:hidden py-2 px-4">
             <SearchBar
               placeholder={t("searchPlaceholder")}
               onSearch={handleSearch}
@@ -166,11 +200,11 @@ export default function Header({ isSearchBar = true }: IHeader) {
             />
           </div>
         )}
-
         <MobileNav
           isOpen={mobileMenuOpen}
           onLogout={handleLogout}
           isAuthenticated={isAuthenticated}
+          // isTablet={isTablet }
         />
       </div>
     </motion.header>

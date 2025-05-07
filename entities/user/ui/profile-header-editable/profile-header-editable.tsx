@@ -1,12 +1,12 @@
 "use client";
 
 import type React from "react";
-
 import type { User } from "@/entities/user/model/types";
 import { useUpdateUser } from "@/entities/user/hooks/use-update-user";
 import { Camera, Copy, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface ProfileHeaderEditableProps {
   user: User;
@@ -19,13 +19,61 @@ export function ProfileHeaderEditable({
   onAvatarChange,
   readOnly = false,
 }: ProfileHeaderEditableProps) {
+  const i18n = useTranslations("profileEdit");
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(user.avatar);
   const [isUploading, setIsUploading] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fullName = `${user.firstName} ${user.lastName}`;
 
   // Use our standardized hook if no custom handler is provided
   const updateUser = useUpdateUser();
+
+  // Replace the handleAvatarChange function with this updated version that handles File objects
+  const handleAvatarChange = async (input: File | string) => {
+    try {
+      console.log("Avatar change initiated:", input);
+
+      let file: File;
+
+      // Handle different input types
+      if (input instanceof File) {
+        // If already a File object, use it directly
+        file = input;
+        console.log("Input is already a File object");
+      } else if (typeof input === "string") {
+        // If it's a string URL
+        if (input.startsWith("data:")) {
+          // Convert data URL to File object
+          const res = await fetch(input);
+          const blob = await res.blob();
+          file = new File([blob], "avatar.jpg", { type: "image/jpeg" });
+          console.log("Data URL converted to file, uploading...");
+        } else if (input.startsWith("http")) {
+          // If it's already a URL (not a data URL), just use it directly
+          console.log("Using existing avatar URL:", input);
+          return; // No need to upload in this case
+        } else {
+          console.error("Unsupported URL format");
+          return;
+        }
+      } else {
+        console.error("Unsupported input type for avatar change");
+        return;
+      }
+
+      // Update the avatar
+      await updateUser.mutateAsync({ avatar: file });
+
+      // Refetch user data to get updated avatar URL
+      // Note: You'll need to implement refetch or adjust this part
+      // as the original component doesn't have refetch
+
+      console.log("Avatar updated successfully");
+    } catch (error) {
+      console.error("Error updating avatar:", error);
+    }
+  };
 
   const handleAvatarClick = () => {
     if (readOnly || isUploading) return;
@@ -35,17 +83,10 @@ export function ProfileHeaderEditable({
     }
   };
 
+  // Update the handleFileChange function to pass the file directly
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    // Validate file type
-    const validTypes = [
-      "image/png",
-      "image/jpeg",
-      "image/webp",
-      "image/svg+xml",
-    ];
 
     try {
       setIsUploading(true);
@@ -58,15 +99,15 @@ export function ProfileHeaderEditable({
       };
       reader.readAsDataURL(file);
 
-      // Use provided handler or default to our hook
+      // Call the provided onAvatarChange or our custom handler
       if (onAvatarChange) {
         await onAvatarChange(file);
       } else {
-        await updateUser.mutateAsync({ avatar: file });
+        // Use the custom handler with the file object directly
+        await handleAvatarChange(file);
       }
     } catch (error) {
-      console.error("Error uploading avatar:", error);
-
+      console.error(i18n("errorUploading"), error);
       // Revert to original avatar on error
       setAvatarUrl(user.avatar);
     } finally {
@@ -92,13 +133,19 @@ export function ProfileHeaderEditable({
         await updateUser.mutateAsync({ avatar: null });
       }
     } catch (error) {
-      console.error("Error removing avatar:", error);
+      console.error(i18n("errorRemoving"), error);
 
       // Revert to original avatar on error
       setAvatarUrl(user.avatar);
     } finally {
       setIsUploading(false);
     }
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(user.id.toString());
+    setCopySuccess(true);
+    setTimeout(() => setCopySuccess(false), 2000);
   };
 
   return (
@@ -127,13 +174,12 @@ export function ProfileHeaderEditable({
                 )}
               </div>
             )}
-
-            {/* Remove avatar button */}
             {!readOnly && avatarUrl && (
               <button
                 onClick={handleRemoveAvatar}
                 className="absolute top-0 right-0 bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                aria-label="Remove avatar"
+                aria-label={i18n("removeAvatar")}
+                title={i18n("removeAvatar")}
               >
                 <X size={14} />
               </button>
@@ -152,26 +198,24 @@ export function ProfileHeaderEditable({
           </div>
         )}
       </div>
-
       <input
         type="file"
         ref={fileInputRef}
         onChange={handleFileChange}
         accept="image/png,image/jpeg,image/webp,image/svg+xml"
         className="hidden"
-        aria-label="Upload avatar"
+        aria-label={i18n("uploadAvatar")}
         disabled={isUploading || readOnly}
       />
       <div className="text-center md:mt-2">
         <div className="text-sm text-gray-500 mb-1 md:flex md:items-center md:justify-center">
           <span className="md:text-xs md:bg-gray-100 md:px-2 md:py-1 md:rounded-full">
-            Don-Vip ID: {user.id}
+            {i18n("userId")}: {user.id}
           </span>
           <button
             className="ml-1 text-gray-400 md:ml-2"
-            onClick={() => {
-              navigator.clipboard.writeText(user.id.toString());
-            }}
+            onClick={copyToClipboard}
+            title={i18n("copyId")}
           >
             <Copy
               className="text-[#383838] md:hover:text-blue transition-colors"
@@ -179,11 +223,13 @@ export function ProfileHeaderEditable({
             />
           </button>
         </div>
-        <h1 className="text-xl font-medium md:text-2xl md:mt-2">{fullName}</h1>
+        <h1 className="text-xl font-medium md:text-2xl md:mt-2">
+          {fullName != undefined ? "" : fullName}
+        </h1>
       </div>
       <div className="hidden md:block mt-6 w-full">
         <div className="bg-gray-50 rounded-lg p-4 text-center">
-          <p className="text-sm text-gray-600">Последнее обновление профиля:</p>
+          <p className="text-sm text-gray-600">{i18n("lastUpdate")}:</p>
           <p className="text-sm font-medium">
             {new Date().toLocaleDateString()}
           </p>
@@ -195,7 +241,7 @@ export function ProfileHeaderEditable({
             href={`/profile/${user.id}/edit/`}
             className="block w-full py-3 bg-blue text-white text-center rounded-lg hover:bg-blue-600 transition-colors"
           >
-            Редактировать профиль
+            {i18n("editProfile")}
           </a>
         </div>
       )}

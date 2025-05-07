@@ -8,14 +8,16 @@ import { SocialAuth } from "@/shared/ui/social-input/social-input";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Loader2, Info } from "lucide-react";
 import { AuthLoadingOverlay } from "@/shared/ui/auth-loading/auth-loading";
 import { useRegister } from "@/entities/auth/hooks/use-auth";
+import { PasswordStrength } from "@/shared/ui/password-strength/password-strength";
 
 export function RegisterForm() {
   const i18n = useTranslations("register-form_auth.registerForm");
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
+  const [showPasswordHints, setShowPasswordHints] = useState(false);
   const [errors, setErrors] = useState<{
     identifier?: string;
     password?: string;
@@ -38,6 +40,24 @@ export function RegisterForm() {
     return emailRegex.test(value) || phoneRegex.test(value);
   };
 
+  const validatePassword = (password: string) => {
+    const hasMinLength = password.length >= 8;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecialChar = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
+
+    // Require at least 3 of the 5 criteria
+    const criteriaMet = [
+      hasMinLength,
+      hasUppercase,
+      hasLowercase,
+      hasNumber,
+      hasSpecialChar,
+    ].filter(Boolean).length;
+    return criteriaMet >= 3;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -48,7 +68,12 @@ export function RegisterForm() {
         ? i18n("errors.invalidIdentifier") ||
           "Please enter a valid email or phone number"
         : undefined,
-      password: !password ? i18n("errors.passwordRequired") : undefined,
+      password: !password
+        ? i18n("errors.passwordRequired")
+        : !validatePassword(password)
+        ? i18n("errors.passwordWeak") ||
+          "Password is too weak. Please make it stronger."
+        : undefined,
     };
 
     if (Object.values(newErrors).some(Boolean)) {
@@ -112,19 +137,38 @@ export function RegisterForm() {
           disabled={showLoadingOverlay}
         />
 
-        <AuthInput
-          type="password"
-          placeholder={i18n("passwordPlaceholder") || "Password"}
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-            if (errors.password)
-              setErrors((prev) => ({ ...prev, password: undefined }));
-          }}
-          showPasswordToggle
-          error={errors.password}
-          disabled={showLoadingOverlay}
-        />
+        <div className="space-y-1">
+          <AuthInput
+            type="password"
+            placeholder={i18n("passwordPlaceholder") || "Password"}
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              if (errors.password)
+                setErrors((prev) => ({ ...prev, password: undefined }));
+              // Show password hints when user starts typing
+              if (e.target.value && !showPasswordHints) {
+                setShowPasswordHints(true);
+              }
+            }}
+            showPasswordToggle
+            error={errors.password}
+            disabled={showLoadingOverlay}
+            suffix={
+              <button
+                type="button"
+                className="text-gray-400 hover:text-gray-600"
+                onClick={() => setShowPasswordHints(!showPasswordHints)}
+                aria-label="Toggle password hints"
+              >
+                <Info className="h-4 w-4" />
+              </button>
+            }
+          />
+
+          {/* Password strength indicator */}
+          {showPasswordHints && <PasswordStrength password={password} />}
+        </div>
 
         {registerError && !showLoadingOverlay && (
           <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">

@@ -1,6 +1,7 @@
 "use client";
 
 import { ReviewList } from "@/entities/reviews/ui/review-list/review-list";
+import { ContentWrapper } from "@/shared/ui/content-wrapper/content-wrapper";
 import { FeedbackPrompt } from "@/widgets/ui/reviews-page/prompt-block/prompt-block";
 import { useTranslations } from "next-intl";
 
@@ -60,7 +61,7 @@ export default function Reviews() {
   const t = useTranslations("reviews");
 
   return (
-    <>
+    <ContentWrapper>
       <div className="w-full md:max-w-[1680px] m-auto px-[11px] mt-[24px] flex flex-col items-center">
         <FeedbackPrompt />
         <div className="w-full flex items-start justify-start">
@@ -73,6 +74,6 @@ export default function Reviews() {
           {t("page.leaveReview")}
         </button>
       </div>
-    </>
+    </ContentWrapper>
   );
 }

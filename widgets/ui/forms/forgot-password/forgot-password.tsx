@@ -20,11 +20,23 @@ export function ForgotPasswordForm() {
 
   const isFormFilled = email.trim() !== "";
 
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email) {
       setError(i18n("error.emptyFields"));
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setError(
+        i18n("error.invalidEmail") || "Please enter a valid email address"
+      );
       return;
     }
 
@@ -54,10 +66,14 @@ export function ForgotPasswordForm() {
           type="email"
           placeholder={i18n("emailPlaceholder")}
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (error) setError("");
+          }}
           label={i18n("emailLabel")}
           disabled={isLoading}
         />
+
         {error && <p className="text-[#ff272c] text-xs md:text-sm">{error}</p>}
         {successMessage && (
           <div className="bg-green-50 border border-green-200 rounded-md p-3 md:p-4">
@@ -66,6 +82,14 @@ export function ForgotPasswordForm() {
             </p>
           </div>
         )}
+
+        <div className="text-xs text-gray-500 mt-2">
+          <p>
+            {i18n("resetInfo") ||
+              "You'll receive instructions to reset your password if this email is registered."}
+          </p>
+        </div>
+
         <Button
           type="submit"
           className={`w-full rounded-full text-white py-3 md:py-4 text-sm md:text-base ${

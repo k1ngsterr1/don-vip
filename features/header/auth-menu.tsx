@@ -63,7 +63,7 @@ export function AuthMenu() {
     <div className="relative" ref={userMenuRef}>
       <button
         onClick={() => setUserMenuOpen(!userMenuOpen)}
-        className="flex items-center text-dark hover:text-blue-600 transition-colors"
+        className="flex items-center cursor-pointer text-dark hover:text-blue-600 transition-colors"
       >
         <div className="w-8 h-8 bg-blue rounded-full flex items-center justify-center text-white">
           {user?.firstName?.[0] || user?.email?.[0] || "U"}

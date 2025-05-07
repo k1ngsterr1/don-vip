@@ -1,3 +1,5 @@
+"use client";
+
 import logo from "@/assets/Logo.webp";
 import tbank from "@/assets/T-Bank.webp";
 import Image from "next/image";
@@ -17,48 +19,48 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-white px-4 md:px-8 lg:px-12 mt-[24px] py-6 pb-32 md:pb-12 border-t border-gray-100">
+    <footer className="bg-white px-4 sm:px-6 md:px-8 lg:px-12 mt-6 py-6 pb-16 sm:pb-12 border-t border-gray-100">
       <div className="max-w-[1680px] mx-auto">
-        <div className="md:flex md:justify-between">
-          {/* Logo and T-Bank section */}
-          <div className="flex items-center justify-between mb-6 md:mb-0 md:w-1/3">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-6">
+          {/* Logo section */}
+          <div className="flex items-center justify-between sm:justify-start sm:w-auto">
             <Image
               src={logo.src || "/placeholder.svg"}
               width={161}
               height={31}
               alt={i18n("altText.logo")}
-              className="w-[161px] h-[31px] md:w-[180px] md:h-[35px]"
+              className="w-[140px] h-auto sm:w-[161px] md:w-[180px]"
             />
-            <div className="md:hidden">
+            <div className="sm:hidden ml-4">
               <Image
                 src={tbank.src || "/placeholder.svg"}
                 width={32}
                 height={32}
-                className="w-[32px] h-[32px]"
+                className="w-[32px] h-[32px] object-contain"
                 alt={i18n("altText.tbank")}
               />
             </div>
           </div>
 
-          {/* Links section */}
-          <div className="md:w-2/3 md:flex md:justify-end">
-            <div className="space-y-3 md:space-y-0 md:grid md:grid-cols-2 lg:flex lg:space-x-8">
+          {/* Links and T-bank section */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 md:gap-8">
+            <nav className="grid grid-cols-2 gap-x-4 gap-y-3 sm:gap-x-6 md:gap-x-8 sm:flex sm:flex-wrap">
               {footerLinks.map((link) => (
                 <Link
                   key={link.id}
                   href={link.href}
-                  className="block md:inline-block text-[13px] md:text-sm text-dark uppercase hover:text-blue-600 transition-colors md:mb-3"
+                  className="text-[13px] md:text-sm text-dark uppercase hover:text-blue-600 transition-colors whitespace-nowrap"
                 >
                   {i18n(`links.${link.id}`)}
                 </Link>
               ))}
-            </div>
-            <div className="hidden md:block md:ml-6">
+            </nav>
+            <div className="hidden sm:block sm:ml-2 md:ml-4">
               <Image
                 src={tbank.src || "/placeholder.svg"}
                 width={40}
                 height={40}
-                className="w-[40px] h-[40px]"
+                className="w-[36px] h-[36px] md:w-[40px] md:h-[40px] object-contain"
                 alt={i18n("altText.tbank")}
               />
             </div>
@@ -66,19 +68,13 @@ export default function Footer() {
         </div>
 
         {/* Copyright section */}
-        <div className="mt-6 md:mt-8 text-left text-gray-400 md:flex md:justify-between md:items-center">
-          <div>{i18n("copyright")}</div>
-          <div className="hidden md:block text-sm">
-            <Link
-              href="/terms"
-              className="text-gray-400 hover:text-gray-600 mr-4"
-            >
+        <div className="mt-6 md:mt-8 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+          <div className="text-sm text-gray-400">{i18n("copyright")}</div>
+          <div className="text-xs sm:text-sm text-gray-400">
+            <Link href="/terms" className="hover:text-gray-600 mr-4">
               {i18n("copyrightLinks.terms")}
             </Link>
-            <Link
-              href="/privacy-policy"
-              className="text-gray-400 hover:text-gray-600"
-            >
+            <Link href="/privacy-policy" className="hover:text-gray-600">
               {i18n("copyrightLinks.privacy")}
             </Link>
           </div>
