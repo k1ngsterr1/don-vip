@@ -6,7 +6,6 @@ import Footer from "@/features/footer/footer";
 import HeaderWrapper from "@/features/header/header-wrapper";
 import { routing } from "@/i18n/routing";
 import ClientLayout from "@/shared/ui/client-layout/client-layout";
-import { ContentWrapper } from "@/shared/ui/content-wrapper/content-wrapper";
 import type { Metadata } from "next";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { Roboto, Roboto_Condensed, Unbounded } from "next/font/google";
