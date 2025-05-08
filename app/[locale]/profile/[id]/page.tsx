@@ -15,6 +15,7 @@ export default function ProfilePage() {
   const { isAuthenticated, user: currentUser } = useAuthStore();
   const { data: user, isLoading, error, refetch } = useProfile(id as string);
   const updateUser = useUpdateUser();
+  console.log(isAuthenticated);
 
   // Check if this is the current user's profile
   const isCurrentUserProfile =

@@ -115,7 +115,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
 
   return (
     <motion.header
-      className={`bg-white sticky top-0 border-b border-gray-100 relative z-50 transition-all duration-300 ${
+      className={`bg-white sticky top-0 border-b border-gray-100 z-50 transition-all duration-300 ${
         isScrolled ? "shadow-md" : ""
       }`}
       initial={{ opacity: 0, y: -10 }}
