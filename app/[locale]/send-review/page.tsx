@@ -5,15 +5,20 @@ import SectionTitle from "@/shared/ui/section-title/section-title";
 import { Edit2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 export default function SendReview() {
   const i18n = useTranslations("SendReview");
+  const searchParams = useSearchParams();
+  const gameId = searchParams.get("gameId")
+    ? Number.parseInt(searchParams.get("gameId")!, 10)
+    : undefined;
 
   return (
     <ContentWrapper>
       <div className="w-full px-[11px] mt-[24px] flex flex-col items-center">
         <div className="w-full flex items-start justify-start mb-[24px]">
-          <Link href={"/"} className="text-blue text-[15px] font-roboto">
+          <Link href={"/reviews"} className="text-blue text-[15px] font-roboto">
             {i18n("backLink")}
           </Link>
         </div>
@@ -23,7 +28,7 @@ export default function SendReview() {
             title={i18n("title")}
           />
         </div>
-        <ReviewForm />
+        <ReviewForm gameId={gameId} redirectPath="/reviews" />
       </div>
     </ContentWrapper>
   );

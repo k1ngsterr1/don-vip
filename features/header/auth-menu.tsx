@@ -48,7 +48,14 @@ export function AuthMenu() {
           {t("login")}
         </Link>
 
-        <button className="w-[22px] h-[22px] md:w-[36px] md:h-[36px] flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition-colors">
+        <button
+          onClick={() =>
+            window.open(
+              "https://don-vip-backend-production.up.railway.app/api/auth/google"
+            )
+          }
+          className="w-[22px] h-[22px] md:w-[36px] md:h-[36px] flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition-colors"
+        >
           <Image
             src={google || "/placeholder.svg"}
             alt="Google"

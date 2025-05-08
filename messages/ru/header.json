@@ -1,5 +1,7 @@
 {
   "Header": {
+    "menu": "Меню",
+    "support": "Саппорт",
     "searchPlaceholder": "Найти сервис, либо игру",
     "games": "ИГРЫ",
     "profile": "Профиль",

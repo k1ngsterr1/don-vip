@@ -51,4 +51,14 @@ export const queryKeys = {
     detail: (id: string | number) =>
       [...queryKeys.orders.details(), id] as const,
   },
+
+  // Feedback related keys
+  feedback: {
+    all: ["feedback"] as const,
+    lists: () => [...queryKeys.feedback.all, "list"] as const,
+    list: (filters: { page: number; limit: number }) =>
+      [...queryKeys.feedback.lists(), filters] as const,
+    details: () => [...queryKeys.feedback.all, "detail"] as const,
+    detail: (id: number) => [...queryKeys.feedback.details(), id] as const,
+  },
 };

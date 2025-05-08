@@ -101,6 +101,18 @@ export default function Header({ isSearchBar = true }: IHeader) {
       window.removeEventListener("resize", checkTablet);
     };
   }, []);
+
+  useEffect(() => {
+    const closeMobileMenu = () => {
+      setMobileMenuOpen(false);
+    };
+
+    document.addEventListener("closeMobileMenu", closeMobileMenu);
+    return () => {
+      document.removeEventListener("closeMobileMenu", closeMobileMenu);
+    };
+  }, []);
+
   return (
     <motion.header
       className={`bg-white sticky top-0 border-b border-gray-100 relative z-50 transition-all duration-300 ${
@@ -152,7 +164,6 @@ export default function Header({ isSearchBar = true }: IHeader) {
           <div className="relative flex items-center gap-2 ml-2 sm:ml-4 lg:ml-9 group">
             <LanguageSwitcher />
             <AuthMenu />
-
             <button
               className="sm:hidden ml-2"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -162,15 +173,17 @@ export default function Header({ isSearchBar = true }: IHeader) {
             </button>
 
             <button
-              className="hidden sm:block lg:hidden ml-2"
+              className="hidden sm:block lg:hidden ml-2 p-1 rounded-full hover:bg-gray-100"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle menu"
             >
-              <Menu size={22} />
+              <Menu
+                size={24}
+                className="text-gray-800 hover:text-blue-600 transition-colors"
+              />
             </button>
           </div>
         </div>
-
         <div
           onMouseEnter={() => {
             if (menuTimeoutRef.current) {
@@ -189,7 +202,6 @@ export default function Header({ isSearchBar = true }: IHeader) {
             {activeMenu === "services" && <ServicesMegaMenu />}
           </AnimatePresence>
         </div>
-
         {isSearchBar && (
           <div className="sm:hidden py-2 px-4">
             <SearchBar
@@ -204,7 +216,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
           isOpen={mobileMenuOpen}
           onLogout={handleLogout}
           isAuthenticated={isAuthenticated}
-          // isTablet={isTablet }
+          isTablet={isTablet}
         />
       </div>
     </motion.header>

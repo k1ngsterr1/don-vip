@@ -1,5 +1,7 @@
 {
   "Header": {
+    "menu": "Menu",
+    "support": "Support",
     "searchPlaceholder": "Find service or game",
     "games": "GAMES",
     "profile": "Profile",

@@ -1,5 +1,7 @@
 import axios from "axios";
+
 const BASE_URL = "https://don-vip-backend-production.up.railway.app/api";
+
 // Create an Axios instance with default configuration
 export const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -8,6 +10,13 @@ export const apiClient = axios.create({
 // Add request interceptor for authentication if needed
 apiClient.interceptors.request.use(
   (config) => {
+    // Add token to request if available
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
     return config;
   },
   (error) => {
