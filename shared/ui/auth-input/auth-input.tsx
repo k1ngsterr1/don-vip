@@ -35,23 +35,41 @@ export function AuthInput({
       : "password"
     : type;
 
-  // Format phone number as (XXX) XXX-XXXX
+  // Format phone number as +7 (XXX) XXX-XX-XX
   const formatPhoneNumber = (value: string) => {
-    if (!value) return "";
+    if (!value) return "+7";
 
     // Remove all non-numeric characters
-    const phoneNumber = value.replace(/\D/g, "");
+    let phoneNumber = value.replace(/\D/g, "");
+
+    // If the user tries to delete the +7, keep it
+    if (phoneNumber.length === 0) return "+7";
+
+    // If the number starts with 7 or 8 (common in Russia), remove it as we'll add +7
+    if (phoneNumber.startsWith("7") || phoneNumber.startsWith("8")) {
+      phoneNumber = phoneNumber.substring(1);
+    }
+
+    // Limit to 10 digits (excluding the country code)
+    phoneNumber = phoneNumber.substring(0, 10);
 
     // Apply the mask based on the length of the number
-    if (phoneNumber.length <= 3) {
-      return phoneNumber;
+    if (phoneNumber.length === 0) {
+      return "+7";
+    } else if (phoneNumber.length <= 3) {
+      return `+7 (${phoneNumber})`;
     } else if (phoneNumber.length <= 6) {
-      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
-    } else {
-      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
+      return `+7 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
+    } else if (phoneNumber.length <= 8) {
+      return `+7 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
         3,
         6
-      )}-${phoneNumber.slice(6, 10)}`;
+      )}-${phoneNumber.slice(6)}`;
+    } else {
+      return `+7 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
+        3,
+        6
+      )}-${phoneNumber.slice(6, 8)}-${phoneNumber.slice(8, 10)}`;
     }
   };
 
@@ -91,7 +109,14 @@ export function AuthInput({
         isPhoneMask ? formatPhoneNumber(value as string) : (value as string)
       );
     }
-  }, [value, isPhoneMask]);
+  }, [value, isPhoneMask, inputValue]);
+
+  // Initialize phone input with +7 if empty
+  useEffect(() => {
+    if (isPhoneMask && (!inputValue || inputValue === "")) {
+      setInputValue("+7");
+    }
+  }, [isPhoneMask, inputValue]);
 
   return (
     <div className="w-full">
