@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import tbank from "@/assets/T-Bank.webp";
 
 interface PaymentMethodSelectorProps {
   enhanced?: boolean;
@@ -17,9 +18,8 @@ export function PaymentMethodSelector({
   const i18n = useTranslations("PaymentMethodSelector");
 
   const paymentMethods = [
-    { id: "tbank", name: i18n("methods.tbank"), icon: "/assets/T-Bank.webp" },
-    { id: "card", name: i18n("methods.card"), icon: "/credit-card-icon.png" },
-    { id: "qiwi", name: i18n("methods.qiwi"), icon: "/qiwi-icon.png" },
+    { id: "tbank", name: i18n("methods.tbank"), icon: tbank },
+    { id: "card", name: i18n("methods.card"), icon: "/mastercard.webp" },
   ];
 
   // Mobile version

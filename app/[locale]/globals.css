@@ -14,6 +14,11 @@
   --font-roboto: var(--font-roboto);
 }
 
+button,
+a {
+  cursor: pointer;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     background-color: white;
