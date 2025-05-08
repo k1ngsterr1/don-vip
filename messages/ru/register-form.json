@@ -2,6 +2,7 @@
   "register-form_auth": {
     "registerForm": {
       "emailPlaceholder": "mail@gmail.com",
+      "phonePlaceholder": "Номер телефона",
       "passwordPlaceholder": "Введите ваш пароль",
       "confirmPasswordPlaceholder": "Подтвердите пароль",
       "submitButton": "Зарегистрироваться",
@@ -11,10 +12,24 @@
       "haveAccountText": "Уже есть аккаунт?",
       "loginLink": "Войти",
       "successMessage": "Регистрация для {email} выполнена",
+      "processingText": "Создание аккаунта...",
+      "redirectingText": "Перенаправление...",
+      "usePhoneInstead": "Использовать телефон",
+      "useEmailInstead": "Использовать почту",
       "errors": {
         "emailRequired": "Введите email",
+        "emailInvalid": "Введите корректный email",
+        "phoneInvalid": "Введите корректный номер телефона",
+        "identifierRequired": "Введите email или телефон",
         "passwordRequired": "Введите пароль",
-        "passwordMismatch": "Пароли не совпадают"
+        "passwordMismatch": "Пароли не совпадают",
+        "passwordWeak": "Пароль слишком слабый. Пожалуйста, сделайте его сильнее."
+      },
+      "ariaLabels": {
+        "email": "Email",
+        "phone": "Телефон",
+        "password": "Пароль",
+        "submit": "Зарегистрироваться"
       }
     }
   }

@@ -6,9 +6,9 @@ import { AuthInput } from "@/shared/ui/auth-input/auth-input";
 import { Button } from "@/shared/ui/button/button";
 import { SocialAuth } from "@/shared/ui/social-input/social-input";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Info } from "lucide-react";
+import { Loader2, Info, Mail, Phone } from "lucide-react";
 import { AuthLoadingOverlay } from "@/shared/ui/auth-loading/auth-loading";
 import { useRegister } from "@/entities/auth/hooks/use-auth";
 import { PasswordStrength } from "@/shared/ui/password-strength/password-strength";
@@ -16,6 +16,9 @@ import { PasswordStrength } from "@/shared/ui/password-strength/password-strengt
 export function RegisterForm() {
   const i18n = useTranslations("register-form_auth.registerForm");
   const [identifier, setIdentifier] = useState("");
+  const [identifierType, setIdentifierType] = useState<"email" | "phone">(
+    "email"
+  );
   const [password, setPassword] = useState("");
   const [showPasswordHints, setShowPasswordHints] = useState(false);
   const [errors, setErrors] = useState<{
@@ -34,10 +37,30 @@ export function RegisterForm() {
 
   const isFormFilled = identifier.trim() !== "" && password.trim() !== "";
 
-  const validateIdentifier = (value: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
-    return emailRegex.test(value) || phoneRegex.test(value);
+  // Detect if input is email or phone number
+  useEffect(() => {
+    const input = identifier.trim();
+    if (input) {
+      // Check if input contains @ symbol (likely an email)
+      if (input.includes("@")) {
+        setIdentifierType("email");
+      }
+      // Check if input is mostly numeric (likely a phone number)
+      else if (input.replace(/[^0-9]/g, "").length > input.length / 2) {
+        setIdentifierType("phone");
+      }
+    }
+  }, [identifier]);
+
+  const validateIdentifier = (value: string, type: "email" | "phone") => {
+    if (type === "email") {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(value);
+    } else {
+      // Phone validation - check if it has at least 10 digits
+      const digitsOnly = value.replace(/\D/g, "");
+      return digitsOnly.length >= 10;
+    }
   };
 
   const validatePassword = (password: string) => {
@@ -63,13 +86,14 @@ export function RegisterForm() {
 
     const newErrors = {
       identifier: !identifier
-        ? i18n("errors.emailRequired")
-        : !validateIdentifier(identifier)
-        ? i18n("errors.invalidIdentifier") ||
-          "Please enter a valid email or phone number"
+        ? i18n("errors.identifierRequired") || "Email or phone is required"
+        : !validateIdentifier(identifier, identifierType)
+        ? identifierType === "email"
+          ? i18n("errors.emailInvalid") || "Please enter a valid email"
+          : i18n("errors.phoneInvalid") || "Please enter a valid phone number"
         : undefined,
       password: !password
-        ? i18n("errors.passwordRequired")
+        ? i18n("errors.passwordRequired") || "Password is required"
         : !validatePassword(password)
         ? i18n("errors.passwordWeak") ||
           "Password is too weak. Please make it stronger."
@@ -124,18 +148,50 @@ export function RegisterForm() {
         }
       />
       <form onSubmit={handleSubmit} className="space-y-5">
-        <AuthInput
-          type="text"
-          placeholder="example@gmail.com"
-          value={identifier}
-          onChange={(e) => {
-            setIdentifier(e.target.value);
-            if (errors.identifier)
-              setErrors((prev) => ({ ...prev, identifier: undefined }));
-          }}
-          error={errors.identifier}
-          disabled={showLoadingOverlay}
-        />
+        <div className="relative">
+          <AuthInput
+            type={identifierType === "phone" ? "tel" : "email"}
+            placeholder={
+              identifierType === "email"
+                ? i18n("emailPlaceholder") || "Email address"
+                : i18n("phonePlaceholder") || "Phone number"
+            }
+            value={identifier}
+            onChange={(e) => {
+              setIdentifier(e.target.value);
+              if (errors.identifier)
+                setErrors((prev) => ({ ...prev, identifier: undefined }));
+            }}
+            error={errors.identifier}
+            disabled={showLoadingOverlay}
+            isPhoneMask={identifierType === "phone"}
+            suffix={
+              <span className="text-gray-400">
+                {identifierType === "email" ? (
+                  <Mail size={16} />
+                ) : (
+                  <Phone size={16} />
+                )}
+              </span>
+            }
+          />
+          <div className="mt-1 text-xs text-gray-500 flex justify-end">
+            <button
+              type="button"
+              onClick={() => {
+                setIdentifierType(
+                  identifierType === "email" ? "phone" : "email"
+                );
+                setIdentifier("");
+              }}
+              className="text-blue hover:underline"
+            >
+              {identifierType === "email"
+                ? i18n("usePhoneInstead") || "Use phone instead"
+                : i18n("useEmailInstead") || "Use email instead"}
+            </button>
+          </div>
+        </div>
 
         <div className="space-y-1">
           <AuthInput
@@ -183,7 +239,7 @@ export function RegisterForm() {
             href="/auth/forgot-password"
             tabIndex={showLoadingOverlay ? -1 : 0}
           >
-            {i18n("forgotPassword") || "Забыли пароль?"}
+            {i18n("forgotPassword") || "Forgot password?"}
           </Link>
         </div>
         <Button
@@ -203,7 +259,7 @@ export function RegisterForm() {
                 : i18n("processingText") || "Creating account..."}
             </span>
           ) : (
-            i18n("submitButton") || "Зарегистрироваться"
+            i18n("submitButton") || "Register"
           )}
         </Button>
       </form>
@@ -212,19 +268,18 @@ export function RegisterForm() {
 
       <div className="mt-6 text-center text-xs text-gray-500">
         <p>
-          {i18n("privacyText") ||
-            "Регистрируясь в сервисе, вы соглашаетесь с нашей"}{" "}
+          {i18n("privacyText") || "By registering, you agree to our"}{" "}
           <Link href="#" className="text-black">
-            {i18n("privacyLink") || "политикой конфиденциальности"}
+            {i18n("privacyLink") || "Privacy Policy"}
           </Link>
         </p>
       </div>
 
       <div className="mt-8 text-center">
         <p className="text-sm">
-          {i18n("haveAccountText") || "Уже есть аккаунт?"}{" "}
+          {i18n("haveAccountText") || "Already have an account?"}{" "}
           <Link href="/auth/login" className="text-blue-600 font-medium">
-            {i18n("loginLink") || "Войти"}
+            {i18n("loginLink") || "Login"}
           </Link>
         </p>
       </div>

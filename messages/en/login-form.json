@@ -2,27 +2,34 @@
   "login-form_auth": {
     "loginForm": {
       "emailPlaceholder": "mail@gmail.com",
+      "phonePlaceholder": "Phone number",
       "passwordPlaceholder": "Enter your password",
       "forgotPassword": "Forgot password?",
-      "submitButton": "Sign in",
-      "loadingText": "Signing in...",
-      "privacyText": "By continuing, you agree to our",
-      "privacyLink": "privacy policy",
+      "submitButton": "Login",
+      "loadingText": "Logging in...",
+      "redirectingText": "Redirecting...",
+      "usePhoneInstead": "Use phone instead",
+      "useEmailInstead": "Use email instead",
+      "privacyText": "By continuing, you agree to the",
+      "privacyLink": "privacy terms",
       "noAccountText": "Don't have an account?",
       "registerLink": "Register",
       "successMessage": "Successful login: {email}",
-      "errorMessage": "Login error. Please try again.",
+      "errorMessage": "Login failed. Please try again.",
       "errors": {
         "emailRequired": "Enter email",
-        "emailInvalid": "Enter valid email",
+        "emailInvalid": "Enter a valid email",
+        "phoneInvalid": "Enter a valid phone number",
+        "identifierRequired": "Enter email or phone",
         "passwordRequired": "Enter password",
         "passwordLength": "Password must be at least 6 characters"
       },
       "ariaLabels": {
         "email": "Email",
+        "phone": "Phone",
         "password": "Password",
         "forgotPassword": "Forgot password",
-        "submit": "Sign in"
+        "submit": "Login"
       }
     }
   }

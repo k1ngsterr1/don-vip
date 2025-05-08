@@ -2,10 +2,14 @@
   "login-form_auth": {
     "loginForm": {
       "emailPlaceholder": "mail@gmail.com",
+      "phonePlaceholder": "Номер телефона",
       "passwordPlaceholder": "Введите ваш пароль",
       "forgotPassword": "Забыли пароль?",
       "submitButton": "Войти",
       "loadingText": "Вход...",
+      "redirectingText": "Перенаправление...",
+      "usePhoneInstead": "Использовать телефон",
+      "useEmailInstead": "Использовать почту",
       "privacyText": "Продолжая, вы соглашаетесь с",
       "privacyLink": "условиями конфиденциальности",
       "noAccountText": "Нет аккаунта?",
@@ -15,11 +19,14 @@
       "errors": {
         "emailRequired": "Введите email",
         "emailInvalid": "Введите корректный email",
+        "phoneInvalid": "Введите корректный номер телефона",
+        "identifierRequired": "Введите email или телефон",
         "passwordRequired": "Введите пароль",
         "passwordLength": "Пароль должен содержать минимум 6 символов"
       },
       "ariaLabels": {
         "email": "Email",
+        "phone": "Телефон",
         "password": "Пароль",
         "forgotPassword": "Забыли пароль",
         "submit": "Войти"

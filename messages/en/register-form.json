@@ -2,19 +2,34 @@
   "register-form_auth": {
     "registerForm": {
       "emailPlaceholder": "mail@gmail.com",
+      "phonePlaceholder": "Phone number",
       "passwordPlaceholder": "Enter your password",
       "confirmPasswordPlaceholder": "Confirm password",
       "submitButton": "Register",
       "forgotPassword": "Forgot password?",
-      "privacyText": "By continuing, you agree to our",
-      "privacyLink": "privacy policy",
+      "privacyText": "By continuing, you agree to the",
+      "privacyLink": "privacy terms",
       "haveAccountText": "Already have an account?",
-      "loginLink": "Sign in",
+      "loginLink": "Login",
       "successMessage": "Registration for {email} completed",
+      "processingText": "Creating your account...",
+      "redirectingText": "Redirecting...",
+      "usePhoneInstead": "Use phone instead",
+      "useEmailInstead": "Use email instead",
       "errors": {
         "emailRequired": "Enter email",
+        "emailInvalid": "Enter a valid email",
+        "phoneInvalid": "Enter a valid phone number",
+        "identifierRequired": "Enter email or phone",
         "passwordRequired": "Enter password",
-        "passwordMismatch": "Passwords don't match"
+        "passwordMismatch": "Passwords don't match",
+        "passwordWeak": "Password is too weak. Please make it stronger."
+      },
+      "ariaLabels": {
+        "email": "Email",
+        "phone": "Phone",
+        "password": "Password",
+        "submit": "Register"
       }
     }
   }

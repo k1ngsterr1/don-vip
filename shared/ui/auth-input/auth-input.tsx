@@ -4,13 +4,14 @@ import type React from "react";
 
 import { cn } from "@/shared/utils/cn";
 import { Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface AuthInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
   showPasswordToggle?: boolean;
   suffix?: React.ReactNode;
+  isPhoneMask?: boolean;
 }
 
 export function AuthInput({
@@ -20,14 +21,77 @@ export function AuthInput({
   type = "text",
   showPasswordToggle = false,
   suffix,
+  isPhoneMask = false,
+  value,
+  onChange,
   ...props
 }: AuthInputProps) {
   const [showPassword, setShowPassword] = useState(false);
+  const [inputValue, setInputValue] = useState(value || "");
+
   const inputType = showPasswordToggle
     ? showPassword
       ? "text"
       : "password"
     : type;
+
+  // Format phone number as (XXX) XXX-XXXX
+  const formatPhoneNumber = (value: string) => {
+    if (!value) return "";
+
+    // Remove all non-numeric characters
+    const phoneNumber = value.replace(/\D/g, "");
+
+    // Apply the mask based on the length of the number
+    if (phoneNumber.length <= 3) {
+      return phoneNumber;
+    } else if (phoneNumber.length <= 6) {
+      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
+    } else {
+      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
+        3,
+        6
+      )}-${phoneNumber.slice(6, 10)}`;
+    }
+  };
+
+  // Handle input change
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+
+    if (isPhoneMask) {
+      // For phone mask, format the value
+      const formattedValue = formatPhoneNumber(newValue);
+      setInputValue(formattedValue);
+
+      // Create a synthetic event to pass to the original onChange
+      if (onChange) {
+        const syntheticEvent = {
+          ...e,
+          target: {
+            ...e.target,
+            value: formattedValue,
+          },
+        };
+        onChange(syntheticEvent as React.ChangeEvent<HTMLInputElement>);
+      }
+    } else {
+      // For regular inputs, just update the value normally
+      setInputValue(newValue);
+      if (onChange) {
+        onChange(e);
+      }
+    }
+  };
+
+  // Sync with external value changes
+  useEffect(() => {
+    if (value !== undefined && value !== inputValue) {
+      setInputValue(
+        isPhoneMask ? formatPhoneNumber(value as string) : (value as string)
+      );
+    }
+  }, [value, isPhoneMask]);
 
   return (
     <div className="w-full">
@@ -44,6 +108,8 @@ export function AuthInput({
             suffix && showPasswordToggle && "pr-16",
             className
           )}
+          value={inputValue}
+          onChange={handleInputChange}
           {...props}
         />
         <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
