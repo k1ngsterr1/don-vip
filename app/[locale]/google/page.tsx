@@ -91,6 +91,10 @@ export default function GoogleAuthPage() {
     });
   }, []);
 
+  if (!isLoading) {
+    router.push("/");
+  }
+
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
