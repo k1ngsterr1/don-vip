@@ -1,5 +1,8 @@
 {
   "orderBlock": {
+    "summary": {
+      "buyNow": "Buy Now"
+    },
     "block": {
       "selectAmount": "1. Select the amount to top up"
     },
