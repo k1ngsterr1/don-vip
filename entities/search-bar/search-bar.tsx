@@ -5,6 +5,8 @@ import type React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Mic, Search, X } from "lucide-react";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import { useRouter } from "next/navigation";
+import { useSearchProducts } from "../product/hooks/queries/use-search-product";
 
 interface SearchBarProps {
   placeholder?: string;
@@ -31,9 +33,19 @@ export default function SearchBar({
   const [isFocused, setIsFocused] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
-  // Example suggestions - in a real app, these would be dynamic
-  const suggestions = [
+  // Fetch product suggestions based on search value
+  const { data: searchResults } = useSearchProducts(
+    searchValue.length > 1 ? searchValue : "",
+    5
+  );
+
+  // Get product names for suggestions
+  const suggestions = searchResults?.data.map((product) => product.name) || [];
+
+  // If no search results, use popular products as suggestions
+  const popularProducts = [
     "Mobile Legends",
     "PUBG Mobile",
     "Bigo Live",
@@ -41,7 +53,42 @@ export default function SearchBar({
     "TikTok Coins",
   ];
 
-  const recentSearches = ["Genshin Impact", "Likee Diamonds"];
+  // Use search results if available, otherwise use popular products
+  const displaySuggestions =
+    suggestions.length > 0 ? suggestions : popularProducts;
+
+  // Get recent searches from localStorage
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+
+  // Load recent searches from localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const savedSearches = localStorage.getItem("recentSearches");
+        if (savedSearches) {
+          setRecentSearches(JSON.parse(savedSearches));
+        }
+      } catch (error) {
+        console.error("Failed to load recent searches:", error);
+        localStorage.setItem("recentSearches", JSON.stringify([]));
+      }
+    }
+  }, []);
+
+  // Add a search term to recent searches
+  const addToRecentSearches = (term: string) => {
+    if (!term.trim()) return;
+
+    const updatedSearches = [
+      term,
+      ...recentSearches.filter((item) => item !== term),
+    ].slice(0, 5);
+    setRecentSearches(updatedSearches);
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem("recentSearches", JSON.stringify(updatedSearches));
+    }
+  };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -87,6 +134,13 @@ export default function SearchBar({
   const handleSuggestionClick = (suggestion: string) => {
     setSearchValue(suggestion);
     setShowSuggestions(false);
+
+    // Add to recent searches
+    addToRecentSearches(suggestion);
+
+    // Navigate to search results page
+    router.push(`/search?q=${encodeURIComponent(suggestion)}`);
+
     if (onSearch) {
       onSearch(suggestion);
     }
@@ -99,8 +153,16 @@ export default function SearchBar({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (onSearch && searchValue) {
-      onSearch(searchValue);
+    if (searchValue.trim()) {
+      // Add to recent searches
+      addToRecentSearches(searchValue);
+
+      // Navigate to search results page
+      router.push(`/search?q=${encodeURIComponent(searchValue)}`);
+
+      if (onSearch) {
+        onSearch(searchValue);
+      }
     }
     setShowSuggestions(false);
   };
@@ -226,7 +288,7 @@ export default function SearchBar({
                   </h3>
                 </div>
 
-                {suggestions.map((suggestion, index) => (
+                {displaySuggestions.map((suggestion, index) => (
                   <motion.div
                     key={suggestion}
                     initial={{ opacity: 0, x: -10 }}
@@ -258,7 +320,7 @@ export default function SearchBar({
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{
-                          delay: (suggestions.length + index) * 0.05,
+                          delay: (displaySuggestions.length + index) * 0.05,
                         }}
                       >
                         <button

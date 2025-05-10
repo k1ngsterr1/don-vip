@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import tbank from "@/assets/T-Bank.webp";
+import masterbank from "@/assets/mastercard.webp";
 
 interface PaymentMethodSelectorProps {
   enhanced?: boolean;
@@ -19,10 +20,9 @@ export function PaymentMethodSelector({
 
   const paymentMethods = [
     { id: "tbank", name: i18n("methods.tbank"), icon: tbank },
-    { id: "card", name: i18n("methods.card"), icon: "/mastercard.webp" },
+    { id: "card", name: i18n("methods.card"), icon: masterbank },
   ];
 
-  // Mobile version
   const mobileSelector = (
     <div className={enhanced ? "hidden" : "px-4 mb-6"}>
       <h2 className="text-dark font-medium mb-4">{i18n("titleMobile")}</h2>
@@ -35,7 +35,6 @@ export function PaymentMethodSelector({
     </div>
   );
 
-  // Desktop version
   const desktopSelector = (
     <div className={enhanced ? "" : "hidden"}>
       <h2 className="text-lg font-medium text-gray-800 mb-4">

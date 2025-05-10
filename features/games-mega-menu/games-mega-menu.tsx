@@ -4,64 +4,52 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useState, useEffect } from "react";
+import { GamesMegaMenuSkeleton } from "./games-mega-menu-skeleton";
+import { useProducts } from "@/entities/product/hooks/queries/use-products";
 
-interface ServiceItem {
-  id: string;
-  nameKey: string;
+interface GameItem {
+  id: number;
+  name: string;
   image: string;
   learnLink: string;
   orderLink: string;
 }
 
-interface NavLink {
-  id: string;
-  link: string;
-}
+export function GamesMegaMenu() {
+  const t = useTranslations();
+  const { data: productsData, isLoading } = useProducts();
+  const [nonBigoGames, setNonBigoGames] = useState<GameItem[]>([]);
 
-export function ServicesMegaMenu() {
-  const t = useTranslations("ServicesMegaMenu");
+  // Filter out Bigo products when data is loaded
+  useEffect(() => {
+    if (productsData?.data) {
+      const filteredGames = productsData.data
+        .filter((product) => product.type !== "Bigo")
+        .slice(0, 4) // Limit to 4 games for the mega menu
+        .map((product) => ({
+          id: product.id,
+          name: product.name,
+          image: product.image || "/game-card.webp",
+          learnLink: `/games/${product.id}`,
+          orderLink: `/products/${product.id}`,
+        }));
 
-  const featuredServices: ServiceItem[] = [
-    {
-      id: "bigo",
-      nameKey: "services.bigo",
-      image: "/feature-card.webp",
-      learnLink: "/services/bigo-live",
-      orderLink: "/order/bigo-live",
-    },
-    {
-      id: "tiktok",
-      nameKey: "services.tiktok",
-      image: "/feature-card.webp",
-      learnLink: "/services/tiktok",
-      orderLink: "/order/tiktok",
-    },
-    {
-      id: "likee",
-      nameKey: "services.likee",
-      image: "/feature-card.webp",
-      learnLink: "/services/likee",
-      orderLink: "/order/likee",
-    },
-  ];
-
-  const categories: NavLink[] = [
-    { id: "all", link: "/services" },
-    { id: "streaming", link: "/services/streaming" },
-    { id: "social", link: "/services/social" },
-    { id: "entertainment", link: "/services/entertainment" },
-    { id: "new", link: "/services/new" },
-    { id: "popular", link: "/services/popular" },
-  ];
-
-  const helpLinks: NavLink[] = [
-    { id: "coupons", link: "/coupons" },
-    { id: "faq", link: "/faq" },
-  ];
+      setNonBigoGames(filteredGames);
+    }
+  }, [productsData]);
 
   // Animation variants
   const containerVariants = {
-    hidden: { opacity: 0, y: -20 },
+    hidden: {
+      opacity: 0,
+      y: -20,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 24,
+      },
+    },
     visible: {
       opacity: 1,
       y: 0,
@@ -80,6 +68,8 @@ export function ServicesMegaMenu() {
         type: "spring",
         stiffness: 500,
         damping: 30,
+        staggerChildren: 0.05,
+        staggerDirection: -1,
       },
     },
   };
@@ -95,6 +85,15 @@ export function ServicesMegaMenu() {
         damping: 24,
       },
     },
+    exit: {
+      opacity: 0,
+      y: 10,
+      transition: {
+        type: "spring",
+        stiffness: 500,
+        damping: 30,
+      },
+    },
   };
 
   const linkVariants = {
@@ -102,6 +101,15 @@ export function ServicesMegaMenu() {
     visible: {
       opacity: 1,
       x: 0,
+      transition: {
+        type: "spring",
+        stiffness: 500,
+        damping: 30,
+      },
+    },
+    exit: {
+      opacity: 0,
+      x: -5,
       transition: {
         type: "spring",
         stiffness: 500,
@@ -136,20 +144,6 @@ export function ServicesMegaMenu() {
     },
   };
 
-  const highlightVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 20,
-        delay: 0.3,
-      },
-    },
-  };
-
   return (
     <motion.div
       className="absolute left-0 right-0 bg-white border-b border-gray-100 shadow-lg z-50"
@@ -159,94 +153,57 @@ export function ServicesMegaMenu() {
       exit="exit"
     >
       <div className="max-w-7xl mx-auto px-8 py-6">
-        <div className="flex">
-          {/* Featured Services */}
-          <div className="flex-1 grid grid-cols-3 gap-6">
-            {featuredServices.map((service, index) => (
-              <motion.div
-                key={service.id}
-                className="text-center relative"
-                variants={itemVariants}
-                custom={index}
-                whileHover="hover"
-                initial="rest"
-              >
-                {index === 0 && (
-                  <motion.div
-                    className="absolute -top-2 -right-2 bg-blue text-white text-xs px-2 py-1 rounded-full z-10"
-                    variants={highlightVariants}
-                  >
-                    {t("featured.popularBadge")}
-                  </motion.div>
-                )}
-
+        {isLoading ? (
+          <GamesMegaMenuSkeleton />
+        ) : nonBigoGames.length > 0 ? (
+          <div className="flex">
+            {/* Featured Games with Images */}
+            <div className="flex-1 grid grid-cols-4 gap-6">
+              {nonBigoGames.map((game, index) => (
                 <motion.div
-                  className="relative w-full aspect-square rounded-lg overflow-hidden mb-2 shadow-sm"
-                  variants={cardVariants}
+                  key={game.id}
+                  className="text-center"
+                  variants={itemVariants}
+                  custom={index}
+                  whileHover="hover"
+                  initial="rest"
+                  animate="visible"
                 >
-                  <motion.div variants={imageHoverVariants}>
-                    <Image
-                      src={service.image}
-                      alt={t(service.nameKey)}
-                      fill
-                      className="object-cover"
-                    />
-                  </motion.div>
-                </motion.div>
-
-                <motion.h3 className="font-medium text-sm mb-1">
-                  {t(service.nameKey)}
-                </motion.h3>
-
-                <div className="flex justify-center space-x-4 text-xs">
-                  <motion.div variants={linkVariants}>
-                    <Link
-                      href={service.learnLink}
-                      className="text-blue hover:underline"
-                    >
-                      {t("featured.learnMore")}
-                    </Link>
-                  </motion.div>
-                  <motion.div variants={linkVariants}>
-                    <Link
-                      href={service.orderLink}
-                      className="text-blue hover:underline"
-                    >
-                      {t("featured.order")}
-                    </Link>
-                  </motion.div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Help Links */}
-          <motion.div
-            className="w-64 pl-8 border-l border-gray-100"
-            variants={itemVariants}
-          >
-            <motion.h3 className="font-medium text-sm uppercase text-gray-500 mb-2">
-              {t("help.title")}
-            </motion.h3>
-
-            <ul className="space-y-2">
-              {helpLinks.map((link, index) => (
-                <motion.li
-                  key={link.id}
-                  variants={linkVariants}
-                  custom={index + categories.length}
-                >
-                  <Link
-                    href={link.link}
-                    className="text-dark hover:text-blue-600 transition-colors"
+                  <motion.div
+                    className="relative w-full aspect-square rounded-lg overflow-hidden mb-2 shadow-sm"
+                    variants={cardVariants}
                   >
-                    {t(`help.${link.id}`)}
-                  </Link>
-                </motion.li>
+                    <motion.div
+                      className="w-full h-full"
+                      variants={imageHoverVariants}
+                    >
+                      <Image
+                        src={game.image || "/placeholder.svg"}
+                        alt={game.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </motion.div>
+                  </motion.div>
+                  <motion.h3
+                    className="font-medium text-sm mb-1"
+                    variants={itemVariants}
+                  >
+                    {game.name}
+                  </motion.h3>
+                </motion.div>
               ))}
-            </ul>
-          </motion.div>
-        </div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex">
+            <div className="flex-1 flex items-center justify-center py-8">
+              <p className="text-gray-500">
+                {t("games_mega_menu.no_games") || "No games available"}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </motion.div>
   );

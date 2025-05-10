@@ -10,6 +10,7 @@ import type { Metadata } from "next";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { Roboto, Roboto_Condensed, Unbounded } from "next/font/google";
 import { notFound } from "next/navigation";
+import Script from "next/script"; // <-- ✅ Import Script
 import "./globals.css";
 import { getTranslations } from "next-intl/server";
 
@@ -61,6 +62,13 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
+      <head>
+        <Script
+          src="//code.jivo.ru/widget/LzgQISOnC6"
+          strategy="afterInteractive"
+          async
+        />
+      </head>
       <body
         className={`
           ${roboto.variable}
@@ -74,7 +82,6 @@ export default async function LocaleLayout({
           <ClientLayout>
             <HeaderWrapper />
             <main>{children}</main>
-            <QuestionChatWrapper />
             <BottomTab />
             <Footer />
           </ClientLayout>

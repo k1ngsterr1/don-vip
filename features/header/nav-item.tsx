@@ -58,13 +58,6 @@ export function NavItem({
           />
         )}
       </button>
-      {isActive && (
-        <motion.div
-          className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-[2px] w-1 h-1 bg-blue-600 rounded-full"
-          layoutId="navIndicator"
-          transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        />
-      )}
     </div>
   );
 }

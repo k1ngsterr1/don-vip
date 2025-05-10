@@ -5,8 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ServicesMegaMenu } from "@/features/games-mega-menu/games-mega-menu";
-import { GamesMegaMenu } from "@/features/services-mega-menu/services-mega-menu";
+import { GamesMegaMenu } from "@/features/games-mega-menu/games-mega-menu";
 import { useTranslations } from "next-intl";
 import { Logo } from "./logo";
 import { DesktopNav } from "./desktop-nav";
@@ -15,6 +14,7 @@ import { AuthMenu } from "./auth-menu";
 import { MobileNav } from "./mobile-nav";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { TabletNav } from "./tablet-nav";
+import { ServicesMegaMenu } from "../services-mega-menu/services-mega-menu";
 
 interface IHeader {
   isSearchBar?: boolean;
@@ -129,7 +129,6 @@ export default function Header({ isSearchBar = true }: IHeader) {
           }`}
         >
           <Logo />
-
           {isSearchBar && (
             <div className="hidden sm:block flex-1 mx-4 lg:mx-8 max-w-xl">
               <SearchBar
@@ -160,7 +159,6 @@ export default function Header({ isSearchBar = true }: IHeader) {
               />
             </div>
           )}
-
           <div className="relative flex items-center gap-2 ml-2 sm:ml-4 lg:ml-9 group">
             <LanguageSwitcher />
             <AuthMenu />
@@ -171,7 +169,6 @@ export default function Header({ isSearchBar = true }: IHeader) {
             >
               <Menu size={24} />
             </button>
-
             <button
               className="hidden sm:block lg:hidden ml-2 p-1 rounded-full hover:bg-gray-100"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

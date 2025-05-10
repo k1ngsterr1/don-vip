@@ -1,13 +1,19 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  type CreateFeedbackDto,
-  type FeedbackResponse,
-  type PaginatedFeedbackResponse,
-  feedbackService,
-} from "../api/reviews.api";
 import { useRouter } from "next/navigation";
+import { feedbackService } from "../api/reviews.api";
+import type {
+  FeedbackResponse,
+  PaginatedFeedbackResponse,
+} from "../api/reviews.api";
+
+// Internal DTO that matches the component's structure
+interface FormFeedbackDto {
+  text: string;
+  sentiment: "positive" | "negative";
+  gameId?: number;
+}
 
 // Query keys
 export const feedbackKeys = {
@@ -43,8 +49,15 @@ export function useCreateFeedback(
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  return useMutation<FeedbackResponse, Error, CreateFeedbackDto>({
-    mutationFn: (data: CreateFeedbackDto) => feedbackService.create(data),
+  return useMutation<FeedbackResponse, Error, FormFeedbackDto>({
+    mutationFn: (formData: FormFeedbackDto) => {
+      // Transform the form data to match the API's expected structure
+      return feedbackService.create({
+        text: formData.text,
+        reaction: formData.sentiment === "positive", // Convert sentiment string to reaction boolean
+        product_id: formData.gameId || 0, // Use gameId as product_id
+      });
+    },
     onSuccess: () => {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: feedbackKeys.lists() });
@@ -66,9 +79,21 @@ export function useCreateFeedback(
 export function useUpdateFeedback(id: number) {
   const queryClient = useQueryClient();
 
-  return useMutation<FeedbackResponse, Error, Partial<CreateFeedbackDto>>({
-    mutationFn: (data: Partial<CreateFeedbackDto>) =>
-      feedbackService.update(id, data),
+  return useMutation<FeedbackResponse, Error, Partial<FormFeedbackDto>>({
+    mutationFn: (formData: Partial<FormFeedbackDto>) => {
+      // Transform the form data to match the API's expected structure
+      const apiData: any = {};
+
+      if (formData.text !== undefined) {
+        apiData.text = formData.text;
+      }
+
+      if (formData.sentiment !== undefined) {
+        apiData.reaction = formData.sentiment === "positive";
+      }
+
+      return feedbackService.update(id, apiData);
+    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: feedbackKeys.detail(id) });
       queryClient.invalidateQueries({ queryKey: feedbackKeys.lists() });

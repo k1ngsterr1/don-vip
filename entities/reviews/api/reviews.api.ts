@@ -1,36 +1,32 @@
 import { apiClient, extractErrorMessage } from "@/shared/config/apiClient";
 
-// Types based on the backend DTOs
+// Updated Types based on the backend DTOs
 export interface CreateFeedbackDto {
   text: string;
-  sentiment: "positive" | "negative";
-  userId?: number;
-  gameId?: number;
+  reaction: boolean; // Changed from sentiment to reaction (boolean)
+  product_id: number; // Changed from gameId to product_id
 }
 
 export interface UpdateFeedbackDto {
   text?: string;
-  sentiment?: "positive" | "negative";
+  reaction?: boolean; // Changed from sentiment to reaction
 }
 
 export interface FeedbackResponse {
   id: number;
   text: string;
-  sentiment: "positive" | "negative";
+  reaction: boolean; // Changed from sentiment to reaction
   userId: number;
-  gameId?: number;
+  product_id?: number; // Changed from gameId to product_id
   createdAt: string;
   updatedAt: string;
 }
 
 export interface PaginatedFeedbackResponse {
   data: FeedbackResponse[];
-  meta: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
+  total: number; // Matches the actual API response structure
+  page: number;
+  lastPage: number; // Changed from totalPages to lastPage
 }
 
 // Feedback service functions

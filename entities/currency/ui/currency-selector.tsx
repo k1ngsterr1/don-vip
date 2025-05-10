@@ -25,7 +25,6 @@ export function CurrencySelector({
 }: CurrencySelectorProps) {
   const i18n = useTranslations("CurrencySelector");
 
-  // Mobile version
   const mobileSelector = (
     <div className={enhanced ? "hidden" : "px-4 mb-6"}>
       <h2 className="text-dark font-medium mb-4">{i18n("title")}</h2>
@@ -58,7 +57,7 @@ export function CurrencySelector({
                 })}
               </span>
               <Image
-                src={currencyImage || "/placeholder.svg"}
+                src="/diamond.webp"
                 width={30}
                 height={30}
                 alt={i18n("currencyIconAlt", { currencyName })}
@@ -71,7 +70,6 @@ export function CurrencySelector({
     </div>
   );
 
-  // Desktop version
   const desktopSelector = (
     <div className={enhanced ? "" : "hidden"}>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -91,10 +89,9 @@ export function CurrencySelector({
                 <Check className="text-white" size={14} />
               </div>
             )}
-
             <div className="flex items-center mb-2">
               <Image
-                src={currencyImage || "/placeholder.svg"}
+                src="/diamond.webp"
                 width={36}
                 height={36}
                 alt={i18n("currencyIconAlt", { currencyName })}
@@ -107,7 +104,6 @@ export function CurrencySelector({
                 })}
               </span>
             </div>
-
             <span className="text-2xl font-bold text-gray-900">
               {item.price}
             </span>

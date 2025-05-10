@@ -3,6 +3,7 @@ export interface Review {
   author: string;
   date: string;
   text: string;
+  status: string;
   liked: boolean;
   avatar?: string;
   game?: string;

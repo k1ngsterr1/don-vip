@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 interface GameCardProps {
   title?: string;
@@ -20,26 +19,35 @@ export default function GameCard({
 }: GameCardProps) {
   return (
     <Link href={href} className="block">
-      <div className="relative shadow-sm hover:shadow-md transition-shadow overflow-hidden rounded-[12px] aspect-square">
+      <div className="relative shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden rounded-[12px] aspect-square group">
         <Image
           src={image || "/placeholder.svg"}
           alt={title || "Game"}
           width={166}
           height={166}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
+
+        {/* Overlay that appears on hover */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end">
+          {/* Game title with reveal animation */}
+          {title && (
+            <div className="p-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 ease-out">
+              <p className="text-white text-sm font-medium">{title}</p>
+              <div className="w-10 h-0.5 bg-blue-500 mt-2 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+            </div>
+          )}
+        </div>
+
+        {/* Badge - Always visible */}
         {badge && (
-          <div className="absolute top-2 right-2 bg-cyan-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+          <div className="absolute top-2 right-2 bg-cyan-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center z-10">
             {badge}
           </div>
         )}
 
-        {/* Game title overlay - Only shown if title exists */}
-        {title && (
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
-            <p className="text-white text-xs font-medium truncate">{title}</p>
-          </div>
-        )}
+        {/* Subtle glow effect on hover */}
+        <div className="absolute inset-0 bg-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
       </div>
     </Link>
   );

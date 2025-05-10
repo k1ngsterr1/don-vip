@@ -1,6 +1,12 @@
 {
   "SendReview": {
     "backLink": "Back",
-    "title": "Leave a review"
+    "title": "Leave a review",
+    "selectProduct": "Select a product to review",
+    "searchPlaceholder": "Search products...",
+    "errorLoading": "Error loading products. Please try again.",
+    "noProducts": "No products found",
+    "selectedProduct": "Selected product",
+    "change": "Change"
   }
 }
