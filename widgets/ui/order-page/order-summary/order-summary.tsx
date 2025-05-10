@@ -34,14 +34,14 @@ export function OrderSummary({
         </h2>
 
         <div className="flex items-center mb-4">
-          <div className="w-16 h-16 rounded-lg overflow-hidden mr-4 bg-gray-100 flex-shrink-0">
+          <div className="w-16 h-16 flex items-center justify-center rounded-lg overflow-hidden mr-4 bg-gray-100 flex-shrink-0">
             {game.currencyImage && (
               <Image
-                src={game.currencyImage || "/placeholder.svg"}
+                src={"/diamond.webp"}
                 alt={game.currencyName}
                 width={64}
                 height={64}
-                className="object-cover w-full h-full"
+                className="object-cover w-[54px] h-[54px] "
               />
             )}
           </div>

@@ -52,7 +52,7 @@ export const ServicesBlock = () => {
               key={product.id}
               title={product.name}
               image={product.image || "/diverse-group-playing-board-game.png"}
-              href={`/${product.id}`}
+              href={`/product/${product.id}`}
               hasGem={false}
               gemColor=""
               badge=""
