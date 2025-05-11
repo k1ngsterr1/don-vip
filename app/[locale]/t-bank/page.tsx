@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import { useState } from "react";
 import { FileText, Mail, Phone, User } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -22,7 +21,6 @@ export default function TBankPaymentPage() {
   const promocodeT = useTranslations("Payment.payment.form.promocode");
   const descriptionT = useTranslations("Payment.payment.form.description");
 
-  // Extract order details from URL parameters
   const orderId = searchParams.get("orderId");
   const amount = searchParams.get("amount") || "0";
   const price = searchParams.get("price") || "0";
@@ -40,6 +38,7 @@ export default function TBankPaymentPage() {
     code: string;
     discount: number;
   } | null>(null);
+
   const [promocodeError, setPromocodeError] = useState("");
 
   const handleApplyPromocode = () => {

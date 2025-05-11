@@ -5,7 +5,7 @@ import { CouponsManagerWidget } from "@/widgets/ui/coupons-page/coupons-manager/
 export default function CouponsPage() {
   return (
     <ContentWrapper>
-      <main className=" bg-gray-50 md:bg-gradient-to-b md:from-gray-50 md:to-gray-100">
+      <main className="">
         <div className="hidden md:block absolute top-40 left-20 w-32 h-32 bg-blue-50 rounded-full opacity-70 blur-3xl"></div>
         <div className="hidden md:block absolute top-60 right-20 w-40 h-40 bg-blue-50 rounded-full opacity-70 blur-3xl"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pb-20 pt-4 md:pt-12 lg:pt-16 relative">

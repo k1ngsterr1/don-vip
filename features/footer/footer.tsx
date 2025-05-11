@@ -10,7 +10,7 @@ export default function Footer() {
   const i18n = useTranslations("Footer");
 
   const footerLinks = [
-    { id: "terms", href: "/terms" },
+    { id: "terms", href: "/user-agreement" },
     { id: "privacy", href: "/privacy-policy" },
     { id: "offer", href: "/public-offer" },
     { id: "contact", href: "/contact" },
