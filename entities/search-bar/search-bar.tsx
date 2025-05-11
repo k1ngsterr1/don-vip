@@ -19,6 +19,11 @@ interface SearchBarProps {
   compact?: boolean;
 }
 
+interface ProductSuggestion {
+  id: string | null;
+  name: string;
+}
+
 export default function SearchBar({
   placeholder = "Найти сервис, либо игру",
   initialValue = "",
@@ -35,13 +40,19 @@ export default function SearchBar({
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
+  // Fetch product suggestions based on search value
   const { data: searchResults } = useSearchProducts(
     searchValue.length > 1 ? searchValue : "",
     5
   );
 
-  const suggestions = searchResults?.data.map((product) => product.name) || [];
+  const suggestions: any =
+    searchResults?.data?.map((product) => ({
+      id: product.id,
+      name: product.name,
+    })) || [];
 
+  // If no search results, use popular products as suggestions
   const popularProducts = [
     "Mobile Legends",
     "PUBG Mobile",
@@ -50,18 +61,32 @@ export default function SearchBar({
     "TikTok Coins",
   ];
 
-  const displaySuggestions =
-    suggestions.length > 0 ? suggestions : popularProducts;
+  // Use search results if available, otherwise use popular products
+  const displaySuggestions: ProductSuggestion[] =
+    suggestions.length > 0
+      ? suggestions
+      : popularProducts.map((name) => ({ id: null, name }));
 
-  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  // Get recent searches from localStorage
+  const [recentSearches, setRecentSearches] = useState<ProductSuggestion[]>([]);
 
+  // Load recent searches from localStorage - FIXED: Using useEffect with client-side check
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    // This will only run on the client after hydration is complete
+    const savedSearches = localStorage.getItem("recentSearches");
+    if (savedSearches) {
       try {
-        const savedSearches = localStorage.getItem("recentSearches");
-        if (savedSearches) {
-          setRecentSearches(JSON.parse(savedSearches));
-        }
+        const parsedSearches = JSON.parse(savedSearches);
+        // Ensure we have valid objects in our array
+        const validSearches = Array.isArray(parsedSearches)
+          ? parsedSearches.filter(
+              (item) =>
+                typeof item === "object" &&
+                item !== null &&
+                typeof item.name === "string"
+            )
+          : [];
+        setRecentSearches(validSearches);
       } catch (error) {
         console.error("Failed to load recent searches:", error);
         localStorage.setItem("recentSearches", JSON.stringify([]));
@@ -69,18 +94,17 @@ export default function SearchBar({
     }
   }, []);
 
-  const addToRecentSearches = (term: string) => {
+  const addToRecentSearches = (term: string, id: string | null = null) => {
     if (!term.trim()) return;
 
+    const newSearch = { id, name: term };
     const updatedSearches = [
-      term,
-      ...recentSearches.filter((item) => item !== term),
+      newSearch,
+      ...recentSearches.filter((item) => item.name !== term),
     ].slice(0, 5);
-    setRecentSearches(updatedSearches);
 
-    if (typeof window !== "undefined") {
-      localStorage.setItem("recentSearches", JSON.stringify(updatedSearches));
-    }
+    setRecentSearches(updatedSearches);
+    localStorage.setItem("recentSearches", JSON.stringify(updatedSearches));
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -106,6 +130,7 @@ export default function SearchBar({
   };
 
   const handleBlur = () => {
+    // Delay to allow clicking on suggestions
     setTimeout(() => {
       setIsFocused(false);
       setShowSuggestions(false);
@@ -123,18 +148,22 @@ export default function SearchBar({
     }
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setSearchValue(suggestion);
+  const handleSuggestionClick = (suggestion: ProductSuggestion) => {
+    setSearchValue(suggestion.name);
     setShowSuggestions(false);
 
     // Add to recent searches
-    addToRecentSearches(suggestion);
+    addToRecentSearches(suggestion.name, suggestion.id);
 
-    // Navigate to search results page
-    router.push(`/games/search?q=${encodeURIComponent(suggestion)}`);
+    // Navigate to product detail page if ID exists, otherwise to search page
+    if (suggestion.id) {
+      router.push(`/product/${suggestion.id}`);
+    } else {
+      router.push(`/search?q=${encodeURIComponent(suggestion.name)}`);
+    }
 
     if (onSearch) {
-      onSearch(suggestion);
+      onSearch(suggestion.name);
     }
   };
 
@@ -145,11 +174,20 @@ export default function SearchBar({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchValue.trim()) {
-      // Add to recent searches
-      addToRecentSearches(searchValue);
+      const matchingProduct = suggestions.find(
+        (product: any) =>
+          product.name.toLowerCase() === searchValue.toLowerCase()
+      );
 
-      // Navigate to search results page
-      router.push(`/search?q=${encodeURIComponent(searchValue)}`);
+      // Add to recent searches with ID if available
+      addToRecentSearches(searchValue, matchingProduct?.id || null);
+
+      // Navigate to product detail page if match found, otherwise to search page
+      if (matchingProduct?.id) {
+        router.push(`/product/${matchingProduct.id}`);
+      } else {
+        router.push(`/search?q=${encodeURIComponent(searchValue)}`);
+      }
 
       if (onSearch) {
         onSearch(searchValue);
@@ -208,8 +246,6 @@ export default function SearchBar({
             } ${className}`}
             style={{ height: compact ? "auto" : height }}
           />
-
-          {/* Clear button - only show when there's text */}
           {searchValue && (
             <button
               type="button"
@@ -230,8 +266,6 @@ export default function SearchBar({
               />
             </button>
           )}
-
-          {/* Voice search button - PC only */}
           {enhanced && !compact && (
             <button
               type="button"
@@ -241,8 +275,6 @@ export default function SearchBar({
               <Mic size={18} className="text-gray-400 hover:text-blue-600" />
             </button>
           )}
-
-          {/* Submit button - only visible on PC when enhanced */}
           {enhanced && (
             <button
               type="submit"
@@ -278,7 +310,9 @@ export default function SearchBar({
 
                 {displaySuggestions.map((suggestion, index) => (
                   <motion.div
-                    key={suggestion}
+                    key={`suggestion-${suggestion.id || index}-${
+                      suggestion.name
+                    }`}
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
@@ -288,7 +322,7 @@ export default function SearchBar({
                       onClick={() => handleSuggestionClick(suggestion)}
                     >
                       <Search size={14} className="text-gray-400 mr-2" />
-                      <span>{suggestion}</span>
+                      <span>{suggestion.name}</span>
                     </button>
                   </motion.div>
                 ))}
@@ -304,7 +338,9 @@ export default function SearchBar({
 
                     {recentSearches.map((search, index) => (
                       <motion.div
-                        key={search}
+                        key={`recent-${index}-${search.id || ""}-${
+                          search.name
+                        }`}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{
@@ -316,7 +352,7 @@ export default function SearchBar({
                           onClick={() => handleSuggestionClick(search)}
                         >
                           <Search size={14} className="text-gray-400 mr-2" />
-                          <span>{search}</span>
+                          <span>{search.name}</span>
                         </button>
                       </motion.div>
                     ))}

@@ -24,12 +24,15 @@ export default function Header({ isSearchBar = true }: IHeader) {
   const t = useTranslations("Header");
   const router = useRouter();
   const { isAuthenticated, logout } = useAuthStore();
+
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState<"games" | "services" | null>(
     null
   );
   const [isScrolled, setIsScrolled] = useState(false);
+  // FIXED: Added client-side only state for tablet detection
+  const [isTablet, setIsTablet] = useState(false);
 
   const menuRef = useRef<HTMLDivElement>(null);
   const menuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -60,13 +63,29 @@ export default function Header({ isSearchBar = true }: IHeader) {
     router.push("/auth/login");
   };
 
+  // FIXED: Move all browser-specific code into useEffect
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
 
+    // Check tablet size on client-side only
+    const checkTablet = () => {
+      setIsTablet(window.innerWidth >= 930 && window.innerWidth < 1024);
+    };
+
+    // Initial checks
+    checkTablet();
+    handleScroll();
+
+    // Add event listeners
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("resize", checkTablet);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", checkTablet);
+    };
   }, []);
 
   useEffect(() => {
@@ -82,22 +101,6 @@ export default function Header({ isSearchBar = true }: IHeader) {
       if (menuTimeoutRef.current) {
         clearTimeout(menuTimeoutRef.current);
       }
-    };
-  }, []);
-
-  // Determine if we're on a tablet-sized screen
-  const [isTablet, setIsTablet] = useState(false);
-
-  useEffect(() => {
-    const checkTablet = () => {
-      setIsTablet(window.innerWidth >= 930 && window.innerWidth < 1024);
-    };
-
-    checkTablet(); // Call immediately to set initial value
-    window.addEventListener("resize", checkTablet);
-
-    return () => {
-      window.removeEventListener("resize", checkTablet);
     };
   }, []);
 
@@ -194,8 +197,10 @@ export default function Header({ isSearchBar = true }: IHeader) {
           className="hidden lg:block"
         >
           <AnimatePresence>
-            {activeMenu === "games" && <GamesMegaMenu />}
-            {activeMenu === "services" && <ServicesMegaMenu />}
+            {activeMenu === "games" && <GamesMegaMenu key="games-menu" />}
+            {activeMenu === "services" && (
+              <ServicesMegaMenu key="services-menu" />
+            )}
           </AnimatePresence>
         </div>
         {isSearchBar && (
