@@ -1,0 +1,19 @@
+{
+  "Contacts": {
+    "contacts": {
+      "back": "Back",
+      "title": "Contact us",
+      "email": "Email:",
+      "cooperationEmail": "For cooperation email:",
+      "address": "Address:",
+      "addressValue": "Russia, Nakhodka city",
+      "companyName": "Company name:",
+      "companyNameValue": "S.P. Aslanyan David Armenovich",
+      "partnerCompany": "Partner company:",
+      "partnerCompanyValue": "DMME HK LIMITED",
+      "inn": "INN:",
+      "ogrnip": "OGRNIP:",
+      "phone": "Tel./WhatsApp:"
+    }
+  }
+}

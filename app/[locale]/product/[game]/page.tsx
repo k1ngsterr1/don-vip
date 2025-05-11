@@ -1,3 +1,4 @@
+import { productService } from "@/entities/product/api/product.api";
 import { Skeleton } from "@/shared/ui/skeleton/skeleton";
 import { OrderBlock } from "@/widgets/ui/order-page/order-block";
 import type { Metadata } from "next";
@@ -9,12 +10,24 @@ type Props = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function generateMetadata({ params }: any): Promise<Metadata> {
-  const { game } = await params;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  try {
+    // Convert the game slug to a number
+    const gameId = parseInt(params.game, 10);
 
-  return {
-    title: `Игра: ${game}`,
-  };
+    // Fetch the game details from the backend
+    const gameData = await productService.findOne(gameId);
+
+    return {
+      title: `${gameData.name}`,
+      description: gameData.description,
+    };
+  } catch (error) {
+    console.error("Error fetching game data for metadata:", error);
+    return {
+      title: params.locale === "ru" ? "Игра" : "Game",
+    };
+  }
 }
 
 export default async function OrderPageRoute({ params }: Props) {
@@ -30,20 +43,14 @@ export default async function OrderPageRoute({ params }: Props) {
 function OrderPageSkeleton() {
   return (
     <>
-      {/* Mobile Skeleton */}
       <div className="md:hidden">
-        {/* Banner skeleton */}
         <Skeleton className="w-full h-[112px] rounded-none" />
-
-        {/* Product info skeleton */}
         <div className="p-4">
           <Skeleton className="w-3/4 h-6 mb-2" />
           <Skeleton className="w-full h-4 mb-1" />
           <Skeleton className="w-full h-4 mb-1" />
           <Skeleton className="w-2/3 h-4" />
         </div>
-
-        {/* Currency selector skeleton */}
         <div className="p-4 border-t border-gray-100">
           <Skeleton className="w-1/2 h-5 mb-3" />
           <div className="grid grid-cols-2 gap-3">
@@ -52,8 +59,6 @@ function OrderPageSkeleton() {
             ))}
           </div>
         </div>
-
-        {/* User ID form skeleton */}
         <div className="p-4 border-t border-gray-100">
           <Skeleton className="w-1/3 h-5 mb-2" />
           <Skeleton className="w-full h-[42px] rounded-lg mb-4" />

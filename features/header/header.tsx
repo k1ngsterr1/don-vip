@@ -24,7 +24,6 @@ export default function Header({ isSearchBar = true }: IHeader) {
   const t = useTranslations("Header");
   const router = useRouter();
   const { isAuthenticated, logout } = useAuthStore();
-
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState<"games" | "services" | null>(

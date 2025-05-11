@@ -35,16 +35,13 @@ export default function SearchBar({
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  // Fetch product suggestions based on search value
   const { data: searchResults } = useSearchProducts(
     searchValue.length > 1 ? searchValue : "",
     5
   );
 
-  // Get product names for suggestions
   const suggestions = searchResults?.data.map((product) => product.name) || [];
 
-  // If no search results, use popular products as suggestions
   const popularProducts = [
     "Mobile Legends",
     "PUBG Mobile",
@@ -53,14 +50,11 @@ export default function SearchBar({
     "TikTok Coins",
   ];
 
-  // Use search results if available, otherwise use popular products
   const displaySuggestions =
     suggestions.length > 0 ? suggestions : popularProducts;
 
-  // Get recent searches from localStorage
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
-  // Load recent searches from localStorage
   useEffect(() => {
     if (typeof window !== "undefined") {
       try {
@@ -75,7 +69,6 @@ export default function SearchBar({
     }
   }, []);
 
-  // Add a search term to recent searches
   const addToRecentSearches = (term: string) => {
     if (!term.trim()) return;
 
@@ -113,7 +106,6 @@ export default function SearchBar({
   };
 
   const handleBlur = () => {
-    // Delay to allow clicking on suggestions
     setTimeout(() => {
       setIsFocused(false);
       setShowSuggestions(false);
@@ -139,7 +131,7 @@ export default function SearchBar({
     addToRecentSearches(suggestion);
 
     // Navigate to search results page
-    router.push(`/search?q=${encodeURIComponent(suggestion)}`);
+    router.push(`/games/search?q=${encodeURIComponent(suggestion)}`);
 
     if (onSearch) {
       onSearch(suggestion);
@@ -147,7 +139,6 @@ export default function SearchBar({
   };
 
   const handleVoiceSearch = () => {
-    // In a real app, this would trigger voice recognition
     alert("Voice search activated");
   };
 
@@ -167,7 +158,6 @@ export default function SearchBar({
     setShowSuggestions(false);
   };
 
-  // Close suggestions when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -268,8 +258,6 @@ export default function SearchBar({
           )}
         </div>
       </form>
-
-      {/* Search suggestions dropdown - PC only */}
       {enhanced && (
         <AnimatePresence>
           {showSuggestions && (

@@ -1,0 +1,19 @@
+{
+  "Contacts": {
+    "contacts": {
+      "back": "Вернуться",
+      "title": "Связаться с нами",
+      "email": "Email:",
+      "cooperationEmail": "Email для сотрудничества:",
+      "address": "Адрес:",
+      "addressValue": "Россия, город Находка",
+      "companyName": "Название компании:",
+      "companyNameValue": "ИП Асланян Давид Арменович",
+      "partnerCompany": "Партнерская компания:",
+      "partnerCompanyValue": "DMME HK LIMITED",
+      "inn": "ИНН:",
+      "ogrnip": "ОГРНИП:",
+      "phone": "Тел./WhatsApp:"
+    }
+  }
+}

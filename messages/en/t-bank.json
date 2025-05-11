@@ -1,0 +1,72 @@
+{
+  "Payment": {
+    "payment": {
+      "header": {
+        "backToStore": "Back to Store",
+        "order": "Order #"
+      },
+      "info": {
+        "title": "T-Bank Payment",
+        "accountId": "Account ID",
+        "serverId": "Server ID"
+      },
+      "form": {
+        "amount": "Amount",
+        "promocode": {
+          "label": "Promocode",
+          "placeholder": "Enter promocode",
+          "apply": "Apply",
+          "cancel": "Cancel",
+          "applied": "Promocode applied: {discount}% discount",
+          "errors": {
+            "empty": "Please enter a promocode",
+            "invalid": "Invalid promocode"
+          }
+        },
+        "description": {
+          "label": "Description",
+          "placeholder": "Payment description",
+          "default": "Purchase of {amount} {currency} for {game}"
+        },
+        "name": {
+          "label": "Full Name",
+          "placeholder": "John Doe"
+        },
+        "email": {
+          "label": "E-mail",
+          "placeholder": "example@mail.com"
+        },
+        "phone": {
+          "label": "Phone",
+          "placeholder": "+1 (123) 456-7890"
+        },
+        "submit": {
+          "processing": "Processing payment...",
+          "pay": "Pay {amount} RUB"
+        },
+        "terms": "By clicking \"Pay\", you agree to the payment terms and privacy policy",
+        "errors": {
+          "emailOrPhone": "Email or Phone field must not be empty",
+          "paymentError": "Error initializing payment. Please try again."
+        }
+      },
+      "footer": {
+        "secure": "Payment processed securely by T-Bank Payment System",
+        "rights": "All rights reserved"
+      },
+      "success": {
+        "title": "Payment Successful!",
+        "message": "Your purchase of {amount} {currency} has been completed successfully.",
+        "reference": "Order reference:",
+        "redirecting": "Redirecting to home in {seconds} seconds...",
+        "return": "Return to Store"
+      },
+      "failed": {
+        "title": "Payment Failed",
+        "defaultMessage": "There was an issue processing your payment",
+        "return": "Return to Store",
+        "tryAgain": "Try Again"
+      }
+    }
+  }
+}

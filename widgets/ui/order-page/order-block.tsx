@@ -131,6 +131,24 @@ export function OrderBlock({
     // Ensure it has 2 decimal places
     const formattedPrice = Number(numericPrice).toFixed(2);
 
+    // If payment method is tbank, redirect to the t-bank payment page
+    if (selectedPaymentMethod === "tbank" && selectedCurrency) {
+      // Create URL with query parameters
+      const params = new URLSearchParams({
+        orderId: Math.floor(Math.random() * 1000000).toString(), // Generate a random order ID for demo
+        amount: selectedCurrency.amount.toString(),
+        price: numericPrice,
+        currencyName: game.currencyName,
+        gameName: game.name,
+        userId: userId,
+        serverId: game.requiresServer ? serverId : "",
+      });
+
+      // Redirect to t-bank payment page
+      window.location.href = `/t-bank?${params.toString()}`;
+      return;
+    }
+
     const orderData: CreateOrderDto = {
       price: formattedPrice as any, // Format price as a decimal string with 2 decimal places
       amount: selectedCurrency.amount,
@@ -146,7 +164,6 @@ export function OrderBlock({
     createOrder(orderData);
   };
 
-  // Mobile version
   const mobileVersion = (
     <div className="md:hidden">
       <Banner backgroundImage={game.image || "/banner.png"} height="112px" />
@@ -176,7 +193,6 @@ export function OrderBlock({
         onSelect={setSelectedPaymentMethod}
         selectedMethod={selectedPaymentMethod}
       />
-
       {error && (
         <div className="px-4 mb-4">
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
@@ -184,8 +200,7 @@ export function OrderBlock({
           </div>
         </div>
       )}
-
-      <div className="fixed bottom-16 right-[16px] px-4 py-2">
+      <div className="fixed bottom-20 left-1/2 -translate-x-1/2 px-4 py-2">
         <button
           className={cn(
             "w-[140px] py-3 px-[12px] rounded-full text-white font-medium transition-colors",
@@ -204,17 +219,14 @@ export function OrderBlock({
     </div>
   );
 
-  // Desktop version
   const desktopVersion = (
     <div className="hidden md:block max-w-6xl mx-auto px-6 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Left column - Main content */}
         <div className="lg:w-2/3">
           <Banner
             backgroundImage={game.image || "/banner.png"}
             height="250px"
           />
-
           <div className="bg-white rounded-lg shadow-sm border border-gray-100 mt-6 overflow-hidden">
             <div className="p-6 border-b border-gray-100">
               <h1 className="text-2xl font-medium text-gray-800 mb-2">
@@ -222,7 +234,6 @@ export function OrderBlock({
               </h1>
               <p className="text-gray-600">{game.description}</p>
             </div>
-
             <div className="p-6 border-b border-gray-100">
               <h2 className="text-lg font-medium text-gray-800 mb-4">
                 {t("block.selectAmount")}
@@ -237,7 +248,6 @@ export function OrderBlock({
                 enhanced={true}
               />
             </div>
-
             <div className="p-6 border-b border-gray-100">
               <UserIdForm
                 requiresServer={game.requiresServer}
@@ -249,7 +259,6 @@ export function OrderBlock({
                 onAgreeChange={setAgreeToTerms}
               />
             </div>
-
             <div className="p-6">
               <PaymentMethodSelector
                 enhanced={true}
@@ -257,7 +266,6 @@ export function OrderBlock({
                 selectedMethod={selectedPaymentMethod}
               />
             </div>
-
             {error && (
               <div className="px-6 pb-6">
                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
@@ -267,8 +275,6 @@ export function OrderBlock({
             )}
           </div>
         </div>
-
-        {/* Right column - Order summary */}
         <div className="lg:w-1/3">
           <OrderSummary
             game={game}

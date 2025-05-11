@@ -117,7 +117,6 @@ export function OrderSummary({
             {t("summary.securityMessage")}
           </p>
         </div>
-
         <div className="mt-4 space-y-2">
           <div className="flex items-center">
             <Check className="text-green-500 mr-2" size={14} />

@@ -16,11 +16,11 @@ const eslintConfig = [
     files: ["**/*.ts", "**/*.tsx"],
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
-      "ts-expect-error": "allow-with-description", // пиши причину после —
+      "ts-expect-error": "allow-with-description",
       "@typescript-eslint/ban-ts-comment": [
         "error",
         {
-          "ts-nocheck": false, // ✅ now correctly placed inside `rules`
+          "ts-nocheck": false,
         },
       ],
     },
