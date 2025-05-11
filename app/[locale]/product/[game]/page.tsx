@@ -79,21 +79,17 @@ function OrderPageSkeleton() {
             ))}
           </div>
         </div>
-
         {/* Buy button skeleton */}
         <div className="fixed bottom-16 right-[16px] px-4 py-2">
           <Skeleton className="w-[140px] h-[48px] rounded-full" />
         </div>
       </div>
-
-      {/* Desktop Skeleton */}
       <div className="hidden md:block max-w-6xl mx-auto px-6 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left column - Main content */}
           <div className="lg:w-2/3">
             {/* Banner skeleton */}
             <Skeleton className="w-full h-[250px] rounded-lg" />
-
             <div className="bg-white rounded-lg shadow-sm border border-gray-100 mt-6 overflow-hidden">
               {/* Product info skeleton */}
               <div className="p-6 border-b border-gray-100">

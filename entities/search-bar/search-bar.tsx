@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Mic, Search, X } from "lucide-react";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
@@ -17,6 +16,8 @@ interface SearchBarProps {
   iconSize?: number;
   enhanced?: boolean;
   compact?: boolean;
+  onFocus?: () => void;
+  onBlur?: () => void;
 }
 
 interface ProductSuggestion {
@@ -33,6 +34,8 @@ export default function SearchBar({
   iconSize = 17,
   enhanced = false,
   compact = false,
+  onFocus,
+  onBlur,
 }: SearchBarProps) {
   const [searchValue, setSearchValue] = useState(initialValue);
   const [isFocused, setIsFocused] = useState(false);
@@ -127,6 +130,10 @@ export default function SearchBar({
     if (enhanced && searchValue.length > 0) {
       setShowSuggestions(true);
     }
+    // Call the external onFocus handler if provided
+    if (onFocus) {
+      onFocus();
+    }
   };
 
   const handleBlur = () => {
@@ -134,6 +141,10 @@ export default function SearchBar({
     setTimeout(() => {
       setIsFocused(false);
       setShowSuggestions(false);
+      // Call the external onBlur handler if provided
+      if (onBlur) {
+        onBlur();
+      }
     }, 200);
   };
 
@@ -209,6 +220,22 @@ export default function SearchBar({
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Determine if we're on mobile based on viewport width
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640); // sm breakpoint in Tailwind
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
     };
   }, []);
 
@@ -298,7 +325,9 @@ export default function SearchBar({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="absolute left-0 right-0 top-full mt-1 bg-white rounded-lg shadow-lg z-50 overflow-hidden border border-gray-200"
+              className={`absolute left-0 right-0 top-full mt-1 bg-white rounded-lg shadow-lg z-50 overflow-hidden border border-gray-200 ${
+                isMobile ? "max-h-[70vh] overflow-y-auto" : ""
+              }`}
             >
               {/* Suggestions */}
               <div className="p-2">

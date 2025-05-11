@@ -33,9 +33,12 @@ export default function Header({ isSearchBar = true }: IHeader) {
   const [isScrolled, setIsScrolled] = useState(false);
   // FIXED: Added client-side only state for tablet detection
   const [isTablet, setIsTablet] = useState(false);
+  // Track if mobile search is active to adjust UI
+  const [mobileSearchActive, setMobileSearchActive] = useState(false);
 
   const menuRef = useRef<HTMLDivElement>(null);
   const menuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const mobileSearchRef = useRef<HTMLDivElement>(null);
 
   const handleSearch = (value: string) => {
     setSearchQuery(value);
@@ -61,6 +64,18 @@ export default function Header({ isSearchBar = true }: IHeader) {
   const handleLogout = () => {
     logout();
     router.push("/auth/login");
+  };
+
+  // Handle mobile search focus/blur
+  const handleMobileSearchFocus = () => {
+    setMobileSearchActive(true);
+  };
+
+  const handleMobileSearchBlur = () => {
+    // We'll use a timeout to allow clicking on suggestions
+    setTimeout(() => {
+      setMobileSearchActive(false);
+    }, 200);
   };
 
   // FIXED: Move all browser-specific code into useEffect
@@ -92,6 +107,14 @@ export default function Header({ isSearchBar = true }: IHeader) {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setActiveMenu(null);
+      }
+
+      // Also handle clicks outside mobile search
+      if (
+        mobileSearchRef.current &&
+        !mobileSearchRef.current.contains(event.target as Node)
+      ) {
+        setMobileSearchActive(false);
       }
     }
 
@@ -203,16 +226,27 @@ export default function Header({ isSearchBar = true }: IHeader) {
             )}
           </AnimatePresence>
         </div>
+
+        {/* Mobile search bar with enhanced dropdown */}
         {isSearchBar && (
-          <div className="sm:hidden py-2 px-4">
+          <div
+            ref={mobileSearchRef}
+            className={`sm:hidden py-2 px-4 relative ${
+              mobileSearchActive ? "z-50" : ""
+            }`}
+          >
             <SearchBar
               placeholder={t("searchPlaceholder")}
               onSearch={handleSearch}
               height="56px"
               className="rounded-lg"
+              enhanced={true}
+              onFocus={handleMobileSearchFocus as any}
+              onBlur={handleMobileSearchBlur}
             />
           </div>
         )}
+
         <MobileNav
           isOpen={mobileMenuOpen}
           onLogout={handleLogout}
