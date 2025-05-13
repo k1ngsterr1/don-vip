@@ -11,28 +11,21 @@ export const sha256 = async (message: string) => {
 
 // Helper function to generate token for Tinkoff API
 export const generateToken = async (
-  params: Record<string, any>,
+  params: {
+    TerminalKey: string;
+    Amount: number;
+    OrderId: string;
+  },
   password: string
-) => {
-  const paramsForToken = { ...params };
-  delete paramsForToken.Receipt;
-  delete paramsForToken.DATA;
+): Promise<string> => {
+  const rawString =
+    String(params.Amount) + params.OrderId + params.TerminalKey + password;
 
-  const sortedKeys = Object.keys(paramsForToken).sort();
-
-  // Concatenate values
-  let concatenatedValues = "";
-  sortedKeys.forEach((key) => {
-    if (paramsForToken[key] !== null && paramsForToken[key] !== undefined) {
-      concatenatedValues += paramsForToken[key];
-    }
-  });
-
-  // Append password
-  concatenatedValues += password;
-
-  // Generate SHA-256 hash
-  return sha256(concatenatedValues);
+  const encoder = new TextEncoder();
+  const data = encoder.encode(rawString);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 };
 
 // Apply promocode and calculate discounted amount

@@ -5,7 +5,10 @@ import { useState } from "react";
 import { FileText, Mail, Phone, User } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { applyPromocode } from "@/widgets/ui/t-bank-form/utils/payment-utils";
+import {
+  applyPromocode,
+  generateToken,
+} from "@/widgets/ui/t-bank-form/utils/payment-utils";
 import { PaymentHeaderInfo } from "@/widgets/ui/t-bank-form/ui/payment-header-info";
 import { AmountInput } from "@/widgets/ui/t-bank-form/ui/amount-input";
 import { PromocodeInput } from "@/widgets/ui/t-bank-form/ui/promocode-input";
@@ -78,24 +81,89 @@ export default function TBankPaymentPage() {
       const phone = (formElements.namedItem("phone") as HTMLInputElement).value;
       const name =
         (formElements.namedItem("name") as HTMLInputElement)?.value || "";
+      const description =
+        (formElements.namedItem("description") as HTMLInputElement)?.value ||
+        "Payment";
 
       if (!email && !phone) {
-        alert(formT("errors.emailOrPhone"));
+        alert("Укажите email или телефон");
         setIsLoading(false);
         return;
       }
 
-      setTimeout(() => {
-        setIsLoading(false);
+      const finalOrderId = `order_${userId}_${Date.now()}`;
+      const amountInKopecks = Math.round(parseFloat(paymentAmount) * 100);
 
-        // Redirect to success page
-        router.push(
-          `/payment-success?orderId=${orderId}&amount=${amount}&currencyName=${currencyName}`
-        );
-      }, 2000);
-    } catch (error) {
-      console.error("Payment error:", error);
-      alert(formT("errors.paymentError"));
+      const payload = {
+        TerminalKey: "1731053917835DEMO",
+        Amount: amountInKopecks,
+        OrderId: finalOrderId,
+        Description: description,
+        CustomerKey: userId,
+        SuccessURL: "https://test.com",
+        FailURL: "https://test.com",
+        DATA: {
+          Email: email,
+          Phone: phone,
+          Name: name,
+        },
+        Receipt: {
+          EmailCompany: "mail@mail.com",
+          Taxation: "patent",
+          FfdVersion: "1.2",
+          Email: email,
+          Phone: phone,
+          Items: [
+            {
+              Name: description,
+              Price: amountInKopecks,
+              Quantity: 1,
+              Amount: amountInKopecks,
+              PaymentMethod: "full_prepayment",
+              PaymentObject: "service",
+              Tax: "none",
+              MeasurementUnit: "pc",
+            },
+          ],
+        },
+      };
+
+      const token = await generateToken(
+        {
+          TerminalKey: payload.TerminalKey,
+          Amount: payload.Amount,
+          OrderId: payload.OrderId,
+        },
+        "M3u78sPoxlVxe5fj"
+      );
+
+      const finalPayload = { ...payload, Token: token };
+
+      const response = await fetch("https://securepay.tinkoff.ru/v2/Init", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(finalPayload),
+      });
+
+      const rawText = await response.text();
+      console.log("📦 Raw Tinkoff Response:", rawText);
+
+      if (!response.ok || response.status === 204) {
+        throw new Error(`Ошибка инициализации платежа: ${response.status}`);
+      }
+
+      const result = JSON.parse(rawText);
+      console.log("✅ Parsed Response:", result);
+
+      if (result.Success && result.PaymentURL) {
+        window.location.href = result.PaymentURL;
+      } else {
+        throw new Error(result.Message || "Ошибка инициализации платежа");
+      }
+    } catch (err) {
+      console.error("❌ Ошибка платежа:", err);
+      alert("Ошибка при инициализации платежа. Попробуйте позже.");
+    } finally {
       setIsLoading(false);
     }
   };

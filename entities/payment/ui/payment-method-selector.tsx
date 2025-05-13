@@ -21,6 +21,7 @@ export function PaymentMethodSelector({
   const paymentMethods = [
     { id: "tbank", name: i18n("methods.tbank"), icon: tbank },
     { id: "card", name: i18n("methods.card"), icon: masterbank },
+    { id: "nspk", name: "НСПК", icon: masterbank },
   ];
 
   const paymentMethodSelector = (

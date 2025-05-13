@@ -71,11 +71,8 @@ export function OrderBlock({
         replenishmentArray = [];
       }
 
-      // Get the currency type from the first replenishment item if available
       const currencyType =
         replenishmentArray.length > 0 ? replenishmentArray[0].type : "";
-
-      // Capitalize the first letter of the currency type for display
       const formattedCurrencyName = currencyType
         ? currencyType.charAt(0).toUpperCase() + currencyType.slice(1)
         : product.type === "Bigo"
@@ -88,7 +85,7 @@ export function OrderBlock({
         description: product.description,
         image: product.image,
         currencyName: formattedCurrencyName,
-        currencyImage: `/currency-${product.type.toLowerCase()}.png`, // Use product type for image path
+        currencyImage: `/currency-${product.type.toLowerCase()}.png`,
         requiresServer: product.type === "Smile",
       });
 
@@ -96,72 +93,116 @@ export function OrderBlock({
         replenishmentArray.map((item: any, index: number) => ({
           id: index,
           amount: item.amount,
-          price: `${item.price.toFixed(2)} RUB`, // Format price with currency
-          type: item.type, // Keep the original type from replenishment
+          price: `${item.price.toFixed(2)} RUB`,
+          type: item.type,
           sku: item.sku,
         }))
       );
     }
   }, [product]);
 
-  // If game data is not loaded yet, show loading state
   if (isProductLoading || !game) {
     return <OrderBlockSkeleton />;
   }
 
-  const isFormValid =
-    selectedAmount !== null &&
-    userId !== "" &&
-    agreeToTerms &&
-    (!game.requiresServer || serverId !== "");
-
-  // Find the selected currency option to display in the summary
   const selectedCurrency =
-    selectedAmount !== null ? currencyOptions[selectedAmount] : null;
+    currencyOptions.find((c) => c.id === selectedAmount) || null;
 
-  const handleSubmitOrder = () => {
+  const isFormValid =
+    selectedCurrency !== null &&
+    userId.trim() !== "" &&
+    agreeToTerms &&
+    (!game.requiresServer || serverId.trim() !== "");
+
+  const handleSubmitOrder = async () => {
+    console.log("🔄 Начинается сабмит заказа...");
+    setError("");
+
+    console.log("📋 Валидация формы:");
+    console.log("isFormValid:", isFormValid);
+    console.log("selectedCurrency:", selectedCurrency);
+    console.log("userId:", userId);
+    console.log("serverId:", serverId);
+    console.log("agreeToTerms:", agreeToTerms);
+    console.log("selectedAmount:", selectedAmount);
+    console.log("selectedPaymentMethod:", selectedPaymentMethod);
+
     if (!isFormValid || !selectedCurrency) {
+      console.warn("❌ Форма невалидна. Прерываем.");
       setError(t("errors.invalidForm"));
       return;
     }
 
-    // Extract the numeric value from the price string (remove currency symbols)
     const numericPrice = selectedCurrency.price.replace(/[^0-9.]/g, "");
-
-    // Ensure it has 2 decimal places
     const formattedPrice = Number(numericPrice).toFixed(2);
 
-    // If payment method is tbank, redirect to the t-bank payment page
-    if (selectedPaymentMethod === "tbank" && selectedCurrency) {
-      // Create URL with query parameters
-      const params = new URLSearchParams({
-        orderId: Math.floor(Math.random() * 1000000).toString(), // Generate a random order ID for demo
-        amount: selectedCurrency.amount.toString(),
-        price: numericPrice,
-        currencyName: game.currencyName,
-        gameName: game.name,
-        userId: userId,
-        serverId: game.requiresServer ? serverId : "",
-      });
-
-      // Redirect to t-bank payment page
-      window.location.href = `/t-bank?${params.toString()}`;
-      return;
-    }
+    console.log("💰 Обработка цены:");
+    console.log("numericPrice:", numericPrice);
+    console.log("formattedPrice:", formattedPrice);
 
     const orderData: CreateOrderDto = {
-      price: formattedPrice as any, // Format price as a decimal string with 2 decimal places
+      game_id: game.id,
+      currency_id: selectedCurrency.id,
       amount: selectedCurrency.amount,
-      //@ts-ignore
-      type: selectedCurrency.type, // Use the type directly from the selected currency option
-      payment: selectedPaymentMethod,
-      account_id: userId, // Use userId as account_id
-      //@ts-ignore
-      server_id: product.type === "Smile" ? serverId : undefined, // Only include server_id for Smile products
+      price: formattedPrice,
+      payment_method: selectedPaymentMethod,
+      user_game_id: userId,
+      server_id: game.requiresServer ? serverId : undefined,
     };
 
-    console.log("Submitting order with type:", selectedCurrency.type); // Log for debugging
-    createOrder(orderData);
+    console.log("📦 Отправка данных в createOrder:", orderData);
+
+    try {
+      const response = (await createOrder(orderData)) as any; // предполагается, что createOrder возвращает промис
+      console.log("✅ Заказ успешно создан:", response);
+
+      if (selectedPaymentMethod === "tbank") {
+        const params = new URLSearchParams({
+          orderId:
+            response?.id?.toString() ??
+            Math.floor(Math.random() * 1000000).toString(),
+          amount: selectedCurrency.amount.toString(),
+          price: numericPrice,
+          currencyName: game.currencyName,
+          gameName: game.name,
+          userId: userId,
+          serverId: game.requiresServer ? serverId : "",
+        });
+
+        console.log(
+          "🔁 Перенаправление на t-bank с параметрами:",
+          params.toString()
+        );
+
+        window.location.href = `/t-bank?${params.toString()}`;
+      }
+
+      if (selectedPaymentMethod === "nspk" && selectedCurrency) {
+        const params = new URLSearchParams({
+          orderId: Math.floor(Math.random() * 1000000).toString(),
+          amount: selectedCurrency.amount.toString(),
+          price: numericPrice,
+          currencyName: game.currencyName,
+          gameName: game.name,
+          userId: userId,
+          serverId: game.requiresServer ? serverId : "",
+        });
+
+        const orderData: CreateOrderDto = {
+          price: formattedPrice as any, // Format price as a decimal string with 2 decimal places
+          amount: selectedCurrency.amount,
+          //@ts-ignore
+          type: selectedCurrency.type, // Use the type directly from the selected currency option
+          payment: selectedPaymentMethod,
+          account_id: userId, // Use userId as account_id
+          //@ts-ignore
+          server_id: product.type === "Smile" ? serverId : undefined, // Only include server_id for Smile products
+        };
+      }
+    } catch (err) {
+      console.error("❌ Ошибка при создании заказа:", err);
+      setError(t("errors.orderFailed"));
+    }
   };
 
   const mobileVersion = (
@@ -212,7 +253,7 @@ export function OrderBlock({
           {isLoading
             ? isProcessingPayment
               ? t("summary.redirecting")
-              : t("summary.processing")
+              : "Loading..."
             : t("summary.buyNow")}
         </button>
       </div>
@@ -284,8 +325,7 @@ export function OrderBlock({
             serverId={serverId}
             onSubmit={handleSubmitOrder}
             isLoading={isLoading}
-            //@ts-ignore
-            isProcessingPayment={isProcessingPayment}
+            // isProcessingPayment={isProcessingPayment}
           />
         </div>
       </div>

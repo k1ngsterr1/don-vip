@@ -31,7 +31,7 @@ apiClient.interceptors.response.use(
   },
   (error) => {
     if (error.response) {
-      console.error("Response error:", error.response.data);
+      // console.error("Response error:", error.response.data);
     } else if (error.request) {
       console.error("Request error:", error.request);
     } else {

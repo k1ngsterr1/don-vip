@@ -4,6 +4,7 @@ import type React from "react";
 import { useState } from "react";
 import { Loader2, CreditCard, Lock } from "lucide-react";
 import Image from "next/image";
+import { useAuthStore } from "@/entities/auth/store/auth.store";
 
 interface TBankPaymentFormProps {
   amount: string;
@@ -18,6 +19,8 @@ export function TBankPaymentForm({
   currencyName,
   onPaymentComplete,
 }: TBankPaymentFormProps) {
+  const { user } = useAuthStore();
+  const userId = localStorage.getItem("userId");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,21 +47,109 @@ export function TBankPaymentForm({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const generateToken = async (
+    params: Record<string, any>,
+    password: string
+  ) => {
+    const filtered = { ...params };
+    delete filtered.Receipt;
+    delete filtered.DATA;
 
-    if (!validateForm()) {
-      return;
+    const sortedKeys = Object.keys(filtered).sort();
+    let concatenated = "";
+    for (const key of sortedKeys) {
+      if (filtered[key] !== null && filtered[key] !== undefined) {
+        concatenated += filtered[key];
+      }
     }
+    concatenated += password;
+
+    const encoder = new TextEncoder();
+    const data = encoder.encode(concatenated);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
 
     setIsSubmitting(true);
 
-    // Simulate API call to T-Bank payment system
-    setTimeout(() => {
+    try {
+      const orderId = `order_${userId}_${Date.now()}`;
+      const amountInKopecks = Math.round(parseFloat(price) * 100);
+
+      const receipt = {
+        EmailCompany: "mail@mail.com",
+        Taxation: "patent",
+        FfdVersion: "1.2",
+        Phone: phoneNumber,
+        Items: [
+          {
+            Name: `Оплата ${currencyName}`,
+            Price: amountInKopecks,
+            Quantity: 1,
+            Amount: amountInKopecks,
+            PaymentMethod: "full_prepayment",
+            PaymentObject: "service",
+            Tax: "none",
+            MeasurementUnit: "pc",
+          },
+        ],
+      };
+
+      const dataPayload = {
+        Phone: phoneNumber,
+        Name: password, // 👈 возможно, заменить на реальное имя
+      };
+
+      const payload = {
+        TerminalKey: "1731053917835DEMO",
+        Amount: amountInKopecks,
+        OrderId: orderId,
+        Description: `Оплата ${currencyName}`,
+        CustomerKey: userId,
+        Recurrent: "Y",
+        DATA: dataPayload,
+        Receipt: receipt,
+      };
+
+      const token = await generateToken(payload, "SHkprk$WgmOY9&mq");
+      const finalPayload = { ...payload, Token: token };
+
+      console.log("🔁 Инициализация платежа:", finalPayload);
+
+      const response = await fetch("https://securepay.tinkoff.ru/v2/Init", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(finalPayload),
+      });
+
+      const result = await response.json();
+      console.log("✅ Ответ Tinkoff Init:", result);
+
+      if (result.Success && result.PaymentURL) {
+        // Можно сохранить заказ или назначить тариф
+        await fetch("/api/tinkoff/link-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId, userId: userId }),
+        });
+
+        console.log("result is here:", result);
+
+        window.location.href = result.PaymentURL;
+      } else {
+        throw new Error(result.Message || "Ошибка инициализации платежа");
+      }
+    } catch (err) {
+      console.error("❌ Ошибка при инициализации платежа:", err);
+      onPaymentComplete("error");
+    } finally {
       setIsSubmitting(false);
-      // For demo purposes, always succeed
-      onPaymentComplete("success");
-    }, 2000);
+    }
   };
 
   return (

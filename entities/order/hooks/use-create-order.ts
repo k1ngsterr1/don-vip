@@ -1,16 +1,17 @@
 "use client";
 
-import type { CreateOrderDto } from "@/entities/order/model/types";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { orderApi } from "../api/order.api";
+import { queryKeys } from "@/shared/config/queryKeys";
+import type { CreateOrderDto } from "../model/types";
 import type {
   PagsmileCreatePayinDto,
   PagsmilePayinResponse,
 } from "@/entities/payment/model/types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@/shared/config/queryKeys";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { orderApi } from "../api/order.api";
 import { paymentApi } from "@/entities/payment/api/payment.api";
+import { useAuthStore } from "@/entities/auth/store/auth.store";
 
 /**
  * Hook to create a new order and process payment
@@ -20,11 +21,21 @@ export function useCreateOrder() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const { user } = useAuthStore();
 
   // Create order mutation
   const orderMutation = useMutation({
     mutationFn: (orderData: CreateOrderDto) => {
-      return orderApi.createOrder(orderData);
+      // Transform the data to match the API structure shown in Swagger
+      const apiOrderData = {
+        product_id: orderData.game_id,
+        item_id: orderData.currency_id,
+        payment: orderData.payment_method,
+        account_id: orderData.user_game_id,
+        server_id: orderData.server_id,
+      };
+
+      return orderApi.createOrder(apiOrderData as any);
     },
     onSuccess: (orderData, variables) => {
       // Invalidate orders query to refetch the list
@@ -45,23 +56,33 @@ export function useCreateOrder() {
   // Payment mutation
   const paymentMutation = useMutation({
     mutationFn: (paymentData: PagsmileCreatePayinDto) => {
-      return paymentApi.createPagsmilePayin(paymentData);
+      let userId: string | null = null;
+
+      if (user && user.id) {
+        userId = user.id.toString();
+      } else if (typeof window !== "undefined") {
+        userId = localStorage.getItem("userId");
+      }
+
+      const paymentDataWithUser = {
+        ...paymentData,
+        user_id: userId,
+      };
+
+      // ✅ Возвращаем промис — важно!
+      return paymentApi.createPagsmilePayin(paymentDataWithUser);
     },
+
     onSuccess: (paymentData: PagsmilePayinResponse) => {
       setIsProcessingPayment(false);
 
-      // If there's a web_url, open it in a new tab
       if (paymentData.web_url) {
-        // Open in a new tab
         window.open(paymentData.web_url, "_blank");
-
-        // Also redirect the current page to the success page
-        // router.push(`/order/success/${paymentData.out_trade_no}`);
-      } else {
-        // Fallback if no web_url is provided
-        // router.push(`/order/success/${paymentData.out_trade_no}`);
       }
+
+      // router.push(`/product/success/${paymentData.out_trade_no}`);
     },
+
     onError: (err: any) => {
       setIsProcessingPayment(false);
       console.error("Payment processing failed:", err);
@@ -79,7 +100,10 @@ export function useCreateOrder() {
     const paymentData: any = {
       order_id: orderId,
       // Format price as a decimal string (e.g., "100.00")
-      amount: orderData.price,
+      amount:
+        typeof orderData.price === "string"
+          ? orderData.price
+          : orderData.price.toFixed(2),
     };
 
     paymentMutation.mutate(paymentData);
@@ -93,5 +117,9 @@ export function useCreateOrder() {
     isError: orderMutation.isError || paymentMutation.isError,
     error,
     setError,
+    isGuestUser:
+      !user &&
+      typeof window !== "undefined" &&
+      !!localStorage.getItem("userId"),
   };
 }

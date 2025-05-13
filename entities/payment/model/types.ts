@@ -1,6 +1,6 @@
 export interface PagsmileCreatePayinDto {
   order_id: string | number;
-  amount: number;
+  amount: number | string;
   currency: string;
   country: string;
   payment_method: string;
@@ -28,9 +28,10 @@ export interface PagsmilePayinResponse {
   status: string;
   redirect_url: string;
   created_at: string;
+  out_trade_no: string;
   expires_at: string;
   order_id: string | number;
-  amount: number;
+  amount: number | string;
   currency: string;
   web_url: string;
   payment_method: string;
