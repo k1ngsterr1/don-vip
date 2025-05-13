@@ -70,7 +70,7 @@ export function useCreateOrder() {
       };
 
       // ✅ Возвращаем промис — важно!
-      return paymentApi.createPagsmilePayin(paymentDataWithUser);
+      return paymentApi.createPagsmilePayin(paymentDataWithUser as any);
     },
 
     onSuccess: (paymentData: PagsmilePayinResponse) => {
