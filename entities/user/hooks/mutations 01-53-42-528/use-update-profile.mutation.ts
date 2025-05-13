@@ -5,8 +5,8 @@ import { apiClient } from "@/shared/config/apiClient";
 import type { User } from "@/entities/user/model/types";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/entities/auth/hooks/queries/use-auth";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
+import { useGetMe } from "@/entities/auth/hooks/use-auth";
 
 // Type for profile update payload
 interface UpdateProfilePayload {
@@ -47,7 +47,7 @@ const updateUserAvatar = async (file: File): Promise<User> => {
 export function useProfileEdit() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { user, isLoading } = useAuth();
+  const { data: user, isLoading } = useGetMe();
   const { setUser } = useAuthStore();
 
   // Local state for user data
@@ -56,7 +56,7 @@ export function useProfileEdit() {
   // Update local state when user data is loaded
   useEffect(() => {
     if (user && !isLoading) {
-      setUserData(user);
+      setUserData(user as any);
     }
   }, [user, isLoading]);
 

@@ -7,7 +7,14 @@ import {
   CreateCouponDto,
   UpdateCouponDto,
 } from "../../api/coupons.api";
-import { couponKeys } from "../query/use-coupon.query";
+
+export const couponKeys = {
+  all: ["coupons"] as const,
+  lists: () => [...couponKeys.all, "list"] as const,
+  list: (filters: any) => [...couponKeys.lists(), { filters }] as const,
+  details: () => [...couponKeys.all, "detail"] as const,
+  detail: (id: string | number) => [...couponKeys.details(), id] as const,
+};
 
 // Hook to check a coupon code
 export const useCheckCoupon = () => {

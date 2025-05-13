@@ -1,10 +1,11 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../store/auth.store";
 import { authApi, ChangePasswordDto, RegisterDto } from "../api/auth.api";
 import { queryKeys } from "@/shared/config/queryKeys";
+import { User } from "../types/auth.types";
 
 /**
  * Hook for login functionality
@@ -37,6 +38,13 @@ export const useLogin = () => {
       // Invalidate queries
       await queryClient.invalidateQueries({ queryKey: queryKeys.auth.user });
     },
+  });
+};
+
+export const useGetMe = () => {
+  return useQuery<User>({
+    queryKey: queryKeys.auth.user,
+    queryFn: () => authApi.getCurrentUser(),
   });
 };
 
