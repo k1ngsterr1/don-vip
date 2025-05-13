@@ -8,6 +8,7 @@ import type {
   PaginatedFeedbackResponse,
 } from "../api/reviews.api";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
+import { useGetMe } from "@/entities/auth/hooks/use-auth";
 
 // Internal DTO that matches the component's structure
 interface FormFeedbackDto {
@@ -49,7 +50,7 @@ export function useCreateFeedback(
 ) {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const user = useAuthStore((state) => state.user); // ✅ get current user
+  const { data: user } = useGetMe(); // 👈 получаем пользователя
 
   return useMutation<FeedbackResponse, Error, FormFeedbackDto>({
     mutationFn: (formData: FormFeedbackDto) => {
@@ -61,7 +62,7 @@ export function useCreateFeedback(
         text: formData.text,
         reaction: formData.sentiment === "positive",
         product_id: formData.gameId || 0,
-        user_id: user.id as any, // ✅ pass user_id to backend
+        user_id: user.id as any, // ✅ теперь используем id из useGetMe
       });
     },
     onSuccess: () => {
@@ -77,7 +78,6 @@ export function useCreateFeedback(
     },
   });
 }
-
 // Update an existing feedback
 export function useUpdateFeedback(id: number) {
   const queryClient = useQueryClient();
