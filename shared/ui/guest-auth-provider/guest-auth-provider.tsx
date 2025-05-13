@@ -40,9 +40,6 @@ export function GuestAuthProvider({ children }: { children: React.ReactNode }) {
             guestUser.id
           );
 
-          setUser(guestUser);
-          setTokens(accessToken, refreshToken);
-
           console.log("✅ [GuestAuth] Установлены пользователь и токены.");
         } catch (error) {
           console.error("❌ [GuestAuth] Ошибка при создании гостя:", error);
