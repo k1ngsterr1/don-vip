@@ -7,6 +7,7 @@ import type {
   FeedbackResponse,
   PaginatedFeedbackResponse,
 } from "../api/reviews.api";
+import { useAuthStore } from "@/entities/auth/store/auth.store";
 
 // Internal DTO that matches the component's structure
 interface FormFeedbackDto {
@@ -48,26 +49,28 @@ export function useCreateFeedback(
 ) {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const user = useAuthStore((state) => state.user); // ✅ get current user
 
   return useMutation<FeedbackResponse, Error, FormFeedbackDto>({
     mutationFn: (formData: FormFeedbackDto) => {
-      // Transform the form data to match the API's expected structure
+      if (!user?.id) {
+        throw new Error("User ID is missing — user may not be authenticated");
+      }
+
       return feedbackService.create({
         text: formData.text,
-        reaction: formData.sentiment === "positive", // Convert sentiment string to reaction boolean
-        product_id: formData.gameId || 0, // Use gameId as product_id
+        reaction: formData.sentiment === "positive",
+        product_id: formData.gameId || 0,
+        user_id: user.id as any, // ✅ pass user_id to backend
       });
     },
     onSuccess: () => {
-      // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: feedbackKeys.lists() });
 
-      // Call onSuccess callback if provided
       if (options.onSuccess) {
         options.onSuccess();
       }
 
-      // Redirect if path provided
       if (options.redirectPath) {
         router.push(options.redirectPath);
       }

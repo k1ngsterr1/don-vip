@@ -5,6 +5,7 @@ export interface CreateFeedbackDto {
   text: string;
   reaction: boolean; // Changed from sentiment to reaction (boolean)
   product_id: number; // Changed from gameId to product_id
+  user_id: number;
 }
 
 export interface UpdateFeedbackDto {
