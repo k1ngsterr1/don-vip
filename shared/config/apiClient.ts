@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // const BASE_URL = "https://don-vip-backend-production.up.railway.app/api";
-const BASE_URL = "https://don-vip.online/api";
+const BASE_URL = "https://don-vip.online/api/api";
 
 // Create an Axios instance with default configuration
 export const apiClient = axios.create({
