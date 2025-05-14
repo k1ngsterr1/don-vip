@@ -18,14 +18,27 @@ export const generateToken = async (
   },
   password: string
 ): Promise<string> => {
-  const rawString =
-    String(params.Amount) + params.OrderId + params.TerminalKey + password;
+  const flatEntries = Object.entries(params).filter(
+    ([, value]) => typeof value !== "object" && !Array.isArray(value)
+  );
 
+  // Шаг 3: Добавить пароль как пару
+  flatEntries.push(["Password", password]);
+
+  // Шаг 4: Отсортировать по ключу
+  flatEntries.sort(([keyA], [keyB]) => keyA.localeCompare(keyB));
+
+  // Шаг 5: Конкатенировать значения
+  const concatenated = flatEntries.map(([, value]) => String(value)).join("");
+
+  // Шаг 6: SHA-256
   const encoder = new TextEncoder();
-  const data = encoder.encode(rawString);
+  const data = encoder.encode(concatenated);
   const hashBuffer = await crypto.subtle.digest("SHA-256", data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+  const token = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+
+  return token;
 };
 
 // Apply promocode and calculate discounted amount
