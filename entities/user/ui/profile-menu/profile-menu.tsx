@@ -28,7 +28,7 @@ export function ProfileMenu() {
     {
       icon: <BoxIcon width={24} height={24} color="#fff" />,
       label: i18n("items.purchases.label"),
-      href: "/profile/purchases",
+      href: `/profile/${userId}/purchases/`,
       color: "bg-orange", // фон за иконкой
       description: i18n("items.purchases.description"),
     },

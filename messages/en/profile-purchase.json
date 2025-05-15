@@ -1,0 +1,7 @@
+{
+  "profilePurchases": {
+    "return": "Return",
+    "purchases": "Purchases",
+    "noPurchases": "You haven't made any purchases yet"
+  }
+}
