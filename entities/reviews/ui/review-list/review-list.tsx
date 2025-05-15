@@ -6,23 +6,20 @@ interface ReviewListProps {
   isGrid?: boolean;
 }
 
-export function ReviewList({ reviews, isGrid = false }: ReviewListProps) {
+export function ReviewList({ reviews, isGrid = false }: any) {
   if (isGrid) {
-    // For tablet/desktop grid layout, we return the individual cards
-    // This allows the parent to control the grid layout
     return (
       <>
-        {reviews.map((review) => (
+        {reviews.map((review: any) => (
           <ReviewCard key={review.id} review={review} isGrid={true} />
         ))}
       </>
     );
   }
 
-  // For mobile, we keep the original stacked layout
   return (
-    <div className="space-y-2 w-full">
-      {reviews.map((review) => (
+    <div className="space-y-2 w-full mt-16">
+      {reviews.map((review: any) => (
         <ReviewCard key={review.id} review={review} />
       ))}
     </div>
