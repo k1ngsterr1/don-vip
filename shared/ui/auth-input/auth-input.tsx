@@ -5,6 +5,7 @@ import type React from "react";
 import { cn } from "@/shared/utils/cn";
 import { Eye, EyeOff } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useLocale } from "next-intl";
 
 interface AuthInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -28,6 +29,7 @@ export function AuthInput({
 }: AuthInputProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [inputValue, setInputValue] = useState(value || "");
+  const locale = useLocale();
 
   const inputType = showPasswordToggle
     ? showPassword
@@ -118,6 +120,22 @@ export function AuthInput({
     }
   }, [isPhoneMask, inputValue]);
 
+  // Process error message to display in the correct language
+  const getErrorMessage = (errorText: string) => {
+    // If error already contains language prefixes like "EN:" or "RU:"
+    if (errorText.includes("EN:") && errorText.includes("RU:")) {
+      const parts = errorText.split("/");
+      if (parts.length >= 2) {
+        const enPart = parts[0].trim();
+        const ruPart = parts[1].trim();
+        return locale === "ru" ? ruPart : enPart;
+      }
+    }
+
+    // If error is a simple string with no language markers
+    return errorText;
+  };
+
   return (
     <div className="w-full">
       {label && (
@@ -150,7 +168,9 @@ export function AuthInput({
           )}
         </div>
       </div>
-      {error && <p className="text-[#ff272c] text-xs mt-1">{error}</p>}
+      {error && (
+        <p className="text-[#ff272c] text-xs mt-1">{getErrorMessage(error)}</p>
+      )}
     </div>
   );
 }

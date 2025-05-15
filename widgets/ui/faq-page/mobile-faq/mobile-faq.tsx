@@ -24,8 +24,8 @@ export default function MobileFAQ() {
   };
 
   return (
-    <div className="w-full px-[11px] mt-[24px] flex flex-col items-center md:hidden">
-      <div className="w-full max-w-md mx-auto px-4 py-4 bg-white">
+    <div className="w-full  mt-[24px] px-4 flex flex-col items-center md:hidden">
+      <div className="w-full max-w-md mx-auto  bg-white">
         <div className="w-full flex flex-col items-start justify-start">
           <Link
             href="/"

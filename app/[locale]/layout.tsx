@@ -64,10 +64,23 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <head>
         <Script
+          id="jivo-widget"
           src="//code.jivo.ru/widget/LzgQISOnC6"
           strategy="afterInteractive"
-          async
         />
+        <Script id="jivo-custom-style" strategy="afterInteractive">
+          {`
+    // Ждём загрузки API Jivo
+    (function waitForJivo() {
+      if (typeof window.jivo_api !== 'undefined') {
+        // Пример: смещаем виджет вверх на 100px
+        window.jivo_api.setWidgetPosition({ bottom: '300px', right: '30px' });
+      } else {
+        setTimeout(waitForJivo, 500);
+      }
+    })();
+  `}
+        </Script>
       </head>
       <body
         className={`

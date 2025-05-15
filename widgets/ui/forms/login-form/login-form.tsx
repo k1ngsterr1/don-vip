@@ -1,5 +1,6 @@
 "use client";
 import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import type React from "react";
 
 import Link from "next/link";
@@ -13,8 +14,112 @@ import { AuthLoadingOverlay } from "@/shared/ui/auth-loading/auth-loading";
 import { useLogin } from "@/entities/auth/hooks/use-auth";
 import { PasswordStrength } from "@/shared/ui/password-strength/password-strength";
 
+// Enhanced error translations for all possible input errors
+const errorTranslations: Record<string, Record<string, string>> = {
+  en: {
+    // Form validation errors
+    "Email or phone is required": "Email or phone is required",
+    "Invalid email format": "Invalid email format",
+    "Invalid phone number": "Invalid phone number",
+    "Password is required": "Password is required",
+    "Password is too weak": "Password is too weak",
+
+    // API errors
+    "Invalid credentials": "Invalid credentials",
+    "User not found": "User not found",
+    "Account is locked": "Account is locked",
+    "Too many login attempts": "Too many login attempts",
+    "Invalid email or password": "Invalid email or password",
+    "Login failed. Please try again later":
+      "Login failed. Please try again later",
+    "Account not found": "Account not found",
+    "Too many login attempts, please try again later":
+      "Too many login attempts, please try again later",
+
+    // HTTP status code errors
+    "status code 400": "Invalid email or password",
+    "status code 401": "Invalid credentials",
+    "status code 403": "Account is locked",
+    "status code 404": "Account not found",
+    "status code 429": "Too many login attempts, please try again later",
+    "status code 500": "Login failed. Please try again later",
+  },
+  ru: {
+    // Form validation errors
+    "Email or phone is required": "Email или телефон обязательны",
+    "Invalid email format": "Неверный формат email",
+    "Invalid phone number": "Неверный номер телефона",
+    "Password is required": "Требуется пароль",
+    "Password is too weak": "Пароль слишком слабый",
+
+    // API errors
+    "Invalid credentials": "Неверные учетные данные",
+    "User not found": "Пользователь не найден",
+    "Account is locked": "Аккаунт заблокирован",
+    "Too many login attempts": "Слишком много попыток входа",
+    "Invalid email or password": "Неверный email или пароль",
+    "Login failed. Please try again later":
+      "Ошибка входа. Пожалуйста, попробуйте позже",
+    "Account not found": "Аккаунт не найден",
+    "Too many login attempts, please try again later":
+      "Слишком много попыток входа, пожалуйста, попробуйте позже",
+
+    // HTTP status code errors
+    "status code 400": "Неверный email или пароль",
+    "status code 401": "Неверные учетные данные",
+    "status code 403": "Аккаунт заблокирован",
+    "status code 404": "Аккаунт не найден",
+    "status code 429":
+      "Слишком много попыток входа, пожалуйста, попробуйте позже",
+    "status code 500": "Ошибка входа. Пожалуйста, попробуйте позже",
+  },
+};
+
+// Translate any error message based on current locale
+function translateError(message: string, locale: string): string {
+  const translations = errorTranslations[locale === "ru" ? "ru" : "en"];
+
+  // Check for direct translation
+  if (translations[message]) {
+    return translations[message];
+  }
+
+  // Check for status code errors
+  for (const key of Object.keys(translations)) {
+    if (message.includes(key)) {
+      return translations[key];
+    }
+  }
+
+  // Return original message if no translation found
+  return message;
+}
+
+function getHumanReadableError(error: string, locale = "en"): string {
+  if (error.includes("status code 400")) {
+    return translateError("status code 400", locale);
+  }
+  if (error.includes("status code 401")) {
+    return translateError("status code 401", locale);
+  }
+  if (error.includes("status code 403")) {
+    return translateError("status code 403", locale);
+  }
+  if (error.includes("status code 404")) {
+    return translateError("status code 404", locale);
+  }
+  if (error.includes("status code 429")) {
+    return translateError("status code 429", locale);
+  }
+  if (error.includes("status code")) {
+    return translateError("status code 500", locale);
+  }
+  return translateError(error, locale);
+}
+
 export function LoginForm() {
   const i18n = useTranslations("login-form_auth.loginForm");
+  const locale = useLocale();
   const [identifier, setIdentifier] = useState("");
   const [identifierType, setIdentifierType] = useState<"email" | "phone">(
     "email"
@@ -69,18 +174,21 @@ export function LoginForm() {
 
     const newErrors: { identifier?: string; password?: string } = {};
     if (!identifier.trim()) {
-      newErrors.identifier =
-        i18n("errors.identifierRequired") || "Email or phone is required";
+      newErrors.identifier = translateError(
+        "Email or phone is required",
+        locale
+      );
     } else if (!validateIdentifier(identifier, identifierType)) {
-      newErrors.identifier =
+      newErrors.identifier = translateError(
         identifierType === "email"
-          ? i18n("errors.emailInvalid") || "Invalid email format"
-          : i18n("errors.phoneInvalid") || "Invalid phone number";
+          ? "Invalid email format"
+          : "Invalid phone number",
+        locale
+      );
     }
 
     if (!password.trim()) {
-      newErrors.password =
-        i18n("errors.passwordRequired") || "Password is required";
+      newErrors.password = translateError("Password is required", locale);
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -106,12 +214,15 @@ export function LoginForm() {
           }, 800); // Small delay for a smoother transition
         },
         onError: (error: any) => {
-          // Handle login errors
+          // Handle login errors with user-friendly messages
+          const errorMessage =
+            error.response?.data?.message ||
+            (error.message
+              ? getHumanReadableError(error.message, locale)
+              : translateError("Invalid email or password", locale));
+
           setErrors({
-            identifier:
-              error.response?.data?.message ||
-              i18n("errorMessage") ||
-              "Login failed",
+            identifier: errorMessage,
           });
         },
       }
@@ -125,12 +236,7 @@ export function LoginForm() {
   return (
     <div className="max-w-md mx-auto relative">
       {/* Reusable loading overlay */}
-      <AuthLoadingOverlay
-        isVisible={showLoadingOverlay}
-        state={loadingState}
-        message={isRedirecting ? i18n("redirectingText") : i18n("loadingText")}
-      />
-
+      <AuthLoadingOverlay isVisible={showLoadingOverlay} state={loadingState} />
       <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
         <div className="relative">
           <AuthInput
@@ -147,7 +253,6 @@ export function LoginForm() {
               if (errors.identifier)
                 setErrors((prev) => ({ ...prev, identifier: undefined }));
             }}
-            error={errors.identifier}
             disabled={isLoading || isRedirecting}
             aria-label={
               identifierType === "email"
@@ -194,7 +299,6 @@ export function LoginForm() {
                 setErrors((prev) => ({ ...prev, password: undefined }));
             }}
             showPasswordToggle
-            error={errors.password}
             disabled={isLoading || isRedirecting}
             aria-label={i18n("ariaLabels.password") || "Password"}
             suffix={
@@ -228,8 +332,8 @@ export function LoginForm() {
         {loginError && !showLoadingOverlay && (
           <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
             {loginError instanceof Error
-              ? loginError.message
-              : i18n("errorMessage") || "Login failed. Please try again."}
+              ? getHumanReadableError(loginError.message, locale)
+              : translateError("Invalid email or password", locale)}
           </div>
         )}
 

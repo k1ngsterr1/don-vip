@@ -1,0 +1,97 @@
+{
+  "auth": {
+    "errors": {
+      "validation": {
+        "required": {
+          "email": "Email is required",
+          "phone": "Phone number is required",
+          "password": "Password is required",
+          "identifier": "Email or phone is required"
+        },
+        "invalid": {
+          "email": "Invalid email format",
+          "phone": "Invalid phone number",
+          "password": "Password is too weak"
+        },
+        "passwordRequirements": "Password must be at least 8 characters and include uppercase, lowercase, numbers or special characters"
+      },
+      "auth": {
+        "invalidCredentials": "Invalid email or password",
+        "accountLocked": "Your account has been locked. Please contact support",
+        "userNotFound": "Account not found",
+        "tooManyAttempts": "Too many login attempts. Please try again later",
+        "sessionExpired": "Your session has expired. Please log in again"
+      },
+      "registration": {
+        "emailExists": "This email is already registered",
+        "phoneExists": "This phone number is already registered",
+        "userExists": "User already exists",
+        "registrationDisabled": "Registration is temporarily disabled",
+        "tooManyAttempts": "Too many registration attempts. Please try again later"
+      },
+      "server": {
+        "general": "Something went wrong. Please try again later",
+        "maintenance": "System is under maintenance. Please try again later",
+        "timeout": "Request timed out. Please check your connection and try again"
+      },
+      "http": {
+        "400": "Invalid request. Please check your information",
+        "401": "Unauthorized. Please log in again",
+        "403": "Access denied",
+        "404": "Resource not found",
+        "409": "Conflict with existing data",
+        "422": "Validation failed. Please check your information",
+        "429": "Too many requests. Please try again later",
+        "500": "Server error. Please try again later",
+        "503": "Service unavailable. Please try again later"
+      }
+    },
+    "login": {
+      "form": {
+        "emailPlaceholder": "Email address",
+        "phonePlaceholder": "Phone number",
+        "passwordPlaceholder": "Password",
+        "submitButton": "Login",
+        "forgotPassword": "Forgot password?",
+        "usePhoneInstead": "Use phone instead",
+        "useEmailInstead": "Use email instead",
+        "loadingText": "Logging in...",
+        "redirectingText": "Redirecting...",
+        "privacyText": "By continuing, you agree to our",
+        "privacyLink": "Privacy Policy",
+        "noAccountText": "Don't have an account?",
+        "registerLink": "Sign up"
+      }
+    },
+    "register": {
+      "form": {
+        "emailPlaceholder": "Email address",
+        "phonePlaceholder": "Phone number",
+        "passwordPlaceholder": "Password",
+        "submitButton": "Register",
+        "forgotPassword": "Forgot password?",
+        "usePhoneInstead": "Use phone instead",
+        "useEmailInstead": "Use email instead",
+        "processingText": "Creating your account...",
+        "redirectingText": "Redirecting...",
+        "privacyText": "By registering, you agree to our",
+        "privacyLink": "Privacy Policy",
+        "haveAccountText": "Already have an account?",
+        "loginLink": "Login"
+      }
+    },
+    "passwordStrength": {
+      "weak": "Weak",
+      "medium": "Medium",
+      "strong": "Strong",
+      "veryStrong": "Very strong",
+      "requirements": {
+        "length": "At least 8 characters",
+        "uppercase": "At least one uppercase letter",
+        "lowercase": "At least one lowercase letter",
+        "number": "At least one number",
+        "special": "At least one special character"
+      }
+    }
+  }
+}

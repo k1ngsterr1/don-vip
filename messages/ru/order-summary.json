@@ -2,6 +2,7 @@
   "orderSummary": {
     "summary": {
       "title": "Ваш заказ",
+      "redirecting": "Загружаем..",
       "quantity": "Количество",
       "processing": "Загрузка...",
       "cost": "Стоимость",

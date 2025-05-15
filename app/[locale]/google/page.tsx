@@ -27,20 +27,12 @@ export default function GoogleAuthPage() {
           return;
         }
 
-        console.log("Tokens received:", {
-          accessToken: accessToken.substring(0, 10) + "...",
-          refreshToken: refreshToken.substring(0, 10) + "...",
-        });
-
         // Store tokens in auth store
         setTokens(accessToken, refreshToken);
-        console.log("Tokens stored in auth store");
 
         // Extract user ID from the response and redirect to profile page
         try {
-          console.log("Fetching user profile...");
           const response = await apiClient.get("/user/me");
-          console.log("User profile received:", response.data);
 
           // Extract the user ID from the response
           const userId = response.data.id;
@@ -55,18 +47,14 @@ export default function GoogleAuthPage() {
               const profilePath = locale
                 ? `/${locale}/profile/${userId}`
                 : `/profile/${userId}`;
-              console.log(`Redirecting to ${profilePath}...`);
               router.push(profilePath);
             } else {
               router.push("/");
             }
           }, 500);
         } catch (profileError) {
-          console.error("Failed to fetch user profile:", profileError);
-          // If we can't get the user profile, redirect to the general profile page
           setTimeout(() => {
             const fallbackPath = locale ? `/${locale}/profile` : "/profile";
-            console.log("Redirecting to general profile page due to error...");
             router.push(fallbackPath);
           }, 500);
         }
@@ -79,17 +67,6 @@ export default function GoogleAuthPage() {
 
     processAuth();
   }, [searchParams, setTokens, setUser, router, locale]);
-
-  useEffect(() => {
-    // Debug the auth state
-    const authState = useAuthStore.getState();
-    console.log("Current auth state:", {
-      isAuthenticated: authState.isAuthenticated,
-      hasAccessToken: !!authState.accessToken,
-      hasRefreshToken: !!authState.refreshToken,
-      hasUser: !!authState.user,
-    });
-  }, []);
 
   if (!isLoading) {
     router.push("/");

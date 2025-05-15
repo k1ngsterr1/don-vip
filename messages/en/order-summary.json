@@ -3,6 +3,7 @@
     "summary": {
       "title": "Your Order",
       "quantity": "Quantity",
+      "redirecting": "Loading..",
       "processing": "Loading...",
       "cost": "Cost",
       "userInfo": "User information",

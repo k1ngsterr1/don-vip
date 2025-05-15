@@ -15,7 +15,7 @@ export function Logo() {
         width={161}
         height={31}
         alt="Logo"
-        className="xxs:h-[24px] xxs:w-[121px] xs:w-[161px] xs:h-[31px] md:w-[180px] md:h-[35px] lg:w-[200px] lg:h-[38px] cursor-pointer"
+        className="xxs:h-[27px] xxs:w-[141px] xs:w-[161px] xs:h-[31px] md:w-[180px] md:h-[35px] lg:w-[200px] lg:h-[38px] cursor-pointer"
       />
     </div>
   );

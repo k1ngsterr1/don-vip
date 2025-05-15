@@ -1,5 +1,6 @@
 "use client";
 import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import type React from "react";
 
 import { AuthInput } from "@/shared/ui/auth-input/auth-input";
@@ -13,8 +14,104 @@ import { AuthLoadingOverlay } from "@/shared/ui/auth-loading/auth-loading";
 import { useRegister } from "@/entities/auth/hooks/use-auth";
 import { PasswordStrength } from "@/shared/ui/password-strength/password-strength";
 
+// Enhanced error translations for all possible input errors
+const errorTranslations: Record<string, Record<string, string>> = {
+  en: {
+    // Form validation errors
+    "Email or phone is required": "Email or phone is required",
+    "Invalid email format": "Please enter a valid email",
+    "Invalid phone number": "Please enter a valid phone number",
+    "Password is required": "Password is required",
+    "Password is too weak": "Password is too weak. Please make it stronger.",
+
+    // API errors
+    "Email already in use": "Email already in use",
+    "Phone number already in use": "Phone number already in use",
+    "Invalid information provided": "Invalid information provided",
+    "Registration is temporarily disabled":
+      "Registration is temporarily disabled",
+    "Too many registration attempts":
+      "Too many registration attempts, please try again later",
+    "Registration failed":
+      "Registration failed. Please check your information.",
+
+    // HTTP status code errors
+    "status code 400": "Invalid information provided",
+    "status code 409": "This email or phone is already registered",
+    "status code 422": "Please check your information",
+    "status code 429": "Too many registration attempts, please try again later",
+    "status code 500": "Registration failed. Please try again later",
+  },
+  ru: {
+    // Form validation errors
+    "Email or phone is required": "Email или телефон обязательны",
+    "Invalid email format": "Пожалуйста, введите корректный email",
+    "Invalid phone number": "Пожалуйста, введите корректный номер телефона",
+    "Password is required": "Требуется пароль",
+    "Password is too weak":
+      "Пароль слишком слабый. Пожалуйста, сделайте его сильнее.",
+
+    // API errors
+    "Email already in use": "Email уже используется",
+    "Phone number already in use": "Номер телефона уже используется",
+    "Invalid information provided": "Предоставлена неверная информация",
+    "Registration is temporarily disabled": "Регистрация временно отключена",
+    "Too many registration attempts": "Слишком много попыток регистрации",
+    "Registration failed":
+      "Ошибка регистрации. Пожалуйста, проверьте вашу информацию.",
+
+    // HTTP status code errors
+    "status code 400": "Предоставлена неверная информация",
+    "status code 409": "Этот email или телефон уже зарегистрирован",
+    "status code 422": "Пожалуйста, проверьте вашу информацию",
+    "status code 429":
+      "Слишком много попыток регистрации, пожалуйста, попробуйте позже",
+    "status code 500": "Ошибка регистрации. Пожалуйста, попробуйте снова позже",
+  },
+};
+
+// Translate any error message based on current locale
+function translateError(message: string, locale: string): string {
+  const translations = errorTranslations[locale === "ru" ? "ru" : "en"];
+
+  // Check for direct translation
+  if (translations[message]) {
+    return translations[message];
+  }
+
+  // Check for status code errors
+  for (const key of Object.keys(translations)) {
+    if (message.includes(key)) {
+      return translations[key];
+    }
+  }
+
+  // Return original message if no translation found
+  return message;
+}
+
+function getHumanReadableError(error: string, locale = "en"): string {
+  if (error.includes("status code 400")) {
+    return translateError("status code 400", locale);
+  }
+  if (error.includes("status code 409")) {
+    return translateError("status code 409", locale);
+  }
+  if (error.includes("status code 422")) {
+    return translateError("status code 422", locale);
+  }
+  if (error.includes("status code 429")) {
+    return translateError("status code 429", locale);
+  }
+  if (error.includes("status code")) {
+    return translateError("status code 500", locale);
+  }
+  return translateError(error, locale);
+}
+
 export function RegisterForm() {
   const i18n = useTranslations("register-form_auth.registerForm");
+  const locale = useLocale();
   const [identifier, setIdentifier] = useState("");
   const [identifierType, setIdentifierType] = useState<"email" | "phone">(
     "email"
@@ -86,17 +183,19 @@ export function RegisterForm() {
 
     const newErrors = {
       identifier: !identifier
-        ? i18n("errors.identifierRequired") || "Email or phone is required"
+        ? translateError("Email or phone is required", locale)
         : !validateIdentifier(identifier, identifierType)
-        ? identifierType === "email"
-          ? i18n("errors.emailInvalid") || "Please enter a valid email"
-          : i18n("errors.phoneInvalid") || "Please enter a valid phone number"
+        ? translateError(
+            identifierType === "email"
+              ? "Invalid email format"
+              : "Invalid phone number",
+            locale
+          )
         : undefined,
       password: !password
-        ? i18n("errors.passwordRequired") || "Password is required"
+        ? translateError("Password is required", locale)
         : !validatePassword(password)
-        ? i18n("errors.passwordWeak") ||
-          "Password is too weak. Please make it stronger."
+        ? translateError("Password is too weak", locale)
         : undefined,
     };
 
@@ -122,11 +221,15 @@ export function RegisterForm() {
           }, 800); // Small delay for a smoother transition
         },
         onError: (error: any) => {
-          // Handle registration errors
+          // Handle registration errors with user-friendly messages
+          const errorMessage =
+            error.response?.data?.message ||
+            (error.message
+              ? getHumanReadableError(error.message, locale)
+              : translateError("Registration failed", locale));
+
           setErrors({
-            identifier:
-              error.response?.data?.message ||
-              "Registration failed. Please try again.",
+            identifier: errorMessage,
           });
         },
       }
@@ -138,15 +241,7 @@ export function RegisterForm() {
 
   return (
     <div className="max-w-md mx-auto relative">
-      <AuthLoadingOverlay
-        isVisible={showLoadingOverlay}
-        state={loadingState}
-        message={
-          isRedirecting
-            ? i18n("redirectingText") || "Redirecting..."
-            : i18n("processingText") || "Creating your account..."
-        }
-      />
+      <AuthLoadingOverlay isVisible={showLoadingOverlay} state={loadingState} />
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="relative">
           <AuthInput
@@ -162,7 +257,6 @@ export function RegisterForm() {
               if (errors.identifier)
                 setErrors((prev) => ({ ...prev, identifier: undefined }));
             }}
-            error={errors.identifier}
             disabled={showLoadingOverlay}
             isPhoneMask={identifierType === "phone"}
             suffix={
@@ -208,7 +302,6 @@ export function RegisterForm() {
               }
             }}
             showPasswordToggle
-            error={errors.password}
             disabled={showLoadingOverlay}
             suffix={
               <button
@@ -229,8 +322,8 @@ export function RegisterForm() {
         {registerError && !showLoadingOverlay && (
           <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
             {registerError instanceof Error
-              ? registerError.message
-              : "Registration failed. Please try again."}
+              ? getHumanReadableError(registerError.message, locale)
+              : translateError("Registration failed", locale)}
           </div>
         )}
         <div className="w-full flex justify-end">

@@ -19,16 +19,26 @@ export default function BottomTab() {
     router.push(tabPath);
   };
 
+  const isTabActive = (tabId: string, tabPath: string) => {
+    if (tabId === "home") {
+      return /^\/[a-z]{2}$/.test(pathname); // /ru, /en, /de и т.д.
+    }
+    if (tabId === "search") {
+      return pathname.includes("/search");
+    }
+    if (tabId === "profile") {
+      return pathname.includes("/profile");
+    }
+    return pathname === tabPath;
+  };
+
   return (
     <div className="fixed md:hidden bottom-0 h-[64px] px-[60px] flex items-center justify-center w-full left-0 right-0 bg-[#F3F4F7] border-t border-gray-200 py-2">
       <div className="flex w-full justify-between items-center">
         {tabs.map((tab) => {
           const Icon = tab.icon;
-          const isActive =
-            pathname === tab.path ||
-            (tab.id === "profile" && pathname.startsWith("/profile"));
-
-          const iconColor = isActive ? "#3B82F6" : "#AAAAAB"; // Blue when active, gray when inactive
+          const isActive = isTabActive(tab.id, tab.path);
+          const iconColor = isActive ? "#3B82F6" : "#AAAAAB";
 
           return (
             <button
@@ -38,11 +48,7 @@ export default function BottomTab() {
               }`}
               onClick={() => handleTabClick(tab.path)}
             >
-              {tab.id === "search" ? (
-                <Icon size={24} color={iconColor} />
-              ) : (
-                <Icon size={24} color={iconColor} />
-              )}
+              <Icon size={24} color={iconColor} />
             </button>
           );
         })}

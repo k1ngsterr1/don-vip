@@ -1,17 +1,15 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import {
-  ChevronRight,
-  LogOut,
-  MessageCircle,
-  Settings,
-  ShoppingBag,
-  Ticket,
-} from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
+import CouponIcon from "@/shared/icons/coupon-icon";
+import TelegramIcon from "@/shared/icons/telegram-icon";
+import BoxIcon from "@/shared/icons/box-icon";
+import SettingsIcon from "@/shared/icons/settings-icon";
+import LogoutIcon from "@/shared/icons/logout-icon";
 
 export function ProfileMenu() {
   const i18n = useTranslations("ProfileMenu");
@@ -28,38 +26,38 @@ export function ProfileMenu() {
 
   const menuItems = [
     {
-      icon: <ShoppingBag size={20} className="text-orange" />,
+      icon: <BoxIcon width={24} height={24} color="#fff" />,
       label: i18n("items.purchases.label"),
       href: "/profile/purchases",
-      color: "bg-orange/10",
+      color: "bg-orange", // фон за иконкой
       description: i18n("items.purchases.description"),
     },
     {
-      icon: <Ticket size={20} className="text-blue" />,
+      icon: <CouponIcon width={28} height={45} color="#fff" />,
       label: i18n("items.coupons.label"),
       href: "/coupons",
-      color: "bg-blue/10",
+      color: "bg-blue",
       description: i18n("items.coupons.description"),
     },
     {
-      icon: <MessageCircle size={20} className="text-[#37aee2]" />,
+      icon: <TelegramIcon width={24} height={24} />,
       label: i18n("items.chatBot.label"),
       href: "/profile/chat",
-      color: "bg-[#37aee2]/10",
+      color: "bg-[#37aee2]",
       description: i18n("items.chatBot.description"),
     },
     {
-      icon: <Settings size={20} className="text-gray-600" />,
+      icon: <SettingsIcon width={24} height={24} />,
       label: i18n("items.settings.label"),
       href: `/profile/${userId}/edit/`,
-      color: "bg-gray-100",
+      color: "bg-gray-500",
       description: i18n("items.settings.description"),
     },
     {
-      icon: <LogOut size={20} className="text-[#ff272c]" />,
+      icon: <LogoutIcon width={20} height={20} />,
       label: i18n("items.logout.label"),
       href: "#",
-      color: "bg-[#ff272c]/10",
+      color: "bg-red-500",
       description: i18n("items.logout.description"),
       onClick: handleLogout,
     },
@@ -84,7 +82,9 @@ export function ProfileMenu() {
             <div className="flex items-center justify-between">
               <span
                 className={`${
-                  variant === "mobile" ? "font-medium" : "font-medium text-lg"
+                  variant === "mobile"
+                    ? "font-medium"
+                    : "font-medium text-[16px]"
                 }`}
               >
                 {item.label}
