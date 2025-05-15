@@ -44,7 +44,7 @@ export function OrderBlock({
 }: OrderBlockProps) {
   const t = useTranslations("orderBlock");
   const { data: product, isLoading: isProductLoading } = useProduct(gameSlug);
-  const { user } = useAuthStore();
+  const [userIdDB, setUserIdDB] = useState("");
   const [game, setGame] = useState<GameData | null>(null);
   const [currencyOptions, setCurrencyOptions] = useState<CurrencyOption[]>([]);
   const [showInfo, setShowInfo] = useState(initialExpandInfo);
@@ -58,6 +58,10 @@ export function OrderBlock({
     useCreateOrder();
 
   useEffect(() => {
+    const local_user = localStorage.getItem("userId");
+    if (local_user) {
+      setUserIdDB(local_user);
+    }
     if (product) {
       let replenishmentArray = [];
 
@@ -143,7 +147,7 @@ export function OrderBlock({
 
     const orderData: CreateOrderDto = {
       game_id: game.id,
-      user_id: user?.id,
+      user_id: userIdDB,
       currency_id: selectedCurrency.id,
       amount: selectedCurrency.amount,
       price: formattedPrice,
@@ -167,7 +171,7 @@ export function OrderBlock({
           price: numericPrice,
           currencyName: game.currencyName,
           gameName: game.name,
-          userId: user?.id ?? userId,
+          userId: userIdDB,
           serverId: game.requiresServer ? serverId : "",
         });
 
