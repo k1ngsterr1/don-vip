@@ -2,6 +2,26 @@
   "profilePurchases": {
     "return": "Вернуться",
     "purchases": "Покупки",
-    "noPurchases": "Вы еще не сделали покупки"
+    "noPurchases": "Вы еще не сделали покупки",
+    "language": "RU",
+    "purchase": "Покупка",
+    "statusSuccess": "Успешно",
+    "statusFail": "Ошибка",
+    "statusPending": "В процессе",
+    "gameImageAlt": "Иконка игры",
+    "currencyImageAlt": "Иконка валюты",
+    "playerId": "ID игрока",
+    "serverId": "ID сервера",
+    "diamonds": "Алмазы",
+    "purchaseCompleted": "Покупка оформлена",
+    "purchaseCompletedDesc": "Заказ размещен",
+    "paid": "Оплачено",
+    "paidDesc": "Оплата проведена",
+    "inDelivery": "В доставке",
+    "inDeliveryDesc": "Заказ создан и ожидает доставки",
+    "successfulDelivery": "Успешная доставка",
+    "successfulDeliveryDesc": "Доставка завершена",
+    "orderClosed": "Заказ закрыт",
+    "orderClosedDesc": "Заказ успешно закрыт"
   }
 }

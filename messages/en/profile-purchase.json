@@ -2,6 +2,26 @@
   "profilePurchases": {
     "return": "Return",
     "purchases": "Purchases",
-    "noPurchases": "You haven't made any purchases yet"
+    "noPurchases": "You haven't made any purchases yet",
+    "language": "EN",
+    "purchase": "Purchase",
+    "statusSuccess": "Success",
+    "statusFail": "Failed",
+    "statusPending": "Pending",
+    "gameImageAlt": "Game Icon",
+    "currencyImageAlt": "Currency Icon",
+    "playerId": "Player ID",
+    "serverId": "Server ID",
+    "diamonds": "Diamonds",
+    "purchaseCompleted": "Purchase completed",
+    "purchaseCompletedDesc": "Order has been placed",
+    "paid": "Paid",
+    "paidDesc": "Payment processed",
+    "inDelivery": "In delivery",
+    "inDeliveryDesc": "Order created and awaiting delivery",
+    "successfulDelivery": "Successful delivery",
+    "successfulDeliveryDesc": "Delivery completed",
+    "orderClosed": "Order closed",
+    "orderClosedDesc": "Order successfully closed"
   }
 }
