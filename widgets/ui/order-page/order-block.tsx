@@ -13,6 +13,7 @@ import { useCreateOrder } from "@/entities/order/hooks/use-create-order";
 import type { CreateOrderDto } from "@/entities/order/model/types";
 import { useProduct } from "@/entities/product/hooks/queries/use-product";
 import { OrderBlockSkeleton } from "./loading/skeleton-loading";
+import { useAuthStore } from "@/entities/auth/store/auth.store";
 
 interface OrderBlockProps {
   gameSlug: number;
@@ -43,7 +44,7 @@ export function OrderBlock({
 }: OrderBlockProps) {
   const t = useTranslations("orderBlock");
   const { data: product, isLoading: isProductLoading } = useProduct(gameSlug);
-
+  const { user } = useAuthStore();
   const [game, setGame] = useState<GameData | null>(null);
   const [currencyOptions, setCurrencyOptions] = useState<CurrencyOption[]>([]);
   const [showInfo, setShowInfo] = useState(initialExpandInfo);
@@ -142,6 +143,7 @@ export function OrderBlock({
 
     const orderData: CreateOrderDto = {
       game_id: game.id,
+      user_id: user?.id,
       currency_id: selectedCurrency.id,
       amount: selectedCurrency.amount,
       price: formattedPrice,
@@ -165,7 +167,7 @@ export function OrderBlock({
           price: numericPrice,
           currencyName: game.currencyName,
           gameName: game.name,
-          userId: userId,
+          userId: user?.id ?? userId,
           serverId: game.requiresServer ? serverId : "",
         });
 
