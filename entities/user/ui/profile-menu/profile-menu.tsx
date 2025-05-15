@@ -42,10 +42,17 @@ export function ProfileMenu() {
     {
       icon: <TelegramIcon width={24} height={24} />,
       label: i18n("items.chatBot.label"),
-      href: "/profile/chat",
       color: "bg-[#37aee2]",
       description: i18n("items.chatBot.description"),
+      onClick: () => {
+        if (typeof window !== "undefined" && window.jivo_api) {
+          window.jivo_api.open();
+        } else {
+          console.warn("Jivo API not loaded yet");
+        }
+      },
     },
+
     {
       icon: <SettingsIcon width={24} height={24} />,
       label: i18n("items.settings.label"),

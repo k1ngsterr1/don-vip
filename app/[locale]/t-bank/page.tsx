@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { useState } from "react";
-import { FileText, Mail, Phone, User } from "lucide-react";
+import { Mail, Phone, User } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
@@ -95,50 +95,68 @@ export default function TBankPaymentPage() {
         Number.parseFloat(paymentAmount) * 100
       );
 
-      const payload = {
-        TerminalKey: "1731053917835DEMO",
+      const receiptData = {
+        EmailCompany: "mail@mail.com",
+        Taxation: "patent",
+        FfdVersion: "1.2",
+        Email: email || undefined,
+        Phone: phone || undefined,
+        Items: [
+          {
+            Name: description || "Оплата",
+            Price: amountInKopecks,
+            Quantity: 1,
+            Amount: amountInKopecks,
+            PaymentMethod: "full_prepayment",
+            PaymentObject: "service",
+            Tax: "none",
+            MeasurementUnit: "pc",
+          },
+        ],
+      };
+
+      const dataObject = {
+        UserId: userId || undefined,
+        ServerId: serverId || undefined,
+        Email: email || undefined,
+        Phone: phone || undefined,
+        Name: name || undefined,
+      };
+
+      const paymentPayload = {
+        TerminalKey: "1731053917835DEMO", // ✅ Замените на ваш
         Amount: amountInKopecks,
         OrderId: finalOrderId,
         Description: description,
         CustomerKey: userId,
-        SuccessURL: "https://test.com",
-        FailURL: "https://test.com",
-        DATA: {
-          Email: email,
-          Phone: phone,
-          Name: name,
-        },
-        Receipt: {
-          EmailCompany: "mail@mail.com",
-          Taxation: "patent",
-          FfdVersion: "1.2",
-          Email: email,
-          Phone: phone,
-          Items: [
-            {
-              Name: description,
-              Price: amountInKopecks,
-              Quantity: 1,
-              Amount: amountInKopecks,
-              PaymentMethod: "full_prepayment",
-              PaymentObject: "service",
-              Tax: "none",
-              MeasurementUnit: "pc",
-            },
-          ],
-        },
+        DATA: dataObject,
+        Receipt: receiptData,
+        SuccessURL: "https://test.com/success",
+        FailURL: "https://test.com/fail",
       };
 
+      console.log("🚀 PaymentPayload (before token):", paymentPayload);
+
+      // Генерация токена без Receipt и DATA
       const token = await generateToken(
         {
-          TerminalKey: payload.TerminalKey,
-          Amount: payload.Amount,
-          OrderId: payload.OrderId,
+          TerminalKey: paymentPayload.TerminalKey,
+          Amount: paymentPayload.Amount,
+          OrderId: paymentPayload.OrderId,
+          Description: paymentPayload.Description,
+          CustomerKey: paymentPayload.CustomerKey,
+          SuccessURL: paymentPayload.SuccessURL,
+          FailURL: paymentPayload.FailURL,
         },
-        "M3u78sPoxlVxe5fj"
+        "M3u78sPoxlVxe5fj" // ✅ Ваш SecretKey
       );
 
-      const finalPayload = { ...payload, Token: token };
+      const finalPayload = {
+        ...paymentPayload,
+        Token: token,
+      };
+
+      console.log("📤 Sending Init Request to Tinkoff:", finalPayload);
 
       const response = await fetch("https://securepay.tinkoff.ru/v2/Init", {
         method: "POST",
@@ -146,24 +164,30 @@ export default function TBankPaymentPage() {
         body: JSON.stringify(finalPayload),
       });
 
-      const rawText = await response.text();
-      console.log("📦 Raw Tinkoff Response:", rawText);
+      const responseText = await response.text();
+      console.log("📦 Raw Tinkoff Response:", responseText);
 
-      if (!response.ok || response.status === 204) {
-        throw new Error(`Payment initialization error: ${response.status}`);
-      }
+      const result = JSON.parse(responseText);
 
-      const result = JSON.parse(rawText);
-      console.log("✅ Parsed Response:", result);
-
-      if (result.Success && result.PaymentURL) {
-        window.location.href = result.PaymentURL;
-      } else {
+      if (!result.Success) {
         throw new Error(result.Message || t("errors.paymentInit"));
       }
-    } catch (err) {
+
+      console.log("✅ Parsed Tinkoff Response:", result);
+
+      // Опционально: отправка orderId в backend
+      await fetch("/api/tinkoff/save-order", {
+        method: "POST",
+        body: JSON.stringify({ orderId: finalOrderId, userId }),
+      });
+
+      // Перенаправление на оплату
+      if (result.PaymentURL) {
+        window.location.href = result.PaymentURL;
+      }
+    } catch (err: any) {
       console.error("❌ Payment error:", err);
-      alert(t("errors.paymentInit"));
+      alert(t("errors.paymentInit") || "Ошибка инициализации платежа.");
     } finally {
       setIsLoading(false);
     }
@@ -229,7 +253,6 @@ export default function TBankPaymentPage() {
                   <div className="md:col-span-2">
                     <AmountInput amount={paymentAmount} />
                   </div>
-
                   <div className="md:col-span-2">
                     <PromocodeInput
                       promocode={promocode}
@@ -240,18 +263,6 @@ export default function TBankPaymentPage() {
                       onRemove={handleRemovePromocode}
                     />
                   </div>
-
-                  <div className="md:col-span-2">
-                    <FormInput
-                      id="description"
-                      label="Description"
-                      type="text"
-                      placeholder="Payment description"
-                      Icon={FileText}
-                      translationNamespace="description"
-                    />
-                  </div>
-
                   <FormInput
                     id="name"
                     label="Full Name"
@@ -260,7 +271,6 @@ export default function TBankPaymentPage() {
                     Icon={User}
                     translationNamespace="name"
                   />
-
                   <FormInput
                     id="email"
                     label="E-mail"
