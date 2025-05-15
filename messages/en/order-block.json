@@ -10,6 +10,8 @@
     "user": {
       "step": "2 ENTER YOUR ID",
       "enterIdAndServer": "AND SERVER",
+      "tooltipTextWithServer": "Enter your user ID and server ID to proceed with the order. Both fields are required for proper identification.",
+      "tooltipTextWithoutServer": "Enter your user ID to proceed with the order. Make sure to provide the correct ID as shown in the instructions below.",
       "enterIdNoPrefix": "(DO NOT ENTER \"ID:\")",
       "idPrefix": "ID:",
       "userIdPlaceholder": "USER ID",
