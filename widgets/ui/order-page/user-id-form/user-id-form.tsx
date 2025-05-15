@@ -3,6 +3,7 @@
 import { HelpCircle } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { CustomTooltip } from "@/shared/ui/tooltip/tooltip";
 
 interface UserIdFormProps {
   requiresServer: boolean;
@@ -32,9 +33,26 @@ export function UserIdForm({
           {t("step")}{" "}
           {requiresServer ? t("enterIdAndServer") : t("enterIdNoPrefix")}
         </h2>
-        <HelpCircle size={16} className="ml-2 text-gray-400" />
+        <CustomTooltip
+          content={
+            <div className="p-1">
+              {requiresServer
+                ? t("tooltipTextWithServer", {
+                    defaultValue:
+                      "Enter your user ID and server ID to proceed with the order. Both fields are required for proper identification.",
+                  })
+                : t("tooltipTextWithoutServer", {
+                    defaultValue:
+                      "Enter your user ID to proceed with the order. Make sure to provide the correct ID as shown in the instructions below.",
+                  })}
+            </div>
+          }
+          position="top"
+          delay={300}
+        >
+          <HelpCircle size={16} className="ml-2  text-gray-400 cursor-help" />
+        </CustomTooltip>
       </div>
-
       <div className="space-y-3">
         {!requiresServer && (
           <div className="relative">
@@ -90,7 +108,7 @@ export function UserIdForm({
         ) : (
           <>
             <div className="mt-4 mb-2">
-              <h3 className="font-medium text-[16px] font-bold font-condensed mb-2">
+              <h3 className=" text-[16px] font-bold font-condensed mb-2">
                 {t("findBigoId.title")}
               </h3>
               <ol className="text-[15px] font-condensed text-gray-600 space-y-1 list-decimal pl-5">

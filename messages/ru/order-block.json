@@ -10,6 +10,8 @@
     "user": {
       "step": "2 ВВЕДИТЕ ВАШ ID",
       "enterIdAndServer": "И СЕРВЕР",
+      "tooltipTextWithServer": "Введите ваш ID и ID сервера для оформления заказа. Оба поля обязательны для корректной идентификации.",
+      "tooltipTextWithoutServer": "Введите ваш ID для оформления заказа. Убедитесь, что вы ввели корректный ID, как показано в инструкции ниже.",
       "enterIdNoPrefix": "(НЕ ВВОДИТЕ «ID:»)",
       "idPrefix": "ID:",
       "userIdPlaceholder": "USER ID",
