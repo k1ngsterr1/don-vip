@@ -164,9 +164,7 @@ export function OrderBlock({
 
       if (selectedPaymentMethod === "tbank") {
         const params = new URLSearchParams({
-          orderId:
-            response?.id?.toString() ??
-            Math.floor(Math.random() * 1000000).toString(),
+          orderId: Math.floor(Math.random() * 1000000).toString(),
           amount: selectedCurrency.amount.toString(),
           price: numericPrice,
           currencyName: game.currencyName,
