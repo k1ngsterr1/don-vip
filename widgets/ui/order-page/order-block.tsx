@@ -169,7 +169,8 @@ export function OrderBlock({
           price: numericPrice,
           currencyName: game.currencyName,
           gameName: game.name,
-          userId: userIdDB,
+          userId: userId,
+          userIdDB: userIdDB,
           serverId: game.requiresServer ? serverId : "",
         });
 

@@ -29,6 +29,7 @@ export default function TBankPaymentPage() {
   const currencyName = searchParams.get("currencyName") || "coins";
   const gameName = searchParams.get("gameName") || "Game";
   const userId = searchParams.get("userId") || "";
+  const userIdDB = searchParams.get("userIdDB") || "";
   const serverId = searchParams.get("serverId") || "";
 
   const [isLoading, setIsLoading] = useState(false);
@@ -116,7 +117,7 @@ export default function TBankPaymentPage() {
       };
 
       const dataObject = {
-        UserId: userId || undefined,
+        UserId: userIdDB || undefined,
         OrderId: orderId || undefined,
         ServerId: serverId || undefined,
         Email: email || undefined,
