@@ -117,6 +117,7 @@ export default function TBankPaymentPage() {
 
       const dataObject = {
         UserId: userId || undefined,
+        OrderId: orderId || undefined,
         ServerId: serverId || undefined,
         Email: email || undefined,
         Phone: phone || undefined,
@@ -131,8 +132,8 @@ export default function TBankPaymentPage() {
         CustomerKey: userId,
         DATA: dataObject,
         Receipt: receiptData,
-        SuccessURL: "https://test.com/success",
-        FailURL: "https://test.com/fail",
+        SuccessURL: "https://don-vip.online",
+        FailURL: "https://don-vip.online",
       };
 
       console.log("🚀 PaymentPayload (before token):", paymentPayload);
