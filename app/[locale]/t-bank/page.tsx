@@ -3,7 +3,7 @@
 import type React from "react";
 import { useState } from "react";
 import { FileText, Mail, Phone, User } from "lucide-react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
   applyPromocode,
@@ -18,11 +18,10 @@ import { PaymentFooter } from "@/widgets/ui/t-bank-form/ui/payment-footer";
 
 export default function TBankPaymentPage() {
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const t = useTranslations("Payment.payment");
-  const formT = useTranslations("Payment.payment.form");
-  const promocodeT = useTranslations("Payment.payment.form.promocode");
-  const descriptionT = useTranslations("Payment.payment.form.description");
+  const t = useTranslations("tpayment");
+  const formT = useTranslations("tpayment.form");
+  const promocodeT = useTranslations("tpayment.form.promocode");
+  const descriptionT = useTranslations("tpayment.form.description");
 
   const orderId = searchParams.get("orderId");
   const amount = searchParams.get("amount") || "0";
@@ -86,13 +85,15 @@ export default function TBankPaymentPage() {
         "Payment";
 
       if (!email && !phone) {
-        alert("Укажите email или телефон");
+        alert(t("errors.emailOrPhone"));
         setIsLoading(false);
         return;
       }
 
       const finalOrderId = `order_${userId}_${Date.now()}`;
-      const amountInKopecks = Math.round(parseFloat(paymentAmount) * 100);
+      const amountInKopecks = Math.round(
+        Number.parseFloat(paymentAmount) * 100
+      );
 
       const payload = {
         TerminalKey: "1731053917835DEMO",
@@ -149,7 +150,7 @@ export default function TBankPaymentPage() {
       console.log("📦 Raw Tinkoff Response:", rawText);
 
       if (!response.ok || response.status === 204) {
-        throw new Error(`Ошибка инициализации платежа: ${response.status}`);
+        throw new Error(`Payment initialization error: ${response.status}`);
       }
 
       const result = JSON.parse(rawText);
@@ -158,82 +159,145 @@ export default function TBankPaymentPage() {
       if (result.Success && result.PaymentURL) {
         window.location.href = result.PaymentURL;
       } else {
-        throw new Error(result.Message || "Ошибка инициализации платежа");
+        throw new Error(result.Message || t("errors.paymentInit"));
       }
     } catch (err) {
-      console.error("❌ Ошибка платежа:", err);
-      alert("Ошибка при инициализации платежа. Попробуйте позже.");
+      console.error("❌ Payment error:", err);
+      alert(t("errors.paymentInit"));
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen">
-      <main className="max-w-md mx-auto px-4 py-8 md:py-12">
-        <div className="bg-white pt-8 rounded-lg shadow-lg border border-[#6798de]/20 overflow-hidden">
-          <PaymentHeaderInfo
-            gameName={gameName}
-            amount={amount}
-            currencyName={currencyName}
-            userId={userId}
-            serverId={serverId}
-          />
-          <form
-            id="payform-tbank"
-            onSubmit={handleSubmit}
-            className="p-6 space-y-4"
-          >
-            <AmountInput amount={paymentAmount} />
-            <PromocodeInput
-              promocode={promocode}
-              setPromocode={setPromocode}
-              appliedPromocode={appliedPromocode}
-              promocodeError={promocodeError}
-              onApply={handleApplyPromocode}
-              onRemove={handleRemovePromocode}
-            />
-            <FormInput
-              id="description"
-              label="Description"
-              type="text"
-              placeholder="Payment description"
-              Icon={FileText}
-              translationNamespace="description"
-            />
-            <FormInput
-              id="name"
-              label="Full Name"
-              type="text"
-              placeholder="John Doe"
-              Icon={User}
-              translationNamespace="name"
-            />
-            <FormInput
-              id="email"
-              label="E-mail"
-              type="email"
-              placeholder="example@mail.com"
-              Icon={Mail}
-              translationNamespace="email"
-            />
-            <FormInput
-              id="phone"
-              label="Phone"
-              type="tel"
-              placeholder="+1 (123) 456-7890"
-              Icon={Phone}
-              translationNamespace="phone"
-            />
-            <SubmitButton isLoading={isLoading} amount={paymentAmount} />
-            <div className="text-xs text-gray-500 text-center mt-4">
-              {formT("terms")}
+    <div className="min-h-screen bg-gray-50">
+      <main className="max-w-6xl mx-auto px-4 py-12 md:py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-lg shadow-lg border border-[#6798de]/20 p-6 mb-6">
+              <h2 className="text-xl font-semibold mb-4">
+                {t("orderSummary")}
+              </h2>
+              <PaymentHeaderInfo
+                gameName={gameName}
+                amount={amount}
+                currencyName={currencyName}
+                userId={userId}
+                serverId={serverId}
+              />
+
+              <div className="mt-6 space-y-4">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">{t("subtotal")}</span>
+                  <span className="font-medium">{originalAmount} ₽</span>
+                </div>
+
+                {appliedPromocode && (
+                  <div className="flex justify-between text-green-600">
+                    <span>{t("discount")}</span>
+                    <span>
+                      -
+                      {(
+                        Number.parseFloat(originalAmount) -
+                        Number.parseFloat(paymentAmount)
+                      ).toFixed(2)}{" "}
+                      ₽
+                    </span>
+                  </div>
+                )}
+
+                <div className="flex justify-between text-lg font-bold pt-2 border-t">
+                  <span>{t("total")}</span>
+                  <span>{paymentAmount} ₽</span>
+                </div>
+              </div>
             </div>
-          </form>
+          </div>
+          <div className="lg:col-span-3">
+            <div className="bg-white rounded-lg shadow-lg border border-[#6798de]/20 overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-6">
+                <h1 className="text-2xl font-bold text-white">
+                  {t("paymentDetails")}
+                </h1>
+              </div>
+              <form
+                id="payform-tbank"
+                onSubmit={handleSubmit}
+                className="p-8 space-y-6"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="md:col-span-2">
+                    <AmountInput amount={paymentAmount} />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <PromocodeInput
+                      promocode={promocode}
+                      setPromocode={setPromocode}
+                      appliedPromocode={appliedPromocode}
+                      promocodeError={promocodeError}
+                      onApply={handleApplyPromocode}
+                      onRemove={handleRemovePromocode}
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <FormInput
+                      id="description"
+                      label="Description"
+                      type="text"
+                      placeholder="Payment description"
+                      Icon={FileText}
+                      translationNamespace="description"
+                    />
+                  </div>
+
+                  <FormInput
+                    id="name"
+                    label="Full Name"
+                    type="text"
+                    placeholder="John Doe"
+                    Icon={User}
+                    translationNamespace="name"
+                  />
+
+                  <FormInput
+                    id="email"
+                    label="E-mail"
+                    type="email"
+                    placeholder="example@mail.com"
+                    Icon={Mail}
+                    translationNamespace="email"
+                  />
+
+                  <div className="md:col-span-2">
+                    <FormInput
+                      id="phone"
+                      label="Phone"
+                      type="tel"
+                      placeholder="+1 (123) 456-7890"
+                      Icon={Phone}
+                      translationNamespace="phone"
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <SubmitButton
+                      isLoading={isLoading}
+                      amount={paymentAmount}
+                    />
+                  </div>
+                </div>
+
+                <div className="text-sm text-gray-500 text-center mt-6">
+                  {formT("terms")}
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
         <PaymentFooter />
       </main>
     </div>
   );
 }
-

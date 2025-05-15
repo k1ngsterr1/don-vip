@@ -161,14 +161,17 @@ export function ServicesMegaMenu() {
                   className="text-center relative"
                   variants={itemVariants}
                   custom={index}
-                  whileHover="hover"
-                  initial="rest"
                 >
                   <motion.div
                     className="relative w-full aspect-square rounded-lg overflow-hidden mb-2 shadow-sm"
                     variants={cardVariants}
+                    initial="rest"
+                    whileHover="hover"
                   >
-                    <motion.div variants={imageHoverVariants}>
+                    <motion.div
+                      className="w-full h-full"
+                      variants={imageHoverVariants}
+                    >
                       <Image
                         src={service.image || "/placeholder.svg"}
                         alt={service.name}

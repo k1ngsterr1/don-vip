@@ -1,0 +1,66 @@
+{
+  "tpayment": {
+    "orderSummary": "Order Summary",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "total": "Total",
+    "paymentDetails": "Payment Details",
+    "securePayment": "Secure Payment",
+    "securePaymentDesc": "Your payment information is processed securely. We do not store credit card details nor have access to your credit card information.",
+    "form": {
+      "description": {
+        "label": "Description",
+        "placeholder": "Payment description"
+      },
+      "name": {
+        "label": "Full Name",
+        "placeholder": "John Doe"
+      },
+      "email": {
+        "label": "E-mail",
+        "placeholder": "example@mail.com",
+        "required": "Email is required"
+      },
+      "phone": {
+        "label": "Phone",
+        "placeholder": "+1 (123) 456-7890",
+        "required": "Phone number is required"
+      },
+      "amount": {
+        "label": "Amount",
+        "currency": "₽"
+      },
+      "promocode": {
+        "label": "Promocode",
+        "placeholder": "Enter promocode",
+        "apply": "Apply",
+        "remove": "Remove",
+        "applied": "Applied",
+        "discount": "Discount",
+        "errors": {
+          "empty": "Please enter a promocode",
+          "invalid": "Invalid promocode"
+        }
+      },
+      "submit": {
+        "text": "Pay",
+        "loading": "Processing..."
+      },
+      "terms": "By clicking the Pay button, you agree to our Terms of Service and Privacy Policy."
+    },
+    "errors": {
+      "emailOrPhone": "Please provide email or phone",
+      "paymentInit": "Error initializing payment. Please try again later."
+    },
+    "success": {
+      "redirect": "Redirecting to payment page..."
+    },
+    "headerInfo": {
+      "game": "Game",
+      "amount": "Amount",
+      "currency": "Currency",
+      "userId": "User ID",
+      "serverId": "Server ID"
+    }
+  }
+}

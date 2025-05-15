@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { GamesMegaMenuSkeleton } from "./games-mega-menu-skeleton";
@@ -165,13 +164,12 @@ export function GamesMegaMenu() {
                   className="text-center"
                   variants={itemVariants}
                   custom={index}
-                  whileHover="hover"
-                  initial="rest"
-                  animate="visible"
                 >
                   <motion.div
                     className="relative w-full aspect-square rounded-lg overflow-hidden mb-2 shadow-sm"
                     variants={cardVariants}
+                    initial="rest"
+                    whileHover="hover"
                   >
                     <motion.div
                       className="w-full h-full"

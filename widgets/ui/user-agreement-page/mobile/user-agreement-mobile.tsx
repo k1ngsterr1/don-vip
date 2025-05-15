@@ -36,7 +36,6 @@ export function UserAgreementMobile() {
           </div>
         </div>
       </div>
-
       <div className="mb-6">
         <UserAgreementSidebar />
       </div>
