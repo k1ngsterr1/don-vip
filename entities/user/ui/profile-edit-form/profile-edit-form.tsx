@@ -59,6 +59,7 @@ export function ProfileEditForm({
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
+    console.log(name, value);
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -84,7 +85,7 @@ export function ProfileEditForm({
         ...(formData.last_name && { last_name: formData.last_name }),
         ...(formData.gender && { gender: formData.gender }),
         ...(formData.birth_date && {
-          birth_date: formatDateToISO(formData.birth_date),
+          birth_date: formData.birth_date,
         }),
         ...(formData.phone && { phone: formData.phone }),
         identifier: formData.identifier, // Always include identifier
@@ -309,10 +310,6 @@ export function ProfileEditForm({
             onChange={handleChange}
             type="tel"
             icon={<Phone size={18} />}
-            actionButton={{
-              text: i18n("buttons.change"),
-              onClick: () => alert(i18n("alerts.changePhone")),
-            }}
             className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
           />
 
@@ -320,13 +317,9 @@ export function ProfileEditForm({
             label={i18n("fields.email")}
             name="identifier"
             value={formData.identifier}
-            readOnly
+            onChange={handleChange}
             type="email"
             icon={<Mail size={18} />}
-            actionButton={{
-              text: i18n("buttons.change"),
-              onClick: () => alert(i18n("alerts.changeEmail")),
-            }}
             className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200 text-gray-500"
           />
         </div>

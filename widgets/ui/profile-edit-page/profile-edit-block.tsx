@@ -83,9 +83,9 @@ export function ProfileEditClient() {
       await refetch();
 
       // Redirect if path provided
-      if (redirectPath) {
-        router.push(redirectPath);
-      }
+      // if (redirectPath) {
+      //   router.push(redirectPath);
+      // }
 
       return true;
     } catch (error) {

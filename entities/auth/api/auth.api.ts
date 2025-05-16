@@ -38,11 +38,8 @@ export const authApi = {
    * Login with credentials + userId in body
    */
   login: async (credentials: LoginDto): Promise<TokenResponse> => {
-    const userId = await getUserId();
-
     const response = await apiClient.post<TokenResponse>("/auth/login", {
       ...credentials,
-      id: userId,
     });
     return response.data;
   },

@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "don-vip-backend-production.up.railway.app",
       },
+      {
+        protocol: "https",
+        hostname: "don-vip.online",
+      },
     ],
   },
 };
