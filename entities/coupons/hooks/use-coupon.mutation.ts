@@ -2,6 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
+  ApplyCouponDto,
   couponApi,
   type CheckCouponDto,
   type CreateCouponDto,
@@ -16,6 +17,12 @@ import { extractErrorMessage } from "@/shared/config/apiClient";
 export function useCheckCoupon() {
   return useMutation({
     mutationFn: (data: CheckCouponDto) => couponApi.checkCoupon(data),
+  });
+}
+
+export function useApplyCoupon() {
+  return useMutation({
+    mutationFn: (data: ApplyCouponDto) => couponApi.applyCoupon(data),
   });
 }
 

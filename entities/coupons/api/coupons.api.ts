@@ -31,6 +31,11 @@ export interface CouponValidityResult {
   message?: string;
 }
 
+export interface ApplyCouponDto {
+  code: string;
+  user_id: number;
+}
+
 /**
  * Coupon API client for coupon-related operations
  */
@@ -72,5 +77,16 @@ export const couponApi = {
    */
   deleteCoupon: async (id: number): Promise<void> => {
     await apiClient.delete(`/coupon/${id}`);
+  },
+
+  applyCoupon: async (
+    data: ApplyCouponDto
+  ): Promise<{
+    message: string;
+    code: string;
+    discount: number;
+  }> => {
+    const response = await apiClient.post("/coupon/apply", data);
+    return response.data;
   },
 };

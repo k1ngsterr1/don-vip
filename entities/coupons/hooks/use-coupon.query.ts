@@ -1,8 +1,8 @@
 "use client";
 
 import { queryKeys } from "@/shared/config/queryKeys";
-import { useQuery } from "@tanstack/react-query";
-import { couponApi } from "../api/coupons.api";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { ApplyCouponDto, couponApi } from "../api/coupons.api";
 
 /**
  * Hook to get all coupons (admin only)

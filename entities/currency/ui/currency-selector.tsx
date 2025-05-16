@@ -56,13 +56,23 @@ export function CurrencySelector({
                   currencyName,
                 })}
               </span>
-              <Image
-                src="/diamond.webp"
-                width={30}
-                height={30}
-                alt={i18n("currencyIconAlt", { currencyName })}
-                className="object-contain"
-              />
+              {currencyImage ? (
+                <Image
+                  src={currencyImage || "/placeholder.svg"}
+                  width={30}
+                  height={30}
+                  alt={i18n("currencyIconAlt", { currencyName })}
+                  className="object-contain"
+                />
+              ) : (
+                <Image
+                  src="/diamond.webp"
+                  width={30}
+                  height={30}
+                  alt={i18n("currencyIconAlt", { currencyName })}
+                  className="object-contain"
+                />
+              )}
             </div>
           </button>
         ))}
@@ -90,13 +100,23 @@ export function CurrencySelector({
               </div>
             )}
             <div className="flex items-center mb-2">
-              <Image
-                src="/diamond.webp"
-                width={36}
-                height={36}
-                alt={i18n("currencyIconAlt", { currencyName })}
-                className="object-contain mr-2"
-              />
+              {currencyImage ? (
+                <Image
+                  src={currencyImage || "/placeholder.svg"}
+                  width={36}
+                  height={36}
+                  alt={i18n("currencyIconAlt", { currencyName })}
+                  className="object-contain mr-2"
+                />
+              ) : (
+                <Image
+                  src="/diamond.webp"
+                  width={36}
+                  height={36}
+                  alt={i18n("currencyIconAlt", { currencyName })}
+                  className="object-contain mr-2"
+                />
+              )}
               <span className="text-gray-700 font-medium">
                 {i18n("amountWithCurrency", {
                   amount: item.amount,
