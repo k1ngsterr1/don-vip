@@ -118,6 +118,7 @@ export function FormField({
           ...e,
           target: {
             ...e.target,
+            name: name,
             value: maskedValue,
           },
         };
@@ -167,6 +168,7 @@ export function FormField({
           ...e,
           target: {
             ...e.target,
+            name: name,
             value: maskedValue,
           },
         };
