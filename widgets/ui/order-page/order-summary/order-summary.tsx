@@ -37,7 +37,7 @@ export function OrderSummary({
           <div className="w-16 h-16 flex items-center justify-center rounded-lg overflow-hidden mr-4 bg-gray-100 flex-shrink-0">
             {game.currencyImage && (
               <Image
-                src={"/diamond.webp"}
+                src={game.currencyImage}
                 alt={game.currencyName}
                 width={64}
                 height={64}

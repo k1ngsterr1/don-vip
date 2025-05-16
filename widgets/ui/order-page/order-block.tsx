@@ -13,7 +13,6 @@ import { useCreateOrder } from "@/entities/order/hooks/use-create-order";
 import type { CreateOrderDto } from "@/entities/order/model/types";
 import { useProduct } from "@/entities/product/hooks/queries/use-product";
 import { OrderBlockSkeleton } from "./loading/skeleton-loading";
-import { useAuthStore } from "@/entities/auth/store/auth.store";
 
 interface OrderBlockProps {
   gameSlug: number;
@@ -78,11 +77,13 @@ export function OrderBlock({
 
       const currencyType =
         replenishmentArray.length > 0 ? replenishmentArray[0].type : "";
-      const formattedCurrencyName = currencyType
-        ? currencyType.charAt(0).toUpperCase() + currencyType.slice(1)
-        : product.type === "Bigo"
-        ? "Diamonds"
-        : "Coins";
+      const formattedCurrencyName =
+        product.currency_name ||
+        (currencyType
+          ? currencyType.charAt(0).toUpperCase() + currencyType.slice(1)
+          : product.type === "Bigo"
+          ? "Diamonds"
+          : "Coins");
 
       setGame({
         id: product.id,
@@ -90,7 +91,9 @@ export function OrderBlock({
         description: product.description,
         image: product.image,
         currencyName: formattedCurrencyName,
-        currencyImage: `/currency-${product.type.toLowerCase()}.png`,
+        currencyImage:
+          product.currency_image ||
+          `/currency-${product.type.toLowerCase()}.png`,
         requiresServer: product.type === "Smile",
       });
 
@@ -98,7 +101,7 @@ export function OrderBlock({
         replenishmentArray.map((item: any, index: number) => ({
           id: index,
           amount: item.amount,
-          price: `${item.price.toFixed(2)} RUB`,
+          price: `${item.price.toFixed(2)} ${product.currency_name || "RUB"}`,
           type: item.type,
           sku: item.sku,
         }))
