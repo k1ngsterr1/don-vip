@@ -1,4 +1,5 @@
 import { apiClient } from "@/shared/config/apiClient";
+import { getUserId } from "@/shared/hooks/use-get-user-id";
 
 // Types
 export interface LoginDto {
@@ -34,24 +35,28 @@ export interface AuthResponse {
  */
 export const authApi = {
   /**
-   * Login with credentials
+   * Login with credentials + userId in body
    */
   login: async (credentials: LoginDto): Promise<TokenResponse> => {
-    const response = await apiClient.post<TokenResponse>(
-      "/auth/login",
-      credentials
-    );
+    const userId = await getUserId();
+
+    const response = await apiClient.post<TokenResponse>("/auth/login", {
+      ...credentials,
+      id: userId,
+    });
     return response.data;
   },
 
   /**
-   * Register a new user
+   * Register a new user + userId in body
    */
   register: async (userData: RegisterDto): Promise<TokenResponse> => {
-    const response = await apiClient.post<TokenResponse>(
-      "/auth/register",
-      userData
-    );
+    const userId = await getUserId();
+
+    const response = await apiClient.post<TokenResponse>("/auth/register", {
+      ...userData,
+      id: userId,
+    });
     return response.data;
   },
 
