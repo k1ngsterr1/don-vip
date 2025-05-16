@@ -5,6 +5,9 @@
       "allReviews": "All reviews",
       "leaveReview": "Leave review"
     },
+    "anonymous": {
+      "user": "Anonymus"
+    },
     "prompt": {
       "title": "Your opinion matters to us!",
       "description": "We are constantly striving to improve the quality and your experience of using our store. We would be very grateful if you would share your feedback with other users! 😊"

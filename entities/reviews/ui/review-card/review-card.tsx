@@ -15,6 +15,8 @@ export function ReviewCard({ review, isGrid = false }: ReviewCardProps) {
   const i18n = useTranslations("reviewCard");
   const [isExpanded, setIsExpanded] = useState(false);
 
+  console.log(review);
+
   // Mobile version (unchanged)
   const mobileCard = (
     <div className="p-4 bg-gray-50 rounded-md mb-2">
@@ -29,7 +31,7 @@ export function ReviewCard({ review, isGrid = false }: ReviewCardProps) {
               className="object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-gray-300 flex items-center justify-center text-white">
+            <div className="w-full h-full bg-blue flex items-center justify-center text-white">
               {review.author.charAt(0)}
             </div>
           )}

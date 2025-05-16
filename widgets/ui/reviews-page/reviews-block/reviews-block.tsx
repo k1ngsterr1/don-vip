@@ -16,21 +16,28 @@ export function ReviewsBlock() {
   const { data, isLoading, error } = useFeedbacks(page, limit);
 
   const reviews: any[] = data?.data
-    ? data.data.map((feedback) => ({
-        id: feedback.id.toString(),
-        author: `User ${feedback.userId}`,
-        date: new Date(feedback.createdAt).toLocaleDateString("ru-RU", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        }),
-        text: feedback.text,
-        //@ts-ignore
-        liked: feedback.status === "positive",
-        avatar: "/mavrodi.png",
-        //@ts-ignore
-        game: feedback.gameId ? `Game ${feedback.gameId}` : undefined,
-      }))
+    ? data.data.map((feedback: any) => {
+        const isAnonymous =
+          !feedback.user?.first_name && !feedback.user?.avatar;
+
+        return {
+          id: feedback.id.toString(),
+          author: isAnonymous
+            ? t("anonymous.user") || "Anonymous User"
+            : feedback.user?.first_name || `User ${feedback.user_id}`,
+          date: new Date().toLocaleDateString("ru-RU", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          }),
+          text: feedback.text,
+          liked: feedback.reaction === true,
+          avatar: isAnonymous ? null : feedback.user?.avatar || "/mavrodi.png",
+          isAnonymous,
+          game: feedback.product?.name ?? undefined,
+          image: feedback.product?.image ?? undefined,
+        };
+      })
     : [];
 
   return (
@@ -56,7 +63,6 @@ export function ReviewsBlock() {
           <p>{t("empty.description")}</p>
         </div>
       )}
-
       {data && data.total > 0 && data.lastPage > 1 && (
         <div className="flex justify-center gap-2 mt-4 mb-16">
           <button
@@ -78,7 +84,6 @@ export function ReviewsBlock() {
           </button>
         </div>
       )}
-
       <Link
         href="/send-review"
         className="w-[194px] fixed flex items-center justify-center bottom-[75px] h-[42px] rounded-full font-roboto font-medium text-[12px] text-white bg-blue"
