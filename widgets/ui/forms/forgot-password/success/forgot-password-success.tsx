@@ -31,11 +31,6 @@ export const ForgotPasswordSuccess = () => {
         />
       </div>
       <h2 className="text-black text-xl font-semibold mb-3">{i18n("title")}</h2>
-      <p className="text-black text-center mb-6">
-        {email
-          ? i18n.rich("messageWithEmail", { email: <strong>{email}</strong> })
-          : i18n("message")}
-      </p>
 
       <div className="mt-6 flex flex-col md:flex-row gap-4 w-full">
         <Link
