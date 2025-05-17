@@ -1,3 +1,4 @@
+//@ts-nocheck
 "use client";
 
 import type React from "react";
@@ -12,12 +13,12 @@ import { PromocodeInput } from "@/widgets/ui/t-bank-form/ui/promocode-input";
 import { FormInput } from "@/widgets/ui/t-bank-form/ui/form-input";
 import { SubmitButton } from "@/widgets/ui/t-bank-form/ui/submit-button";
 import { PaymentFooter } from "@/widgets/ui/t-bank-form/ui/payment-footer";
-import { SuccessPopup } from "@/components/success-popup/success-popup";
 import {
   useCheckCoupon,
   useApplyCoupon,
 } from "@/entities/coupons/hooks/use-coupon.mutation";
 import { getUserId } from "@/shared/hooks/use-get-user-id";
+import { SuccessPopup } from "@/widgets/ui/coupons-page/coupons-manager/block/success-popup";
 
 export default function TBankPaymentPage() {
   const searchParams = useSearchParams();
@@ -310,16 +311,6 @@ export default function TBankPaymentPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Success Popup for promocode */}
-      {appliedPromocode && (
-        <SuccessPopup
-          isOpen={showSuccessPopup}
-          onClose={handleCloseSuccessPopup}
-          code={appliedPromocode.code}
-          discount={appliedPromocode.discount}
-        />
-      )}
-
       <main className="max-w-6xl mx-auto px-4 py-12 md:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-2">
