@@ -1,20 +1,23 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Mail, Phone, User } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import {
-  applyPromocode,
-  generateToken,
-} from "@/widgets/ui/t-bank-form/utils/payment-utils";
+import { generateToken } from "@/widgets/ui/t-bank-form/utils/payment-utils";
 import { PaymentHeaderInfo } from "@/widgets/ui/t-bank-form/ui/payment-header-info";
 import { AmountInput } from "@/widgets/ui/t-bank-form/ui/amount-input";
 import { PromocodeInput } from "@/widgets/ui/t-bank-form/ui/promocode-input";
 import { FormInput } from "@/widgets/ui/t-bank-form/ui/form-input";
 import { SubmitButton } from "@/widgets/ui/t-bank-form/ui/submit-button";
 import { PaymentFooter } from "@/widgets/ui/t-bank-form/ui/payment-footer";
+import { SuccessPopup } from "@/components/success-popup/success-popup";
+import {
+  useCheckCoupon,
+  useApplyCoupon,
+} from "@/entities/coupons/hooks/use-coupon.mutation";
+import { getUserId } from "@/shared/hooks/use-get-user-id";
 
 export default function TBankPaymentPage() {
   const searchParams = useSearchParams();
@@ -35,6 +38,8 @@ export default function TBankPaymentPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [paymentAmount, setPaymentAmount] = useState(price);
   const [originalAmount, setOriginalAmount] = useState(price);
+  const [systemUserId, setSystemUserId] = useState<string | null>(null);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   const [promocode, setPromocode] = useState("");
   const [appliedPromocode, setAppliedPromocode] = useState<{
@@ -44,22 +49,119 @@ export default function TBankPaymentPage() {
 
   const [promocodeError, setPromocodeError] = useState("");
 
-  const handleApplyPromocode = () => {
-    const result = applyPromocode(promocode, originalAmount, {
-      empty: promocodeT("errors.empty"),
-      invalid: promocodeT("errors.invalid"),
-    });
+  // Use the coupon API hooks
+  const checkCouponMutation = useCheckCoupon();
+  const applyCouponMutation = useApplyCoupon();
 
-    if (result.success && result.discount && result.amount) {
-      setAppliedPromocode({
-        code: promocode,
-        discount: result.discount,
-      });
-      setPaymentAmount(result.amount);
-      setPromocodeError("");
-    } else {
-      setPromocodeError(result.error || "Error applying promocode");
+  // Get the system user ID on component mount
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const id = await getUserId();
+        setSystemUserId(id);
+        console.log("System User ID:", id);
+      } catch (error) {
+        console.error("Failed to get user ID:", error);
+      }
+    };
+
+    fetchUserId();
+  }, []);
+
+  const calculateDiscountedAmount = (
+    originalAmount: string,
+    discountPercent: number
+  ): string => {
+    const originalValue = Number.parseFloat(originalAmount);
+    if (isNaN(originalValue)) return originalAmount;
+
+    const discountMultiplier = (100 - discountPercent) / 100;
+    const discountedValue = originalValue * discountMultiplier;
+
+    return discountedValue.toFixed(2);
+  };
+
+  const handleApplyPromocode = async () => {
+    if (!promocode.trim()) {
+      setPromocodeError(promocodeT("errors.empty"));
+      return;
     }
+
+    if (!systemUserId) {
+      setPromocodeError("User ID not available. Please refresh the page.");
+      return;
+    }
+
+    setIsLoading(true);
+    setPromocodeError("");
+
+    try {
+      // First check if the coupon is valid
+      const checkResult = await checkCouponMutation.mutateAsync({
+        code: promocode,
+      });
+
+      console.log("Check coupon result:", checkResult);
+
+      // Determine if the coupon is valid based on the response structure
+      const isCouponValid =
+        // Format 1: { valid: true, coupon: {...} }
+        (checkResult.valid && checkResult.coupon) ||
+        // Format 2: { status: "Active", ... }
+        checkResult.status === "Active" ||
+        // Format 3: Direct coupon object with code and discount
+        (checkResult.code && checkResult.discount);
+
+      if (isCouponValid) {
+        // Apply the coupon
+        const appliedCouponResponse = await applyCouponMutation.mutateAsync({
+          code: promocode,
+          user_id: Number.parseInt(systemUserId, 10),
+        });
+
+        console.log("Apply coupon result:", appliedCouponResponse);
+
+        // Get the discount percentage
+        const discountPercent =
+          appliedCouponResponse.discount ||
+          checkResult.coupon?.discount ||
+          checkResult.discount ||
+          0;
+
+        // Calculate the discounted amount
+        const discountedAmount = calculateDiscountedAmount(
+          originalAmount,
+          discountPercent
+        );
+
+        // Update state with the applied promocode
+        setAppliedPromocode({
+          code: promocode,
+          discount: discountPercent,
+        });
+
+        // Update the payment amount
+        setPaymentAmount(discountedAmount);
+
+        // Show success popup
+        setShowSuccessPopup(true);
+
+        // Clear any errors
+        setPromocodeError("");
+      } else {
+        // Handle invalid coupon
+        setPromocodeError(checkResult.message || promocodeT("errors.invalid"));
+      }
+    } catch (err) {
+      console.error("Error applying promocode:", err);
+      setPromocodeError(promocodeT("errors.invalid"));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCloseSuccessPopup = () => {
+    setShowSuccessPopup(false);
   };
 
   const handleRemovePromocode = () => {
@@ -123,6 +225,10 @@ export default function TBankPaymentPage() {
         Email: email || undefined,
         Phone: phone || undefined,
         Name: name || undefined,
+        // Include promocode information if applied
+        Promocode: appliedPromocode ? appliedPromocode.code : undefined,
+        Discount: appliedPromocode ? appliedPromocode.discount : undefined,
+        OriginalAmount: originalAmount,
       };
 
       const paymentPayload = {
@@ -180,7 +286,14 @@ export default function TBankPaymentPage() {
       // Опционально: отправка orderId в backend
       await fetch("/api/tinkoff/save-order", {
         method: "POST",
-        body: JSON.stringify({ orderId: finalOrderId, userId }),
+        body: JSON.stringify({
+          orderId: finalOrderId,
+          userId,
+          promocode: appliedPromocode ? appliedPromocode.code : null,
+          discount: appliedPromocode ? appliedPromocode.discount : null,
+          originalAmount,
+          finalAmount: paymentAmount,
+        }),
       });
 
       // Перенаправление на оплату
@@ -197,6 +310,16 @@ export default function TBankPaymentPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Success Popup for promocode */}
+      {appliedPromocode && (
+        <SuccessPopup
+          isOpen={showSuccessPopup}
+          onClose={handleCloseSuccessPopup}
+          code={appliedPromocode.code}
+          discount={appliedPromocode.discount}
+        />
+      )}
+
       <main className="max-w-6xl mx-auto px-4 py-12 md:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-2">
@@ -220,7 +343,9 @@ export default function TBankPaymentPage() {
 
                 {appliedPromocode && (
                   <div className="flex justify-between text-green-600">
-                    <span>{t("discount")}</span>
+                    <span>
+                      {t("discount")} ({appliedPromocode.discount}%)
+                    </span>
                     <span>
                       -
                       {(
@@ -263,6 +388,10 @@ export default function TBankPaymentPage() {
                       promocodeError={promocodeError}
                       onApply={handleApplyPromocode}
                       onRemove={handleRemovePromocode}
+                      isLoading={
+                        checkCouponMutation.isPending ||
+                        applyCouponMutation.isPending
+                      }
                     />
                   </div>
                   <FormInput

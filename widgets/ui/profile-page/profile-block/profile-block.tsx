@@ -19,25 +19,6 @@ export default function ProfileBlock() {
   const isCurrentUserProfile =
     isAuthenticated && currentUser?.id?.toString() === id?.toString();
 
-  const handleAvatarChange = async (avatarUrl: string) => {
-    if (!avatarUrl) return;
-
-    try {
-      if (avatarUrl.startsWith("data:")) {
-        const res = await fetch(avatarUrl);
-        const blob = await res.blob();
-        const file = new File([blob], "avatar.jpg", { type: "image/jpeg" });
-
-        await updateUser.mutateAsync({ avatar: file });
-        await refetch();
-      } else if (avatarUrl.startsWith("http")) {
-        console.log("Using existing avatar URL:", avatarUrl);
-      }
-    } catch (error) {
-      console.error("Error updating avatar:", error);
-    }
-  };
-
   if (isLoading) {
     return <ProfileLoading />;
   }
@@ -58,10 +39,7 @@ export default function ProfileBlock() {
       <div className="md:flex md:gap-8 lg:gap-12">
         <div className="md:w-1/3 lg:w-1/4">
           <div className="md:bg-white md:rounded-xl md:shadow-sm md:border md:border-gray-100 md:p-6">
-            <ProfileHeaderEditable
-              user={user as any}
-              onAvatarChange={handleAvatarChange as any}
-            />
+            <ProfileHeaderEditable user={user as any} />
           </div>
         </div>
         <div className="md:w-2/3 lg:w-3/4">

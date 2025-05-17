@@ -7,6 +7,7 @@ import { Camera, Copy, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { updateUserAvatar } from "../../hooks/mutations 01-53-42-528/use-update-profile.mutation";
 
 interface ProfileHeaderEditableProps {
   user: User;
@@ -16,7 +17,6 @@ interface ProfileHeaderEditableProps {
 
 export function ProfileHeaderEditable({
   user,
-  onAvatarChange,
   readOnly = false,
 }: ProfileHeaderEditableProps) {
   const i18n = useTranslations("profileEdit");
@@ -24,7 +24,6 @@ export function ProfileHeaderEditable({
   const [isUploading, setIsUploading] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const fullName = `${user.firstName} ${user.lastName}`;
 
   // Use our standardized hook if no custom handler is provided
   const updateUser = useUpdateUser();
@@ -63,7 +62,8 @@ export function ProfileHeaderEditable({
       }
 
       // Update the avatar
-      await updateUser.mutateAsync({ avatar: file });
+      const updatedUser = await updateUserAvatar(file);
+      setAvatarUrl(updatedUser.avatar);
 
       // Refetch user data to get updated avatar URL
       // Note: You'll need to implement refetch or adjust this part
@@ -99,13 +99,7 @@ export function ProfileHeaderEditable({
       };
       reader.readAsDataURL(file);
 
-      // Call the provided onAvatarChange or our custom handler
-      if (onAvatarChange) {
-        await onAvatarChange(file);
-      } else {
-        // Use the custom handler with the file object directly
-        await handleAvatarChange(file);
-      }
+      await handleAvatarChange(file);
     } catch (error) {
       console.error(i18n("errorUploading"), error);
       // Revert to original avatar on error
@@ -124,14 +118,6 @@ export function ProfileHeaderEditable({
 
       // Preview removal immediately
       setAvatarUrl(undefined);
-
-      // Use provided handler or default to our hook
-      if (onAvatarChange) {
-        // Pass null to indicate avatar removal
-        await onAvatarChange(null as any);
-      } else {
-        await updateUser.mutateAsync({ avatar: null });
-      }
     } catch (error) {
       console.error(i18n("errorRemoving"), error);
 
@@ -160,7 +146,7 @@ export function ProfileHeaderEditable({
           <>
             <Image
               src={avatarUrl || "/placeholder.svg"}
-              alt={fullName}
+              alt={user.first_name}
               width={128}
               height={128}
               className="object-cover w-full h-full"
@@ -223,9 +209,11 @@ export function ProfileHeaderEditable({
             />
           </button>
         </div>
-        <h1 className="text-xl font-medium md:text-2xl md:mt-2">
-          {fullName != undefined ? "" : fullName}
-        </h1>
+        {user.first_name && (
+          <h1 className="text-xl font-medium md:text-2xl md:mt-2">
+            {user.first_name} {user.last_name}
+          </h1>
+        )}
       </div>
       <div className="hidden md:block mt-6 w-full">
         <div className="bg-gray-50 rounded-lg p-4 text-center">

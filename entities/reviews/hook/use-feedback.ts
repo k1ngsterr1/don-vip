@@ -7,7 +7,6 @@ import type {
   FeedbackResponse,
   PaginatedFeedbackResponse,
 } from "../api/reviews.api";
-import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useGetMe } from "@/entities/auth/hooks/use-auth";
 
 // Internal DTO that matches the component's structure
@@ -78,6 +77,14 @@ export function useCreateFeedback(
     },
   });
 }
+
+export function useAcceptedFeedbacks(page = 1, limit = 10) {
+  return useQuery<PaginatedFeedbackResponse, Error>({
+    queryKey: [...feedbackKeys.lists(), "accepted", { page, limit }],
+    queryFn: () => feedbackService.getAccepted(page, limit),
+  });
+}
+
 // Update an existing feedback
 export function useUpdateFeedback(id: number) {
   const queryClient = useQueryClient();

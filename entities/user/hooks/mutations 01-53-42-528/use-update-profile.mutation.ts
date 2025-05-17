@@ -30,11 +30,11 @@ const updateUserProfile = async (
 };
 
 // Function to update just the user avatar
-const updateUserAvatar = async (file: File): Promise<User> => {
+export const updateUserAvatar = async (file: File): Promise<User> => {
   const formData = new FormData();
   formData.append("avatar", file);
 
-  const response = await apiClient.post<User>("/upload-avatar", formData, {
+  const response = await apiClient.post<User>("/user/upload-avatar", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

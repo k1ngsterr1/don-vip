@@ -12,12 +12,14 @@ import {
   useUploadAvatar,
 } from "@/entities/user/hooks/use-user.mutation";
 import { userApi } from "@/entities/user/auth/user-api";
+import { useTranslations } from "next-intl";
 
 export function ProfileEditClient() {
   const router = useRouter();
   const { setUser } = useAuthStore();
   const updateProfileMutation = useUpdateProfile();
   const uploadAvatarMutation = useUploadAvatar();
+  const t = useTranslations("profileEdit");
 
   // Directly fetch user data with useQuery
   const {
@@ -147,8 +149,9 @@ export function ProfileEditClient() {
           </div>
           <div className="md:w-2/3 md:pl-8">
             <h2 className="hidden md:block text-2xl font-unbounded font-medium mb-6 text-gray-800">
-              Редактирование профиля
+              {t("editProfile")}
             </h2>
+
             <ProfileEditForm
               user={user as any}
               onSubmit={updateProfile}

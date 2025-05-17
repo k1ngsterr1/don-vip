@@ -8,13 +8,22 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import google from "@/assets/google.webp";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
+import { useQuery } from "@tanstack/react-query";
+import { authApi } from "@/entities/auth/api/auth.api";
 
 export function AuthMenu() {
-  const { isAuthenticated, user, logout } = useAuthStore();
+  const { isAuthenticated, logout } = useAuthStore();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const t = useTranslations("Header");
+
+  const { data: currentUser, isLoading } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: authApi.getCurrentUser,
+    staleTime: 5 * 60 * 1000,
+    enabled: isAuthenticated,
+  });
 
   const handleLogout = () => {
     logout();
@@ -72,15 +81,27 @@ export function AuthMenu() {
         onClick={() => setUserMenuOpen(!userMenuOpen)}
         className="flex items-center cursor-pointer text-dark hover:text-blue-600 transition-colors"
       >
-        <div className="w-8 h-8 bg-blue rounded-full flex items-center justify-center text-white">
-          {user?.firstName?.[0] || user?.email?.[0] || "U"}
-        </div>
+        {currentUser?.avatar ? (
+          <Image
+            src={currentUser.avatar}
+            alt="Avatar"
+            width={32}
+            height={32}
+            className="rounded-full object-cover w-8 h-8"
+          />
+        ) : (
+          <div className="w-8 h-8 bg-blue rounded-full flex items-center justify-center text-white uppercase">
+            {currentUser?.first_name?.[0] ||
+              currentUser?.identifier?.[0] ||
+              "U"}
+          </div>
+        )}
       </button>
 
       {userMenuOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
           <Link
-            href={`/profile/${user?.id || 1}`}
+            href={`/profile/${currentUser?.id || 1}`}
             className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
             onClick={() => setUserMenuOpen(false)}
           >

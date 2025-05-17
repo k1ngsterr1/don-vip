@@ -3,7 +3,10 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useFeedbacks } from "@/entities/reviews/hook/use-feedback";
+import {
+  useAcceptedFeedbacks,
+  useFeedbacks,
+} from "@/entities/reviews/hook/use-feedback";
 import { ReviewList } from "@/entities/reviews/ui/review-list/review-list";
 import { FeedbackPrompt } from "@/widgets/ui/reviews-page/prompt-block/prompt-block";
 import { ReviewsSkeleton } from "../reviews-loading/reviews-loading";
@@ -13,7 +16,7 @@ export function ReviewsBlock() {
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
 
-  const { data, isLoading, error } = useFeedbacks(page, limit);
+  const { data, isLoading, error } = useAcceptedFeedbacks(page, limit);
 
   const reviews: any[] = data?.data
     ? data.data.map((feedback: any) => {
@@ -30,6 +33,7 @@ export function ReviewsBlock() {
             month: "short",
             year: "numeric",
           }),
+          product: feedback.product,
           text: feedback.text,
           liked: feedback.reaction === true,
           avatar: isAnonymous ? null : feedback.user?.avatar || "/mavrodi.png",

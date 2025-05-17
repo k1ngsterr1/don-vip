@@ -1,5 +1,6 @@
 {
   "ReviewForm": {
+    "submitting": "Submitting...",
     "placeholder": "Share your impressions about our service",
     "positiveLabel": "Positive feedback",
     "negativeLabel": "Negative feedback",

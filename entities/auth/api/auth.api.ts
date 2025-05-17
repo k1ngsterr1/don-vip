@@ -13,10 +13,9 @@ export interface RegisterDto {
 }
 
 export interface ChangePasswordDto {
-  oldPassword?: string;
-  newPassword: string;
   email?: string;
   phone?: string;
+  lang: any;
 }
 
 export interface TokenResponse {

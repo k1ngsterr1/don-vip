@@ -15,8 +15,6 @@ export function ReviewCard({ review, isGrid = false }: ReviewCardProps) {
   const i18n = useTranslations("reviewCard");
   const [isExpanded, setIsExpanded] = useState(false);
 
-  console.log(review);
-
   // Mobile version (unchanged)
   const mobileCard = (
     <div className="p-4 bg-gray-50 rounded-md mb-2">
@@ -28,7 +26,7 @@ export function ReviewCard({ review, isGrid = false }: ReviewCardProps) {
               alt={review.author}
               width={40}
               height={40}
-              className="object-cover"
+              className="object-cover rounded-full"
             />
           ) : (
             <div className="w-full h-full bg-blue flex items-center justify-center text-white">
@@ -42,23 +40,29 @@ export function ReviewCard({ review, isGrid = false }: ReviewCardProps) {
             <span className="text-xs text-gray-light">{review.date}</span>
           </div>
         </div>
-        <ThumbsUp
-          className={`${review.liked ? "text-[#03cc60]" : "text-red-500"} `}
-          size={20}
-          aria-label={
-            review.liked ? i18n("likedReview") : i18n("dislikedReview")
-          }
-        />
+        {review.liked ? (
+          <ThumbsUp
+            className={"text-[#03cc60]"}
+            size={20}
+            aria-label={i18n("likedReview")}
+          />
+        ) : (
+          <ThumbsDown
+            className={"text-red-500"}
+            size={20}
+            aria-label={i18n("dislikedReview")}
+          />
+        )}
       </div>
       {review.text && <p className="text-sm text-dark mt-2">{review.text}</p>}
       {review.game && (
         <div className="flex gap-2 mt-2">
           <Image
-            src={"/bigo.png"}
+            src={review.product.image}
             alt={review.author}
             width={40}
             height={40}
-            className="object-cover w-[18px] h-[18px]"
+            className="object-cover rounded-full w-[18px] h-[18px]"
           />
           <p className="text-blue text-sm ">{review.game}</p>
         </div>
@@ -118,11 +122,11 @@ export function ReviewCard({ review, isGrid = false }: ReviewCardProps) {
           {review.game && (
             <div className="flex items-center mt-2 bg-blue/10 px-3 py-1 rounded-full w-fit">
               <Image
-                src={"/bigo.png"}
+                src={review.product.image}
                 alt={review.author}
                 width={40}
                 height={40}
-                className="object-cover w-4 h-4 mr-2"
+                className="object-cover w-4 h-4 mr-2 rounded-full"
               />
               <p className="text-blue text-xs font-medium">{review.game}</p>
             </div>

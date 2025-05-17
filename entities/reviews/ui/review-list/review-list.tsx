@@ -6,7 +6,7 @@ interface ReviewListProps {
   isGrid?: boolean;
 }
 
-export function ReviewList({ reviews, isGrid = false }: any) {
+export function ReviewList({ reviews, isGrid = false }: ReviewListProps) {
   if (isGrid) {
     return (
       <>

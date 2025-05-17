@@ -7,4 +7,5 @@ export interface Review {
   liked: boolean;
   avatar?: string;
   game?: string;
+  product: any;
 }

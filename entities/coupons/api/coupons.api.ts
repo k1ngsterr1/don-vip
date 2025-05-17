@@ -84,6 +84,7 @@ export const couponApi = {
   ): Promise<{
     message: string;
     code: string;
+    user_id: string;
     discount: number;
   }> => {
     const response = await apiClient.post("/coupon/apply", data);

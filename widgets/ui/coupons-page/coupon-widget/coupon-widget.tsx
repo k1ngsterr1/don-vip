@@ -21,7 +21,6 @@ export function CouponsHeaderWidget() {
           <span className="hover:underline">{i18n("backLink")}</span>
         </Link>
       </div>
-
       <div className="flex items-center mb-6 md:mb-10">
         <SectionTitle
           icon={<Ticket className="text-blue" size={20} />}

@@ -1,4 +1,5 @@
 "use client";
+
 import type React from "react";
 import { useTranslations } from "next-intl";
 import { AuthInput } from "@/shared/ui/auth-input/auth-input";
@@ -8,14 +9,16 @@ import Link from "next/link";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useChangePassword } from "@/entities/auth/hooks/use-auth";
+import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
 
 export function ForgotPasswordForm() {
-  const i18n = useTranslations("forgotpassword_auth.forgotPassword");
+  const router = useRouter();
+  const t = useTranslations("forgot_auth.forgotPassword");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const locale = useLocale(); // ⬅️ получаем текущий язык (например, "ru" или "en")
 
-  // Get password reset mutation from our auth API hooks
   const { mutate: changePassword, isPending: isLoading } = useChangePassword();
 
   const isFormFilled = email.trim() !== "";
@@ -29,28 +32,36 @@ export function ForgotPasswordForm() {
     e.preventDefault();
 
     if (!email) {
-      setError(i18n("error.emptyFields"));
+      setError(t("error.required"));
       return;
     }
 
     if (!validateEmail(email)) {
-      setError(
-        i18n("error.invalidEmail") || "Please enter a valid email address"
-      );
+      setError(t("error.invalidEmail"));
       return;
     }
 
-    // Call password reset mutation
     changePassword(
-      { email },
+      { email, lang: locale }, // ⬅️ передаём язык вместе с email
       {
         onSuccess: () => {
-          setSuccessMessage(i18n("successMessage"));
-          setError("");
+          sessionStorage.setItem("resetPasswordEmail", email);
+          router.push("/forgot-password/success");
         },
         onError: (error: any) => {
-          setError(error.response?.data?.message || i18n("error.emptyFields"));
-          setSuccessMessage("");
+          const message = error?.response?.data?.message;
+
+          if (Array.isArray(message)) {
+            // Берём первую ошибку и первое сообщение из constraints
+            const firstError = message[0];
+            const constraints = firstError?.constraints;
+            const firstConstraintMsg =
+              constraints && Object.values(constraints)[0];
+
+            setError(firstConstraintMsg || t("error.required"));
+          } else {
+            setError(message || t("error.required"));
+          }
         },
       }
     );
@@ -59,36 +70,23 @@ export function ForgotPasswordForm() {
   return (
     <div className="max-w-md mx-auto md:bg-white md:rounded-lg md:shadow-sm md:border md:border-gray-100 md:p-8">
       <p className="text-sm md:text-base text-gray-600 mb-6 md:mb-8 md:text-center">
-        {i18n("description")}
+        {t("description")}
       </p>
+
       <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
         <AuthInput
           type="email"
-          placeholder={i18n("emailPlaceholder")}
+          placeholder={t("email.placeholder")}
+          label={t("email.label")}
           value={email}
           onChange={(e) => {
             setEmail(e.target.value);
             if (error) setError("");
           }}
-          label={i18n("emailLabel")}
           disabled={isLoading}
         />
 
         {error && <p className="text-[#ff272c] text-xs md:text-sm">{error}</p>}
-        {successMessage && (
-          <div className="bg-green-50 border border-green-200 rounded-md p-3 md:p-4">
-            <p className="text-green-600 text-xs md:text-sm">
-              {successMessage}
-            </p>
-          </div>
-        )}
-
-        <div className="text-xs text-gray-500 mt-2">
-          <p>
-            {i18n("resetInfo") ||
-              "You'll receive instructions to reset your password if this email is registered."}
-          </p>
-        </div>
 
         <Button
           type="submit"
@@ -102,31 +100,33 @@ export function ForgotPasswordForm() {
           {isLoading ? (
             <span className="flex items-center justify-center">
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {i18n("processingText") || "Processing..."}
+              {t("loading")}
             </span>
           ) : (
-            i18n("submitButton")
+            t("submit")
           )}
         </Button>
       </form>
+
       <div className="mt-6 md:mt-8 text-center text-xs md:text-sm text-gray-500">
         <p>
-          {i18n("privacyText")}{" "}
+          {t("privacy.text")}{" "}
           <Link href="#" className="text-blue hover:underline">
-            {i18n("privacyLink")}
+            {t("privacy.link")}
           </Link>
         </p>
       </div>
+
       <SocialAuth />
 
       <div className="mt-8 md:mt-10 text-center">
         <p className="text-sm md:text-base">
-          {i18n("rememberPassword")}{" "}
+          {t("footer.question")}{" "}
           <Link
             href="/auth/login"
             className="text-blue font-medium hover:underline"
           >
-            {i18n("loginLink")}
+            {t("footer.link")}
           </Link>
         </p>
       </div>

@@ -9,6 +9,7 @@ interface PromocodeInputProps {
   promocodeError: string;
   onApply: () => void;
   onRemove: () => void;
+  isLoading?: boolean;
 }
 
 export function PromocodeInput({
@@ -18,6 +19,7 @@ export function PromocodeInput({
   promocodeError,
   onApply,
   onRemove,
+  isLoading = false,
 }: PromocodeInputProps) {
   const t = useTranslations("Payment.payment.form.promocode");
 
@@ -35,8 +37,8 @@ export function PromocodeInput({
           id="promocode"
           type="text"
           value={promocode}
-          onChange={(e) => setPromocode(e.target.value)}
-          disabled={!!appliedPromocode}
+          onChange={(e) => setPromocode(e.target.value.toUpperCase())}
+          disabled={!!appliedPromocode || isLoading}
           placeholder={t("placeholder")}
           className={`flex-1 px-3 py-2 border rounded-md ${
             promocodeError ? "border-red-500" : "border-gray-300"
@@ -54,10 +56,14 @@ export function PromocodeInput({
           <button
             type="button"
             onClick={onApply}
-            disabled={!promocode.trim()}
-            className="px-3 py-2 bg-[#6798de] text-white rounded-md hover:bg-[#5687cd] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={!promocode.trim() || isLoading}
+            className="px-3 py-2 bg-[#6798de] text-white rounded-md hover:bg-[#5687cd] transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-w-[80px]"
           >
-            {t("apply")}
+            {isLoading ? (
+              <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto"></div>
+            ) : (
+              t("apply")
+            )}
           </button>
         )}
       </div>
@@ -72,7 +78,10 @@ export function PromocodeInput({
       {appliedPromocode && (
         <div className="flex items-center text-green-600 text-sm mt-1">
           <Check className="h-4 w-4 mr-1" />
-          {t.rich("applied", { discount: appliedPromocode.discount })}
+          {t.rich("applied", {
+            code: appliedPromocode.code,
+            discount: appliedPromocode.discount,
+          })}
         </div>
       )}
     </div>

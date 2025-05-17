@@ -7,10 +7,19 @@ export interface UpdateProfilePayload {
   lastName?: string;
   bio?: string;
   phone?: string;
+  birth_date?: string;
   email?: string;
   telegramUsername?: string;
   country?: string;
   city?: string;
+}
+
+function formatBirthDateToISO(date: string): string {
+  if (date.includes(".")) {
+    const [day, month, year] = date.split(".");
+    return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+  }
+  return date; // если уже в ISO
 }
 
 /**
@@ -50,7 +59,17 @@ export const userApi = {
     userId: string | number,
     data: UpdateProfilePayload
   ): Promise<User> => {
-    const response = await apiClient.patch<User>(`/user/update-profile`, data);
+    const payload = {
+      ...data,
+      birth_date: data.birth_date
+        ? formatBirthDateToISO(data.birth_date)
+        : undefined,
+    };
+
+    const response = await apiClient.patch<User>(
+      `/user/update-profile`,
+      payload
+    );
     return response.data;
   },
 

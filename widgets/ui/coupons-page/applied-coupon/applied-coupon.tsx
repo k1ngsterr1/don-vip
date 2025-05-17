@@ -40,7 +40,6 @@ export function AppliedCouponWidget({
           </button>
         </div>
       </div>
-
       {couponData.game && (
         <div className="bg-white rounded-lg p-4 border border-gray-200">
           <div className="flex items-center">
@@ -68,7 +67,6 @@ export function AppliedCouponWidget({
     </div>
   );
 
-  // Desktop version (enhanced)
   const desktopVersion = (
     <div className="space-y-8">
       <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-10 shadow-sm border border-gray-200">

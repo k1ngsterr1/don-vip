@@ -1,5 +1,6 @@
 {
   "reviews": {
+    "submitting": "Submitting...",
     "page": {
       "title": "Reviews",
       "allReviews": "All reviews",

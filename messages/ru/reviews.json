@@ -1,5 +1,6 @@
 {
   "reviews": {
+    "submitting": "Отправляем...",
     "page": {
       "title": "Отзывы",
       "allReviews": "Все отзывы",

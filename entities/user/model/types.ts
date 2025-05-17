@@ -1,7 +1,7 @@
 export interface User {
   id: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   avatar?: string;
   gender: "male" | "female" | "other";
   birthDate?: string;

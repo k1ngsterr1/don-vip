@@ -85,4 +85,39 @@ export const feedbackService = {
       throw new Error(extractErrorMessage(error));
     }
   },
+
+  // Accept feedback
+  accept: async (id: number): Promise<FeedbackResponse> => {
+    try {
+      const response = await apiClient.patch(`/feedback/${id}/accept`);
+      return response.data;
+    } catch (error) {
+      throw new Error(extractErrorMessage(error));
+    }
+  },
+
+  // Decline feedback
+  decline: async (id: number): Promise<FeedbackResponse> => {
+    try {
+      const response = await apiClient.patch(`/feedback/${id}/decline`);
+      return response.data;
+    } catch (error) {
+      throw new Error(extractErrorMessage(error));
+    }
+  },
+
+  // Get only accepted feedbacks
+  getAccepted: async (
+    page = 1,
+    limit = 10
+  ): Promise<PaginatedFeedbackResponse> => {
+    try {
+      const response = await apiClient.get(
+        `/feedback/list/accepted?page=${page}&limit=${limit}`
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error(extractErrorMessage(error));
+    }
+  },
 };

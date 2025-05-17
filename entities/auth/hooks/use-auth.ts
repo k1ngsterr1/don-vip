@@ -80,15 +80,10 @@ export const useRegister = () => {
  */
 export const useChangePassword = () => {
   return useMutation({
-    mutationFn: (data: {
-      email?: string;
-      oldPassword?: string;
-      newPassword?: string;
-    }) => {
+    mutationFn: (data: { email?: string; lang?: string }) => {
       const payload: ChangePasswordDto = {
         email: data.email,
-        oldPassword: data.oldPassword,
-        newPassword: data.newPassword || "",
+        lang: data.lang,
       };
       return authApi.changePassword(payload);
     },

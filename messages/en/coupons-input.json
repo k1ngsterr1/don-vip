@@ -15,5 +15,15 @@
         "promotions": "In special promotions and offers"
       }
     }
+  },
+  "couponsManager": {
+    "invalidCoupon": "Invalid coupon code. Please try again.",
+    "errorApplying": "Error applying coupon. Please try again later.",
+    "errorGettingUserId": "Error getting user ID. Please refresh the page.",
+    "errorNoUserId": "User ID not found. Please refresh the page.",
+    "languageSwitch": "Русский",
+    "successTitle": "Coupon Applied!",
+    "successDescription": "Your coupon code {code} has been successfully applied. You'll get a {discount} discount on your order.",
+    "successButtonClose": "Great!"
   }
 }
