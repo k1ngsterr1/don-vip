@@ -249,8 +249,6 @@ export function CouponsManagerWidget() {
                 onComplete={handleGameComplete}
                 couponDiscount={couponData.discount}
                 couponCode={couponData.code}
-                //@ts-ignore
-                discountedGames={couponData.discountedGames}
               />
             </motion.div>
           )}
