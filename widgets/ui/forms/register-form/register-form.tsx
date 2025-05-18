@@ -125,7 +125,6 @@ export function RegisterForm() {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const router = useRouter();
 
-  // Get register mutation from our auth API hooks
   const {
     mutate: register,
     isPending: isLoading,

@@ -51,17 +51,19 @@ export const useGetMe = () => {
 /**
  * Hook for registration functionality
  */
+
 export const useRegister = () => {
+  const router = useRouter(); // <-- Router hook
   const { setTokens, setUser } = useAuthStore();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (userData: RegisterDto) => authApi.register(userData),
     onSuccess: async (data) => {
-      // Set tokens in auth store
+      // Set tokens
       setTokens(data.access_token, data.refresh_token);
 
-      // Fetch user data
+      // Fetch and set user
       try {
         const userData = await authApi.getCurrentUser();
         setUser(userData);
@@ -69,8 +71,11 @@ export const useRegister = () => {
         console.error("Failed to fetch user data after registration", error);
       }
 
-      // Invalidate queries
+      // Invalidate user query
       await queryClient.invalidateQueries({ queryKey: queryKeys.auth.user });
+
+      // ✅ Redirect to success page
+      router.push("/auth/verification");
     },
   });
 };

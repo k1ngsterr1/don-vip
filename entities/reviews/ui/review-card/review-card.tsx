@@ -26,7 +26,7 @@ export function ReviewCard({ review, isGrid = false }: ReviewCardProps) {
               alt={review.author}
               width={40}
               height={40}
-              className="object-cover rounded-full"
+              className="object-cover  h-full rounded-full"
             />
           ) : (
             <div className="w-full h-full bg-blue flex items-center justify-center text-white">

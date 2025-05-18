@@ -1,0 +1,16 @@
+{
+  "google-auth": {
+    "errors": {
+      "missingTokens": "Missing authentication tokens",
+      "authFailed": "Failed to authenticate. Please try again.",
+      "errorTitle": "Authentication Error"
+    },
+    "actions": {
+      "returnToLogin": "Return to Login"
+    },
+    "loading": {
+      "title": "Completing Authentication",
+      "message": "Please wait while we log you in..."
+    }
+  }
+}

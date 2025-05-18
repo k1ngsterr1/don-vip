@@ -1,0 +1,23 @@
+{
+  "verify-form_auth": {
+    "verifyForm": {
+      "title": "Подтвердите ваш аккаунт",
+      "emailSentTo": "Мы отправили код подтверждения на",
+      "enterCode": "Введите код подтверждения для продолжения",
+      "digitLabel": "Цифра кода подтверждения",
+      "noCodeText": "Не получили код?",
+      "resendButton": "Отправить повторно",
+      "resendIn": "Повторная отправка через",
+      "backToLoginText": "Нужно изменить email?",
+      "backToLoginLink": "Вернуться к входу",
+      "submitButton": "Подтвердить",
+      "loadingText": "Проверка...",
+      "redirectingText": "Перенаправление...",
+      "verifiedText": "Подтверждено",
+      "verificationSuccess": "Подтверждение успешно!",
+      "ariaLabels": {
+        "submit": "Подтвердить"
+      }
+    }
+  }
+}

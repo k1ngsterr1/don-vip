@@ -1,0 +1,23 @@
+{
+  "verify-form_auth": {
+    "verifyForm": {
+      "title": "Verify Your Account",
+      "emailSentTo": "We've sent a verification code to",
+      "enterCode": "Enter the verification code to continue",
+      "digitLabel": "Verification code digit",
+      "noCodeText": "Didn't receive a code?",
+      "resendButton": "Resend code",
+      "resendIn": "Resend in",
+      "backToLoginText": "Need to change your email?",
+      "backToLoginLink": "Back to login",
+      "submitButton": "Verify",
+      "loadingText": "Verifying...",
+      "redirectingText": "Redirecting...",
+      "verifiedText": "Verified",
+      "verificationSuccess": "Verification successful!",
+      "ariaLabels": {
+        "submit": "Verify"
+      }
+    }
+  }
+}
