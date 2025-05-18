@@ -50,7 +50,6 @@ export function useCreateOrder() {
         user_id: userId,
       };
 
-      console.log("📦 Sending order:", apiOrderData);
 
       return orderApi.createOrder(apiOrderData as any);
     },
@@ -61,7 +60,6 @@ export function useCreateOrder() {
     },
 
     onError: (err: any) => {
-      console.error("❌ Order creation failed:", err);
       setError(
         err?.response?.data?.message ||
           "Failed to create order. Please try again."
@@ -95,7 +93,6 @@ export function useCreateOrder() {
 
     onError: (err: any) => {
       setIsProcessingPayment(false);
-      console.error("❌ Payment processing failed:", err);
       setError(
         err?.response?.data?.message ||
           "Payment processing failed. Please try again."

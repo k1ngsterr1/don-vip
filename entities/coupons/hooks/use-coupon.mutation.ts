@@ -86,7 +86,6 @@ export function useCouponManager() {
     try {
       return await checkCouponMutation.mutateAsync({ code });
     } catch (error) {
-      console.error("Failed to check coupon:", extractErrorMessage(error));
       return { valid: false, message: "Failed to check coupon" };
     }
   };

@@ -30,9 +30,7 @@ export function ProfileEditClient() {
   } = useQuery({
     queryKey: ["user", "me"],
     queryFn: async () => {
-      console.log("Fetching user data directly in ProfileEditClient");
       const data = await userApi.getCurrentUser();
-      console.log("User data fetched:", data);
 
       // Update auth store with fetched data
       if (data) {
@@ -45,32 +43,13 @@ export function ProfileEditClient() {
     retry: 1,
   });
 
-  // Log component state
-  useEffect(() => {
-    console.log("ProfileEditClient state:", {
-      user,
-      isLoading,
-      hasError: !!userError,
-      updatePending: updateProfileMutation.isPending,
-      uploadPending: uploadAvatarMutation.isPending,
-    });
-  }, [
-    user,
-    isLoading,
-    userError,
-    updateProfileMutation.isPending,
-    uploadAvatarMutation.isPending,
-  ]);
-
   // Handle avatar change
   const handleAvatarChange = async (file: File) => {
     try {
-      console.log("Uploading avatar in ProfileEditClient");
       await uploadAvatarMutation.mutateAsync(file);
       refetch(); // Refetch user data after avatar update
       return true;
     } catch (error) {
-      console.error("Avatar upload failed:", error);
       return false;
     }
   };
@@ -78,7 +57,6 @@ export function ProfileEditClient() {
   // Handle profile update
   const updateProfile = async (data: any, redirectPath?: string) => {
     try {
-      console.log("Updating profile in ProfileEditClient:", data);
       await updateProfileMutation.mutateAsync(data);
 
       // Refetch user data
@@ -91,7 +69,6 @@ export function ProfileEditClient() {
 
       return true;
     } catch (error) {
-      console.error("Profile update failed:", error);
       return false;
     }
   };

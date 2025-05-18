@@ -1,7 +1,5 @@
 import { ContentWrapper } from "@/shared/ui/content-wrapper/content-wrapper";
 import { AuthSuccessWidget } from "@/widgets/ui/auth-success-page/auth-success-page";
-import { CouponsHeaderWidget } from "@/widgets/ui/coupons-page/coupon-widget/coupon-widget";
-import { CouponsManagerWidget } from "@/widgets/ui/coupons-page/coupons-manager/coupons-manager";
 
 export default function SuccessPage() {
   return (

@@ -18,7 +18,6 @@ import {
   useApplyCoupon,
 } from "@/entities/coupons/hooks/use-coupon.mutation";
 import { getUserId } from "@/shared/hooks/use-get-user-id";
-import { SuccessPopup } from "@/widgets/ui/coupons-page/coupons-manager/block/success-popup";
 
 export default function TBankPaymentPage() {
   const searchParams = useSearchParams();
@@ -60,9 +59,8 @@ export default function TBankPaymentPage() {
       try {
         const id = await getUserId();
         setSystemUserId(id);
-        console.log("System User ID:", id);
       } catch (error) {
-        console.error("Failed to get user ID:", error);
+        console.error("Error", error);
       }
     };
 
@@ -102,8 +100,6 @@ export default function TBankPaymentPage() {
         code: promocode,
       });
 
-      console.log("Check coupon result:", checkResult);
-
       // Determine if the coupon is valid based on the response structure
       const isCouponValid =
         // Format 1: { valid: true, coupon: {...} }
@@ -119,8 +115,6 @@ export default function TBankPaymentPage() {
           code: promocode,
           user_id: Number.parseInt(systemUserId, 10),
         });
-
-        console.log("Apply coupon result:", appliedCouponResponse);
 
         // Get the discount percentage
         const discountPercent =
@@ -154,7 +148,6 @@ export default function TBankPaymentPage() {
         setPromocodeError(checkResult.message || promocodeT("errors.invalid"));
       }
     } catch (err) {
-      console.error("Error applying promocode:", err);
       setPromocodeError(promocodeT("errors.invalid"));
     } finally {
       setIsLoading(false);
@@ -244,8 +237,6 @@ export default function TBankPaymentPage() {
         FailURL: "https://don-vip.online",
       };
 
-      console.log("🚀 PaymentPayload (before token):", paymentPayload);
-
       // Генерация токена без Receipt и DATA
       const token = await generateToken(
         {
@@ -265,8 +256,6 @@ export default function TBankPaymentPage() {
         Token: token,
       };
 
-      console.log("📤 Sending Init Request to Tinkoff:", finalPayload);
-
       const response = await fetch("https://securepay.tinkoff.ru/v2/Init", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -274,15 +263,12 @@ export default function TBankPaymentPage() {
       });
 
       const responseText = await response.text();
-      console.log("📦 Raw Tinkoff Response:", responseText);
 
       const result = JSON.parse(responseText);
 
       if (!result.Success) {
         throw new Error(result.Message || t("errors.paymentInit"));
       }
-
-      console.log("✅ Parsed Tinkoff Response:", result);
 
       // Опционально: отправка orderId в backend
       await fetch("/api/tinkoff/save-order", {
@@ -302,7 +288,6 @@ export default function TBankPaymentPage() {
         window.location.href = result.PaymentURL;
       }
     } catch (err: any) {
-      console.error("❌ Payment error:", err);
       alert(t("errors.paymentInit") || "Ошибка инициализации платежа.");
     } finally {
       setIsLoading(false);

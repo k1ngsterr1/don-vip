@@ -1,7 +1,5 @@
 // Helper function to generate SHA-256 hash
 export const sha256 = async (message: string) => {
-  console.log("[sha256] Input message:", message);
-
   const msgBuffer = new TextEncoder().encode(message);
   const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -9,7 +7,6 @@ export const sha256 = async (message: string) => {
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
 
-  console.log("[sha256] Hash result:", hashHex);
   return hashHex;
 };
 
@@ -18,18 +15,9 @@ export const generateToken = async (
   params: Record<string, any>,
   password: string
 ): Promise<string> => {
-  console.group("[generateToken] ▶️ Token Generation Started");
-  console.log(
-    "[generateToken] Raw input params:",
-    JSON.stringify(params, null, 2)
-  );
-  console.log("[generateToken] Password (SecretKey):", password);
-
   const excluded = ["DATA", "Receipt"];
-  console.log("[generateToken] Excluded fields:", excluded);
 
   const rawEntries = Object.entries(params);
-  console.log("[generateToken] Raw entries before filtering:", rawEntries);
 
   const flatEntries = rawEntries.filter(
     ([key, value]) =>
@@ -40,29 +28,19 @@ export const generateToken = async (
       value !== null
   );
 
-  console.log(
-    "[generateToken] Filtered entries (before Password):",
-    flatEntries
-  );
-
   flatEntries.push(["Password", password]);
-  console.log("[generateToken] Entries with Password added:", flatEntries);
 
   flatEntries.sort(([a], [b]) => a.localeCompare(b));
-  console.log("[generateToken] Sorted entries:", flatEntries);
 
   const concatenated = flatEntries.map(([, value]) => String(value)).join("");
-  console.log("[generateToken] Concatenated string for hashing:", concatenated);
 
   const encoder = new TextEncoder();
   const data = encoder.encode(concatenated);
-  console.log("[generateToken] Encoded Uint8Array:", data);
 
   const hashBuffer = await crypto.subtle.digest("SHA-256", data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   const token = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 
-  console.log("[generateToken] Final SHA-256 Token:", token);
   console.groupEnd();
   return token;
 };
@@ -73,11 +51,7 @@ export const applyPromocode = (
   originalAmount: string,
   errorMessages: { empty: string; invalid: string }
 ): { success: boolean; discount?: number; amount?: string; error?: string } => {
-  console.log("[applyPromocode] Input code:", code);
-  console.log("[applyPromocode] Original amount:", originalAmount);
-
   if (!code.trim()) {
-    console.warn("[applyPromocode] Error: Empty promocode");
     return { success: false, error: errorMessages.empty };
   }
 
@@ -89,8 +63,6 @@ export const applyPromocode = (
       (Number(originalAmount) * (100 - discount)) /
       100
     ).toFixed(2);
-
-    console.log("[applyPromocode] Applying 10% discount:", discountedAmount);
 
     return {
       success: true,
@@ -104,8 +76,6 @@ export const applyPromocode = (
       100
     ).toFixed(2);
 
-    console.log("[applyPromocode] Applying 20% discount:", discountedAmount);
-
     return {
       success: true,
       discount,
@@ -113,6 +83,5 @@ export const applyPromocode = (
     };
   }
 
-  console.warn("[applyPromocode] Invalid promocode:", code);
   return { success: false, error: errorMessages.invalid };
 };

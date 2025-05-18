@@ -91,7 +91,6 @@ export default function SearchBar({
           : [];
         setRecentSearches(validSearches);
       } catch (error) {
-        console.error("Failed to load recent searches:", error);
         localStorage.setItem("recentSearches", JSON.stringify([]));
       }
     }

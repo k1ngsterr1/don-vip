@@ -70,7 +70,6 @@ export function useUpdateUser() {
         return await updateProfileMutation.mutateAsync(data);
       }
     } catch (error) {
-      console.error("Failed to update user:", extractErrorMessage(error));
       throw error;
     }
   };

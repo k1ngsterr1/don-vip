@@ -103,7 +103,6 @@ export function useProfileEdit() {
       await updateAvatarMutation.mutateAsync(file);
       return true;
     } catch (error) {
-      console.error("Failed to upload avatar:", error);
       return false;
     }
   };
@@ -123,7 +122,6 @@ export function useProfileEdit() {
 
       return true;
     } catch (error) {
-      console.error("Failed to update profile:", error);
       return false;
     }
   };

@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, FileText, Info, Shield, AlertTriangle } from "lucide-react";
+import { FileText, Info, Shield, AlertTriangle } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export function UserAgreementContent() {

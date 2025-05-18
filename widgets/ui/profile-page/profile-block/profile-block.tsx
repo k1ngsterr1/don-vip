@@ -5,7 +5,6 @@ import { useProfile } from "@/entities/user/hooks/use-profile";
 import { useUpdateUser } from "@/entities/user/hooks/use-update-user";
 import { ProfileHeaderEditable } from "@/entities/user/ui/profile-header-editable/profile-header-editable";
 import { ProfileMenu } from "@/entities/user/ui/profile-menu/profile-menu";
-import { ContentWrapper } from "@/shared/ui/content-wrapper/content-wrapper";
 import { ProfileLoading } from "@/widgets/ui/profile-page/profile-skeleton/profile-skeleton";
 import { useParams } from "next/navigation";
 import React from "react";

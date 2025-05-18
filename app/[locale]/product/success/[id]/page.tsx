@@ -24,7 +24,6 @@ export default function OrderSuccessPage() {
         const orderData = await orderApi.getOrderById(orderId);
         setOrder(orderData);
       } catch (err) {
-        console.error("Failed to fetch order:", err);
         setError(t("errors.fetchFailed"));
       } finally {
         setLoading(false);

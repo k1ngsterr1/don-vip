@@ -108,7 +108,6 @@ export function useProfileEdit() {
       await uploadAvatarMutation.mutateAsync(file);
       return true;
     } catch (error) {
-      console.error("Failed to upload avatar:", extractErrorMessage(error));
       return false;
     }
   };
@@ -128,7 +127,6 @@ export function useProfileEdit() {
 
       return true;
     } catch (error) {
-      console.error("Failed to update profile:", extractErrorMessage(error));
       return false;
     }
   };

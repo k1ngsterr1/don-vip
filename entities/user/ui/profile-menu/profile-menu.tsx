@@ -48,7 +48,6 @@ export function ProfileMenu() {
         if (typeof window !== "undefined" && window.jivo_api) {
           window.jivo_api.open();
         } else {
-          console.warn("Jivo API not loaded yet");
         }
       },
     },

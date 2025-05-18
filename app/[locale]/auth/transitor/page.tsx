@@ -31,7 +31,6 @@ export default function AuthTransitorPage() {
           router.push("/");
         }, 1000);
       } catch (err) {
-        console.error("Error processing tokens:", err);
         setError(
           err instanceof Error
             ? err.message

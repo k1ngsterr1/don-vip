@@ -15,40 +15,26 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
 
   useEffect(() => {
     const checkGuestUser = async () => {
-      console.log("🟡 [GuestAuth] Проверка состояния авторизации...");
-
       const authStorage = localStorage.getItem("auth-storage");
 
       // ✅ Если auth-storage уже есть — удалим устаревший userId
       if (authStorage && localStorage.getItem("userId")) {
-        console.log(
-          "🧹 [GuestAuth] Удаляем устаревший userId из localStorage..."
-        );
         localStorage.removeItem("userId");
       }
 
       if (isAuthenticated || user) {
-        console.log("✅ [GuestAuth] Пользователь уже авторизован:", user);
         return;
       }
 
       if (!authStorage) {
-        console.log("🆕 [GuestAuth] Гость не найден, создаём нового...");
-
         try {
           const response = await apiClient.post("/auth/guest");
-
-          console.log("📥 [GuestAuth] Ответ от API:", response.data);
 
           const { user: guestUser, accessToken, refreshToken } = response.data;
 
           setUser(guestUser);
           setTokens(accessToken, refreshToken);
-
-          console.log("✅ [GuestAuth] Установлены пользователь и токены.");
-        } catch (error) {
-          console.error("❌ [GuestAuth] Ошибка при создании гостя:", error);
-        }
+        } catch (error) {}
       }
     };
 

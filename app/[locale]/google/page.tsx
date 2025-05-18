@@ -62,7 +62,6 @@ export default function GoogleAuthPage() {
           }, 500);
         }
       } catch (err) {
-        console.error("Authentication error:", err);
         setError(t("errors.authFailed"));
         setIsLoading(false);
       }

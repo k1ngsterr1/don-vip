@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import {
   useAcceptedFeedbacks,
-  useFeedbacks,
 } from "@/entities/reviews/hook/use-feedback";
 import { ReviewList } from "@/entities/reviews/ui/review-list/review-list";
 import { FeedbackPrompt } from "@/widgets/ui/reviews-page/prompt-block/prompt-block";

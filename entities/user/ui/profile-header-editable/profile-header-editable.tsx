@@ -31,7 +31,6 @@ export function ProfileHeaderEditable({
   // Replace the handleAvatarChange function with this updated version that handles File objects
   const handleAvatarChange = async (input: File | string) => {
     try {
-      console.log("Avatar change initiated:", input);
 
       let file: File;
 
@@ -39,7 +38,6 @@ export function ProfileHeaderEditable({
       if (input instanceof File) {
         // If already a File object, use it directly
         file = input;
-        console.log("Input is already a File object");
       } else if (typeof input === "string") {
         // If it's a string URL
         if (input.startsWith("data:")) {
@@ -47,17 +45,13 @@ export function ProfileHeaderEditable({
           const res = await fetch(input);
           const blob = await res.blob();
           file = new File([blob], "avatar.jpg", { type: "image/jpeg" });
-          console.log("Data URL converted to file, uploading...");
         } else if (input.startsWith("http")) {
           // If it's already a URL (not a data URL), just use it directly
-          console.log("Using existing avatar URL:", input);
           return; // No need to upload in this case
         } else {
-          console.error("Unsupported URL format");
           return;
         }
       } else {
-        console.error("Unsupported input type for avatar change");
         return;
       }
 
@@ -69,9 +63,7 @@ export function ProfileHeaderEditable({
       // Note: You'll need to implement refetch or adjust this part
       // as the original component doesn't have refetch
 
-      console.log("Avatar updated successfully");
     } catch (error) {
-      console.error("Error updating avatar:", error);
     }
   };
 
@@ -101,7 +93,6 @@ export function ProfileHeaderEditable({
 
       await handleAvatarChange(file);
     } catch (error) {
-      console.error(i18n("errorUploading"), error);
       // Revert to original avatar on error
       setAvatarUrl(user.avatar);
     } finally {
@@ -119,7 +110,6 @@ export function ProfileHeaderEditable({
       // Preview removal immediately
       setAvatarUrl(undefined);
     } catch (error) {
-      console.error(i18n("errorRemoving"), error);
 
       // Revert to original avatar on error
       setAvatarUrl(user.avatar);

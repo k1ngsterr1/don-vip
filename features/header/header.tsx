@@ -15,8 +15,6 @@ import { MobileNav } from "./mobile-nav";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { TabletNav } from "./tablet-nav";
 import { ServicesMegaMenu } from "../services-mega-menu/services-mega-menu";
-import { useQuery } from "@tanstack/react-query";
-import { authApi } from "@/entities/auth/api/auth.api";
 
 interface IHeader {
   isSearchBar?: boolean;

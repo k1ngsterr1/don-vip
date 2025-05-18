@@ -82,6 +82,8 @@ export const couponApi = {
   applyCoupon: async (
     data: ApplyCouponDto
   ): Promise<{
+    discountedGames: any;
+    products: never[];
     message: string;
     code: string;
     user_id: string;

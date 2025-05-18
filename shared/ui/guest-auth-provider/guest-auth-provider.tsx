@@ -10,42 +10,22 @@ export function GuestAuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const checkGuestUser = async () => {
-      console.log("🟡 [GuestAuth] Проверка состояния авторизации...");
-
       if (isAuthenticated) {
-        console.log("✅ [GuestAuth] Пользователь уже авторизован");
         return;
       }
 
       const localStorageUser = localStorage.getItem("auth-storage");
       const userId = localStorage.getItem("userId");
 
-      console.log("🗃️ [GuestAuth] Содержимое localStorage:");
-      console.log("auth-storage:", localStorageUser);
-      console.log("userId:", userId);
-
       if (!userId) {
-        console.log("🆕 [GuestAuth] Гость не найден, создаём нового...");
-
         try {
           const response = await apiClient.post("/api/auth/guest");
-
-          console.log("📥 [GuestAuth] Ответ от API:", response.data);
 
           const { user: guestUser, accessToken, refreshToken } = response.data;
 
           localStorage.setItem("userId", guestUser.id);
-          console.log(
-            "💾 [GuestAuth] Сохранили userId в localStorage:",
-            guestUser.id
-          );
-
-          console.log("✅ [GuestAuth] Установлены пользователь и токены.");
-        } catch (error) {
-          console.error("❌ [GuestAuth] Ошибка при создании гостя:", error);
-        }
+        } catch (error) {}
       } else {
-        console.log("👤 [GuestAuth] userId найден в localStorage:", userId);
       }
     };
 

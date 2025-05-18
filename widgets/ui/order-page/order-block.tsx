@@ -71,7 +71,6 @@ export function OrderBlock({
           replenishmentArray = product.replenishment;
         }
       } catch (error) {
-        console.error("Error parsing replenishment data:", error);
         replenishmentArray = [];
       }
 
@@ -123,30 +122,15 @@ export function OrderBlock({
     (!game.requiresServer || serverId.trim() !== "");
 
   const handleSubmitOrder = async () => {
-    console.log("🔄 Начинается сабмит заказа...");
     setError("");
 
-    console.log("📋 Валидация формы:");
-    console.log("isFormValid:", isFormValid);
-    console.log("selectedCurrency:", selectedCurrency);
-    console.log("userId:", userId);
-    console.log("serverId:", serverId);
-    console.log("agreeToTerms:", agreeToTerms);
-    console.log("selectedAmount:", selectedAmount);
-    console.log("selectedPaymentMethod:", selectedPaymentMethod);
-
     if (!isFormValid || !selectedCurrency) {
-      console.warn("❌ Форма невалидна. Прерываем.");
       setError(t("errors.invalidForm"));
       return;
     }
 
     const numericPrice = selectedCurrency.price.replace(/[^0-9.]/g, "");
     const formattedPrice = Number(numericPrice).toFixed(2);
-
-    console.log("💰 Обработка цены:");
-    console.log("numericPrice:", numericPrice);
-    console.log("formattedPrice:", formattedPrice);
 
     const orderData: CreateOrderDto = {
       game_id: game.id,
@@ -159,11 +143,8 @@ export function OrderBlock({
       server_id: game.requiresServer ? serverId : undefined,
     };
 
-    console.log("📦 Отправка данных в createOrder:", orderData);
-
     try {
       const response = (await createOrder(orderData)) as any; // предполагается, что createOrder возвращает промис
-      console.log("✅ Заказ успешно создан:", response);
 
       if (selectedPaymentMethod === "tbank") {
         const params = new URLSearchParams({
@@ -176,11 +157,6 @@ export function OrderBlock({
           userIdDB: userIdDB,
           serverId: game.requiresServer ? serverId : "",
         });
-
-        console.log(
-          "🔁 Перенаправление на t-bank с параметрами:",
-          params.toString()
-        );
 
         window.location.href = `/t-bank?${params.toString()}`;
       }
@@ -208,7 +184,6 @@ export function OrderBlock({
         };
       }
     } catch (err) {
-      console.error("❌ Ошибка при создании заказа:", err);
       setError(t("errors.orderFailed"));
     }
   };

@@ -28,7 +28,6 @@ export default function ExternalCallbackPage() {
         // Redirect to home page
         router.push("/");
       } catch (err) {
-        console.error("Error processing callback:", err);
         setError(err instanceof Error ? err.message : "Authentication failed");
       }
     };

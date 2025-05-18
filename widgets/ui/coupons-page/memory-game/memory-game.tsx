@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Sparkles, Trophy } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import confetti from "canvas-confetti";
 import Image from "next/image";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";

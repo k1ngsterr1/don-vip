@@ -59,7 +59,6 @@ export function ProfileEditForm({
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    console.log(name, value);
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -101,7 +100,6 @@ export function ProfileEditForm({
         router.push(redirectAfterSubmit);
       }
     } catch (error) {
-      console.error("Error updating profile:", error);
       alert(i18n("errorMessage"));
     } finally {
       setIsSubmitting(false);

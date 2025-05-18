@@ -1,6 +1,5 @@
 // app/[locale]/layout.tsx
 import type React from "react";
-import QuestionChatWrapper from "@/entities/question-chat/question-chat-wrapper";
 import BottomTab from "@/features/bottom-tab/bottom-tab";
 import Footer from "@/features/footer/footer";
 import HeaderWrapper from "@/features/header/header-wrapper";

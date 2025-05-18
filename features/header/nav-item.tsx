@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { ChevronDown } from "lucide-react";
-import { motion } from "framer-motion";
 
 interface NavItemProps {
   label: string;

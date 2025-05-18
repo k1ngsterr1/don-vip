@@ -32,7 +32,6 @@ export const useLogin = () => {
         const userData = await authApi.getCurrentUser();
         setUser(userData);
       } catch (error) {
-        console.error("Failed to fetch user data after login", error);
       }
 
       // Invalidate queries
@@ -68,7 +67,6 @@ export const useRegister = () => {
         const userData = await authApi.getCurrentUser();
         setUser(userData);
       } catch (error) {
-        console.error("Failed to fetch user data after registration", error);
       }
 
       // Invalidate user query

@@ -4,12 +4,12 @@ import { OrderBlock } from "@/widgets/ui/order-page/order-block";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 type Props = {
   params: any;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     // Convert the game slug to a number
@@ -23,7 +23,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: gameData.description,
     };
   } catch (error) {
-    console.error("Error fetching game data for metadata:", error);
     return {
       title: params.locale === "ru" ? "Игра" : "Game",
     };

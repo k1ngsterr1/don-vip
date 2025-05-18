@@ -55,7 +55,6 @@ export function CouponsManagerWidget() {
         const id = await getUserId();
         setUserId(id);
       } catch (error) {
-        console.error("Failed to get user ID:", error);
         setError(t("errorGettingUserId"));
       }
     };
@@ -84,7 +83,6 @@ export function CouponsManagerWidget() {
       })) as any;
 
       // Log the check result to debug
-      console.log("Check coupon result:", checkResult);
 
       const isCouponValid =
         (checkResult.valid && checkResult.coupon) ||
@@ -97,8 +95,6 @@ export function CouponsManagerWidget() {
           user_id: Number.parseInt(userId, 10),
         });
 
-        console.log("Apply coupon result:", appliedCouponResponse);
-
         const newCouponData: CouponData = {
           code: appliedCouponResponse.code || code,
           discount: appliedCouponResponse.discount,
@@ -109,7 +105,6 @@ export function CouponsManagerWidget() {
           products: appliedCouponResponse.products || [],
         };
 
-        console.log("Setting coupon data:", newCouponData);
 
         setCouponData(newCouponData);
         setTotalDiscount(newCouponData.discount);
@@ -121,7 +116,6 @@ export function CouponsManagerWidget() {
         setError(checkResult.message || t("invalidCoupon"));
       }
     } catch (err) {
-      console.error("Error applying coupon:", err);
       setError(t("errorApplying"));
     }
   };
