@@ -270,19 +270,6 @@ export default function TBankPaymentPage() {
         throw new Error(result.Message || t("errors.paymentInit"));
       }
 
-      // Опционально: отправка orderId в backend
-      await fetch("/api/tinkoff/save-order", {
-        method: "POST",
-        body: JSON.stringify({
-          orderId: finalOrderId,
-          userId,
-          promocode: appliedPromocode ? appliedPromocode.code : null,
-          discount: appliedPromocode ? appliedPromocode.discount : null,
-          originalAmount,
-          finalAmount: paymentAmount,
-        }),
-      });
-
       // Перенаправление на оплату
       if (result.PaymentURL) {
         window.location.href = result.PaymentURL;
