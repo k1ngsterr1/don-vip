@@ -19,7 +19,7 @@ export const getUserId = async (): Promise<string> => {
       return fetchedUser.id.toString();
     }
   } catch (error: any) {
-    if (error.response?.status === 401) {
+    if (error.response?.statusCode === 401) {
       console.warn("🔒 [Auth] 401 Unauthorized, создаём гостя...");
     } else {
       console.warn("⚠️ [Auth] Ошибка при /user/me:", error);
