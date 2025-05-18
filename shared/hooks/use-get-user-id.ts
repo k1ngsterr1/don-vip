@@ -18,8 +18,10 @@ export const getUserId = async (): Promise<string> => {
       setUser(fetchedUser);
       return fetchedUser.id.toString();
     }
+
+    console.warn("⚠️ [Auth] Некорректный ID от /user/me:", fetchedUser?.id);
   } catch (error: any) {
-    if (error.response?.statusCode === 401) {
+    if (error.response?.status === 401) {
       console.warn("🔒 [Auth] 401 Unauthorized, создаём гостя...");
     } else {
       console.warn("⚠️ [Auth] Ошибка при /user/me:", error);
@@ -34,8 +36,10 @@ export const getUserId = async (): Promise<string> => {
       setUser(guestUser);
       return guestUser.id.toString();
     }
+
     throw new Error("Некорректный ID гостя");
   } catch (error) {
-    throw new Error("❌ Не удалось создать гостевого пользователя");
+    console.error("❌ [GuestAuth] Ошибка при создании гостя:", error);
+    throw new Error("Не удалось создать гостевого пользователя");
   }
 };
