@@ -12,6 +12,7 @@ export interface CreateOrderDto {
 export interface Order {
   id: number;
   user_id: number;
+  items: any[];
   game_id: number;
   currency_id: number;
   amount: number;
@@ -26,6 +27,7 @@ export interface Order {
 
 export interface OrdersResponse {
   data: Order[];
+  orders: any[];
   meta: {
     total: number;
     page: number;

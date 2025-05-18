@@ -75,7 +75,7 @@ export const useRegister = () => {
       await queryClient.invalidateQueries({ queryKey: queryKeys.auth.user });
 
       // ✅ Redirect to success page
-      router.push("/auth/verification");
+      router.push("/auth/verify");
     },
   });
 };

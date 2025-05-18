@@ -58,6 +58,24 @@ export const orderApi = {
     return response.data;
   },
 
+  getOrderHistory: async (page = 1, limit = 10): Promise<OrdersResponse> => {
+    const authUser = useAuthStore.getState().user;
+    let userId: string | null = authUser?.id?.toString() ?? null;
+
+    // You may still want to fallback to localStorage for guests
+    if (!userId && typeof window !== "undefined") {
+      userId = localStorage.getItem("userId");
+    }
+
+    // Optional: If userId is required by the backend
+    const userParam = userId ? `&user_id=${userId}` : "";
+
+    const response = await apiClient.get<OrdersResponse>(
+      `/order/history?page=${page}&limit=${limit}${userParam}`
+    );
+    return response.data;
+  },
+
   /**
    * Get a specific order by ID
    */
