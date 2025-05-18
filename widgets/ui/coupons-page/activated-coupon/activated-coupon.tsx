@@ -1,91 +1,80 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ShoppingCart } from "lucide-react";
-import Image from "next/image";
+import { Check, ShoppingBag } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface ActivatedCouponWidgetProps {
   onGoToStore: () => void;
+  totalDiscount?: number;
 }
 
 export function ActivatedCouponWidget({
   onGoToStore,
+  totalDiscount = 0,
 }: ActivatedCouponWidgetProps) {
-  // Mobile version (unchanged)
+  const t = useTranslations("couponsActivated");
+
+  // Mobile version
   const mobileVersion = (
-    <div className="bg-gray-50 p-6 rounded-lg flex flex-col items-center text-center">
-      <div className="mb-4">
-        <Image
-          src="/happy-triangle.png"
-          alt="Coupon activated"
-          width={80}
-          height={80}
-        />
+    <div className="bg-gray-50 p-6 rounded-lg text-center">
+      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <Check className="w-8 h-8 text-green-600" />
       </div>
-      <h3 className="font-medium text-lg mb-2">Промокод активирован</h3>
-      <p className="text-sm text-gray-600 mb-4">
-        Наслаждайтесь скидками и приятных покупок!
-      </p>
+      <h3 className="font-medium text-lg mb-2">{t("title")}</h3>
+      <p className="text-sm text-gray-600 mb-6">{t("description")}</p>
+      {totalDiscount > 0 && (
+        <p className="text-blue font-medium mb-4">
+          {t("discountApplied", { discount: totalDiscount })}
+        </p>
+      )}
       <button
         onClick={onGoToStore}
-        className="px-6 py-3 bg-blue text-white rounded-full font-medium hover:bg-blue-600 transition-colors"
+        className="px-6 py-3 bg-blue text-white rounded-full font-medium hover:bg-blue-600 transition-colors w-full"
       >
-        В магазин
+        {t("goToStore")}
       </button>
     </div>
   );
 
   // Desktop version (enhanced)
   const desktopVersion = (
-    <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-12 flex flex-col items-center text-center shadow-md border border-blue-200">
+    <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-12 shadow-sm border border-gray-200 text-center">
       <motion.div
-        initial={{ scale: 0, rotate: -180 }}
-        animate={{ scale: 1, rotate: 0 }}
-        transition={{ type: "spring", stiffness: 200, damping: 20 }}
-        className="mb-8 relative"
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 200, damping: 15 }}
+        className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-md"
       >
-        <div className="absolute inset-0 bg-blue-200 rounded-full opacity-30 blur-xl"></div>
-        <div className="relative w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-lg">
-          <Image
-            src="/Ok.webp"
-            alt="Success"
-            width={100}
-            height={100}
-            className="w-20 h-20 object-contain"
-          />
-        </div>
+        <Check className="w-12 h-12 text-green-600" />
       </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-      >
-        <h3 className="font-medium text-3xl mb-4 font-unbounded text-blue-800">
-          Промокод активирован!
-        </h3>
-        <p className="text-lg text-blue-700 mb-8 max-w-md">
-          Ваша скидка успешно применена. Наслаждайтесь покупками по выгодным
-          ценам!
-        </p>
-
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={onGoToStore}
-          className="px-8 py-4 bg-blue-600 text-white rounded-full font-medium text-lg shadow-lg hover:shadow-xl hover:bg-blue-700 transition-all duration-300 flex items-center mx-auto"
+      <h3 className="font-medium text-2xl mb-3 font-unbounded text-gray-800">
+        {t("title")}
+      </h3>
+      <p className="text-lg text-gray-600 mb-8 max-w-md mx-auto">
+        {t("fullDescription")}
+      </p>
+      {totalDiscount > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-blue-50 p-4 rounded-lg mb-8 inline-block"
         >
-          <ShoppingCart size={20} className="mr-2" />
-          <span>Перейти в магазин</span>
-        </motion.button>
-
-        <div className="mt-8 pt-6 border-t border-blue-200 max-w-md mx-auto">
-          <p className="text-blue-700 text-sm">
-            Скидка будет автоматически применена при оформлении заказа. Спасибо,
-            что выбрали наш сервис!
+          <p className="text-blue-700 font-medium text-lg">
+            {t("discountApplied", { discount: totalDiscount })}
           </p>
-        </div>
-      </motion.div>
+        </motion.div>
+      )}
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={onGoToStore}
+        className="px-8 py-4 bg-blue text-white rounded-full font-medium text-lg shadow-md hover:shadow-lg hover:bg-blue-600 transition-all duration-300 flex items-center justify-center mx-auto"
+      >
+        <ShoppingBag className="mr-2" />
+        <span>{t("goToStore")}</span>
+      </motion.button>
     </div>
   );
 

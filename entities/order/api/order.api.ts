@@ -1,6 +1,7 @@
 import { apiClient } from "@/shared/config/apiClient";
 import type { CreateOrderDto, Order, OrdersResponse } from "../model/types";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
+import { getUserId } from "@/shared/hooks/use-get-user-id";
 
 /**
  * Order API client for order-related operations
@@ -11,19 +12,8 @@ export const orderApi = {
    */
   createOrder: async (data: CreateOrderDto): Promise<Order> => {
     // Get userId from auth store or localStorage
-    let userId: string | null = null;
+    const userId = await getUserId();
 
-    // Try to get userId from auth store first
-    const authUser = useAuthStore.getState().user;
-    if (authUser && authUser.id) {
-      userId = authUser.id.toString();
-    }
-    // If no authenticated user, try to get from localStorage (for guest users)
-    else if (typeof window !== "undefined") {
-      userId = localStorage.getItem("userId");
-    }
-
-    // Create a new object with the userId included
     const orderData = {
       ...data,
       user_id: userId,

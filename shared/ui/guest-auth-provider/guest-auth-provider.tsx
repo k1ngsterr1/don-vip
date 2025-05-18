@@ -12,8 +12,8 @@ export function GuestAuthProvider({ children }: { children: React.ReactNode }) {
     const checkGuestUser = async () => {
       console.log("🟡 [GuestAuth] Проверка состояния авторизации...");
 
-      if (isAuthenticated || user) {
-        console.log("✅ [GuestAuth] Пользователь уже авторизован:", user);
+      if (isAuthenticated) {
+        console.log("✅ [GuestAuth] Пользователь уже авторизован");
         return;
       }
 

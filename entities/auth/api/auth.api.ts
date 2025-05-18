@@ -10,6 +10,7 @@ export interface LoginDto {
 export interface RegisterDto {
   identifier: string;
   password: string;
+  lang?: string; // ✅ Optional or required, depending on your needs
 }
 
 export interface ChangePasswordDto {

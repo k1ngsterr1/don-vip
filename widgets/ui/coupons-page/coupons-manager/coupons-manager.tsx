@@ -13,8 +13,9 @@ import {
 } from "@/entities/coupons/hooks/use-coupon.mutation";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { getUserId } from "@/shared/hooks/use-get-user-id";
+import { MemoryGame } from "../memory-game/memory-game";
 
-type CouponState = "empty" | "input" | "applied" | "activated";
+type CouponState = "empty" | "input" | "applied" | "game" | "activated";
 
 interface CouponData {
   code: string;
@@ -22,6 +23,13 @@ interface CouponData {
   discount: number;
   minAmount?: number;
   user_id?: string;
+  discountedGames?: Array<{
+    id: number;
+    name: string;
+    originalPrice: number;
+    discountedPrice: number;
+  }>;
+  products?: any[];
 }
 
 export function CouponsManagerWidget() {
@@ -30,6 +38,7 @@ export function CouponsManagerWidget() {
   const [couponData, setCouponData] = useState<CouponData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [totalDiscount, setTotalDiscount] = useState<number>(0);
 
   const { user } = useAuthStore();
 
@@ -59,6 +68,7 @@ export function CouponsManagerWidget() {
     setError(null);
   };
 
+  // Update the handleApplyCode function to go directly to the game state after applying a coupon
   const handleApplyCode = async (code: string) => {
     setError(null);
 
@@ -93,16 +103,19 @@ export function CouponsManagerWidget() {
           code: appliedCouponResponse.code || code,
           discount: appliedCouponResponse.discount,
           user_id: userId,
-          game: checkResult.coupon?.limit ? "Limited Offer" : undefined,
-          minAmount: checkResult.coupon?.limit || undefined,
+          game: appliedCouponResponse.discountedGames?.[0]?.name,
+          minAmount: checkResult.coupon?.limit || 1000,
+          discountedGames: appliedCouponResponse.discountedGames || [],
+          products: appliedCouponResponse.products || [],
         };
 
         console.log("Setting coupon data:", newCouponData);
 
         setCouponData(newCouponData);
-        setTimeout(() => {
-          setState("applied");
-        }, 500);
+        setTotalDiscount(newCouponData.discount);
+
+        // Go directly to game state instead of applied state
+        setState("game");
       } else {
         // Handle invalid coupon
         setError(checkResult.message || t("invalidCoupon"));
@@ -114,6 +127,15 @@ export function CouponsManagerWidget() {
   };
 
   const handleActivate = () => {
+    // Instead of going directly to activated state, show the game first
+    setState("game");
+  };
+
+  const handleGameComplete = (bonusDiscount: number) => {
+    if (couponData) {
+      const newTotalDiscount = couponData.discount + bonusDiscount;
+      setTotalDiscount(newTotalDiscount);
+    }
     setState("activated");
   };
 
@@ -122,6 +144,7 @@ export function CouponsManagerWidget() {
 
     setState("empty");
     setCouponData(null);
+    setTotalDiscount(0);
   };
 
   const containerVariants = {
@@ -151,8 +174,20 @@ export function CouponsManagerWidget() {
             onActivate={handleActivate}
           />
         )}
+        {state === "game" && couponData && (
+          <MemoryGame
+            onComplete={handleGameComplete}
+            couponDiscount={couponData.discount}
+            couponCode={couponData.code}
+            //@ts-ignore
+            discountedGames={couponData.discountedGames}
+          />
+        )}
         {state === "activated" && (
-          <ActivatedCouponWidget onGoToStore={handleGoToStore} />
+          <ActivatedCouponWidget
+            onGoToStore={handleGoToStore}
+            totalDiscount={totalDiscount}
+          />
         )}
       </div>
       <div className="hidden md:block">
@@ -202,6 +237,24 @@ export function CouponsManagerWidget() {
             </motion.div>
           )}
 
+          {state === "game" && couponData && (
+            <motion.div
+              key="game"
+              variants={containerVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <MemoryGame
+                onComplete={handleGameComplete}
+                couponDiscount={couponData.discount}
+                couponCode={couponData.code}
+                //@ts-ignore
+                discountedGames={couponData.discountedGames}
+              />
+            </motion.div>
+          )}
+
           {state === "activated" && (
             <motion.div
               key="activated"
@@ -210,7 +263,10 @@ export function CouponsManagerWidget() {
               animate="animate"
               exit="exit"
             >
-              <ActivatedCouponWidget onGoToStore={handleGoToStore} />
+              <ActivatedCouponWidget
+                onGoToStore={handleGoToStore}
+                totalDiscount={totalDiscount}
+              />
             </motion.div>
           )}
         </AnimatePresence>

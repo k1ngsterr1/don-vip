@@ -208,6 +208,7 @@ export function RegisterForm() {
       {
         identifier,
         password,
+        lang: locale,
       },
       {
         onSuccess: () => {

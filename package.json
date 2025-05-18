@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.74.11",
+    "@types/canvas-confetti": "^1.9.0",
     "axios": "^1.9.0",
     "babel-plugin-react-compiler": "^19.1.0-rc.1",
+    "canvas-confetti": "^1.9.3",
     "clsx": "^2.1.1",
     "framer-motion": "^12.9.1",
     "lucide-react": "^0.503.0",
