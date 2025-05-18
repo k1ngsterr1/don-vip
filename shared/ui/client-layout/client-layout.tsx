@@ -29,11 +29,7 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
       if (!authStorage) {
         try {
           const response = await apiClient.post("/auth/guest");
-
-          const { user: guestUser, accessToken, refreshToken } = response.data;
-
-          setUser(guestUser);
-          setTokens(accessToken, refreshToken);
+          localStorage.setItem("userId", response.data.id);
         } catch (error) {}
       }
     };

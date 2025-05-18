@@ -1,6 +1,6 @@
 import { apiClient } from "@/shared/config/apiClient";
 import { getUserId } from "@/shared/hooks/use-get-user-id";
-
+import { useAuthStore } from "../store/auth.store";
 // Types
 export interface LoginDto {
   identifier: string;
@@ -61,8 +61,31 @@ export const authApi = {
    * Get current user profile
    */
   getCurrentUser: async (): Promise<any> => {
-    const response = await apiClient.get("/user/me");
-    return response.data;
+    try {
+      const response = await apiClient.get("/user/me");
+      const user = response.data;
+      useAuthStore.getState().setUser(user);
+      return user;
+    } catch (error: any) {
+      try {
+        const res = await apiClient.post("/auth/guest");
+        const guestUser = res.data;
+
+        console.log(guestUser);
+
+        localStorage.setItem("userId", guestUser.id);
+
+        if (guestUser?.id && guestUser.id.toString()) {
+          useAuthStore.getState().setUser(guestUser);
+          return guestUser;
+        } else {
+          throw new Error("Invalid guest user response");
+        }
+      } catch (guestError) {
+        console.error("Guest auth failed:", guestError);
+        throw guestError;
+      }
+    }
   },
 
   /**
