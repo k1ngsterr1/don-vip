@@ -187,7 +187,9 @@ export default function TBankPaymentPage() {
         return;
       }
 
-      const finalOrderId = `order_${userId}_${Date.now()}`;
+      const realUserId = getUserId();
+
+      const finalOrderId = `${orderId}_${realUserId}_${Date.now()}`;
       const amountInKopecks = Math.round(
         Number.parseFloat(paymentAmount) * 100
       );
