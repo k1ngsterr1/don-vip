@@ -119,7 +119,7 @@ export function useCreateOrder(isTbank = false) {
   };
 
   return {
-    createOrder: orderMutation.mutate,
+    createOrder: orderMutation.mutateAsync,
     isLoading: orderMutation.isPending || isProcessingPayment,
     isProcessingPayment,
     isSuccess: orderMutation.isSuccess && paymentMutation.isSuccess,

@@ -146,6 +146,8 @@ export function OrderBlock({
     try {
       const response = (await createOrder(orderData)) as any; // предполагается, что createOrder возвращает промис
 
+      console.log(response);
+
       if (selectedPaymentMethod === "tbank") {
         const params = new URLSearchParams({
           orderId: response.id,
@@ -184,6 +186,7 @@ export function OrderBlock({
         };
       }
     } catch (err) {
+      console.log(err);
       setError(t("errors.orderFailed"));
     }
   };
