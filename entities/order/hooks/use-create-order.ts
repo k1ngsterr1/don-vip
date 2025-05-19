@@ -17,7 +17,7 @@ import { useGetMe } from "@/entities/auth/hooks/use-auth";
 /**
  * Hook to create a new order and process payment
  */
-export function useCreateOrder() {
+export function useCreateOrder(isTbank = false) {
   const queryClient = useQueryClient();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -50,13 +50,16 @@ export function useCreateOrder() {
         user_id: userId,
       };
 
-
       return orderApi.createOrder(apiOrderData as any);
     },
 
     onSuccess: (orderData, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.orders.all });
-      processPayment(orderData.id.toString(), variables);
+      if (isTbank) {
+        return;
+      } else {
+        processPayment(orderData.id.toString(), variables);
+      }
     },
 
     onError: (err: any) => {

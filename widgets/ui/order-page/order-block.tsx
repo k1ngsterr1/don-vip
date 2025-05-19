@@ -54,7 +54,7 @@ export function OrderBlock({
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("tbank");
 
   const { createOrder, isLoading, isProcessingPayment, error, setError } =
-    useCreateOrder();
+    useCreateOrder(selectedPaymentMethod === "tbank");
 
   useEffect(() => {
     const local_user = localStorage.getItem("userId");
