@@ -1,0 +1,17 @@
+{
+  "alert": {
+    "alerts": {
+      "errorTitle": "Error",
+      "successTitle": "Success",
+      "infoTitle": "Information",
+      "close": "Close",
+      "okButton": "OK"
+    },
+    "validation": {
+      "accountNotFound": "The account hasn't been found",
+      "invalidUserId": "Invalid user ID",
+      "validationFailed": "Validation failed",
+      "networkError": "Network error, please try again"
+    }
+  }
+}

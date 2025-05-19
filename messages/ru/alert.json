@@ -1,0 +1,17 @@
+{
+  "alert": {
+    "alerts": {
+      "errorTitle": "Ошибка",
+      "successTitle": "Успешно",
+      "infoTitle": "Информация",
+      "close": "Закрыть",
+      "okButton": "ОК"
+    },
+    "validation": {
+      "accountNotFound": "Аккаунт не найден",
+      "invalidUserId": "Неверный ID пользователя",
+      "validationFailed": "Ошибка проверки",
+      "networkError": "Ошибка сети, пожалуйста, попробуйте снова"
+    }
+  }
+}
