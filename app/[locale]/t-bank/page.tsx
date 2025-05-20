@@ -276,6 +276,7 @@ export default function TBankPaymentPage() {
         window.location.href = result.PaymentURL;
       }
     } catch (err: any) {
+      console.log(err);
       alert(t("errors.paymentInit") || "Ошибка инициализации платежа.");
     } finally {
       setIsLoading(false);
