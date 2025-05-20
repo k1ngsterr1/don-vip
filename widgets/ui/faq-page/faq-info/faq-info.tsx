@@ -28,7 +28,7 @@ export default function FAQBlock() {
     <div className="w-full max-w-md mx-auto px-4 py-4 bg-white">
       <div className="w-full flex flex-col items-start justify-start">
         <Link
-          href="/"
+          href="/ru"
           className="text-blue font-roboto mt-[28px] text-[15px] text-left"
         >
           {i18n("backLink")}
