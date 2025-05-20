@@ -1,6 +1,6 @@
-import Link from "next/link";
 import React from "react";
 import { useTranslations } from "next-intl"; // Example with next-intl
+import { Link } from "@/i18n/navigation";
 
 export const ContactsPageBlock = () => {
   const t = useTranslations("Contacts.contacts");

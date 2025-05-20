@@ -2,11 +2,11 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { ServicesMegaMenuSkeleton } from "./services-mega-menu-skeleton";
 import { useProducts } from "@/entities/product/hooks/queries/use-products";
+import { Link } from "@/i18n/navigation";
 
 interface ServiceItem {
   id: number;
@@ -203,6 +203,7 @@ export function ServicesMegaMenu() {
                     custom={index}
                   >
                     <Link
+                      //@ts-ignore
                       href={link.link}
                       className="text-dark hover:text-blue-600 transition-colors"
                     >

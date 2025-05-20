@@ -18,7 +18,10 @@ export const routing = defineRouting({
     "/auth/loading": "/auth/loading",
 
     "/contact": "/contact",
+    "/games": "/games",
     "/faq": "/faq",
+
+    "/services": "/services",
     "/coupons": "/coupons",
     "/google": "/google",
     "/privacy-policy": "/privacy-policy",

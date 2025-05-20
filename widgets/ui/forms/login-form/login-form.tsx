@@ -3,7 +3,6 @@ import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 import type React from "react";
 
-import Link from "next/link";
 import { useState, useEffect } from "react";
 import { AuthInput } from "@/shared/ui/auth-input/auth-input";
 import { Button } from "@/shared/ui/button/button";
@@ -13,6 +12,7 @@ import { Loader2, Info, Mail, Phone } from "lucide-react";
 import { AuthLoadingOverlay } from "@/shared/ui/auth-loading/auth-loading";
 import { useLogin } from "@/entities/auth/hooks/use-auth";
 import { PasswordStrength } from "@/shared/ui/password-strength/password-strength";
+import { Link } from "@/i18n/navigation";
 
 // Enhanced error translations for all possible input errors
 const errorTranslations: Record<string, Record<string, string>> = {

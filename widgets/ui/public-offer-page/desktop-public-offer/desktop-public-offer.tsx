@@ -1,9 +1,9 @@
 import { ArrowLeft, ShoppingBag } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 import PublicOfferContent from "../public-offer-content/public-offer-content";
 import PublicOfferContactFooter from "../public-offer-footer/public-offer-footer";
 import PublicOfferSidebar from "../public-offer-sidebar/public-offer-sidebar";
+import { Link } from "@/i18n/navigation";
 
 export default function DesktopPublicOffer() {
   const i18n = useTranslations("DesktopPublicOffer");

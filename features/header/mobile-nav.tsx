@@ -1,9 +1,9 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 import { LogOut, X } from "lucide-react";
 import { useEffect } from "react";
+import { Link } from "@/i18n/navigation";
 
 interface MobileNavProps {
   isOpen: boolean;

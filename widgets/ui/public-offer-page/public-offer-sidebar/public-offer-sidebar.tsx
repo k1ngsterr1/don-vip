@@ -1,7 +1,7 @@
 "use client";
+import { Link } from "@/i18n/navigation";
 import { FileText } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 
 export default function PublicOfferSidebar() {
   const i18n = useTranslations("PublicOfferSidebar");
@@ -97,7 +97,7 @@ export default function PublicOfferSidebar() {
             </li>
             <li>
               <Link
-                href="/terms"
+                href="/user-agreement"
                 className="text-sm text-gray-700 hover:text-blue transition-colors"
               >
                 {i18n("documents.terms")}

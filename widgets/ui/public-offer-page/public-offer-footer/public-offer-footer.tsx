@@ -1,7 +1,7 @@
 "use client";
+import { Link } from "@/i18n/navigation";
 import { CreditCard } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 
 export default function PublicOfferContactFooter() {
   const i18n = useTranslations("PublicOfferContactFooter");
@@ -18,12 +18,12 @@ export default function PublicOfferContactFooter() {
             <p className="text-gray-500">{i18n("subtitle")}</p>
           </div>
         </div>
-        <Link
+        <a
           href={`mailto:${i18n("email")}`}
           className="px-6 py-3 bg-blue text-white rounded-lg hover:bg-blue-600 transition-colors"
         >
           {i18n("email")}
-        </Link>
+        </a>
       </div>
     </div>
   );

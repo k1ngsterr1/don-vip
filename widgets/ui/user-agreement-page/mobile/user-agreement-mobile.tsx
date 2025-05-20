@@ -1,10 +1,10 @@
 "use client";
 
 import { ArrowLeft, FileText } from "lucide-react";
-import Link from "next/link";
 import { UserAgreementContactFooter } from "../footer/user-agreement-footer";
 import { UserAgreementSidebar } from "../sidebar/user-agreement-sidebar";
 import { UserAgreementContent } from "../content/user-agreement-content";
+import { Link } from "@/i18n/navigation";
 
 export function UserAgreementMobile() {
   return (

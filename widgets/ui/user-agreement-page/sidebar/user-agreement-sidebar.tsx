@@ -1,7 +1,7 @@
 "use client";
 
+import { Link } from "@/i18n/navigation";
 import { useState } from "react";
-import Link from "next/link";
 
 export function UserAgreementSidebar() {
   const [activeSection, setActiveSection] = useState("general-provisions");
@@ -58,6 +58,7 @@ export function UserAgreementSidebar() {
           {sections.map((section) => (
             <li key={section.id}>
               <Link
+                //@ts-ignore
                 href={`#${section.id}`}
                 className={`block text-sm py-1.5 px-3 rounded-md transition-colors ${
                   activeSection === section.id

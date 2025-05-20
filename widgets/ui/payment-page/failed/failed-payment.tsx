@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 export function PaymentFailedWidget() {
   const t = useTranslations("payment_failed");
@@ -57,16 +57,10 @@ export function PaymentFailedWidget() {
 
       <div className="mt-6 flex gap-4">
         <Link
-          href="/payment/retry"
+          href="/"
           className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium  transition-colors"
         >
           {t("retryPayment")}
-        </Link>
-        <Link
-          href="/support"
-          className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-medium hover:bg-gray-300 transition-colors"
-        >
-          {t("contactSupport")}
         </Link>
       </div>
     </div>

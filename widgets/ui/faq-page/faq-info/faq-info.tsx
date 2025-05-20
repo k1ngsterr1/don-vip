@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import SearchBar from "@/entities/search-bar/search-bar";
 import FAQItem from "@/shared/ui/faq-item/faq-item";
 import { faqItems } from "@/shared/data/faq-data";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 export default function FAQBlock() {
   const i18n = useTranslations("emptyFaq");
@@ -28,7 +28,7 @@ export default function FAQBlock() {
     <div className="w-full max-w-md mx-auto px-4 py-4 bg-white">
       <div className="w-full flex flex-col items-start justify-start">
         <Link
-          href="/ru"
+          href="/"
           className="text-blue font-roboto mt-[28px] text-[15px] text-left"
         >
           {i18n("backLink")}

@@ -2,7 +2,7 @@
 import { useTranslations } from "next-intl";
 import SectionTitle from "@/shared/ui/section-title/section-title";
 import { ArrowLeft, Ticket } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 export function CouponsHeaderWidget() {
   const i18n = useTranslations("coupons");

@@ -3,11 +3,11 @@
 import BoxIcon from "@/shared/icons/box-icon";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { PurchaseCard } from "@/entities/product/ui/purchase-card";
 import { useQuery } from "@tanstack/react-query";
 import { orderApi } from "@/entities/order/api/order.api";
+import { Link } from "@/i18n/navigation";
 
 export const ProfilePurchasesBlock = () => {
   const t = useTranslations("profilePurchases");

@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { ChevronDown } from "lucide-react";
 
 interface NavItemProps {
@@ -26,6 +26,7 @@ export function NavItem({
     return (
       <div className="relative">
         <Link
+          //@ts-ignore
           href={href}
           className="text-dark font-condensed hover:text-blue-600 transition-colors text-base"
         >
