@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { GamesMegaMenuSkeleton } from "./games-mega-menu-skeleton";
 import { useProducts } from "@/entities/product/hooks/queries/use-products";
+import { useRouter } from "next/navigation";
 
 interface GameItem {
   id: number;
@@ -18,6 +19,7 @@ interface GameItem {
 export function GamesMegaMenu() {
   const t = useTranslations();
   const { data: productsData, isLoading } = useProducts();
+  const navigate = useRouter();
   const [nonBigoGames, setNonBigoGames] = useState<GameItem[]>([]);
 
   // Filter out Bigo products when data is loaded
@@ -161,6 +163,7 @@ export function GamesMegaMenu() {
               {nonBigoGames.map((game, index) => (
                 <motion.div
                   key={game.id}
+                  onClick={() => navigate.push(`/product/${game.id}`)}
                   className="text-center"
                   variants={itemVariants}
                   custom={index}
