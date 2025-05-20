@@ -3,13 +3,14 @@
 
 import type React from "react";
 import { useState, useEffect } from "react";
-import {} from "lucide-react";
+import { Mail, Phone, User } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { generateToken } from "@/widgets/ui/t-bank-form/utils/payment-utils";
 import { PaymentHeaderInfo } from "@/widgets/ui/t-bank-form/ui/payment-header-info";
 import { AmountInput } from "@/widgets/ui/t-bank-form/ui/amount-input";
 import { PromocodeInput } from "@/widgets/ui/t-bank-form/ui/promocode-input";
+import { FormInput } from "@/widgets/ui/t-bank-form/ui/form-input";
 import { SubmitButton } from "@/widgets/ui/t-bank-form/ui/submit-button";
 import { PaymentFooter } from "@/widgets/ui/t-bank-form/ui/payment-footer";
 import {
@@ -51,8 +52,6 @@ export default function TBankPaymentPage() {
   // Use the coupon API hooks
   const checkCouponMutation = useCheckCoupon();
   const applyCouponMutation = useApplyCoupon();
-
-  const locale = useLocale();
 
   // Get the system user ID on component mount
   useEffect(() => {
@@ -174,9 +173,19 @@ export default function TBankPaymentPage() {
       const form = e.currentTarget;
       const formElements = form.elements as HTMLFormControlsCollection;
 
+      const email = (formElements.namedItem("email") as HTMLInputElement).value;
+      const phone = (formElements.namedItem("phone") as HTMLInputElement).value;
+      const name =
+        (formElements.namedItem("name") as HTMLInputElement)?.value || "";
       const description =
         (formElements.namedItem("description") as HTMLInputElement)?.value ||
         "Payment";
+
+      if (!email && !phone) {
+        alert(t("errors.emailOrPhone"));
+        setIsLoading(false);
+        return;
+      }
 
       const realUserId = await getUserId();
 
@@ -189,6 +198,8 @@ export default function TBankPaymentPage() {
         EmailCompany: "mail@mail.com",
         Taxation: "patent",
         FfdVersion: "1.2",
+        Email: email || undefined,
+        Phone: phone || undefined,
         Items: [
           {
             Name: description || "Оплата",
@@ -207,6 +218,9 @@ export default function TBankPaymentPage() {
         UserId: userIdDB || undefined,
         OrderId: orderId || undefined,
         ServerId: serverId || undefined,
+        Email: email || undefined,
+        Phone: phone || undefined,
+        Name: name || undefined,
         // Include promocode information if applied
         Promocode: appliedPromocode ? appliedPromocode.code : undefined,
         Discount: appliedPromocode ? appliedPromocode.discount : undefined,
@@ -221,8 +235,8 @@ export default function TBankPaymentPage() {
         CustomerKey: userId,
         DATA: dataObject,
         Receipt: receiptData,
-        SuccessURL: `https://don-vip.online/${locale}/payment/success`,
-        FailURL: `https://don-vip.online/${locale}/payment/failed`,
+        SuccessURL: "https://don-vip.online",
+        FailURL: "https://don-vip.online",
       };
 
       // Генерация токена без Receipt и DATA
@@ -356,6 +370,33 @@ export default function TBankPaymentPage() {
                         checkCouponMutation.isPending ||
                         applyCouponMutation.isPending
                       }
+                    />
+                  </div>
+                  <FormInput
+                    id="name"
+                    label="Full Name"
+                    type="text"
+                    placeholder="John Doe"
+                    Icon={User}
+                    translationNamespace="name"
+                  />
+                  <FormInput
+                    id="email"
+                    label="E-mail"
+                    type="email"
+                    placeholder="example@mail.com"
+                    Icon={Mail}
+                    translationNamespace="email"
+                  />
+
+                  <div className="md:col-span-2">
+                    <FormInput
+                      id="phone"
+                      label="Phone"
+                      type="tel"
+                      placeholder="+1 (123) 456-7890"
+                      Icon={Phone}
+                      translationNamespace="phone"
                     />
                   </div>
 
