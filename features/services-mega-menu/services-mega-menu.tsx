@@ -156,35 +156,36 @@ export function ServicesMegaMenu() {
             {/* Featured Services */}
             <div className="flex-1 grid grid-cols-3 gap-6">
               {bigoServices.map((service, index) => (
-                <motion.div
-                  key={service.id}
-                  className="text-center relative"
-                  variants={itemVariants}
-                  custom={index}
-                >
+                <Link href={`/product/${service.id}` as any}>
                   <motion.div
-                    className="relative w-full aspect-square rounded-lg overflow-hidden mb-2 shadow-sm"
-                    variants={cardVariants}
-                    initial="rest"
-                    whileHover="hover"
+                    key={service.id}
+                    className="text-center relative"
+                    variants={itemVariants}
+                    custom={index}
                   >
                     <motion.div
-                      className="w-full h-full"
-                      variants={imageHoverVariants}
+                      className="relative w-full aspect-square rounded-lg overflow-hidden mb-2 shadow-sm"
+                      variants={cardVariants}
+                      initial="rest"
+                      whileHover="hover"
                     >
-                      <Image
-                        src={service.image || "/placeholder.svg"}
-                        alt={service.name}
-                        fill
-                        className="object-cover"
-                      />
+                      <motion.div
+                        className="w-full h-full"
+                        variants={imageHoverVariants}
+                      >
+                        <Image
+                          src={service.image || "/placeholder.svg"}
+                          alt={service.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </motion.div>
                     </motion.div>
+                    <motion.h3 className="font-medium text-sm mb-1">
+                      {service.name}
+                    </motion.h3>
                   </motion.div>
-
-                  <motion.h3 className="font-medium text-sm mb-1">
-                    {service.name}
-                  </motion.h3>
-                </motion.div>
+                </Link>
               ))}
             </div>
             <motion.div
@@ -194,7 +195,6 @@ export function ServicesMegaMenu() {
               <motion.h3 className="font-medium text-sm uppercase text-gray-500 mb-2">
                 {t("help.title")}
               </motion.h3>
-
               <ul className="space-y-2">
                 {helpLinks.map((link, index) => (
                   <motion.li
