@@ -5,7 +5,7 @@ import type React from "react";
 import { useState, useEffect } from "react";
 import {} from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { generateToken } from "@/widgets/ui/t-bank-form/utils/payment-utils";
 import { PaymentHeaderInfo } from "@/widgets/ui/t-bank-form/ui/payment-header-info";
 import { AmountInput } from "@/widgets/ui/t-bank-form/ui/amount-input";
@@ -51,6 +51,8 @@ export default function TBankPaymentPage() {
   // Use the coupon API hooks
   const checkCouponMutation = useCheckCoupon();
   const applyCouponMutation = useApplyCoupon();
+
+  const locale = useLocale();
 
   // Get the system user ID on component mount
   useEffect(() => {
@@ -219,8 +221,8 @@ export default function TBankPaymentPage() {
         CustomerKey: userId,
         DATA: dataObject,
         Receipt: receiptData,
-        SuccessURL: "https://don-vip.online/ru/payment/success",
-        FailURL: "https://don-vip.online",
+        SuccessURL: `https://don-vip.online/${locale}/payment/success`,
+        FailURL: `https://don-vip.online/${locale}/payment/failed`,
       };
 
       // Генерация токена без Receipt и DATA
