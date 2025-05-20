@@ -56,12 +56,9 @@ export default async function LocaleLayout({
   params: { locale: string };
 }) {
   const { locale } = params;
-  if (!hasLocale(routing.locales, locale)) {
-    notFound();
-  }
 
   return (
-    <html lang={locale}>
+    <html>
       <head>
         <Script
           id="jivo-widget"
@@ -91,14 +88,7 @@ export default async function LocaleLayout({
           w-full
         `}
       >
-        <NextIntlClientProvider locale={locale}>
-          <ClientLayout>
-            <HeaderWrapper />
-            <main>{children}</main>
-            <BottomTab />
-            <Footer />
-          </ClientLayout>
-        </NextIntlClientProvider>
+        <main>{children}</main>
       </body>
     </html>
   );

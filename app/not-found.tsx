@@ -60,29 +60,6 @@ export default function NotFound() {
           {t.returnHome}
         </Link>
       </div>
-
-      {/* Decorative elements */}
-      <div
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-4 xxs:gap-2 opacity-70"
-        style={{
-          transform: `translate(calc(-50% + ${position.x * 10}px), ${
-            position.y * 10
-          }px)`,
-          transition: "transform 0.5s ease-out",
-        }}
-      >
-        {[...Array(3)].map((_, i) => (
-          <div
-            key={i}
-            className="w-32 h-1 xxs:w-[100px] xxs:h-[3px] rounded-full"
-            style={{
-              backgroundColor:
-                i % 2 === 0 ? "var(--color-blue)" : "var(--color-orange)",
-              opacity: 0.7 - i * 0.2,
-            }}
-          />
-        ))}
-      </div>
     </div>
   );
 }
