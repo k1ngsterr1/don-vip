@@ -171,6 +171,8 @@ export default function TBankPaymentPage() {
     setIsLoading(true);
 
     try {
+      console.log("📨 Форма отправлена");
+
       const form = e.currentTarget;
       const formElements = form.elements as HTMLFormControlsCollection;
 
@@ -178,12 +180,18 @@ export default function TBankPaymentPage() {
         (formElements.namedItem("description") as HTMLInputElement)?.value ||
         "Payment";
 
+      console.log("📝 Описание платежа:", description);
+
       const realUserId = await getUserId();
+      console.log("👤 Получен userId из getUserId():", realUserId);
 
       const finalOrderId = `${orderId}_${realUserId}`;
       const amountInKopecks = Math.round(
         Number.parseFloat(paymentAmount) * 100
       );
+
+      console.log("💳 Итоговый orderId:", finalOrderId);
+      console.log("💰 Сумма в копейках:", amountInKopecks);
 
       const receiptData = {
         EmailCompany: "mail@mail.com",
@@ -203,18 +211,21 @@ export default function TBankPaymentPage() {
         ],
       };
 
+      console.log("🧾 Данные чека (receipt):", receiptData);
+
       const dataObject = {
         UserId: userIdDB || undefined,
         OrderId: orderId || undefined,
         ServerId: serverId || undefined,
-        // Include promocode information if applied
-        Promocode: appliedPromocode ? appliedPromocode.code : undefined,
-        Discount: appliedPromocode ? appliedPromocode.discount : undefined,
+        Promocode: appliedPromocode?.code,
+        Discount: appliedPromocode?.discount,
         OriginalAmount: originalAmount,
       };
 
+      console.log("📦 DATA объект для Tinkoff:", dataObject);
+
       const paymentPayload = {
-        TerminalKey: "1731053917835DEMO", // ✅ Замените на ваш
+        TerminalKey: "1731053917835DEMO",
         Amount: amountInKopecks,
         OrderId: finalOrderId,
         Description: description,
@@ -225,7 +236,8 @@ export default function TBankPaymentPage() {
         FailURL: `https://don-vip.online/${locale}/payment/failed`,
       };
 
-      // Генерация токена без Receipt и DATA
+      console.log("📤 Payload для генерации токена:", paymentPayload);
+
       const token = await generateToken(
         {
           TerminalKey: paymentPayload.TerminalKey,
@@ -236,13 +248,17 @@ export default function TBankPaymentPage() {
           SuccessURL: paymentPayload.SuccessURL,
           FailURL: paymentPayload.FailURL,
         },
-        "M3u78sPoxlVxe5fj" // ✅ Ваш SecretKey
+        "M3u78sPoxlVxe5fj"
       );
+
+      console.log("🔐 Сгенерирован токен:", token);
 
       const finalPayload = {
         ...paymentPayload,
         Token: token,
       };
+
+      console.log("📦 Финальный payload (с токеном):", finalPayload);
 
       const response = await fetch("https://securepay.tinkoff.ru/v2/Init", {
         method: "POST",
@@ -251,35 +267,42 @@ export default function TBankPaymentPage() {
       });
 
       const responseText = await response.text();
+      console.log("📨 Ответ от Tinkoff (raw text):", responseText);
 
       const result = JSON.parse(responseText);
+      console.log("✅ Распарсенный ответ от Tinkoff:", result);
 
       if (!result.Success) {
+        console.error("❌ Ошибка инициализации платежа:", result.Message);
         throw new Error(result.Message || t("errors.paymentInit"));
       }
 
-      // Опционально: отправка orderId в backend
+      // Сохраняем заказ в базе
       await fetch("/api/tinkoff/save-order", {
         method: "POST",
         body: JSON.stringify({
           orderId: finalOrderId,
           userId,
-          promocode: appliedPromocode ? appliedPromocode.code : null,
-          discount: appliedPromocode ? appliedPromocode.discount : null,
+          promocode: appliedPromocode?.code || null,
+          discount: appliedPromocode?.discount || null,
           originalAmount,
           finalAmount: paymentAmount,
         }),
       });
 
-      // Перенаправление на оплату
+      console.log("🧾 Order сохранён на сервере");
+
+      // Перенаправляем пользователя
       if (result.PaymentURL) {
+        console.log("➡️ Перенаправление на:", result.PaymentURL);
         window.location.href = result.PaymentURL;
       }
     } catch (err: any) {
-      console.log(err);
+      console.error("🚨 Ошибка во время оплаты:", err);
       alert(t("errors.paymentInit") || "Ошибка инициализации платежа.");
     } finally {
       setIsLoading(false);
+      console.log("🔄 Загрузка завершена");
     }
   };
 
