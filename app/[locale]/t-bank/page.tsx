@@ -372,7 +372,6 @@ export default function TBankPaymentPage() {
                       }
                     />
                   </div>
-
                   <FormInput
                     id="email"
                     label="E-mail"
