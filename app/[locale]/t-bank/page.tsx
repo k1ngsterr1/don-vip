@@ -235,7 +235,7 @@ export default function TBankPaymentPage() {
         CustomerKey: userId,
         DATA: dataObject,
         Receipt: receiptData,
-        SuccessURL: "https://don-vip.online",
+        SuccessURL: "https://don-vip.online/payment/success",
         FailURL: "https://don-vip.online",
       };
 
