@@ -60,7 +60,10 @@ export function UserIdForm({
     if (isEmail(trimmed)) {
       setValidationError("");
       setValidationErrorCode(null);
-      setUserInfo(null); // можно оставить null, или setUserInfo({ username: trimmed })
+      setUserInfo({
+        username: trimmed, // <– можно хоть что, лишь бы не null
+        vipStatus: undefined,
+      });
       return;
     }
 
