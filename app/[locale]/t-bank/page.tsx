@@ -372,14 +372,7 @@ export default function TBankPaymentPage() {
                       }
                     />
                   </div>
-                  <FormInput
-                    id="name"
-                    label="Full Name"
-                    type="text"
-                    placeholder="John Doe"
-                    Icon={User}
-                    translationNamespace="name"
-                  />
+
                   <FormInput
                     id="email"
                     label="E-mail"
