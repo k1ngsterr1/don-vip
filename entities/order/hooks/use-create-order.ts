@@ -83,10 +83,11 @@ export function useCreateOrder(isTbank = false) {
       return paymentApi.createPagsmilePayin(paymentDataWithUser as any);
     },
 
-    onSuccess: (paymentData: PagsmilePayinResponse) => {
+    onSuccess: (paymentData) => {
       setIsProcessingPayment(false);
 
       if (paymentData.web_url) {
+        alert("Сейчас откроется платёжная страница"); // ✅ разблокирует window.open в Safari
         window.open(paymentData.web_url, "_blank");
       }
 
