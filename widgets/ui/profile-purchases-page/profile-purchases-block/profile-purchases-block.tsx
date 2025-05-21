@@ -1,77 +1,72 @@
 "use client";
-
-import BoxIcon from "@/shared/icons/box-icon";
-import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { PurchaseCard } from "@/entities/product/ui/purchase-card";
-import { useQuery } from "@tanstack/react-query";
-import { orderApi } from "@/entities/order/api/order.api";
-import { Link } from "@/i18n/navigation";
 
-export const ProfilePurchasesBlock = () => {
-  const t = useTranslations("profilePurchases");
+export default function PurchaseProfileBlock() {
+  // Mock data from the provided JSON
+  const purchaseData = {
+    total: 1,
+    page: 1,
+    limit: 10,
+    data: [
+      {
+        id: 0,
+        date: "5/21/2025",
+        time: "9:19:33 AM",
+        gameImage:
+          "https://don-vip.online/uploads/products/product-1747750950048-578759147.jpeg",
+        currencyImage:
+          "https://don-vip.online/uploads/products/product-1747750950049-700359477.jpeg",
+        status: "success",
+        playerId: "Arm000777",
+        serverId: "N/A",
+        diamonds: 50,
+        price: "10000₽",
+      },
+    ],
+  };
 
-  // ✅ Fetch order history
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["orders", "history"],
-    queryFn: () => orderApi.getOrderHistory(1, 10),
-  });
-
-  const purchases = data?.orders ?? [];
-
-  const hasPurchases = purchases.length > 0;
+  const hasPurchases = purchaseData.data.length > 0;
 
   return (
-    <div className="w-full mx-auto mt-8">
+    <div className="w-full mx-auto mt-8 px-4 max-w-6xl">
       <div className="mb-6 w-full">
         <div className="w-full flex items-center justify-between mb-4">
           <Link
-            href={"/"}
+            href="/"
             className="text-blue-600 hover:text-blue-700 transition-colors flex items-center group"
           >
             <ArrowLeft
               size={18}
               className="mr-2 group-hover:-translate-x-1 transition-transform"
             />
-            <span className="text-base md:text-lg">{t("return")}</span>
+            <span className="text-base md:text-lg">Return</span>
           </Link>
         </div>
       </div>
 
-      <div className="w-full flex items-start justify-start gap-3">
-        <div className="w-[24px] h-[24px] flex items-center justify-center rounded-[4px] bg-[#F03D00] font-condensed">
-          <BoxIcon width={13} height={11} color="white" />
-        </div>
-        <h1 className="text-lg md:text-xl font-unbounded">{t("purchases")}</h1>
-      </div>
-
-      {isLoading ? (
-        <p className="mt-6 text-gray-500">{t("loading") || "Loading..."}</p>
-      ) : isError ? (
-        <p className="mt-6 text-red-500">
-          {t("error") || "Failed to load purchases"}
-        </p>
-      ) : hasPurchases ? (
+      {hasPurchases ? (
         <div className="w-full mt-4 space-y-4">
-          {purchases.map((purchase: any) => (
-            <PurchaseCard key={purchase.id} {...purchase} />
+          {purchaseData.data.map((purchase) => (
+            <PurchaseCard key={purchase.id} {...(purchase as any)} />
           ))}
         </div>
       ) : (
         <div className="w-full mt-4 border-[#8B8B8B]/10 border-[1px] py-8 px-4 bg-[#F3F4F7] rounded-[12px] flex flex-col items-center justify-center">
           <Image
-            src="/sad_diamond.webp"
+            src="/sad-diamond-icon.png"
             alt="Sad Diamond"
             className="w-[72px] h-[68px] mb-3"
             width={72}
             height={68}
           />
-          <span className="text-[15px] md:text-base font-roboto text-black">
-            {t("noPurchases")}
+          <span className="text-[15px] md:text-base font-medium text-black">
+            No purchases yet
           </span>
         </div>
       )}
     </div>
   );
-};
+}

@@ -1,0 +1,30 @@
+{
+  "purchases": {
+    "title": "Purchases",
+    "return": "Return",
+    "purchase": "Purchase",
+    "gameImageAlt": "Game Image",
+    "currencyImageAlt": "Currency Image",
+    "diamondIconAlt": "Diamond Icon",
+    "playerId": "Player ID",
+    "serverId": "Server ID",
+    "diamonds": "Diamonds",
+    "noPurchases": "No purchases yet",
+    "sadDiamondAlt": "Sad Diamond",
+    "purchaseCompleted": "Purchase Completed",
+    "purchaseCompletedDesc": "Your purchase has been successfully completed",
+    "paymentReceived": "Payment Received",
+    "paymentReceivedDesc": "We've received your payment",
+    "inDelivery": "In Delivery",
+    "inDeliveryDesc": "Your purchase is being processed for delivery",
+    "successfulDelivery": "Successful Delivery",
+    "successfulDeliveryDesc": "Your purchase has been delivered successfully",
+    "orderClosed": "Order Closed",
+    "orderClosedDesc": "Your order has been closed",
+    "status": {
+      "success": "Success",
+      "fail": "Failed",
+      "pending": "Pending"
+    }
+  }
+}

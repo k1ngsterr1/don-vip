@@ -1,0 +1,30 @@
+{
+  "purchases": {
+    "title": "Покупки",
+    "return": "Назад",
+    "purchase": "Покупка",
+    "gameImageAlt": "Изображение игры",
+    "currencyImageAlt": "Изображение валюты",
+    "diamondIconAlt": "Иконка алмаза",
+    "playerId": "ID игрока",
+    "serverId": "ID сервера",
+    "diamonds": "Алмазы",
+    "noPurchases": "Покупок пока нет",
+    "sadDiamondAlt": "Грустный алмаз",
+    "purchaseCompleted": "Покупка завершена",
+    "purchaseCompletedDesc": "Ваша покупка успешно завершена",
+    "paymentReceived": "Оплата получена",
+    "paymentReceivedDesc": "Мы получили вашу оплату",
+    "inDelivery": "В доставке",
+    "inDeliveryDesc": "Ваша покупка обрабатывается для доставки",
+    "successfulDelivery": "Успешная доставка",
+    "successfulDeliveryDesc": "Ваша покупка успешно доставлена",
+    "orderClosed": "Заказ закрыт",
+    "orderClosedDesc": "Ваш заказ закрыт",
+    "status": {
+      "success": "Успешно",
+      "fail": "Ошибка",
+      "pending": "В обработке"
+    }
+  }
+}
