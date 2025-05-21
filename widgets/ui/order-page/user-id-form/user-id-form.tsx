@@ -28,8 +28,9 @@ export function UserIdForm({
   onAgreeChange,
 }: UserIdFormProps) {
   const t = useTranslations("orderBlock.user");
-  const { validateUser, isValidating, error, errorCode } =
-    useValidateBigoUser();
+  const tError = useTranslations("alert.validation");
+
+  const { validateUser, isValidating } = useValidateBigoUser();
   const [userIdInput, setUserIdInput] = useState(userId);
   const [userInfo, setUserInfo] = useState<{
     username?: string;
@@ -41,6 +42,9 @@ export function UserIdForm({
   );
   const [showErrorAlert, setShowErrorAlert] = useState(false);
 
+  const isEmail = (value: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+
   useEffect(() => {
     if (userIdInput !== userId && !validationError && userInfo) {
       onUserIdChange(userIdInput);
@@ -48,15 +52,23 @@ export function UserIdForm({
   }, [userIdInput, userId, validationError, userInfo, onUserIdChange]);
 
   const handleValidateBigoId = async () => {
-    if (!userIdInput.trim()) {
+    const trimmed = userIdInput.trim();
+
+    if (!trimmed) return;
+
+    // ⛔ Пропускаем валидацию, если это email
+    if (isEmail(trimmed)) {
+      setValidationError("");
+      setValidationErrorCode(null);
+      setUserInfo(null); // можно оставить null, или setUserInfo({ username: trimmed })
       return;
     }
 
     try {
-      const result = await validateUser(userIdInput);
+      const result = await validateUser(trimmed);
 
       if (!result.isValid) {
-        setValidationError(result.errorMessage || "ID не существвует");
+        setValidationError(result.errorMessage || "ID не существует");
         setValidationErrorCode(result.errorCode || null);
         setShowErrorAlert(true);
         setUserInfo(null);
@@ -78,10 +90,18 @@ export function UserIdForm({
 
   // Format error message based on error code
   const getFormattedErrorMessage = () => {
-    if (validationErrorCode === -32024) {
-      return "The account hasn't been found";
+    switch (validationErrorCode) {
+      case -32024:
+        return tError("accountNotFound");
+      case -32025:
+        return tError("invalidUserId");
+      case -32026:
+        return tError("validationFailed");
+      case -1:
+        return tError("networkError");
+      default:
+        return validationError || tError("validationFailed");
     }
-    return validationError || "ID не существвует";
   };
 
   return (

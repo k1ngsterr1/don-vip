@@ -93,7 +93,9 @@ export function OrderBlock({
         currencyImage:
           product.currency_image ||
           `/currency-${product.type.toLowerCase()}.png`,
-        requiresServer: product.type === "Smile",
+        requiresServer: !(
+          product.type === "Smile" && product.smile_api_game === "pubgmobile"
+        ),
       });
 
       setCurrencyOptions(
