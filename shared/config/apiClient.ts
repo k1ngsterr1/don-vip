@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
-const BASE_URL = "https://don-vip.online/api/api";
+const BASE_URL = "https://don-vip.online/api";
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,
