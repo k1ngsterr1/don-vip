@@ -1,7 +1,6 @@
 "use client";
 
 import { LogOut } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
@@ -10,6 +9,7 @@ import google from "@/assets/google.webp";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useQuery } from "@tanstack/react-query";
 import { authApi } from "@/entities/auth/api/auth.api";
+import { Link } from "@/i18n/navigation";
 
 export function AuthMenu() {
   const { isAuthenticated, logout } = useAuthStore();
@@ -101,7 +101,10 @@ export function AuthMenu() {
       {userMenuOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
           <Link
-            href={`/profile/${currentUser?.id || 1}`}
+            href={{
+              pathname: "/profile/[id]",
+              params: { id: String(currentUser?.id || 1) },
+            }}
             className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
             onClick={() => setUserMenuOpen(false)}
           >

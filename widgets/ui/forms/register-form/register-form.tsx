@@ -6,13 +6,13 @@ import type React from "react";
 import { AuthInput } from "@/shared/ui/auth-input/auth-input";
 import { Button } from "@/shared/ui/button/button";
 import { SocialAuth } from "@/shared/ui/social-input/social-input";
-import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Info, Mail, Phone } from "lucide-react";
 import { AuthLoadingOverlay } from "@/shared/ui/auth-loading/auth-loading";
 import { useRegister } from "@/entities/auth/hooks/use-auth";
 import { PasswordStrength } from "@/shared/ui/password-strength/password-strength";
+import { Link } from "@/i18n/navigation";
 
 // Enhanced error translations for all possible input errors
 const errorTranslations: Record<string, Record<string, string>> = {
@@ -362,7 +362,7 @@ export function RegisterForm() {
       <div className="mt-6 text-center text-xs text-gray-500">
         <p>
           {i18n("privacyText") || "By registering, you agree to our"}{" "}
-          <Link href="#" className="text-black">
+          <Link href="/privacy-policy" className="text-black">
             {i18n("privacyLink") || "Privacy Policy"}
           </Link>
         </p>

@@ -5,12 +5,12 @@ import { useTranslations } from "next-intl";
 import { AuthInput } from "@/shared/ui/auth-input/auth-input";
 import { Button } from "@/shared/ui/button/button";
 import { SocialAuth } from "@/shared/ui/social-input/social-input";
-import Link from "next/link";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useChangePassword } from "@/entities/auth/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 export function ForgotPasswordForm() {
   const router = useRouter();
@@ -111,9 +111,9 @@ export function ForgotPasswordForm() {
       <div className="mt-6 md:mt-8 text-center text-xs md:text-sm text-gray-500">
         <p>
           {t("privacy.text")}{" "}
-          <Link href="#" className="text-blue hover:underline">
+          <a href="#" className="text-blue hover:underline">
             {t("privacy.link")}
-          </Link>
+          </a>
         </p>
       </div>
 

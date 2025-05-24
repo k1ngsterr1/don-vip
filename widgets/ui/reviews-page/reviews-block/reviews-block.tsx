@@ -2,13 +2,11 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
-import {
-  useAcceptedFeedbacks,
-} from "@/entities/reviews/hook/use-feedback";
+import { useAcceptedFeedbacks } from "@/entities/reviews/hook/use-feedback";
 import { ReviewList } from "@/entities/reviews/ui/review-list/review-list";
 import { FeedbackPrompt } from "@/widgets/ui/reviews-page/prompt-block/prompt-block";
 import { ReviewsSkeleton } from "../reviews-loading/reviews-loading";
+import { Link } from "@/i18n/navigation";
 
 export function ReviewsBlock() {
   const t = useTranslations("reviews");

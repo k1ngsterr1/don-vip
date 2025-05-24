@@ -54,7 +54,7 @@ export function OrderBlock({
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("tbank");
 
   const { createOrder, isLoading, isProcessingPayment, error, setError } =
-    useCreateOrder();
+    useCreateOrder(selectedPaymentMethod === "tbank");
 
   useEffect(() => {
     const local_user = localStorage.getItem("userId");
@@ -93,7 +93,8 @@ export function OrderBlock({
         currencyImage:
           product.currency_image ||
           `/currency-${product.type.toLowerCase()}.png`,
-        requiresServer: product.type === "Smile",
+        requiresServer:
+          product.type === "Smile" && product.smile_api_game !== "pubgmobile",
       });
 
       setCurrencyOptions(
@@ -146,9 +147,11 @@ export function OrderBlock({
     try {
       const response = (await createOrder(orderData)) as any; // предполагается, что createOrder возвращает промис
 
+      console.log(response);
+
       if (selectedPaymentMethod === "tbank") {
         const params = new URLSearchParams({
-          orderId: Math.floor(Math.random() * 1000000).toString(),
+          orderId: response.id,
           amount: selectedCurrency.amount.toString(),
           price: numericPrice,
           currencyName: game.currencyName,
@@ -184,6 +187,7 @@ export function OrderBlock({
         };
       }
     } catch (err) {
+      console.log(err);
       setError(t("errors.orderFailed"));
     }
   };

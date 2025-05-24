@@ -27,7 +27,9 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "widgets/ui/t-bank-form/payment-header.-infotsx"
+    "widgets/ui/t-bank-form/payment-header.-infotsx",
+    "app/[locale]/not-found.js",
+    "app/[locale]/not-found.js"
   ],
   "exclude": ["node_modules"]
 }

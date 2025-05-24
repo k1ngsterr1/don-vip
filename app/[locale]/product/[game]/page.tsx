@@ -4,18 +4,13 @@ import { OrderBlock } from "@/widgets/ui/order-page/order-block";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
- 
 type Props = {
   params: any;
 };
 
- 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
-    // Convert the game slug to a number
     const gameId = parseInt(params.game, 10);
-
-    // Fetch the game details from the backend
     const gameData = await productService.findOne(gameId);
 
     return {

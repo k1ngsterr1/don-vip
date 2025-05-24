@@ -9,9 +9,10 @@ import type { Metadata } from "next";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { Roboto, Roboto_Condensed, Unbounded } from "next/font/google";
 import { notFound } from "next/navigation";
+
 import Script from "next/script"; // <-- ✅ Import Script
 import "./globals.css";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -58,6 +59,7 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+  const messages = await getMessages();
 
   return (
     <html lang={locale}>
@@ -90,7 +92,7 @@ export default async function LocaleLayout({
           w-full
         `}
       >
-        <NextIntlClientProvider locale={locale}>
+        <NextIntlClientProvider locale={locale} messages={messages}>
           <ClientLayout>
             <HeaderWrapper />
             <main>{children}</main>

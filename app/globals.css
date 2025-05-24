@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme inline {
+  --breakpoint-xxs: 200px;
+  --breakpoint-xs: 400px;
+  --color-background: var(--background);
+  --color-dark: rgba(33, 37, 41, 1);
+  --color-gray-light: rgba(122, 122, 122, 1);
+  --color-blue: rgba(28, 52, 255, 1);
+  --color-orange: rgba(240, 61, 0, 1);
+  --color-foreground: var(--foreground);
+  --font-unbounded: var(--font-unbounded);
+  --font-condensed: var(--font-roboto-condensed);
+  --font-roboto: var(--font-roboto);
+}
+
+button,
+a {
+  cursor: pointer;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    background-color: white;
+  }
+}
+
+body {
+  overflow-x: hidden;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Adaptations for 320px screens */
+@media (max-width: 320px) {
+  .xxs\:px-1 {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+
+  .xxs\:py-1 {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+  }
+
+  .xxs\:gap-2 {
+    gap: 0.5rem;
+  }
+
+  .xxs\:text-xs {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+
+  .xxs\:w-\[100px\] {
+    width: 100px;
+  }
+
+  .xxs\:h-\[20px\] {
+    height: 20px;
+  }
+}

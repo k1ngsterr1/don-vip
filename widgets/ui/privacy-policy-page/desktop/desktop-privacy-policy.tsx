@@ -1,11 +1,11 @@
 "use client";
 
 import { ArrowLeft, Shield } from "lucide-react";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { PrivacyPolicyContent } from "../content/privacy-policy-content";
 import { PrivacyPolicyContactFooter } from "../footer/privacy-policy-footer";
 import { PrivacyPolicySidebar } from "../sidebar/privacy-policy-sidebar";
+import { Link } from "@/i18n/navigation";
 
 export function DesktopPrivacyPolicy() {
   const t = useTranslations("privacyPolicy");

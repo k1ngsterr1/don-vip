@@ -1,0 +1,11 @@
+{
+  "payment_failed": {
+    "title": "Payment Failed",
+    "description": "We were unable to process your payment. Please check your payment details and try again, or contact our support team for assistance.",
+    "errorCode": "Error Code",
+    "orderNumber": "Order Number",
+    "retryPayment": "Back",
+    "contactSupport": "Contact Support",
+    "imageAlt": "Payment failed icon"
+  }
+}

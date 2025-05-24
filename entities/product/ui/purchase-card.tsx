@@ -8,7 +8,7 @@ import { PurchaseStatus } from "./purchase-status";
 import { useTranslations } from "next-intl";
 
 export interface PurchaseCardProps {
-  id: string;
+  id: number | string;
   date: string;
   time: string;
   gameImage: string;
@@ -32,14 +32,23 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
   diamonds,
   price,
 }) => {
-  const t = useTranslations("profilePurchases");
+  const t = useTranslations("purchases");
   const [isExpanded, setIsExpanded] = useState(false);
 
   const steps = [
-    { key: "purchaseCompleted", description: "purchaseCompletedDesc" },
-    { key: "paid", description: "paidDesc" },
-    { key: "inDelivery", description: "inDeliveryDesc" },
-    { key: "successfulDelivery", description: "successfulDeliveryDesc" },
+    {
+      key: "purchaseCompleted",
+      description: "purchaseCompletedDesc",
+    },
+    { key: "paymentReceived", description: "paymentReceivedDesc" },
+    {
+      key: "inDelivery",
+      description: "inDeliveryDesc",
+    },
+    {
+      key: "successfulDelivery",
+      description: "successfulDeliveryDesc",
+    },
     { key: "orderClosed", description: "orderClosedDesc" },
   ];
 
@@ -74,7 +83,8 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
             <Image
               src={currencyImage || "/placeholder.svg"}
               alt={t("currencyImageAlt")}
-              fill
+              width={48}
+              height={48}
               className="rounded-full object-contain"
             />
             <PurchaseStatus status={status} isAbsolute />
@@ -122,13 +132,14 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
             <div className="bg-[#E9EBF0] p-3 rounded-md">
               <div className="text-xs text-[#383838] mb-1">{t("diamonds")}</div>
               <div className="text-sm font-medium flex items-center">
-                <Image
-                  src="/diamond.png"
-                  alt="Diamond"
-                  width={16}
-                  height={16}
-                  className="mr-1"
-                />
+                <div className="w-4 h-4 mr-1 relative">
+                  <Image
+                    src="/diamond-icon.png"
+                    alt={t("diamondIconAlt")}
+                    width={16}
+                    height={16}
+                  />
+                </div>
                 {diamonds}
               </div>
             </div>

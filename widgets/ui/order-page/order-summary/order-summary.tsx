@@ -26,6 +26,9 @@ export function OrderSummary({
 }: OrderSummaryProps) {
   const t = useTranslations("orderSummary");
 
+  const isEmail = (value: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-100 sticky top-8">
       <div className="p-6 border-b border-gray-100">
@@ -66,7 +69,7 @@ export function OrderSummary({
           </div>
         )}
 
-        {userId && (
+        {userId && !isEmail(userId) && (
           <div className="mb-4">
             <h4 className="text-sm font-medium text-gray-700 mb-2">
               {t("summary.userInfo")}:

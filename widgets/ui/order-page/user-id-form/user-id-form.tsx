@@ -1,9 +1,12 @@
 "use client";
 
-import { HelpCircle } from "lucide-react";
+import { HelpCircle, Loader2, Check, AlertCircle } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { CustomTooltip } from "@/shared/ui/tooltip/tooltip";
+import { useEffect, useState } from "react";
+import { CustomAlert } from "../alert/alert";
+import { useValidateBigoUser } from "@/entities/bigo/hooks/use-validate-bigo";
 
 interface UserIdFormProps {
   requiresServer: boolean;
@@ -25,6 +28,84 @@ export function UserIdForm({
   onAgreeChange,
 }: UserIdFormProps) {
   const t = useTranslations("orderBlock.user");
+  const tError = useTranslations("alert.validation");
+
+  const { validateUser, isValidating } = useValidateBigoUser();
+  const [userIdInput, setUserIdInput] = useState(userId);
+  const [userInfo, setUserInfo] = useState<{
+    username?: string;
+    vipStatus?: string;
+  } | null>(null);
+  const [validationError, setValidationError] = useState("");
+  const [validationErrorCode, setValidationErrorCode] = useState<number | null>(
+    null
+  );
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
+
+  const isEmail = (value: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+
+  useEffect(() => {
+    if (userIdInput !== userId && !validationError && userInfo) {
+      onUserIdChange(userIdInput);
+    }
+  }, [userIdInput, userId, validationError, userInfo, onUserIdChange]);
+
+  const handleValidateBigoId = async () => {
+    const trimmed = userIdInput.trim();
+
+    if (!trimmed) return;
+
+    // ⛔ Пропускаем валидацию, если это email
+    if (isEmail(trimmed)) {
+      setValidationError("");
+      setValidationErrorCode(null);
+      setUserInfo({
+        username: trimmed, // <– можно хоть что, лишь бы не null
+        vipStatus: undefined,
+      });
+      return;
+    }
+
+    try {
+      const result = await validateUser(trimmed);
+
+      if (!result.isValid) {
+        setValidationError(result.errorMessage || "ID не существует");
+        setValidationErrorCode(result.errorCode || null);
+        setShowErrorAlert(true);
+        setUserInfo(null);
+      } else {
+        setUserInfo({
+          username: result.username,
+          vipStatus: result.vipStatus,
+        });
+        setValidationError("");
+        setValidationErrorCode(null);
+      }
+    } catch (err) {
+      setValidationError("Не удалось проверить ID");
+      setValidationErrorCode(null);
+      setShowErrorAlert(true);
+      setUserInfo(null);
+    }
+  };
+
+  // Format error message based on error code
+  const getFormattedErrorMessage = () => {
+    switch (validationErrorCode) {
+      case -32024:
+        return tError("accountNotFound");
+      case -32025:
+        return tError("invalidUserId");
+      case -32026:
+        return tError("validationFailed");
+      case -1:
+        return tError("networkError");
+      default:
+        return validationError || tError("validationFailed");
+    }
+  };
 
   return (
     <div className="px-4 mb-6">
@@ -50,7 +131,7 @@ export function UserIdForm({
           position="top"
           delay={300}
         >
-          <HelpCircle size={16} className="ml-2  text-gray-400 cursor-help" />
+          <HelpCircle size={16} className="ml-2 text-gray-400 cursor-help" />
         </CustomTooltip>
       </div>
       <div className="space-y-3">
@@ -62,12 +143,57 @@ export function UserIdForm({
             <input
               type="text"
               placeholder={t("userIdPlaceholder")}
-              value={userId}
-              onChange={(e) => onUserIdChange(e.target.value)}
-              className="w-full p-3 pl-10 border border-gray-200 rounded-lg"
+              value={userIdInput}
+              onChange={(e) => {
+                setUserIdInput(e.target.value);
+                setUserInfo(null);
+                setValidationError("");
+                setValidationErrorCode(null);
+              }}
+              onBlur={handleValidateBigoId}
+              className={`w-full p-3 pl-10 border ${
+                validationError
+                  ? "border-red-500"
+                  : userInfo
+                  ? "border-green-500"
+                  : "border-gray-200"
+              } rounded-lg`}
             />
+            {isValidating && (
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <Loader2 size={18} className="animate-spin text-blue" />
+              </div>
+            )}
+            {userInfo && !isValidating && (
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <Check size={18} className="text-green-500" />
+              </div>
+            )}
+            {validationError && !isValidating && (
+              <div
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                onClick={() => setShowErrorAlert(true)}
+              >
+                <AlertCircle size={18} className="text-red-500" />
+              </div>
+            )}
           </div>
         )}
+
+        {userInfo && userInfo.username && !requiresServer && (
+          <div className="mt-2 flex items-center">
+            <span className="text-sm text-gray-600 font-roboto">
+              {userInfo.username}
+            </span>
+            {userInfo.vipStatus && (
+              <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800 font-condensed">
+                <span className="mr-1">⭐</span>
+                {userInfo.vipStatus}
+              </span>
+            )}
+          </div>
+        )}
+
         <div className="flex items-center mt-2">
           <input
             type="checkbox"
@@ -80,13 +206,17 @@ export function UserIdForm({
             {t("confirmDataCorrectness")}
           </label>
         </div>
+
         {requiresServer ? (
           <>
             <input
               type="text"
               placeholder={t("userIdPlaceholder")}
-              value={userId}
-              onChange={(e) => onUserIdChange(e.target.value)}
+              value={userIdInput}
+              onChange={(e) => {
+                setUserIdInput(e.target.value);
+                onUserIdChange(e.target.value);
+              }}
               className="w-full p-3 border border-gray-200 rounded-lg"
             />
             <div className="relative">
@@ -108,7 +238,7 @@ export function UserIdForm({
         ) : (
           <>
             <div className="mt-4 mb-2">
-              <h3 className=" text-[16px] font-bold font-condensed mb-2">
+              <h3 className="text-[16px] font-bold font-condensed mb-2">
                 {t("findBigoId.title")}
               </h3>
               <ol className="text-[15px] font-condensed text-gray-600 space-y-1 list-decimal pl-5">
@@ -136,6 +266,13 @@ export function UserIdForm({
           </>
         )}
       </div>
+
+      {/* Custom Error Alert */}
+      <CustomAlert
+        isOpen={showErrorAlert}
+        onClose={() => setShowErrorAlert(false)}
+        message={getFormattedErrorMessage()}
+      />
     </div>
   );
 }

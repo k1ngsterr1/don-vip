@@ -41,7 +41,7 @@ export default function FAQItem({
         onClick={() => onToggle(index)}
         aria-expanded={isOpen}
       >
-        <span className="font-medium text-gray-900 text-sm">{question}</span>
+        <span className="font-bold text-gray-900 text-sm">{question}</span>
         {isOpen ? (
           <X className="h-5 w-5 text-blue-600" />
         ) : (

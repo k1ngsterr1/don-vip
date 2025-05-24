@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import SearchBar from "@/entities/search-bar/search-bar";
 import FAQItem from "@/shared/ui/faq-item/faq-item";
 import { faqItems } from "@/shared/data/faq-data";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 export default function FAQBlock() {
   const i18n = useTranslations("emptyFaq");

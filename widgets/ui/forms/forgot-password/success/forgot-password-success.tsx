@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Link } from "@/i18n/navigation";
 
 export const ForgotPasswordSuccess = () => {
   const i18n = useTranslations("forgotpasssuccess_auth.forgotPasswordSuccess");

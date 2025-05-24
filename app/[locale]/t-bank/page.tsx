@@ -187,7 +187,9 @@ export default function TBankPaymentPage() {
         return;
       }
 
-      const finalOrderId = `order_${userId}_${Date.now()}`;
+      const realUserId = await getUserId();
+
+      const finalOrderId = `${orderId}_${realUserId}`;
       const amountInKopecks = Math.round(
         Number.parseFloat(paymentAmount) * 100
       );
@@ -233,7 +235,7 @@ export default function TBankPaymentPage() {
         CustomerKey: userId,
         DATA: dataObject,
         Receipt: receiptData,
-        SuccessURL: "https://don-vip.online",
+        SuccessURL: "https://don-vip.online/payment/success",
         FailURL: "https://don-vip.online",
       };
 
@@ -357,14 +359,6 @@ export default function TBankPaymentPage() {
                       }
                     />
                   </div>
-                  <FormInput
-                    id="name"
-                    label="Full Name"
-                    type="text"
-                    placeholder="John Doe"
-                    Icon={User}
-                    translationNamespace="name"
-                  />
                   <FormInput
                     id="email"
                     label="E-mail"

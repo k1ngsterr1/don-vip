@@ -2,9 +2,9 @@
 import { useTranslations } from "next-intl";
 import SearchBar from "@/entities/search-bar/search-bar";
 import FAQItem from "@/shared/ui/faq-item/faq-item";
-import Link from "next/link";
 import { useState } from "react";
 import { getFAQData } from "@/shared/data/faq-data";
+import { Link } from "@/i18n/navigation";
 
 export default function MobileFAQ() {
   const i18n = useTranslations("MobileFAQ");

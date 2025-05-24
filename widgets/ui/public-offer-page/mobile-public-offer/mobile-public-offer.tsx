@@ -1,6 +1,6 @@
 "use client";
+import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 
 export default function MobilePublicOffer() {
   const i18n = useTranslations("MobilePublicOffer");
