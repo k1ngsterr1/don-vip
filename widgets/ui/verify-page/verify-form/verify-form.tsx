@@ -16,7 +16,7 @@ export function VerifyForm() {
   const locale = useLocale();
   const searchParams = useSearchParams();
 
-  const email = searchParams.get("email") || "";
+  const identifier = searchParams.get("identifier") || "";
   const returnUrl = searchParams.get("returnUrl");
 
   const {
@@ -30,7 +30,7 @@ export function VerifyForm() {
     resendCooldown,
     handleSubmit,
     handleResendCode,
-  } = useVerification(email, returnUrl, locale);
+  } = useVerification(identifier, returnUrl, locale);
 
   // Show loading overlay when loading or redirecting
   const showLoadingOverlay = isLoading || isRedirecting;
@@ -57,7 +57,7 @@ export function VerifyForm() {
         }
       />
       <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
-        <VerificationHeader email={email} />
+        <VerificationHeader email={identifier} />
         <form onSubmit={handleSubmit} className="space-y-6">
           <VerificationCodeInput
             code={code}

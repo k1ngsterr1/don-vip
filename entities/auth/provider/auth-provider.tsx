@@ -19,12 +19,10 @@ const queryClient = new QueryClient({
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { accessToken } = useAuthStore();
 
-  // Initialize auth header when component mounts or token changes
   useEffect(() => {
     if (accessToken) {
       const initializeAuth = async () => {
         try {
-          // Pre-fetch user data when we have a token
           await queryClient.prefetchQuery({
             queryKey: ["user"],
             queryFn: async () => {

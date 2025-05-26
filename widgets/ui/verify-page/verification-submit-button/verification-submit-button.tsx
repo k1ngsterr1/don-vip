@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/shared/ui/button/button";
+import { cn } from "@/shared/utils/cn";
 import { Loader2, CheckCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -22,7 +23,12 @@ export function VerificationSubmitButton({
   return (
     <Button
       type="submit"
-      className="w-full rounded-full text-white py-3 text-sm bg-gray-400 hover:bg-gray-500"
+      className={cn(
+        "w-full rounded-full text-white py-3 text-sm",
+        isDisabled
+          ? "bg-gray-400 hover:bg-gray-400 cursor-not-allowed"
+          : "bg-blue-600 hover:bg-blue-700"
+      )}
       disabled={isDisabled}
       aria-label={i18n("ariaLabels.submit") || "Verify"}
     >

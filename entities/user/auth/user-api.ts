@@ -52,6 +52,11 @@ export const userApi = {
     return response.data;
   },
 
+  verify: async (data: any): Promise<User> => {
+    const response = await apiClient.post<User>(`/user/verify`, data);
+    return response.data;
+  },
+
   /**
    * Update user profile
    */

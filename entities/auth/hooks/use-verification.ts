@@ -6,9 +6,10 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { resendVerificationCode, verifyCode } from "../api/verification.api";
 import { translateErrorMessage } from "@/shared/utils/error-translations";
+import { userApi } from "@/entities/user/auth/user-api";
 
 export function useVerification(
-  email: string,
+  identifier: string,
   returnUrl: string | null,
   locale: string
 ) {
@@ -21,7 +22,6 @@ export function useVerification(
 
   const router = useRouter();
 
-  // Start cooldown timer for resend button
   useEffect(() => {
     if (resendCooldown > 0) {
       const timer = setTimeout(() => {
@@ -45,15 +45,15 @@ export function useVerification(
     setError(null);
 
     try {
-      await verifyCode(fullCode, email);
+      await userApi.verify({
+        identifier,
+        code: fullCode,
+      });
+
       setIsVerified(true);
 
-      // Set redirecting state to show success overlay
       setTimeout(() => {
         setIsRedirecting(true);
-
-        // Redirect to return URL if available, or to profile page
-        // Redirect to return URL if available, or to /auth/success
         setTimeout(() => {
           if (returnUrl) {
             router.push(decodeURIComponent(returnUrl));
@@ -64,7 +64,6 @@ export function useVerification(
       }, 1500);
     } catch (err: any) {
       const errorMessage = translateErrorMessage(err.message);
-
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -76,7 +75,7 @@ export function useVerification(
 
     setIsLoading(true);
     try {
-      await resendVerificationCode(email);
+      await resendVerificationCode(identifier);
       setResendCooldown(60); // 60 second cooldown
     } catch (err: any) {
       const errorMessage = translateErrorMessage(err.messagew);

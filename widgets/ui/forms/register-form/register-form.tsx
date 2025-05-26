@@ -217,7 +217,9 @@ export function RegisterForm() {
 
           // Redirect to success page or login
           setTimeout(() => {
-            router.push("/");
+            router.push(
+              `/auth/verify?identifier=${encodeURIComponent(identifier)}`
+            );
           }, 800); // Small delay for a smoother transition
         },
         onError: (error: any) => {

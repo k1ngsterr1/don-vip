@@ -76,7 +76,7 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
           alt={t("gameImageAlt")}
           width={48}
           height={48}
-          className="rounded-full object-cover"
+          className="rounded-full w-[48px] h-[48px] object-cover"
         />
         <div className="relative w-[48px] h-[48px]">
           <div className="relative w-[48px] h-[48px]">
@@ -125,16 +125,20 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
               <div className="text-xs text-[#383838] mb-1">{t("playerId")}</div>
               <div className="text-sm font-medium">{playerId}</div>
             </div>
-            <div className="bg-[#E9EBF0] p-3 rounded-md">
-              <div className="text-xs text-[#383838] mb-1">{t("serverId")}</div>
-              <div className="text-sm font-medium">{serverId}</div>
-            </div>
+            {serverId !== "N/A" && (
+              <div className="bg-[#E9EBF0] p-3 rounded-md">
+                <div className="text-xs text-[#383838] mb-1">
+                  {t("serverId")}
+                </div>
+                <div className="text-sm font-medium">{serverId}</div>
+              </div>
+            )}
             <div className="bg-[#E9EBF0] p-3 rounded-md">
               <div className="text-xs text-[#383838] mb-1">{t("diamonds")}</div>
               <div className="text-sm font-medium flex items-center">
                 <div className="w-4 h-4 mr-1 relative">
                   <Image
-                    src="/diamond-icon.png"
+                    src={currencyImage}
                     alt={t("diamondIconAlt")}
                     width={16}
                     height={16}
@@ -144,10 +148,10 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
               </div>
             </div>
           </div>
-
-          {/* Price */}
           <div className="flex justify-end">
-            <div className="text-xl font-bold">{price}</div>
+            <div className="text-xl font-bold">
+              {(parseFloat(price.replace("₽", "")) / 100).toFixed(2)}₽
+            </div>
           </div>
         </div>
       )}
