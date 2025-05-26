@@ -48,20 +48,36 @@ export const orderApi = {
     return response.data;
   },
 
-  getOrderHistory: async (page = 1, limit = 10): Promise<OrdersResponse> => {
-    const authUser = useAuthStore.getState().user;
-    let userId: string | null = authUser?.id?.toString() ?? null;
+  /**
+   * Get order history for authenticated user
+   */
+  /**
+   * Get order history for current user (authenticated or guest)
+   */
+  /**
+   * Get order history for current user (authenticated or guest)
+   */
+  getOrderHistory: async (
+    page = 1,
+    limit = 10,
+    guestParams?: { userId: string }
+  ): Promise<OrdersResponse> => {
+    const isGuestAuth = useAuthStore.getState().isGuestAuth;
 
-    // You may still want to fallback to localStorage for guests
-    if (!userId && typeof window !== "undefined") {
-      userId = localStorage.getItem("userId");
+    if (isGuestAuth) {
+      if (!guestParams?.userId) {
+        throw new Error("userId is required for guest order history");
+      }
+      // Guest user flow: call guest history endpoint with userId
+      const response = await apiClient.get<OrdersResponse>(
+        `/order/guest/history?userId=${guestParams.userId}&page=${page}&limit=${limit}`
+      );
+      return response.data;
     }
 
-    // Optional: If userId is required by the backend
-    const userParam = userId ? `&user_id=${userId}` : "";
-
+    // Authenticated user flow: only use pagination, userId is taken from JWT
     const response = await apiClient.get<OrdersResponse>(
-      `/order/history?page=${page}&limit=${limit}${userParam}`
+      `/order/history?page=${page}&limit=${limit}`
     );
     return response.data;
   },

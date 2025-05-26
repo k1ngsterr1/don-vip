@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/entities/auth/store/auth.store";
 import type { User } from "@/entities/user/model/types";
 import { apiClient } from "@/shared/config/apiClient";
 import { getUserId } from "@/shared/hooks/use-get-user-id";
@@ -40,10 +41,22 @@ export const userApi = {
    */
   getUserById: async (userId?: string | number): Promise<User> => {
     let id = userId;
+
     if (!id) {
       id = await getUserId();
     }
-    const response = await apiClient.get<User>(`/user/${id}`);
+
+    // Import useAuthStore at the top: import { useAuthStore } from "@/shared/store/auth";
+    const { isGuestAuth } = useAuthStore.getState();
+
+    const endpoint = isGuestAuth
+      ? `/user/guest-profile/${id}`
+      : `/user/profile/${id}`;
+
+    const response = await apiClient.get<User>(endpoint);
+    if (!response.data) {
+      throw new Error("User not found");
+    }
     return response.data;
   },
 

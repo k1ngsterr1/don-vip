@@ -64,108 +64,52 @@ export const authApi = {
   /**
    * Get current user profile
    */
+  /**
+   * Get current user profile (authenticated user)
+   */
+  /**
+   * Get current user profile (handles both regular and guest users)
+   */
   getCurrentUser: async (): Promise<any> => {
-    try {
-      const userId = await getUserId();
-      const response = await apiClient.get(`/user/me`, {
-        params: { id: userId },
-      });
-      const user = response.data;
-      useAuthStore.getState().setUser(user);
-      // Regular user, not a guest
-      useAuthStore.getState().setGuestAuth(false);
-      console.log(
-        "👤 [Auth] #5 - getCurrentUser: Regular user, setting isGuestAuth to false"
-      );
+    const { isGuestAuth, user } = useAuthStore.getState();
+
+    // If already have user in store, return it
+    if (user) {
       return user;
-    } catch (error: any) {
-      // Check if already authenticated as guest
-      if (useAuthStore.getState().isGuestAuth) {
-        // Return the existing guest user without making another request
-        const existingUser = useAuthStore.getState().user;
-        if (existingUser) {
-          console.log(
-            "👤 [Auth] #6 - getCurrentUser: Already a guest user, returning existing user"
-          );
-          return existingUser;
-        }
-      }
-
-      // Check if a guest auth request is already in progress
-      if (isGuestAuthInProgress) {
-        console.log(
-          "👤 [Auth] #6.1 - getCurrentUser: Guest auth already in progress, waiting..."
-        );
-        // Wait for the existing request to complete (simple polling)
-        let attempts = 0;
-        while (isGuestAuthInProgress && attempts < 10) {
-          await new Promise((resolve) => setTimeout(resolve, 100));
-          attempts++;
-        }
-
-        // After waiting, check if we have a user now
-        if (
-          useAuthStore.getState().isGuestAuth &&
-          useAuthStore.getState().user
-        ) {
-          console.log(
-            "👤 [Auth] #6.2 - getCurrentUser: Guest auth completed by another request, using that user"
-          );
-          return useAuthStore.getState().user;
-        }
-      }
-
-      console.log(
-        "👤 [Auth] #7 - getCurrentUser: Failed to get user, trying guest auth"
-      );
-
-      try {
-        isGuestAuthInProgress = true;
-
-        if (
-          useAuthStore.getState().isGuestAuth &&
-          useAuthStore.getState().user
-        ) {
-          console.log(
-            "👤 [Auth] #7.1 - getCurrentUser: Guest auth completed by another request, using that user"
-          );
-          isGuestAuthInProgress = false;
-          return useAuthStore.getState().user;
-        }
-
-        const res = await apiClient.post("/auth/guest");
-        const guestUser = res.data;
-
-        console.log(
-          "👤 [Auth] #8 - getCurrentUser: Guest auth successful",
-          guestUser
-        );
-
-        if (guestUser?.id) {
-          localStorage.setItem("userId", guestUser.id.toString());
-          useAuthStore.getState().setUser(guestUser);
-          useAuthStore.getState().setGuestAuth(true);
-          console.log(
-            "👤 [Auth] #9 - getCurrentUser: Setting guest user and isGuestAuth to true"
-          );
-          isGuestAuthInProgress = false;
-          return guestUser;
-        } else {
-          console.error(
-            "👤 [Auth] #10 - getCurrentUser: Invalid guest user response"
-          );
-          isGuestAuthInProgress = false;
-          throw new Error("Invalid guest user response");
-        }
-      } catch (guestError) {
-        console.error(
-          "👤 [Auth] #11 - getCurrentUser: Guest auth failed:",
-          guestError
-        );
-        isGuestAuthInProgress = false;
-        throw guestError;
-      }
     }
+
+    // If guest, use guest endpoint
+    if (isGuestAuth) {
+      const userId = localStorage.getItem("userId");
+      if (userId) {
+        const response = await apiClient.get(`/user/guest-me/${userId}`);
+        const guestUser = response.data;
+        useAuthStore.getState().setUser(guestUser);
+        return guestUser;
+      }
+      // If no userId, fallback to guestAuth
+      return await authApi.guestAuth();
+    }
+
+    // Try to get regular user
+    try {
+      const response = await apiClient.get(`/user/me`);
+      const regularUser = response.data;
+      useAuthStore.getState().setUser(regularUser);
+      useAuthStore.getState().setGuestAuth(false);
+      return regularUser;
+    } catch (error) {
+      // If not authenticated, fallback to guest
+      return await authApi.guestAuth();
+    }
+  },
+
+  /**
+   * Get guest user profile by ID (no auth)
+   */
+  getGuestUserById: async (id: number): Promise<any> => {
+    const response = await apiClient.get(`/user/guest-me/${id}`);
+    return response.data;
   },
 
   /**
