@@ -67,7 +67,7 @@ export function VerifyForm() {
             locale={locale}
             digitLabel={i18n("digitLabel") || "Verification code digit"}
           />
-          <VerificationError error={error} />
+          <VerificationError error={error} locale={locale} />
           <VerificationSubmitButton
             isDisabled={isButtonDisabled}
             isLoading={isLoading}
