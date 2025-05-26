@@ -45,12 +45,6 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
           }
 
           // Remove any old userId
-          if (localStorage.getItem("userId")) {
-            console.log(
-              "👤 [Auth] #42 - ClientLayout: Removing old userId from localStorage"
-            );
-            localStorage.removeItem("userId");
-          }
 
           // If we have a user in state or we've set isGuestAuth, we're done
           if (user || isGuestAuth || state?.isGuestAuth) {

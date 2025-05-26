@@ -3,7 +3,7 @@ import { apiClient } from "@/shared/config/apiClient";
 import { getUserId } from "@/shared/hooks/use-get-user-id";
 import { useQuery } from "@tanstack/react-query";
 
-type OrdersResponse = any; // Replace with your actual OrdersResponse type
+type OrdersResponse = any;
 
 const getOrderHistory = async (
   page = 1,

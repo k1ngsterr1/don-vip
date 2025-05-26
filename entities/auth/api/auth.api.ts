@@ -116,101 +116,103 @@ export const authApi = {
    * Guest authentication
    */
   guestAuth: async (): Promise<any> => {
-    // Check if already authenticated as guest
-    if (useAuthStore.getState().isGuestAuth) {
-      const currentUser = useAuthStore.getState().user;
-      if (currentUser?.id) {
-        console.log(
-          "👤 [Auth] #12 - guestAuth: Already a guest user, returning current user"
-        );
-        return {
-          success: true,
-          isGuest: true,
-          user: currentUser,
-          id: currentUser.id,
-        };
-      }
+    const storedUserId = localStorage.getItem("userId");
+
+    // ✅ 0. Если userId есть — выходим РАНО, никакой авторизации не делаем
+    if (storedUserId) {
+      console.log(
+        "👤 [Auth] Skipping guest auth — userId already in localStorage"
+      );
+
+      // Можем опционально восстановить пользователя из стора, если доступен
+      return {
+        success: true,
+        isGuest: true,
+        user: useAuthStore.getState().user,
+        id: storedUserId,
+      };
     }
 
-    // Check if a guest auth request is already in progress
-    if (isGuestAuthInProgress) {
+    // ✅ Получаем zustand состояние
+    const {
+      isGuestAuth,
+      user,
+      guestAuthLoading,
+      setGuestAuthLoading,
+      setUser,
+      setGuestAuth,
+      setTokens,
+    } = useAuthStore.getState();
+
+    // ✅ Если уже авторизован — тоже выходим
+    if (isGuestAuth && user?.id) {
       console.log(
-        "👤 [Auth] #12.1 - guestAuth: Guest auth already in progress, waiting..."
+        "👤 [Auth] Already authenticated as guest, skipping API call"
       );
-      // Wait for the existing request to complete (simple polling)
+      return {
+        success: true,
+        isGuest: true,
+        user,
+        id: user.id,
+      };
+    }
+
+    // ✅ Если авторизация в процессе — ждём
+    if (guestAuthLoading) {
+      console.log("👤 [Auth] Guest auth in progress... waiting");
       let attempts = 0;
-      while (isGuestAuthInProgress && attempts < 10) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+      while (useAuthStore.getState().guestAuthLoading && attempts < 10) {
+        await new Promise((res) => setTimeout(res, 100));
         attempts++;
       }
 
-      // After waiting, check if we have a user now
-      if (useAuthStore.getState().isGuestAuth && useAuthStore.getState().user) {
-        console.log(
-          "👤 [Auth] #12.2 - guestAuth: Guest auth completed by another request, using that user"
-        );
+      const u = useAuthStore.getState().user;
+      const id = u?.id ?? localStorage.getItem("userId");
+
+      if (useAuthStore.getState().isGuestAuth && id) {
+        console.log("👤 [Auth] Guest auth completed by another process");
         return {
           success: true,
           isGuest: true,
-          user: useAuthStore.getState().user,
-          id: useAuthStore.getState().user?.id,
+          user: u,
+          id,
         };
       }
     }
 
-    console.log("👤 [Auth] #13 - guestAuth: Making guest auth API call");
-
+    // ✅ Всё, запускаем guest auth только если дошли до сюда
+    console.log("👤 [Auth] Making guest auth API call");
     try {
-      // Set the flag to prevent concurrent requests
-      isGuestAuthInProgress = true;
-
-      // Double-check if another request completed guest auth while we were setting the flag
-      if (useAuthStore.getState().isGuestAuth && useAuthStore.getState().user) {
-        console.log(
-          "👤 [Auth] #13.1 - guestAuth: Guest auth completed by another request, using that user"
-        );
-        isGuestAuthInProgress = false;
-        return {
-          success: true,
-          isGuest: true,
-          user: useAuthStore.getState().user,
-          id: useAuthStore.getState().user?.id,
-        };
-      }
+      setGuestAuthLoading(true);
 
       const res = await apiClient.post("/auth/guest");
       const guestUser = res.data;
 
       if (guestUser?.id) {
         localStorage.setItem("userId", guestUser.id.toString());
-        useAuthStore.getState().setUser(guestUser);
-        useAuthStore.getState().setGuestAuth(true);
-        console.log(
-          "👤 [Auth] #14 - guestAuth: Guest auth successful, setting isGuestAuth to true"
-        );
+        setUser(guestUser);
+        setGuestAuth(true);
 
-        // If tokens are included in the response, set them
         if (guestUser.access_token && guestUser.refresh_token) {
-          useAuthStore
-            .getState()
-            .setTokens(guestUser.access_token, guestUser.refresh_token);
-          console.log("👤 [Auth] #15 - guestAuth: Setting guest tokens");
+          setTokens(guestUser.access_token, guestUser.refresh_token);
+          console.log("👤 [Auth] Guest tokens set");
         }
 
-        isGuestAuthInProgress = false;
-        return guestUser;
+        console.log("👤 [Auth] Guest auth successful");
+        return {
+          success: true,
+          isGuest: true,
+          user: guestUser,
+          id: guestUser.id,
+        };
+      } else {
+        throw new Error("Invalid guest user response");
       }
-
-      console.error("👤 [Auth] #16 - guestAuth: Invalid guest user response");
-      isGuestAuthInProgress = false;
-      throw new Error("Invalid guest user response");
-    } catch (error) {
-      console.error(
-        "👤 [Auth] #16.1 - guestAuth: Error during guest auth",
-        error
-      );
-      isGuestAuthInProgress = false;
-      throw error;
+    } catch (err) {
+      console.error("👤 [Auth] Guest auth failed", err);
+      throw err;
+    } finally {
+      setGuestAuthLoading(false);
     }
   },
 

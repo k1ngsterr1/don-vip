@@ -10,10 +10,12 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   isGuestAuth: boolean;
+  guestAuthLoading: boolean; // 👈 добавлено
   error: string | null;
   setUser: (user: User | null) => void;
   setTokens: (accessToken: string, refreshToken: string) => void;
   setGuestAuth: (isGuest: boolean) => void;
+  setGuestAuthLoading: (loading: boolean) => void; // 👈 добавлено
   clearTokens: () => void;
   logout: () => void;
   getAuthHeader: () => { Authorization: string } | {};
@@ -29,6 +31,12 @@ export const useAuthStore = create<AuthState>()(
       isLoading: false,
       isGuestAuth: false,
       error: null,
+
+      guestAuthLoading: false,
+
+      setGuestAuthLoading: (loading) => {
+        set({ guestAuthLoading: loading });
+      },
 
       setUser: (user) => set({ user, isAuthenticated: !!user }),
 
@@ -84,7 +92,6 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "auth-storage",
-      // Persist tokens, authentication state, and guest auth flag
       partialize: (state) => ({
         accessToken: state.accessToken,
         refreshToken: state.refreshToken,
