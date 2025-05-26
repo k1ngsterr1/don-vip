@@ -2,10 +2,14 @@
   "forgot_auth": {
     "forgotPassword": {
       "title": "Forgot your password?",
-      "description": "Enter your email address to receive a password reset link.",
+      "description": "Enter your email address or phone number to receive a password reset link.",
       "email": {
         "placeholder": "Enter your email",
         "label": "Email"
+      },
+      "phone": {
+        "placeholder": "Enter your phone number",
+        "label": "Phone"
       },
       "submit": "Send reset link",
       "loading": "Processing...",
@@ -18,9 +22,12 @@
         "link": "Log in"
       },
       "error": {
-        "required": "Please enter your email address",
-        "invalidEmail": "Please enter a valid email address"
-      }
+        "required": "Please enter your email address or phone number",
+        "invalidEmail": "Please enter a valid email address",
+        "invalidPhone": "Please enter a valid phone number"
+      },
+      "usePhoneInstead": "Use phone instead",
+      "useEmailInstead": "Use email instead"
     }
   }
 }

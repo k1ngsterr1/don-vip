@@ -1,14 +1,7 @@
 // app/[locale]/layout.tsx
 import type React from "react";
-import BottomTab from "@/features/bottom-tab/bottom-tab";
-import Footer from "@/features/footer/footer";
-import HeaderWrapper from "@/features/header/header-wrapper";
-import { routing } from "@/i18n/routing";
-import ClientLayout from "@/shared/ui/client-layout/client-layout";
 import type { Metadata } from "next";
-import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { Roboto, Roboto_Condensed, Unbounded } from "next/font/google";
-import { notFound } from "next/navigation";
 
 import Script from "next/script"; // <-- ✅ Import Script
 import "./globals.css";

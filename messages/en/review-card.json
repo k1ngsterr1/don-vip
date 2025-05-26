@@ -1,6 +1,7 @@
 {
   "reviewCard": {
     "collapse": "Collapse",
+    "close": "Close",
     "readMore": "Read more",
     "reply": "Reply",
     "idLabel": "ID: ",
@@ -9,6 +10,7 @@
     "dislikedReview": "Negative review",
     "reviewFrom": "Review from",
     "postedOn": "Posted on",
-    "gameReview": "Game review"
+    "gameReview": "Game review",
+    "anonymous": "Anonymous"
   }
 }

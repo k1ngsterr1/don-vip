@@ -9,15 +9,13 @@ interface AuthState {
   refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isGuestAuth: boolean;
   error: string | null;
-
-  // Actions
   setUser: (user: User | null) => void;
   setTokens: (accessToken: string, refreshToken: string) => void;
   clearTokens: () => void;
   logout: () => void;
 
-  // Utility
   getAuthHeader: () => { Authorization: string } | {};
 }
 
@@ -29,6 +27,7 @@ export const useAuthStore = create<AuthState>()(
       refreshToken: null,
       isAuthenticated: false,
       isLoading: false,
+      isGuestAuth: false,
       error: null,
 
       setUser: (user) => set({ user, isAuthenticated: !!user }),

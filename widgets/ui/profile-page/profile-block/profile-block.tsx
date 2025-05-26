@@ -1,8 +1,6 @@
 "use client";
 
-import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useProfile } from "@/entities/user/hooks/use-profile";
-import { useUpdateUser } from "@/entities/user/hooks/use-update-user";
 import { ProfileHeaderEditable } from "@/entities/user/ui/profile-header-editable/profile-header-editable";
 import { ProfileMenu } from "@/entities/user/ui/profile-menu/profile-menu";
 import { ProfileLoading } from "@/widgets/ui/profile-page/profile-skeleton/profile-skeleton";
@@ -11,12 +9,7 @@ import React from "react";
 
 export default function ProfileBlock() {
   const { id } = useParams();
-  const { isAuthenticated, user: currentUser } = useAuthStore();
-  const { data: user, isLoading, error, refetch } = useProfile(id as string);
-  const updateUser = useUpdateUser();
-
-  const isCurrentUserProfile =
-    isAuthenticated && currentUser?.id?.toString() === id?.toString();
+  const { data: user, isLoading, error } = useProfile(id as string);
 
   if (isLoading) {
     return <ProfileLoading />;
