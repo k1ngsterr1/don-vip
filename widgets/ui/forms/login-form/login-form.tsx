@@ -172,6 +172,14 @@ export function LoginForm() {
     e.preventDefault();
     setErrors({});
 
+    // Debug the current values
+    console.log(
+      "Form submission - identifier:",
+      identifier,
+      "type:",
+      identifierType
+    );
+
     const newErrors: { identifier?: string; password?: string } = {};
     if (!identifier.trim()) {
       newErrors.identifier = translateError(
@@ -196,9 +204,43 @@ export function LoginForm() {
       return;
     }
 
+    // Format the identifier based on type
+    let formattedIdentifier = identifier.trim();
+    if (identifierType === "phone") {
+      // For phone numbers, extract only the digits
+      const digitsOnly = formattedIdentifier.replace(/\D/g, "");
+
+      // Make sure we have digits to work with
+      if (digitsOnly.length > 0) {
+        // If it's a Russian number (starts with +7), format accordingly
+        if (formattedIdentifier.includes("+7")) {
+          // Remove the country code if it's duplicated in the digits
+          const phoneDigits = digitsOnly.startsWith("7")
+            ? digitsOnly.substring(1)
+            : digitsOnly;
+          formattedIdentifier = "+7" + phoneDigits;
+        } else {
+          // For other numbers, ensure it has a + prefix
+          formattedIdentifier =
+            "+" + (digitsOnly.startsWith("1") ? digitsOnly : "1" + digitsOnly);
+        }
+      } else {
+        // If somehow we don't have digits but have a phone type, use a default
+        formattedIdentifier = "+1";
+      }
+
+      // Ensure we're not sending an empty string
+      if (formattedIdentifier === "+" || formattedIdentifier === "") {
+        formattedIdentifier = "+1";
+      }
+    }
+
+    // For debugging - log the identifier that will be sent
+    console.log("Sending identifier:", formattedIdentifier);
+
     // Call login mutation with credentials
     login(
-      { identifier, password },
+      { identifier: formattedIdentifier, password },
       {
         onSuccess: (data: any) => {
           // Set redirecting state to show loading overlay

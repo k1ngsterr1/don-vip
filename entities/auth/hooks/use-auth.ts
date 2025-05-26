@@ -17,9 +17,7 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: (credentials: { identifier: string; password: string }) => {
       return authApi.login({
-        identifier: credentials.identifier.includes("@")
-          ? credentials.identifier
-          : "",
+        identifier: credentials.identifier, // Send the identifier as is, whether email or phone
         password: credentials.password,
       });
     },
@@ -31,8 +29,7 @@ export const useLogin = () => {
       try {
         const userData = await authApi.getCurrentUser();
         setUser(userData);
-      } catch (error) {
-      }
+      } catch (error) {}
 
       // Invalidate queries
       await queryClient.invalidateQueries({ queryKey: queryKeys.auth.user });
@@ -66,8 +63,7 @@ export const useRegister = () => {
       try {
         const userData = await authApi.getCurrentUser();
         setUser(userData);
-      } catch (error) {
-      }
+      } catch (error) {}
 
       // Invalidate user query
       await queryClient.invalidateQueries({ queryKey: queryKeys.auth.user });
@@ -83,9 +79,10 @@ export const useRegister = () => {
  */
 export const useChangePassword = () => {
   return useMutation({
-    mutationFn: (data: { email?: string; lang?: string }) => {
+    mutationFn: (data: { email?: string; phone?: string; lang?: string }) => {
       const payload: ChangePasswordDto = {
         email: data.email,
+        phone: data.phone,
         lang: data.lang,
       };
       return authApi.changePassword(payload);
