@@ -1,7 +1,6 @@
 "use client";
 
 import { LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useRef, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -10,6 +9,7 @@ import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useQuery } from "@tanstack/react-query";
 import { authApi } from "@/entities/auth/api/auth.api";
 import { Link } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/routing";
 
 export function AuthMenu() {
   const { isAuthenticated, logout } = useAuthStore();

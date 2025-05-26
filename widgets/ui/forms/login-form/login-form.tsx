@@ -7,12 +7,13 @@ import { useState, useEffect } from "react";
 import { AuthInput } from "@/shared/ui/auth-input/auth-input";
 import { Button } from "@/shared/ui/button/button";
 import { SocialAuth } from "@/shared/ui/social-input/social-input";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Loader2, Info, Mail, Phone } from "lucide-react";
 import { AuthLoadingOverlay } from "@/shared/ui/auth-loading/auth-loading";
 import { useLogin } from "@/entities/auth/hooks/use-auth";
 import { PasswordStrength } from "@/shared/ui/password-strength/password-strength";
 import { Link } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/routing";
 
 // Enhanced error translations for all possible input errors
 const errorTranslations: Record<string, Record<string, string>> = {
@@ -249,9 +250,9 @@ export function LoginForm() {
           // Redirect to return URL if available, or to profile page
           setTimeout(() => {
             if (returnUrl) {
-              router.push(decodeURIComponent(returnUrl));
+              router.push(decodeURIComponent(returnUrl) as any);
             } else {
-              router.push(`/profile/${data.id}`);
+              router.push(`/profile/${data.id}` as any);
             }
           }, 800); // Small delay for a smoother transition
         },

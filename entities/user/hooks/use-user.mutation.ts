@@ -4,9 +4,8 @@ import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { type UpdateProfilePayload, userApi } from "../auth/user-api";
 import { queryKeys } from "@/shared/config/queryKeys";
-import { extractErrorMessage } from "@/shared/config/apiClient";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useRouter } from "@/i18n/routing";
 
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
@@ -122,7 +121,7 @@ export function useProfileEdit() {
 
       // Redirect after successful update if path is provided
       if (redirectPath) {
-        router.push(redirectPath);
+        router.push(redirectPath as any);
       }
 
       return true;

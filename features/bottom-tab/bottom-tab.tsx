@@ -1,9 +1,10 @@
 "use client";
 
+import { useRouter } from "@/i18n/routing";
 import HomeIcon from "@/shared/icons/home-icon";
 import UserIcon from "@/shared/icons/user-icon";
 import { Search } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export default function BottomTab() {
   const router = useRouter();
@@ -16,7 +17,7 @@ export default function BottomTab() {
   ];
 
   const handleTabClick = (tabPath: string) => {
-    router.push(tabPath);
+    router.push(tabPath as any);
   };
 
   const isTabActive = (tabId: string, tabPath: string) => {

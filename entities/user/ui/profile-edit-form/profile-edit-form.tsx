@@ -12,8 +12,8 @@ import {
   UserIcon,
   UserRound,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { useRouter } from "@/i18n/routing";
 
 interface User {
   id?: number;
@@ -115,7 +115,7 @@ export function ProfileEditForm({
       }
 
       if (redirectAfterSubmit) {
-        router.push(redirectAfterSubmit);
+        router.push(redirectAfterSubmit as any);
       }
     } catch (error) {
       alert(i18n("errorMessage"));

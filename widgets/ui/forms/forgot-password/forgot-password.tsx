@@ -8,9 +8,9 @@ import { SocialAuth } from "@/shared/ui/social-input/social-input";
 import { useState, useEffect } from "react";
 import { Loader2, Mail, Phone } from "lucide-react";
 import { useChangePassword } from "@/entities/auth/hooks/use-auth";
-import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/routing";
 
 export function ForgotPasswordForm() {
   const router = useRouter();
@@ -107,7 +107,7 @@ export function ForgotPasswordForm() {
             : "resetPasswordPhone",
           formattedIdentifier
         );
-        router.push("/forgot-password/success");
+        router.push("/forgot-password/success" as any);
       },
       onError: (error: any) => {
         const message = error?.response?.data?.message;

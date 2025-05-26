@@ -3,7 +3,6 @@
 import SearchBar from "@/entities/search-bar/search-bar";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { GamesMegaMenu } from "@/features/games-mega-menu/games-mega-menu";
 import { useTranslations } from "next-intl";
@@ -15,6 +14,7 @@ import { MobileNav } from "./mobile-nav";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { TabletNav } from "./tablet-nav";
 import { ServicesMegaMenu } from "../services-mega-menu/services-mega-menu";
+import { useRouter } from "@/i18n/routing";
 
 interface IHeader {
   isSearchBar?: boolean;

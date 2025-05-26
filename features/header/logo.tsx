@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import logo from "@/assets/Logo.webp";
+import { useRouter } from "@/i18n/routing";
 
 export function Logo() {
   const router = useRouter();

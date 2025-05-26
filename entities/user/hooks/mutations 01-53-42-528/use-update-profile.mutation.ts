@@ -4,9 +4,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/shared/config/apiClient";
 import type { User } from "@/entities/user/model/types";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useGetMe } from "@/entities/auth/hooks/use-auth";
+import { useRouter } from "@/i18n/routing";
 
 // Type for profile update payload
 interface UpdateProfilePayload {
@@ -117,7 +117,7 @@ export function useProfileEdit() {
 
       // Redirect after successful update if path is provided
       if (redirectPath) {
-        router.push(redirectPath);
+        router.push(redirectPath as any);
       }
 
       return true;
