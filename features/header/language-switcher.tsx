@@ -1,11 +1,10 @@
 "use client";
 
 import { useLocale } from "next-intl";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import en from "@/assets/EN.webp";
 import ru from "@/assets/RU.webp";
-import { useRouter } from "@/i18n/routing";
 
 export function LanguageSwitcher() {
   const locale = useLocale();
