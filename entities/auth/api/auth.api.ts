@@ -66,7 +66,10 @@ export const authApi = {
    */
   getCurrentUser: async (): Promise<any> => {
     try {
-      const response = await apiClient.get("/user/me");
+      const userId = await getUserId();
+      const response = await apiClient.get(`/user/me`, {
+        params: { id: userId },
+      });
       const user = response.data;
       useAuthStore.getState().setUser(user);
       // Regular user, not a guest
@@ -117,10 +120,8 @@ export const authApi = {
       );
 
       try {
-        // Set the flag to prevent concurrent requests
         isGuestAuthInProgress = true;
 
-        // Double-check if another request completed guest auth while we were setting the flag
         if (
           useAuthStore.getState().isGuestAuth &&
           useAuthStore.getState().user

@@ -1,5 +1,6 @@
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { apiClient } from "../config/apiClient";
+import { authApi } from "@/entities/auth/api/auth.api";
 
 // Add a flag to track ongoing getUserId requests
 let isGetUserIdInProgress = false;
@@ -56,7 +57,7 @@ export const getUserId = async (): Promise<string> => {
 
     // Try to get the current user
     console.log("👤 [Auth] #24 - getUserId: Fetching user from API");
-    const response = await apiClient.get("/user/me");
+    const response = await authApi.getCurrentUser();
     const fetchedUser = response.data;
 
     if (fetchedUser?.id && isNumber(fetchedUser.id.toString())) {

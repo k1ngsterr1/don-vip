@@ -1,5 +1,6 @@
 import type { User } from "@/entities/user/model/types";
 import { apiClient } from "@/shared/config/apiClient";
+import { getUserId } from "@/shared/hooks/use-get-user-id";
 
 // Types
 export interface UpdateProfilePayload {
@@ -37,8 +38,12 @@ export const userApi = {
   /**
    * Get a user profile by ID
    */
-  getUserById: async (userId: string | number): Promise<User> => {
-    const response = await apiClient.get<User>(`/user/${userId}`);
+  getUserById: async (userId?: string | number): Promise<User> => {
+    let id = userId;
+    if (!id) {
+      id = await getUserId();
+    }
+    const response = await apiClient.get<User>(`/user/${id}`);
     return response.data;
   },
 
