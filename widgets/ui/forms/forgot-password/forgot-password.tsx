@@ -107,7 +107,11 @@ export function ForgotPasswordForm() {
             : "resetPasswordPhone",
           formattedIdentifier
         );
-        router.push("/forgot-password/success" as any);
+        router.push(
+          `/auth/forgot-password/success?identifier=${encodeURIComponent(
+            formattedIdentifier
+          )}` as any
+        );
       },
       onError: (error: any) => {
         const message = error?.response?.data?.message;

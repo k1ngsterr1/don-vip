@@ -1,9 +1,13 @@
 {
   "forgotpasssuccess_auth": {
     "forgotPasswordSuccess": {
-      "alt": "Password reset success",
-      "title": "Password reset requested",
-      "message": "Reset link has been sent to your email"
+      "alt": "Password Reset Success",
+      "title": "Password reset request accepted",
+      "message": "Reset link has been sent to your email",
+      "messageWithEmail": "Reset link has been sent to {email}",
+      "messageWithPhone": "Reset link has been sent to {phone}",
+      "loginButton": "Log in",
+      "homeButton": "Home"
     }
   }
 }

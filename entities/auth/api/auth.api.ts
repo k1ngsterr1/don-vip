@@ -18,8 +18,7 @@ export interface RegisterDto {
 }
 
 export interface ChangePasswordDto {
-  email?: string;
-  phone?: string;
+  identifier: any;
   lang: any;
 }
 

@@ -128,8 +128,7 @@ export const useChangePassword = () => {
   return useMutation({
     mutationFn: (data: { email?: string; phone?: string; lang?: string }) => {
       const payload: ChangePasswordDto = {
-        email: data.email,
-        phone: data.phone,
+        identifier: data.phone || data.email,
         lang: data.lang,
       };
       return authApi.changePassword(payload);
