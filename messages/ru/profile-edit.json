@@ -1,6 +1,7 @@
 {
   "profileEdit": {
     "userId": "ID",
+    "copied": "Скопированно",
     "lastUpdate": "Последнее обновление профиля",
     "editProfile": "Редактировать профиль",
     "uploadAvatar": "Загрузить аватар",

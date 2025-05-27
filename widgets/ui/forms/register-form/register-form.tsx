@@ -2,19 +2,17 @@
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 import type React from "react";
-
 import { AuthInput } from "@/shared/ui/auth-input/auth-input";
 import { Button } from "@/shared/ui/button/button";
 import { SocialAuth } from "@/shared/ui/social-input/social-input";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { Loader2, Info, Mail, Phone } from "lucide-react";
 import { AuthLoadingOverlay } from "@/shared/ui/auth-loading/auth-loading";
 import { useRegister } from "@/entities/auth/hooks/use-auth";
-import { PasswordStrength } from "@/shared/ui/password-strength/password-strength";
 import { Link } from "@/i18n/navigation";
+import { PasswordStrength } from "@/shared/ui/password-strength/password-strength";
+import { useRouter } from "@/i18n/routing";
 
-// Enhanced error translations for all possible input errors
 const errorTranslations: Record<string, Record<string, string>> = {
   en: {
     // Form validation errors
@@ -159,6 +157,7 @@ export function RegisterForm() {
     }
   };
 
+  // Update the validatePassword function to allow for medium difficulty passwords
   const validatePassword = (password: string) => {
     const hasMinLength = password.length >= 8;
     const hasUppercase = /[A-Z]/.test(password);
@@ -166,7 +165,7 @@ export function RegisterForm() {
     const hasNumber = /[0-9]/.test(password);
     const hasSpecialChar = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
 
-    // Require at least 3 of the 5 criteria
+    // Require at least 3 of the 5 criteria (medium difficulty)
     const criteriaMet = [
       hasMinLength,
       hasUppercase,
@@ -215,9 +214,10 @@ export function RegisterForm() {
           // Set redirecting state to show loading overlay
           setIsRedirecting(true);
 
-          // Redirect to success page or login
           setTimeout(() => {
-            router.push("/");
+            router.push(
+              `/auth/verify?identifier=${encodeURIComponent(identifier)}` as any
+            );
           }, 800); // Small delay for a smoother transition
         },
         onError: (error: any) => {
@@ -314,11 +314,8 @@ export function RegisterForm() {
               </button>
             }
           />
-
-          {/* Password strength indicator */}
           {showPasswordHints && <PasswordStrength password={password} />}
         </div>
-
         {registerError && !showLoadingOverlay && (
           <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
             {registerError instanceof Error
@@ -326,15 +323,7 @@ export function RegisterForm() {
               : translateError("Registration failed", locale)}
           </div>
         )}
-        <div className="w-full flex justify-end">
-          <Link
-            className="text-[13px] text-right text-black"
-            href="/auth/forgot-password"
-            tabIndex={showLoadingOverlay ? -1 : 0}
-          >
-            {i18n("forgotPassword") || "Forgot password?"}
-          </Link>
-        </div>
+
         <Button
           type="submit"
           className={`w-full rounded-full text-white py-3 md:py-4 text-sm md:text-base ${
@@ -356,9 +345,7 @@ export function RegisterForm() {
           )}
         </Button>
       </form>
-
       <SocialAuth />
-
       <div className="mt-6 text-center text-xs text-gray-500">
         <p>
           {i18n("privacyText") || "By registering, you agree to our"}{" "}
@@ -367,7 +354,6 @@ export function RegisterForm() {
           </Link>
         </p>
       </div>
-
       <div className="mt-8 text-center">
         <p className="text-sm">
           {i18n("haveAccountText") || "Already have an account?"}{" "}

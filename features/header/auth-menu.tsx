@@ -1,7 +1,6 @@
 "use client";
 
 import { LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useRef, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -10,6 +9,7 @@ import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useQuery } from "@tanstack/react-query";
 import { authApi } from "@/entities/auth/api/auth.api";
 import { Link } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/routing";
 
 export function AuthMenu() {
   const { isAuthenticated, logout } = useAuthStore();
@@ -59,9 +59,7 @@ export function AuthMenu() {
 
         <button
           onClick={() =>
-            window.open(
-              "https://don-vip-backend-production.up.railway.app/api/auth/google"
-            )
+            window.open("https://api.don-vip.online/api/auth/google")
           }
           className="w-[22px] h-[22px] md:w-[36px] md:h-[36px] flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition-colors"
         >

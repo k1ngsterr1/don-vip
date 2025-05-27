@@ -3,23 +3,25 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../store/auth.store";
-import { authApi, ChangePasswordDto, RegisterDto } from "../api/auth.api";
+import {
+  authApi,
+  type ChangePasswordDto,
+  type RegisterDto,
+} from "../api/auth.api";
 import { queryKeys } from "@/shared/config/queryKeys";
-import { User } from "../types/auth.types";
+import type { User } from "../types/auth.types";
 
 /**
  * Hook for login functionality
  */
 export const useLogin = () => {
-  const { setTokens, setUser } = useAuthStore();
+  const { setTokens, setUser, setGuestAuth } = useAuthStore();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (credentials: { identifier: string; password: string }) => {
       return authApi.login({
-        identifier: credentials.identifier.includes("@")
-          ? credentials.identifier
-          : "",
+        identifier: credentials.identifier,
         password: credentials.password,
       });
     },
@@ -27,12 +29,17 @@ export const useLogin = () => {
       // Set tokens in auth store
       setTokens(data.access_token, data.refresh_token);
 
+      // Explicitly set isGuestAuth to false when logging in
+      setGuestAuth(false);
+      console.log(
+        "👤 [Auth] #17 - useLogin: Login successful, setting isGuestAuth to false"
+      );
+
       // Fetch user data
       try {
         const userData = await authApi.getCurrentUser();
         setUser(userData);
-      } catch (error) {
-      }
+      } catch (error) {}
 
       // Invalidate queries
       await queryClient.invalidateQueries({ queryKey: queryKeys.auth.user });
@@ -48,12 +55,43 @@ export const useGetMe = () => {
 };
 
 /**
+ * Hook for guest authentication
+ */
+export const useGuestAuth = () => {
+  const { setUser, setGuestAuth, isGuestAuth } = useAuthStore();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => {
+      // Skip if already authenticated as guest
+      if (isGuestAuth) {
+        console.log(
+          "👤 [Auth] #18 - useGuestAuth: Already a guest user, skipping API call"
+        );
+        return Promise.resolve({ success: true, isGuest: true });
+      }
+      console.log("👤 [Auth] #19 - useGuestAuth: Making guest auth API call");
+      return authApi.guestAuth();
+    },
+    onSuccess: async (data) => {
+      if (!isGuestAuth) {
+        setUser(data);
+        setGuestAuth(true);
+        console.log(
+          "👤 [Auth] #20 - useGuestAuth: Guest auth successful, setting isGuestAuth to true"
+        );
+        await queryClient.invalidateQueries({ queryKey: queryKeys.auth.user });
+      }
+    },
+  });
+};
+
+/**
  * Hook for registration functionality
  */
-
 export const useRegister = () => {
-  const router = useRouter(); // <-- Router hook
-  const { setTokens, setUser } = useAuthStore();
+  const router = useRouter();
+  const { setTokens, setUser, setGuestAuth } = useAuthStore();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -62,17 +100,22 @@ export const useRegister = () => {
       // Set tokens
       setTokens(data.access_token, data.refresh_token);
 
+      // Explicitly set isGuestAuth to false when registering
+      setGuestAuth(false);
+      console.log(
+        "👤 [Auth] #21 - useRegister: Registration successful, setting isGuestAuth to false"
+      );
+
       // Fetch and set user
       try {
         const userData = await authApi.getCurrentUser();
         setUser(userData);
-      } catch (error) {
-      }
+      } catch (error) {}
 
       // Invalidate user query
       await queryClient.invalidateQueries({ queryKey: queryKeys.auth.user });
 
-      // ✅ Redirect to success page
+      // Redirect to success page
       router.push("/auth/verify");
     },
   });
@@ -83,9 +126,9 @@ export const useRegister = () => {
  */
 export const useChangePassword = () => {
   return useMutation({
-    mutationFn: (data: { email?: string; lang?: string }) => {
+    mutationFn: (data: { email?: string; phone?: string; lang?: string }) => {
       const payload: ChangePasswordDto = {
-        email: data.email,
+        identifier: data.phone || data.email,
         lang: data.lang,
       };
       return authApi.changePassword(payload);
@@ -102,6 +145,9 @@ export const useLogout = () => {
   const queryClient = useQueryClient();
 
   return () => {
+    console.log(
+      "👤 [Auth] #22 - useLogout: Logging out, resetting isGuestAuth"
+    );
     logout();
     queryClient.clear(); // Clear all query cache
     router.push("/auth/login");

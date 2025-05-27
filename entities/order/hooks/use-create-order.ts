@@ -6,13 +6,28 @@ import { useRouter } from "next/navigation";
 import { orderApi } from "../api/order.api";
 import { queryKeys } from "@/shared/config/queryKeys";
 import type { CreateOrderDto } from "../model/types";
-import type {
-  PagsmileCreatePayinDto,
-  PagsmilePayinResponse,
-} from "@/entities/payment/model/types";
+import type { PagsmileCreatePayinDto } from "@/entities/payment/model/types";
 import { paymentApi } from "@/entities/payment/api/payment.api";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useGetMe } from "@/entities/auth/hooks/use-auth";
+
+function isSafariBrowser(): boolean {
+  if (typeof window === "undefined") return false;
+
+  const ua = window.navigator.userAgent;
+
+  // Check if it's Safari
+  // Safari includes "Safari" in UA but not "Chrome" or "Chromium"
+  const isSafari =
+    ua.indexOf("Safari") !== -1 &&
+    ua.indexOf("Chrome") === -1 &&
+    ua.indexOf("Chromium") === -1;
+
+  // Additional check for iOS devices which use WebKit (similar to Safari)
+  const isIOS = /iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream;
+
+  return isSafari || isIOS;
+}
 
 /**
  * Hook to create a new order and process payment
@@ -87,7 +102,10 @@ export function useCreateOrder(isTbank = false) {
       setIsProcessingPayment(false);
 
       if (paymentData.web_url) {
-        alert("Сейчас откроется платёжная страница"); // ✅ разблокирует window.open в Safari
+        // Show alert only in Safari to unblock window.open
+        if (isSafariBrowser()) {
+          alert("Сейчас откроется платёжная страница"); // ✅ разблокирует window.open в Safari
+        }
         window.open(paymentData.web_url, "_blank");
       }
 

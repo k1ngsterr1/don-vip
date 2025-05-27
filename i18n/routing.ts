@@ -8,6 +8,7 @@ export const routing = defineRouting({
   pathnames: {
     "/": "/",
     "/auth": "/auth",
+
     "/auth/login": "/auth/login",
     "/auth/register": "/auth/register",
     "/auth/forgot-password": "/auth/forgot-password",
@@ -22,6 +23,7 @@ export const routing = defineRouting({
     "/faq": "/faq",
 
     "/services": "/services",
+
     "/coupons": "/coupons",
     "/google": "/google",
     "/privacy-policy": "/privacy-policy",

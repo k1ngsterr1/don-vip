@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 
-export default function ExternalCallbackPage() {
+export default function ExternalCallbackBlock() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);

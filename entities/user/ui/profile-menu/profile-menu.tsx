@@ -3,13 +3,14 @@
 import { useTranslations } from "next-intl";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import CouponIcon from "@/shared/icons/coupon-icon";
 import TelegramIcon from "@/shared/icons/telegram-icon";
 import BoxIcon from "@/shared/icons/box-icon";
 import SettingsIcon from "@/shared/icons/settings-icon";
 import LogoutIcon from "@/shared/icons/logout-icon";
+import { useRouter } from "@/i18n/routing";
 
 export function ProfileMenu() {
   const i18n = useTranslations("ProfileMenu");

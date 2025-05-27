@@ -1,13 +1,13 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { feedbackService } from "../api/reviews.api";
 import type {
   FeedbackResponse,
   PaginatedFeedbackResponse,
 } from "../api/reviews.api";
 import { useGetMe } from "@/entities/auth/hooks/use-auth";
+import { useRouter } from "@/i18n/routing";
 
 // Internal DTO that matches the component's structure
 interface FormFeedbackDto {
@@ -72,7 +72,7 @@ export function useCreateFeedback(
       }
 
       if (options.redirectPath) {
-        router.push(options.redirectPath);
+        router.push(options.redirectPath as any);
       }
     },
   });

@@ -1,5 +1,7 @@
+import { useAuthStore } from "@/entities/auth/store/auth.store";
 import type { User } from "@/entities/user/model/types";
 import { apiClient } from "@/shared/config/apiClient";
+import { getUserId } from "@/shared/hooks/use-get-user-id";
 
 // Types
 export interface UpdateProfilePayload {
@@ -37,8 +39,31 @@ export const userApi = {
   /**
    * Get a user profile by ID
    */
-  getUserById: async (userId: string | number): Promise<User> => {
-    const response = await apiClient.get<User>(`/user/${userId}`);
+  getUserById: async (userId?: string | number): Promise<User> => {
+    let id = userId;
+
+    if (!id) {
+      id = await getUserId();
+      console.log("[userApi.getUserById] No userId provided, fetched id:", id);
+    } else {
+      console.log("[userApi.getUserById] Using provided userId:", id);
+    }
+
+    const { isGuestAuth } = useAuthStore.getState();
+    console.log("[userApi.getUserById] isGuestAuth:", isGuestAuth);
+
+    const endpoint = isGuestAuth
+      ? `/user/guest-profile/${id}`
+      : `/user/profile/${id}`;
+
+    console.log("[userApi.getUserById] Fetching endpoint:", endpoint);
+
+    const response = await apiClient.get<User>(endpoint);
+    if (!response.data) {
+      console.error("[userApi.getUserById] User not found for id:", id);
+      throw new Error("User not found");
+    }
+    console.log("[userApi.getUserById] User data received:", response.data);
     return response.data;
   },
 
@@ -49,6 +74,11 @@ export const userApi = {
     const response = await apiClient.post<User[]>("/user/batch", {
       ids: userIds,
     });
+    return response.data;
+  },
+
+  verify: async (data: any): Promise<User> => {
+    const response = await apiClient.post<User>(`/user/verify`, data);
     return response.data;
   },
 

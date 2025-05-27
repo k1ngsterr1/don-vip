@@ -3,7 +3,7 @@
 import type React from "react";
 import type { User } from "@/entities/user/model/types";
 import { useUpdateUser } from "@/entities/user/hooks/use-update-user";
-import { Camera, Copy, Upload, X } from "lucide-react";
+import { Camera, CheckCircle, Copy, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
@@ -31,7 +31,6 @@ export function ProfileHeaderEditable({
   // Replace the handleAvatarChange function with this updated version that handles File objects
   const handleAvatarChange = async (input: File | string) => {
     try {
-
       let file: File;
 
       // Handle different input types
@@ -55,16 +54,9 @@ export function ProfileHeaderEditable({
         return;
       }
 
-      // Update the avatar
       const updatedUser = await updateUserAvatar(file);
       setAvatarUrl(updatedUser.avatar);
-
-      // Refetch user data to get updated avatar URL
-      // Note: You'll need to implement refetch or adjust this part
-      // as the original component doesn't have refetch
-
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   const handleAvatarClick = () => {
@@ -75,7 +67,6 @@ export function ProfileHeaderEditable({
     }
   };
 
-  // Update the handleFileChange function to pass the file directly
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -83,7 +74,6 @@ export function ProfileHeaderEditable({
     try {
       setIsUploading(true);
 
-      // Show preview immediately for better UX
       const reader = new FileReader();
       reader.onloadend = () => {
         const previewUrl = reader.result as string;
@@ -93,7 +83,6 @@ export function ProfileHeaderEditable({
 
       await handleAvatarChange(file);
     } catch (error) {
-      // Revert to original avatar on error
       setAvatarUrl(user.avatar);
     } finally {
       setIsUploading(false);
@@ -110,7 +99,6 @@ export function ProfileHeaderEditable({
       // Preview removal immediately
       setAvatarUrl(undefined);
     } catch (error) {
-
       // Revert to original avatar on error
       setAvatarUrl(user.avatar);
     } finally {
@@ -184,20 +172,29 @@ export function ProfileHeaderEditable({
         disabled={isUploading || readOnly}
       />
       <div className="text-center md:mt-2">
-        <div className="text-sm text-gray-500 mb-1 md:flex md:items-center md:justify-center">
+        <div className="text-sm text-gray-500 mb-1 md:flex md:items-center md:justify-center relative">
           <span className="md:text-xs md:bg-gray-100 md:px-2 md:py-1 md:rounded-full">
             {i18n("userId")}: {user.id}
           </span>
           <button
-            className="ml-1 text-gray-400 md:ml-2"
+            className="ml-1 text-gray-400 md:ml-2 relative"
             onClick={copyToClipboard}
             title={i18n("copyId")}
           >
-            <Copy
-              className="text-[#383838] md:hover:text-blue transition-colors"
-              size={9}
-            />
+            {copySuccess ? (
+              <CheckCircle className="text-green-500" size={14} />
+            ) : (
+              <Copy
+                className="text-[#383838] md:hover:text-blue transition-colors"
+                size={9}
+              />
+            )}
           </button>
+          {copySuccess && (
+            <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap animate-fade-in">
+              {i18n("copied")}
+            </span>
+          )}
         </div>
         {user.first_name && (
           <h1 className="text-xl font-medium md:text-2xl md:mt-2">

@@ -5,6 +5,7 @@ import type React from "react";
 import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useAuthStore } from "../store/auth.store";
+import { authApi } from "../api/auth.api";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -19,22 +20,19 @@ const queryClient = new QueryClient({
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { accessToken } = useAuthStore();
 
-  // Initialize auth header when component mounts or token changes
   useEffect(() => {
     if (accessToken) {
       const initializeAuth = async () => {
         try {
-          // Pre-fetch user data when we have a token
           await queryClient.prefetchQuery({
             queryKey: ["user"],
             queryFn: async () => {
               const { apiClient } = await import("@/shared/config/apiClient");
-              const response = await apiClient.get("/user/me");
+              const response = await authApi.getCurrentUser();
               return response.data;
             },
           });
-        } catch (error) {
-        }
+        } catch (error) {}
       };
 
       initializeAuth();

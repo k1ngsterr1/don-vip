@@ -2,16 +2,18 @@
 import { useTranslations } from "next-intl";
 import SectionTitle from "@/shared/ui/section-title/section-title";
 import { ArrowLeft, Ticket } from "lucide-react";
-import { Link } from "@/i18n/navigation";
+import { useRouter } from "next/navigation";
 
 export function CouponsHeaderWidget() {
   const i18n = useTranslations("coupons");
+  const router = useRouter();
 
   return (
     <>
       <div className="flex items-center mb-4 mt-[24px] md:mt-0">
-        <Link
-          href="/"
+        <button
+          type="button"
+          onClick={() => router.back()}
           className="text-blue hover:text-blue-700 transition-colors flex items-center group"
         >
           <ArrowLeft
@@ -19,7 +21,7 @@ export function CouponsHeaderWidget() {
             className="mr-1 group-hover:-translate-x-1 transition-transform"
           />
           <span className="hover:underline">{i18n("backLink")}</span>
-        </Link>
+        </button>
       </div>
       <div className="flex items-center mb-6 md:mb-10">
         <SectionTitle

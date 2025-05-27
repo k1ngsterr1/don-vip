@@ -7,12 +7,13 @@ import { useState, useEffect } from "react";
 import { AuthInput } from "@/shared/ui/auth-input/auth-input";
 import { Button } from "@/shared/ui/button/button";
 import { SocialAuth } from "@/shared/ui/social-input/social-input";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Loader2, Info, Mail, Phone } from "lucide-react";
 import { AuthLoadingOverlay } from "@/shared/ui/auth-loading/auth-loading";
 import { useLogin } from "@/entities/auth/hooks/use-auth";
 import { PasswordStrength } from "@/shared/ui/password-strength/password-strength";
 import { Link } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/routing";
 
 // Enhanced error translations for all possible input errors
 const errorTranslations: Record<string, Record<string, string>> = {
@@ -172,6 +173,14 @@ export function LoginForm() {
     e.preventDefault();
     setErrors({});
 
+    // Debug the current values
+    console.log(
+      "Form submission - identifier:",
+      identifier,
+      "type:",
+      identifierType
+    );
+
     const newErrors: { identifier?: string; password?: string } = {};
     if (!identifier.trim()) {
       newErrors.identifier = translateError(
@@ -196,9 +205,43 @@ export function LoginForm() {
       return;
     }
 
+    // Format the identifier based on type
+    let formattedIdentifier = identifier.trim();
+    if (identifierType === "phone") {
+      // For phone numbers, extract only the digits
+      const digitsOnly = formattedIdentifier.replace(/\D/g, "");
+
+      // Make sure we have digits to work with
+      if (digitsOnly.length > 0) {
+        // If it's a Russian number (starts with +7), format accordingly
+        if (formattedIdentifier.includes("+7")) {
+          // Remove the country code if it's duplicated in the digits
+          const phoneDigits = digitsOnly.startsWith("7")
+            ? digitsOnly.substring(1)
+            : digitsOnly;
+          formattedIdentifier = "+7" + phoneDigits;
+        } else {
+          // For other numbers, ensure it has a + prefix
+          formattedIdentifier =
+            "+" + (digitsOnly.startsWith("1") ? digitsOnly : "1" + digitsOnly);
+        }
+      } else {
+        // If somehow we don't have digits but have a phone type, use a default
+        formattedIdentifier = "+1";
+      }
+
+      // Ensure we're not sending an empty string
+      if (formattedIdentifier === "+" || formattedIdentifier === "") {
+        formattedIdentifier = "+1";
+      }
+    }
+
+    // For debugging - log the identifier that will be sent
+    console.log("Sending identifier:", formattedIdentifier);
+
     // Call login mutation with credentials
     login(
-      { identifier, password },
+      { identifier: formattedIdentifier, password },
       {
         onSuccess: (data: any) => {
           // Set redirecting state to show loading overlay
@@ -207,9 +250,9 @@ export function LoginForm() {
           // Redirect to return URL if available, or to profile page
           setTimeout(() => {
             if (returnUrl) {
-              router.push(decodeURIComponent(returnUrl));
+              router.push(decodeURIComponent(returnUrl) as any);
             } else {
-              router.push(`/profile/${data.id}`);
+              router.push(`/profile/${data.id}` as any);
             }
           }, 800); // Small delay for a smoother transition
         },

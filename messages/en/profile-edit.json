@@ -1,6 +1,7 @@
 {
   "profileEdit": {
     "userId": "ID",
+    "copied": "Copied",
     "lastUpdate": "Last profile update",
     "editProfile": "Edit profile",
     "uploadAvatar": "Upload avatar",

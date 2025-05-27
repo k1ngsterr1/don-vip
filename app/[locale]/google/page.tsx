@@ -5,6 +5,7 @@ import { useRouter, useSearchParams, useParams } from "next/navigation";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { apiClient } from "@/shared/config/apiClient";
 import { useTranslations } from "next-intl";
+import { authApi } from "@/entities/auth/api/auth.api";
 
 export default function GoogleAuthPage() {
   const router = useRouter();
@@ -35,7 +36,7 @@ export default function GoogleAuthPage() {
 
         // Extract user ID from the response and redirect to profile page
         try {
-          const response = await apiClient.get("/user/me");
+          const response = await authApi.getCurrentUser();
 
           // Extract the user ID from the response
           const userId = response.data.id;

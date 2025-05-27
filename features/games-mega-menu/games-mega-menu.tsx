@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { GamesMegaMenuSkeleton } from "./games-mega-menu-skeleton";
 import { useProducts } from "@/entities/product/hooks/queries/use-products";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 
 interface GameItem {
   id: number;
@@ -163,7 +163,7 @@ export function GamesMegaMenu() {
               {nonBigoGames.map((game, index) => (
                 <motion.div
                   key={game.id}
-                  onClick={() => navigate.push(`/product/${game.id}`)}
+                  onClick={() => navigate.push(`/product/${game.id}` as any)}
                   className="text-center"
                   variants={itemVariants}
                   custom={index}

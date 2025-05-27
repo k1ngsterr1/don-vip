@@ -9,15 +9,15 @@ interface AuthState {
   refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isGuestAuth: boolean;
+  guestAuthLoading: boolean; // 👈 добавлено
   error: string | null;
-
-  // Actions
   setUser: (user: User | null) => void;
   setTokens: (accessToken: string, refreshToken: string) => void;
+  setGuestAuth: (isGuest: boolean) => void;
+  setGuestAuthLoading: (loading: boolean) => void; // 👈 добавлено
   clearTokens: () => void;
   logout: () => void;
-
-  // Utility
   getAuthHeader: () => { Authorization: string } | {};
 }
 
@@ -29,12 +29,25 @@ export const useAuthStore = create<AuthState>()(
       refreshToken: null,
       isAuthenticated: false,
       isLoading: false,
+      isGuestAuth: false,
       error: null,
+
+      guestAuthLoading: false,
+
+      setGuestAuthLoading: (loading) => {
+        set({ guestAuthLoading: loading });
+      },
 
       setUser: (user) => set({ user, isAuthenticated: !!user }),
 
       setTokens: (accessToken, refreshToken) => {
-        set({ accessToken, refreshToken, isAuthenticated: true });
+        set({
+          accessToken,
+          refreshToken,
+          isAuthenticated: true,
+          isGuestAuth: false,
+        });
+        console.log("🔑 [Auth] #1 - Setting tokens, isGuestAuth set to false");
 
         // Set axios default header for future requests
         apiClient.defaults.headers.common[
@@ -42,23 +55,34 @@ export const useAuthStore = create<AuthState>()(
         ] = `Bearer ${accessToken}`;
       },
 
+      setGuestAuth: (isGuest) => {
+        console.log(`👤 [Auth] #2 - Setting isGuestAuth to ${isGuest}`);
+        set({ isGuestAuth: isGuest });
+      },
+
       clearTokens: () => {
         set({ accessToken: null, refreshToken: null, isAuthenticated: false });
+        console.log("🔒 [Auth] #3 - Clearing tokens");
 
         // Clear axios authorization header
         delete apiClient.defaults.headers.common["Authorization"];
       },
 
       logout: () => {
+        console.log("🚪 [Auth] #4 - Logging out, resetting isGuestAuth");
         set({
           user: null,
           accessToken: null,
           refreshToken: null,
           isAuthenticated: false,
+          isGuestAuth: false,
         });
 
         // Clear axios authorization header
         delete apiClient.defaults.headers.common["Authorization"];
+
+        // Clear userId from localStorage
+        localStorage.removeItem("userId");
       },
 
       getAuthHeader: () => {
@@ -68,11 +92,11 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "auth-storage",
-      // Only persist tokens and authentication state, not the user object to avoid stale data
       partialize: (state) => ({
         accessToken: state.accessToken,
         refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
+        isGuestAuth: state.isGuestAuth,
       }),
     }
   )

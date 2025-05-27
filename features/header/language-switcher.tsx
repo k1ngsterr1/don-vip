@@ -16,7 +16,7 @@ export function LanguageSwitcher() {
   const switchLanguage = () => {
     const segments = pathname.split("/");
     segments[1] = otherLocale;
-    router.push(segments.join("/"));
+    router.push(segments.join("/") as any);
   };
 
   return (

@@ -27,27 +27,6 @@ interface ContentWrapperProps {
   as?: React.ElementType;
 }
 
-/**
- * ContentWrapper component for constraining content width across different devices
- *
- * @example
- * // Basic usage
- * <ContentWrapper>
- *   <YourContent />
- * </ContentWrapper>
- *
- * @example
- * // Custom max width
- * <ContentWrapper maxWidth="md">
- *   <YourContent />
- * </ContentWrapper>
- *
- * @example
- * // Without padding
- * <ContentWrapper withPadding={false}>
- *   <YourContent />
- * </ContentWrapper>
- */
 export const ContentWrapper: React.FC<ContentWrapperProps> = ({
   children,
   className,

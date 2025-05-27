@@ -84,7 +84,7 @@ export function PasswordStrength({
   if (password.length === 0) return null;
 
   return (
-    <div className={`mt-2 space-y-2 text-sm ${className}`}>
+    <div className={`mt-2 pt-3 space-y-2 text-sm ${className}`}>
       <div className="space-y-1">
         <div className="flex items-center justify-between">
           <span className="text-xs text-gray-600">

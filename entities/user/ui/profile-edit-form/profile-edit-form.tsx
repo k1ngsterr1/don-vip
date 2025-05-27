@@ -12,8 +12,8 @@ import {
   UserIcon,
   UserRound,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "@/i18n/routing";
 
 interface User {
   id?: number;
@@ -43,15 +43,33 @@ export function ProfileEditForm({
   const i18n = useTranslations("ProfileEditForm");
   const router = useRouter();
 
-  // Initialize form with user data, using the correct field names to match the DTO
+  const isPhoneNumber = (value: string): boolean => {
+    const phoneRegex =
+      /^(\+?\d{1,3}[-.\s]?)?(\(?\d{1,4}\)?[-.\s]?)?\d{1,4}[-.\s]?\d{1,9}$/;
+    return phoneRegex.test(value);
+  };
+
   const [formData, setFormData] = useState({
     first_name: user.first_name || "",
     last_name: user.last_name || "",
-    gender: user.gender || "male",
+    gender: user.gender || "other",
     birth_date: user.birth_date || "",
-    phone: user.phone || "+7 903 000 00 00",
+    phone: user.phone || "",
     identifier: user.identifier || "",
   });
+
+  useEffect(() => {
+    if (user.identifier) {
+      const identifierIsPhone = isPhoneNumber(user.identifier);
+
+      if (identifierIsPhone && !user.phone) {
+        setFormData((prev) => ({
+          ...prev,
+          phone: user.identifier,
+        }));
+      }
+    }
+  }, [user.identifier, user.phone]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -97,7 +115,7 @@ export function ProfileEditForm({
       }
 
       if (redirectAfterSubmit) {
-        router.push(redirectAfterSubmit);
+        router.push(redirectAfterSubmit as any);
       }
     } catch (error) {
       alert(i18n("errorMessage"));
@@ -113,6 +131,13 @@ export function ProfileEditForm({
       router.back();
     }
   };
+
+  // Determine if identifier is a phone number
+  const identifierIsPhone = isPhoneNumber(user.identifier);
+  const identifierLabel = identifierIsPhone
+    ? i18n("fields.phone")
+    : i18n("fields.email");
+  const IdentifierIcon = identifierIsPhone ? Phone : Mail;
 
   // Mobile version
   const mobileForm = (
@@ -189,11 +214,11 @@ export function ProfileEditForm({
 
       <div>
         <label className="block text-sm font-medium mb-1">
-          {i18n("fields.email")}
+          {identifierLabel}
         </label>
         <div className="flex items-center relative">
           <div className="flex-1 p-3 bg-gray-50 rounded-lg border border-gray-200 flex items-center">
-            <Mail size={18} className="text-gray-400 mr-2" />
+            <IdentifierIcon size={18} className="text-gray-400 mr-2" />
             <span>{user.identifier}</span>
           </div>
           <button
@@ -312,12 +337,12 @@ export function ProfileEditForm({
           />
 
           <FormField
-            label={i18n("fields.email")}
+            label={identifierLabel}
             name="identifier"
             value={formData.identifier}
             onChange={handleChange}
-            type="email"
-            icon={<Mail size={18} />}
+            type={identifierIsPhone ? "tel" : "email"}
+            icon={<IdentifierIcon size={18} />}
             className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200 text-gray-500"
           />
         </div>
