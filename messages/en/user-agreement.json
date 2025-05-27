@@ -80,7 +80,7 @@
         "title": "Confidentiality and Personal Data",
         "id": "confidentiality",
         "content": {
-          "info": "We value your privacy and process personal data in accordance with our {link}Privacy Policy{/link}.",
+          "info": "We value your privacy and process personal data in accordance with our <link>Privacy Policy</link>.",
           "p7_1": "7.1. The Administration undertakes to maintain the confidentiality of the User's personal data and to process it in accordance with the Privacy Policy of the website.",
           "p7_2": "7.2. By providing their personal data, the User agrees to its processing for the purposes provided for in this Agreement and the Privacy Policy."
         }
@@ -148,7 +148,7 @@
         }
       }
     },
-    "footer": "By using the DON-VIP website, you confirm that you have read, understood, and agree to the terms of this User Agreement.",
+    "conclusion": "By using the DON-VIP website, you confirm that you have read, understood, and agree to the terms of this User Agreement.",
     "sidebar": {
       "title": "Contents",
       "section1": "1. General Provisions",
@@ -173,7 +173,7 @@
       "backLink": "Back"
     },
     "footer": {
-      "contactText": "If you have any questions about this Agreement, you can contact us through the {link}contact form{/link} on the website."
+      "contactText": "If you have any questions about this Agreement, you can contact us through the <link>contact form</link> on the website."
     }
   },
   "metadata": {

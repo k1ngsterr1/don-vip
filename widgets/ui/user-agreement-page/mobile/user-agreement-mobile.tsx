@@ -2,11 +2,72 @@
 
 import { ArrowLeft, FileText } from "lucide-react";
 import { UserAgreementContactFooter } from "../footer/user-agreement-footer";
-import { UserAgreementSidebar } from "../sidebar/user-agreement-sidebar";
 import { UserAgreementContent } from "../content/user-agreement-content";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
 
 export function UserAgreementMobile() {
+  const t = useTranslations("userAgreement.page");
+  const sidebarT = useTranslations("userAgreement.sidebar");
+  const [activeSection, setActiveSection] = useState("general-provisions");
+
+  const sections = [
+    { id: "general-provisions", key: "section1" },
+    { id: "terms-definitions", key: "section2" },
+    { id: "registration-account", key: "section3" },
+    { id: "terms-of-use", key: "section4" },
+    { id: "digital-goods-purchase", key: "section5" },
+    { id: "intellectual-property", key: "section6" },
+    { id: "confidentiality", key: "section7" },
+    { id: "liability-limitation", key: "section8" },
+    { id: "account-termination", key: "section9" },
+    { id: "force-majeure", key: "section10" },
+    { id: "payment-conditions", key: "section11" },
+    { id: "refunds", key: "section12" },
+    { id: "third-party-liability", key: "section13" },
+    { id: "applicable-law", key: "section14" },
+    { id: "agreement-changes", key: "section15" },
+  ];
+
+  const scrollToSection = (sectionId: string) => {
+    // Use a more aggressive approach to find and scroll to the element
+    const element = document.querySelector(`#${sectionId}`);
+
+    if (element) {
+      // Calculate the position manually
+      const rect = element.getBoundingClientRect();
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
+      const targetPosition = rect.top + scrollTop - 80;
+
+      // Force scroll immediately
+      window.scrollTo({
+        top: targetPosition,
+        behavior: "smooth",
+      });
+
+      setActiveSection(sectionId);
+    } else {
+      // If element not found, try alternative method
+      console.log("Element not found, trying alternative method");
+
+      // Try to scroll using hash
+      window.location.hash = sectionId;
+
+      setTimeout(() => {
+        const retryElement = document.querySelector(`#${sectionId}`);
+        if (retryElement) {
+          retryElement.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+          setActiveSection(sectionId);
+        }
+      }, 100);
+    }
+  };
+
   return (
     <div className="md:hidden px-4 py-6">
       <div className="mb-6">
@@ -19,26 +80,51 @@ export function UserAgreementMobile() {
               size={16}
               className="mr-2 group-hover:-translate-x-1 transition-transform"
             />
-            <span className="text-base">Вернуться</span>
+            <span className="text-base">{t("backLink")}</span>
           </Link>
         </div>
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-medium text-gray-800">
-              Пользовательское соглашение
-            </h1>
-            <p className="text-gray-500 mt-2">
-              Дата последнего обновления: 11 мая 2025 года
-            </p>
-          </div>
-          <div className="flex items-center justify-center w-12 h-12 bg-blue-50 rounded-full">
-            <FileText className="text-blue-600 w-6 h-6" />
+        <div className="flex items-start gap-3">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-2">
+              <h1 className="text-2xl font-medium text-gray-800">
+                {t("title")}
+              </h1>
+              <div className="flex items-center justify-center w-10 h-10 bg-blue-50 rounded-full flex-shrink-0">
+                <FileText className="text-blue-600 w-5 h-5" />
+              </div>
+            </div>
+            <p className="text-gray-500 text-sm">{t("lastUpdated")}</p>
           </div>
         </div>
       </div>
-      <div className="mb-6">
-        <UserAgreementSidebar />
+
+      {/* Inline Sidebar for Mobile */}
+      <div className="mb-6 bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+        <h3 className="text-lg font-medium text-gray-800 mb-4">
+          {sidebarT("title")}
+        </h3>
+        <nav>
+          <ul className="space-y-2">
+            {sections.map((section) => (
+              <li key={section.id}>
+                <button
+                  type="button"
+                  className={`block w-full text-left text-sm py-2 px-3 rounded-md transition-all duration-200 ${
+                    activeSection === section.id
+                      ? "bg-blue-50 text-blue-700 font-medium border-l-2 border-blue-500"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  }`}
+                  onClick={() => scrollToSection(section.id)}
+                >
+                  {sidebarT(section.key)}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
+
+      {/* Content */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
         <UserAgreementContent />
         <UserAgreementContactFooter />
