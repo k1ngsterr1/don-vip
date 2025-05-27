@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ContentWrapper } from "@/shared/ui/content-wrapper/content-wrapper";
-import { ArrowLeft, Loader2, Search, SearchIcon } from "lucide-react";
+import { ArrowLeft, Loader2, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSearchProducts } from "@/entities/product/hooks/queries/use-search-product";
@@ -16,40 +16,13 @@ export default function SearchPage() {
   const searchParams = useSearchParams();
   const queryParam = searchParams.get("q") || "";
   const [searchQuery, setSearchQuery] = useState(queryParam);
-  const [filters, setFilters] = useState<{
-    category?: string;
-    sort?: string;
-  }>({});
-
-  // Get search results
   const { data: searchResults, isLoading } = useSearchProducts(searchQuery);
 
-  // Apply filters to results
-  const filteredResults = searchResults?.data
-    ? searchResults.data.filter((product) => {
-        // Apply category filter if set
-        if (filters.category && product.type !== filters.category) {
-          return false;
-        }
-        return true;
-      })
-    : [];
+  const sortedResults =
+    searchResults && Array.isArray((searchResults as any).items)
+      ? (searchResults as any).items
+      : [];
 
-  // Apply sorting
-  const sortedResults = [...filteredResults].sort((a, b) => {
-    if (!filters.sort || filters.sort === "relevance") {
-      return 0;
-    }
-    if (filters.sort === "name_asc") {
-      return a.name.localeCompare(b.name);
-    }
-    if (filters.sort === "name_desc") {
-      return b.name.localeCompare(a.name);
-    }
-    return 0;
-  });
-
-  // Update search query when URL param changes
   useEffect(() => {
     setSearchQuery(queryParam);
   }, [queryParam]);
@@ -58,7 +31,6 @@ export default function SearchPage() {
     setSearchQuery(value);
   };
 
-  // Function to get the appropriate results text based on count
   const getResultsText = (count: number, query: string) => {
     if (count === 1) {
       return t("resultsFoundOne", { query });
@@ -69,19 +41,11 @@ export default function SearchPage() {
   return (
     <div className="w-full flex flex-col items-center pb-20">
       <ContentWrapper>
-        <div className="w-full max-w-[1680px]">
+        <div className="w-full pt-8 max-w-[1680px]">
           <div className="mb-6">
-            <Link
-              href="/"
-              className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-4"
-            >
-              <ArrowLeft size={16} className="mr-1" />
-              {t("back")}
-            </Link>
             <h1 className="text-2xl font-bold text-gray-900 mb-6 font-unbounded">
               {t("title")}
             </h1>
-
             <div className="mb-8">
               <SearchBar
                 initialValue={searchQuery}
@@ -109,8 +73,8 @@ export default function SearchPage() {
               </div>
             ) : sortedResults.length === 0 && !searchQuery ? (
               <div className="text-center py-16">
-                <div className="text-gray-400 mb-4">
-                  <Search />
+                <div className="text-gray-400 w-full flex items-center justify-center mb-4">
+                  <SearchIcon />
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-1">
                   {t("startSearching")}
@@ -124,10 +88,9 @@ export default function SearchPage() {
                     {getResultsText(sortedResults.length, searchQuery)}
                   </p>
                 </div>
-
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
                   <AnimatePresence>
-                    {sortedResults.map((product, index) => (
+                    {sortedResults.map((product: any, index: number) => (
                       <motion.div
                         key={product.id}
                         initial={{ opacity: 0, y: 20 }}

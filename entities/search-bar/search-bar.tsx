@@ -292,15 +292,6 @@ export default function SearchBar({
               />
             </button>
           )}
-          {enhanced && !compact && (
-            <button
-              type="button"
-              onClick={handleVoiceSearch}
-              className="hidden md:flex absolute right-4 top-1/2 transform -translate-y-1/2 items-center justify-center w-8 h-8 rounded-full hover:bg-gray-200 transition-colors"
-            >
-              <Mic size={18} className="text-gray-400 hover:text-blue-600" />
-            </button>
-          )}
           {enhanced && (
             <button
               type="submit"

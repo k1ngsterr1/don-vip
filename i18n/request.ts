@@ -15,6 +15,8 @@ export default getRequestConfig(async ({ requestLocale }) => {
       ...(await import(`../messages/${locale}/privacy-policy.json`)),
       ...(await import(`../messages/${locale}/login.json`)),
       ...(await import(`../messages/${locale}/history.json`)),
+      ...(await import(`../messages/${locale}/search.json`)),
+
       ...(await import(`../messages/${locale}/google-auth.json`)),
       ...(await import(`../messages/${locale}/alert.json`)),
       ...(await import(`../messages/${locale}/payment-success.json`)),

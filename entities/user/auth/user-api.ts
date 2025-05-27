@@ -44,19 +44,26 @@ export const userApi = {
 
     if (!id) {
       id = await getUserId();
+      console.log("[userApi.getUserById] No userId provided, fetched id:", id);
+    } else {
+      console.log("[userApi.getUserById] Using provided userId:", id);
     }
 
-    // Import useAuthStore at the top: import { useAuthStore } from "@/shared/store/auth";
     const { isGuestAuth } = useAuthStore.getState();
+    console.log("[userApi.getUserById] isGuestAuth:", isGuestAuth);
 
     const endpoint = isGuestAuth
       ? `/user/guest-profile/${id}`
       : `/user/profile/${id}`;
 
+    console.log("[userApi.getUserById] Fetching endpoint:", endpoint);
+
     const response = await apiClient.get<User>(endpoint);
     if (!response.data) {
+      console.error("[userApi.getUserById] User not found for id:", id);
       throw new Error("User not found");
     }
+    console.log("[userApi.getUserById] User data received:", response.data);
     return response.data;
   },
 

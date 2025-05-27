@@ -51,12 +51,9 @@ export const MobileGamesBlock = () => {
   }
 
   const handleViewAll = () => {
-    // If we're already showing all products, this could link to a dedicated page
-    // For now, we'll just increase the limit to show more products
     setLimit((prevLimit) => prevLimit + 8);
   };
 
-  // Check if there are more products to load
   const hasMoreProducts = productsData?.meta?.total
     ? productsData.meta.total > nonBigoProducts.length
     : false;
@@ -83,8 +80,6 @@ export const MobileGamesBlock = () => {
           </div>
         )}
       </div>
-
-      {/* View all button - Mobile optimized */}
       {nonBigoProducts.length > 0 && hasMoreProducts && (
         <div className="mt-4 text-center">
           <button
