@@ -1,0 +1,14 @@
+{
+  "Search": {
+    "back": "Back",
+    "title": "Search",
+    "searching": "Searching...",
+    "notFound": "Nothing found",
+    "noResultsFor": "No results found for \"{query}\". Try changing your search query.",
+    "startSearching": "Start searching",
+    "enterQuery": "Enter a query in the search bar above to find games and services",
+    "resultsFound": "{count} results found for \"{query}\"",
+    "resultsFoundOne": "1 result found for \"{query}\"",
+    "resultsFoundMany": "{count} results found for \"{query}\""
+  }
+}
