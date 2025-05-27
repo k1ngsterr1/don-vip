@@ -34,6 +34,11 @@ export function MobileNav({
     };
   }, [isOpen]);
 
+  // Function to close the menu
+  const closeMenu = () => {
+    document.dispatchEvent(new CustomEvent("closeMobileMenu"));
+  };
+
   if (!isOpen) return null;
 
   // Determine the appropriate class based on device type
@@ -47,9 +52,7 @@ export function MobileNav({
         <div className="flex justify-between items-center mb-4">
           <h2 className="font-medium text-lg">{t("menu")}</h2>
           <button
-            onClick={() =>
-              document.dispatchEvent(new CustomEvent("closeMobileMenu"))
-            }
+            onClick={closeMenu}
             aria-label="Close menu"
             className="p-1 rounded-full hover:bg-gray-100"
           >
@@ -61,6 +64,7 @@ export function MobileNav({
       <nav className={`space-y-${isTablet ? "4" : "3"}`}>
         <Link
           href="/games"
+          onClick={closeMenu}
           className={`block text-dark font-condensed ${
             isTablet ? "text-lg py-1" : ""
           }`}
@@ -69,6 +73,7 @@ export function MobileNav({
         </Link>
         <Link
           href="/services"
+          onClick={closeMenu}
           className={`block text-dark font-condensed ${
             isTablet ? "text-lg py-1" : ""
           }`}
@@ -77,6 +82,7 @@ export function MobileNav({
         </Link>
         <Link
           href="/reviews"
+          onClick={closeMenu}
           className={`block text-dark font-condensed ${
             isTablet ? "text-lg py-1" : ""
           }`}
@@ -85,6 +91,7 @@ export function MobileNav({
         </Link>
         <Link
           href="/faq"
+          onClick={closeMenu}
           className={`block text-dark font-condensed ${
             isTablet ? "text-lg py-1" : ""
           }`}
@@ -94,7 +101,10 @@ export function MobileNav({
 
         {isAuthenticated && (
           <button
-            onClick={onLogout}
+            onClick={() => {
+              onLogout();
+              closeMenu();
+            }}
             className={`flex items-center text-red-600 ${
               isTablet ? "mt-4 text-lg" : ""
             }`}

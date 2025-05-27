@@ -6,6 +6,7 @@ import { type UpdateProfilePayload, userApi } from "../auth/user-api";
 import { queryKeys } from "@/shared/config/queryKeys";
 import { useState } from "react";
 import { useRouter } from "@/i18n/routing";
+import { authApi } from "@/entities/auth/api/auth.api";
 
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
@@ -91,7 +92,7 @@ export function useProfileEdit() {
     error: userError,
   } = useQuery<any>({
     queryKey: queryKeys.auth.user,
-    queryFn: userApi.getCurrentUser,
+    queryFn: authApi.getCurrentUser,
     enabled: !!authUser?.id,
   });
 

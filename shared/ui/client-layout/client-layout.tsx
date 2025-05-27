@@ -43,10 +43,6 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
             );
             setGuestAuth(true);
           }
-
-          // Remove any old userId
-
-          // If we have a user in state or we've set isGuestAuth, we're done
           if (user || isGuestAuth || state?.isGuestAuth) {
             guestAuthAttemptedRef.current = true;
             console.log(

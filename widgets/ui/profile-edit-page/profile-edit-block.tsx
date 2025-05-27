@@ -13,6 +13,7 @@ import {
 } from "@/entities/user/hooks/use-user.mutation";
 import { userApi } from "@/entities/user/auth/user-api";
 import { useTranslations } from "next-intl";
+import { authApi } from "@/entities/auth/api/auth.api";
 
 export function ProfileEditClient() {
   const router = useRouter();
@@ -30,7 +31,7 @@ export function ProfileEditClient() {
   } = useQuery({
     queryKey: ["user", "me"],
     queryFn: async () => {
-      const data = await userApi.getCurrentUser();
+      const data = await authApi.getCurrentUser();
 
       // Update auth store with fetched data
       if (data) {
