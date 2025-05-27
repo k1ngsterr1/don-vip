@@ -101,7 +101,7 @@ export function OrderBlock({
         replenishmentArray.map((item: any, index: number) => ({
           id: index,
           amount: item.amount,
-          price: `${item.price.toFixed(2)} ${product.currency_name || "RUB"}`,
+          price: `${item.price.toFixed(2)} ${"RUB"}`,
           type: item.type,
           sku: item.sku,
         }))
