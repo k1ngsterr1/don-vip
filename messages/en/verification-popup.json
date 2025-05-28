@@ -1,0 +1,9 @@
+{
+  "verification-popup": {
+    "title": "Verification Required",
+    "description": "Please verify your account to access all features. Check your email for the verification link.",
+    "closeButton": "Close",
+    "verifyButton": "Verify Now",
+    "close": "Close"
+  }
+}

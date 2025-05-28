@@ -6,10 +6,9 @@ import { useTranslations } from "next-intl";
 export function FeedbackPrompt() {
   const t = useTranslations("reviews");
 
-  // Mobile version
   const mobilePrompt = (
     <div className="bg-gray-50 p-[24px] rounded-md my-4 md:hidden">
-      <p className="text-dark text-[11px] font-roboto">
+      <p className="text-dark text-[13px] font-roboto">
         {t("prompt.description")}
       </p>
     </div>

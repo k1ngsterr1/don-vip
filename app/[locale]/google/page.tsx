@@ -34,14 +34,11 @@ export default function GoogleAuthPage() {
         // Store tokens in auth store
         setTokens(accessToken, refreshToken);
 
-        // Extract user ID from the response and redirect to profile page
         try {
           const response = await authApi.getCurrentUser();
 
-          // Extract the user ID from the response
           const userId = response.data.id;
 
-          // Store the user data in the auth store
           setUser(response.data);
 
           // Add a small delay to ensure state is updated before navigation

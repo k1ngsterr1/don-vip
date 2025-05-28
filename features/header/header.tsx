@@ -166,7 +166,6 @@ export default function Header({ isSearchBar = true }: IHeader) {
               />
             </div>
           )}
-
           <div ref={menuRef} className="hidden lg:block">
             <DesktopNav
               activeMenu={activeMenu}

@@ -111,14 +111,10 @@ export function ProfileEditClient() {
 
   return (
     <main className="px-4 md:px-8 lg:px-0 md:max-w-4xl md:mx-auto md:py-8">
-      {/* Desktop background decorative elements - only visible on desktop */}
       <div className="hidden md:block absolute top-0 right-0 w-1/3 h-64 bg-blue-50 opacity-50 -z-10"></div>
       <div className="hidden md:block absolute top-64 left-0 w-1/4 h-96 bg-blue-50 opacity-50 -z-10"></div>
-
-      {/* Desktop card container - only visible on desktop */}
       <div className="md:bg-white md:shadow-md md:rounded-xl md:p-8 md:border md:border-gray-100">
         <div className="md:flex md:items-start">
-          {/* Left column with header on desktop */}
           <div className="md:w-1/3 md:pr-8 md:border-r md:border-gray-100">
             <ProfileHeaderEditable
               user={user}
@@ -129,7 +125,6 @@ export function ProfileEditClient() {
             <h2 className="hidden md:block text-2xl font-unbounded font-medium mb-6 text-gray-800">
               {t("editProfile")}
             </h2>
-
             <ProfileEditForm
               user={user as any}
               onSubmit={updateProfile}
