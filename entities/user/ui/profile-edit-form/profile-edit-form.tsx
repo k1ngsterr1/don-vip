@@ -218,7 +218,7 @@ export function ProfileEditForm({
         </label>
         <div className="flex items-center relative">
           <div className="flex-1 p-3 bg-gray-50 rounded-lg border border-gray-200 flex items-center">
-            <IdentifierIcon size={18} className="text-gray-400 mr-2" />
+            <IdentifierIcon size={18} className="text-dark p mr-2" />
             <span>{user.identifier}</span>
           </div>
           <button
