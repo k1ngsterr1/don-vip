@@ -130,7 +130,19 @@ export function RegisterForm() {
     error: registerError,
   } = useRegister();
 
-  const isFormFilled = identifier.trim() !== "" && password.trim() !== "";
+  const hasMinLength = password.length >= 8;
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasLowercase = /[a-z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  const hasSpecialChar = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
+
+  const criteriaMet = [
+    hasMinLength,
+    hasUppercase,
+    hasLowercase,
+    hasNumber,
+    hasSpecialChar,
+  ].filter(Boolean).length;
 
   useEffect(() => {
     const input = identifier.trim();
@@ -153,47 +165,13 @@ export function RegisterForm() {
     }
   };
 
-  const validatePassword = (password: string) => {
-    const hasMinLength = password.length >= 8;
-    const hasUppercase = /[A-Z]/.test(password);
-    const hasLowercase = /[a-z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    const hasSpecialChar = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
+  const validatePassword = (password: string) => criteriaMet >= 2;
 
-    const criteriaMet = [
-      hasMinLength,
-      hasUppercase,
-      hasLowercase,
-      hasNumber,
-      hasSpecialChar,
-    ].filter(Boolean).length;
-
-    return criteriaMet >= 2;
-  };
+  const isFormFilled =
+    identifier.trim() !== "" && password.trim() !== "" && criteriaMet >= 2;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    const hasMinLength = password.length >= 8;
-    const hasUppercase = /[A-Z]/.test(password);
-    const hasLowercase = /[a-z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    const hasSpecialChar = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
-    const criteriaMet = [
-      hasMinLength,
-      hasUppercase,
-      hasLowercase,
-      hasNumber,
-      hasSpecialChar,
-    ].filter(Boolean).length;
-
-    setDebugInfo(`Password: ${password}
-    Length ≥ 8: ${hasMinLength ? "✓" : "✗"}
-    Uppercase: ${hasUppercase ? "✓" : "✗"}
-    Lowercase: ${hasLowercase ? "✓" : "✗"}
-    Number: ${hasNumber ? "✓" : "✗"}
-    Special: ${hasSpecialChar ? "✓" : "✗"}
-    Criteria met: ${criteriaMet}/5`);
 
     const newErrors = {
       identifier: !identifier
@@ -218,7 +196,6 @@ export function RegisterForm() {
       return;
     }
 
-    // Call register mutation with user data
     register(
       {
         identifier,
@@ -227,28 +204,21 @@ export function RegisterForm() {
       },
       {
         onSuccess: () => {
-          // Set redirecting state to show loading overlay
           setIsRedirecting(true);
-
           setTimeout(() => {
             router.push(
               `/auth/verify?identifier=${encodeURIComponent(identifier)}` as any
             );
-          }, 800); // Small delay for a smoother transition
+          }, 800);
         },
         onError: (error: any) => {
-          // Handle registration errors with user-friendly messages
           const errorMessage =
             error.response?.data?.message ||
             (error.message
               ? getHumanReadableError(error.message, locale)
               : translateError("Registration failed", locale));
 
-          setErrors({
-            identifier: errorMessage,
-          });
-
-          // Add error details to debug info
+          setErrors({ identifier: errorMessage });
           setDebugInfo(
             (prev) =>
               `${prev || ""}\n\nError: ${JSON.stringify(
