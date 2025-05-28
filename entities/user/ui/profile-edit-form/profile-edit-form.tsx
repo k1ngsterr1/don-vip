@@ -80,16 +80,6 @@ export function ProfileEditForm({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Function to convert DD.MM.YYYY to YYYY-MM-DD for ISO 8601 format
-  const formatDateToISO = (dateStr: string): string => {
-    if (!dateStr || !dateStr.includes(".")) return dateStr;
-
-    const parts = dateStr.split(".");
-    if (parts.length !== 3) return dateStr;
-
-    return `${parts[2]}-${parts[1]}-${parts[0]}`;
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -158,7 +148,6 @@ export function ProfileEditForm({
         type="text"
         className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
       />
-
       <div>
         <label className="block text-sm font-medium mb-1">
           {i18n("fields.gender")}

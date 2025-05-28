@@ -207,7 +207,7 @@ export function FormField({
             actionButton ? "pr-20" : ""
           } ${
             error ? "border-red-500" : ""
-          } md:focus:border-blue md:focus:ring-1 md:focus:ring-blue md:focus:outline-none md:transition-colors`}
+          } md:focus:border-blue md:focus:ring-1  !text-dark md:focus:ring-blue md:focus:outline-none md:transition-colors`}
           {...props}
         />
         {actionButton && (
