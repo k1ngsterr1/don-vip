@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -41,8 +42,8 @@ export function PasswordStrength({
     let score = 0;
     if (totalCriteria === 1) score = 1; // Weak
     else if (totalCriteria === 2) score = 2; // Fair
-    else if (totalCriteria === 3) score = 2; // Fair
-    else if (totalCriteria === 4) score = 3; // Good
+    else if (totalCriteria === 3) score = 3; // Good (acceptable)
+    else if (totalCriteria === 4) score = 3; // Good (acceptable)
     else if (totalCriteria === 5) score = 4; // Strong
 
     setStrength({
@@ -69,7 +70,7 @@ export function PasswordStrength({
     if (strength.score === 0) return "bg-red-500";
     if (strength.score === 1) return "bg-red-500";
     if (strength.score === 2) return "bg-yellow-500";
-    if (strength.score === 3) return "bg-blue-500";
+    if (strength.score === 3) return "bg-green-500";
     return "bg-green-500";
   };
 
