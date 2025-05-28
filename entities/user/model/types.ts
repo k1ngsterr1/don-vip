@@ -1,4 +1,5 @@
 export interface User {
+  is_verified: boolean;
   id: string;
   first_name: string;
   last_name: string;
