@@ -25,6 +25,7 @@ export interface AuthTokens {
 
 export interface User {
   id: string;
+  identifier?: string;
   email?: string;
   phone?: string;
   firstName?: string;

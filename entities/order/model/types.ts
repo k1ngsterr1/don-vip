@@ -1,11 +1,12 @@
 export interface CreateOrderDto {
-  user_id?: string | number; // Will be set by the server from the JWT token
-  game_id: number; // Maps to product_id in API
-  currency_id: number; // Maps to item_id in API
+  identifier?: string;
+  user_id?: string | number;
+  game_id: number;
+  currency_id: number;
   amount: number;
   price: number | string;
-  payment_method: string; // Maps to payment in API
-  user_game_id: string; // Maps to account_id in API
+  payment_method: string;
+  user_game_id: string;
   server_id?: string;
 }
 

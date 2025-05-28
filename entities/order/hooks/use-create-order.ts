@@ -15,15 +15,10 @@ function isSafariBrowser(): boolean {
   if (typeof window === "undefined") return false;
 
   const ua = window.navigator.userAgent;
-
-  // Check if it's Safari
-  // Safari includes "Safari" in UA but not "Chrome" or "Chromium"
   const isSafari =
     ua.indexOf("Safari") !== -1 &&
     ua.indexOf("Chrome") === -1 &&
     ua.indexOf("Chromium") === -1;
-
-  // Additional check for iOS devices which use WebKit (similar to Safari)
   const isIOS = /iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream;
 
   return isSafari || isIOS;
@@ -38,7 +33,7 @@ export function useCreateOrder(isTbank = false) {
   const [error, setError] = useState<string | null>(null);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
-  const { user: authUser } = useAuthStore();
+  const { user: authUser, isGuestAuth } = useAuthStore();
   const { data: me } = useGetMe();
 
   // 🔐 Resolve user ID from any source
@@ -51,18 +46,37 @@ export function useCreateOrder(isTbank = false) {
     return null;
   };
 
+  // 🔐 Get user identifier (email/phone)
+  const getUserIdentifier = (): string | null => {
+    if (authUser?.identifier) return authUser.identifier;
+    if (me?.identifier) return me.identifier;
+    if (authUser?.email) return authUser.email;
+    if (me?.email) return me.email;
+    return null;
+  };
+
   // 🧾 Order creation mutation
   const orderMutation = useMutation({
     mutationFn: (orderData: CreateOrderDto) => {
       const userId = resolveUserId();
 
+      if (!userId) {
+        throw new Error("User ID is required to create an order");
+      }
+
+      if (!orderData.identifier) {
+        throw new Error("Identifier (email or phone) is required");
+      }
+
+      // Map frontend fields to backend API fields
       const apiOrderData = {
-        product_id: orderData.game_id,
-        item_id: orderData.currency_id,
-        payment: orderData.payment_method,
-        account_id: orderData.user_game_id,
+        identifier: orderData.identifier,
+        product_id: orderData.game_id, // game_id -> product_id
+        item_id: orderData.currency_id, // currency_id -> item_id
+        payment: orderData.payment_method, // payment_method -> payment
+        account_id: orderData.user_game_id, // user_game_id -> account_id
         server_id: orderData.server_id,
-        user_id: userId,
+        user_id: Number.parseInt(userId, 10), // Ensure it's a number
       };
 
       return orderApi.createOrder(apiOrderData as any);
@@ -80,6 +94,7 @@ export function useCreateOrder(isTbank = false) {
     onError: (err: any) => {
       setError(
         err?.response?.data?.message ||
+          err?.message ||
           "Failed to create order. Please try again."
       );
     },
@@ -102,21 +117,18 @@ export function useCreateOrder(isTbank = false) {
       setIsProcessingPayment(false);
 
       if (paymentData.web_url) {
-        // Show alert only in Safari to unblock window.open
         if (isSafariBrowser()) {
-          alert("Сейчас откроется платёжная страница"); // ✅ разблокирует window.open в Safari
+          alert("Сейчас откроется платёжная страница");
         }
         window.open(paymentData.web_url, "_blank");
       }
-
-      // Optional redirect:
-      // router.push(`/product/success/${paymentData.out_trade_no}`);
     },
 
     onError: (err: any) => {
       setIsProcessingPayment(false);
       setError(
         err?.response?.data?.message ||
+          err?.message ||
           "Payment processing failed. Please try again."
       );
     },
@@ -146,8 +158,10 @@ export function useCreateOrder(isTbank = false) {
     error,
     setError,
     isGuestUser:
-      !authUser &&
-      typeof window !== "undefined" &&
-      !!localStorage.getItem("userId"),
+      isGuestAuth ||
+      (!authUser &&
+        typeof window !== "undefined" &&
+        !!localStorage.getItem("userId")),
+    needsIdentifier: !getUserIdentifier(),
   };
 }

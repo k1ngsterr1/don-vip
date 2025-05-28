@@ -3,7 +3,7 @@
 import { CurrencySelector } from "@/entities/currency/ui/currency-selector";
 import { PaymentMethodSelector } from "@/entities/payment/ui/payment-method-selector";
 import { cn } from "@/shared/utils/cn";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { Banner } from "./banner/banner";
 import { OrderSummary } from "./order-summary/order-summary";
@@ -13,6 +13,9 @@ import { useCreateOrder } from "@/entities/order/hooks/use-create-order";
 import type { CreateOrderDto } from "@/entities/order/model/types";
 import { useProduct } from "@/entities/product/hooks/queries/use-product";
 import { OrderBlockSkeleton } from "./loading/skeleton-loading";
+import { useAuthStore } from "@/entities/auth/store/auth.store";
+import { useGetMe } from "@/entities/auth/hooks/use-auth";
+import { GuestAuthPopup } from "@/entities/order/ui/guest-user-popup";
 
 interface OrderBlockProps {
   gameSlug: number;
@@ -52,9 +55,24 @@ export function OrderBlock({
   const [serverId, setServerId] = useState("");
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("tbank");
+  const [showGuestAuthPopup, setShowGuestAuthPopup] = useState(false);
+  const [guestIdentifier, setGuestIdentifier] = useState("");
 
-  const { createOrder, isLoading, isProcessingPayment, error, setError } =
-    useCreateOrder(selectedPaymentMethod === "tbank");
+  // Flag to prevent popup from showing twice
+  const identifierCollected = useRef(false);
+
+  const {
+    createOrder,
+    isLoading,
+    isProcessingPayment,
+    error,
+    setError,
+    isGuestUser,
+    needsIdentifier,
+  } = useCreateOrder(selectedPaymentMethod === "tbank");
+
+  const { user: authUser, isGuestAuth } = useAuthStore();
+  const { data: me } = useGetMe();
 
   useEffect(() => {
     const local_user = localStorage.getItem("userId");
@@ -122,9 +140,16 @@ export function OrderBlock({
     agreeToTerms &&
     (!game.requiresServer || serverId.trim() !== "");
 
-  const handleSubmitOrder = async () => {
-    setError("");
+  // Get user identifier from various sources
+  const getUserIdentifier = (): string | null => {
+    if (authUser?.identifier) return authUser.identifier;
+    if (me?.identifier) return me.identifier;
+    if (authUser?.email) return authUser.email;
+    if (me?.email) return me.email;
+    return guestIdentifier || null;
+  };
 
+  const submitOrderWithIdentifier = (identifier: string) => {
     if (!isFormValid || !selectedCurrency) {
       setError(t("errors.invalidForm"));
       return;
@@ -134,6 +159,7 @@ export function OrderBlock({
     const formattedPrice = Number(numericPrice).toFixed(2);
 
     const orderData: CreateOrderDto = {
+      identifier: identifier,
       game_id: game.id,
       user_id: userIdDB,
       currency_id: selectedCurrency.id,
@@ -145,51 +171,86 @@ export function OrderBlock({
     };
 
     try {
-      const response = (await createOrder(orderData)) as any; // предполагается, что createOrder возвращает промис
+      createOrder(orderData)
+        .then((response: any) => {
+          console.log(response);
 
-      console.log(response);
+          if (selectedPaymentMethod === "tbank") {
+            const params = new URLSearchParams({
+              orderId: response.id,
+              amount: selectedCurrency.amount.toString(),
+              price: numericPrice,
+              currencyName: game.currencyName,
+              gameName: game.name,
+              userId: userId,
+              userIdDB: userIdDB,
+              serverId: game.requiresServer ? serverId : "",
+            });
 
-      if (selectedPaymentMethod === "tbank") {
-        const params = new URLSearchParams({
-          orderId: response.id,
-          amount: selectedCurrency.amount.toString(),
-          price: numericPrice,
-          currencyName: game.currencyName,
-          gameName: game.name,
-          userId: userId,
-          userIdDB: userIdDB,
-          serverId: game.requiresServer ? serverId : "",
+            window.location.href = `/t-bank?${params.toString()}`;
+          }
+
+          if (selectedPaymentMethod === "nspk" && selectedCurrency) {
+            const params = new URLSearchParams({
+              orderId: Math.floor(Math.random() * 1000000).toString(),
+              amount: selectedCurrency.amount.toString(),
+              price: numericPrice,
+              currencyName: game.currencyName,
+              gameName: game.name,
+              userId: userId,
+              serverId: game.requiresServer ? serverId : "",
+            });
+
+            // Additional logic for NSPK payment if needed
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          setError(t("errors.orderFailed"));
         });
-
-        window.location.href = `/t-bank?${params.toString()}`;
-      }
-
-      if (selectedPaymentMethod === "nspk" && selectedCurrency) {
-        const params = new URLSearchParams({
-          orderId: Math.floor(Math.random() * 1000000).toString(),
-          amount: selectedCurrency.amount.toString(),
-          price: numericPrice,
-          currencyName: game.currencyName,
-          gameName: game.name,
-          userId: userId,
-          serverId: game.requiresServer ? serverId : "",
-        });
-
-        const orderData: CreateOrderDto = {
-          price: formattedPrice as any, // Format price as a decimal string with 2 decimal places
-          amount: selectedCurrency.amount,
-          //@ts-ignore
-          type: selectedCurrency.type, // Use the type directly from the selected currency option
-          payment: selectedPaymentMethod,
-          account_id: userId, // Use userId as account_id
-          //@ts-ignore
-          server_id: product.type === "Smile" ? serverId : undefined, // Only include server_id for Smile products
-        };
-      }
     } catch (err) {
       console.log(err);
       setError(t("errors.orderFailed"));
     }
+  };
+
+  const handleSubmitOrder = async () => {
+    setError("");
+
+    if (!isFormValid || !selectedCurrency) {
+      setError(t("errors.invalidForm"));
+      return;
+    }
+
+    // Check if we need identifier for guest users or users without identifier
+    const userIdentifier = getUserIdentifier();
+
+    if (
+      !userIdentifier &&
+      (isGuestUser || needsIdentifier) &&
+      !identifierCollected.current
+    ) {
+      // Show popup only if we haven't collected identifier yet
+      setShowGuestAuthPopup(true);
+      return;
+    }
+
+    // If we already have an identifier (either from user data or collected from popup)
+    const identifier = userIdentifier || guestIdentifier;
+    if (identifier) {
+      submitOrderWithIdentifier(identifier);
+    } else {
+      setError("Email or phone number is required");
+    }
+  };
+
+  const handleGuestAuthSubmit = (identifier: string) => {
+    setGuestIdentifier(identifier);
+    setShowGuestAuthPopup(false);
+    identifierCollected.current = true; // Mark that we've collected the identifier
+
+    // Submit the order with the collected identifier
+    submitOrderWithIdentifier(identifier);
   };
 
   const mobileVersion = (
@@ -232,7 +293,7 @@ export function OrderBlock({
         <button
           className={cn(
             "w-[140px] py-3 px-[12px] rounded-full text-white font-medium transition-colors",
-            isFormValid ? "bg-blue hover:bg-blue-600" : "bg-gray-400"
+            isFormValid ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-400"
           )}
           disabled={!isFormValid || isLoading}
           onClick={handleSubmitOrder}
@@ -312,7 +373,6 @@ export function OrderBlock({
             serverId={serverId}
             onSubmit={handleSubmitOrder}
             isLoading={isLoading}
-            // isProcessingPayment={isProcessingPayment}
           />
         </div>
       </div>
@@ -323,6 +383,12 @@ export function OrderBlock({
     <>
       {mobileVersion}
       {desktopVersion}
+      <GuestAuthPopup
+        isOpen={showGuestAuthPopup}
+        onClose={() => setShowGuestAuthPopup(false)}
+        onSubmit={handleGuestAuthSubmit}
+        isLoading={isLoading}
+      />
     </>
   );
 }
