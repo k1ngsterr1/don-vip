@@ -19,6 +19,12 @@ export const getUserId = async (): Promise<string> => {
     return cachedUserId;
   }
 
+  const userId = localStorage.getItem("userId");
+  if (userId) {
+    cachedUserId = userId;
+    return cachedUserId;
+  }
+
   const { user, setUser, isGuestAuth, setGuestAuth } = useAuthStore.getState();
   const isNumber = (val: string) => /^\d+$/.test(val);
 
