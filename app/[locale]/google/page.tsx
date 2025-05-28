@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams, useParams } from "next/navigation";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
-import { apiClient } from "@/shared/config/apiClient";
 import { useTranslations } from "next-intl";
 import { authApi } from "@/entities/auth/api/auth.api";
 
