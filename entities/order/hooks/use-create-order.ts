@@ -68,16 +68,18 @@ export function useCreateOrder(isTbank = false) {
         throw new Error("Identifier (email or phone) is required");
       }
 
-      // Map frontend fields to backend API fields
+      // Map frontend fields to backend API fields - INCLUDE IDENTIFIER
       const apiOrderData = {
-        identifier: orderData.identifier,
-        product_id: orderData.game_id, // game_id -> product_id
-        item_id: orderData.currency_id, // currency_id -> item_id
-        payment: orderData.payment_method, // payment_method -> payment
-        account_id: orderData.user_game_id, // user_game_id -> account_id
+        identifier: orderData.identifier, // ✅ Make sure this is included
+        product_id: orderData.game_id,
+        item_id: orderData.currency_id,
+        payment: orderData.payment_method,
+        account_id: orderData.user_game_id,
         server_id: orderData.server_id,
-        user_id: Number.parseInt(userId, 10), // Ensure it's a number
+        user_id: Number.parseInt(userId, 10),
       };
+
+      console.log("🚀 Sending order data to API:", apiOrderData); // Debug log
 
       return orderApi.createOrder(apiOrderData as any);
     },
@@ -92,6 +94,7 @@ export function useCreateOrder(isTbank = false) {
     },
 
     onError: (err: any) => {
+      console.error("❌ Order creation failed:", err); // Debug log
       setError(
         err?.response?.data?.message ||
           err?.message ||

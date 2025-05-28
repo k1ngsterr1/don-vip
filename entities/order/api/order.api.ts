@@ -10,16 +10,13 @@ export const orderApi = {
   /**
    * Create a new order
    */
-  createOrder: async (data: CreateOrderDto): Promise<Order> => {
-    // Get userId from auth store or localStorage
-    const userId = await getUserId();
+  createOrder: async (data: any): Promise<Order> => {
+    console.log("📤 API: Sending order data:", data); // Debug log to see what's being sent
 
-    const orderData = {
-      ...data,
-      user_id: userId,
-    };
+    const response = await apiClient.post<Order>("/order", data);
 
-    const response = await apiClient.post<Order>("/order", orderData);
+    console.log("📥 API: Received response:", response.data); // Debug log
+
     return response.data;
   },
 
@@ -27,33 +24,15 @@ export const orderApi = {
    * Get all orders with pagination
    */
   getOrders: async (page = 1, limit = 10): Promise<OrdersResponse> => {
-    // Get userId from auth store or localStorage
-    let userId: string | null = null;
-
-    // Try to get userId from auth store first
-    const authUser = useAuthStore.getState().user;
-    if (authUser && authUser.id) {
-      userId = authUser.id.toString();
-    }
-    // If no authenticated user, try to get from localStorage (for guest users)
-    else if (typeof window !== "undefined") {
-      userId = localStorage.getItem("userId");
-    }
-
-    // Include userId in query params if available
+    const userId = getUserId();
     const userParam = userId ? `&user_id=${userId}` : "";
+
     const response = await apiClient.get<OrdersResponse>(
       `/order?page=${page}&limit=${limit}${userParam}`
     );
     return response.data;
   },
 
-  /**
-   * Get order history for authenticated user
-   */
-  /**
-   * Get order history for current user (authenticated or guest)
-   */
   /**
    * Get order history for current user (authenticated or guest)
    */
@@ -68,14 +47,12 @@ export const orderApi = {
       if (!guestParams?.userId) {
         throw new Error("userId is required for guest order history");
       }
-      // Guest user flow: call guest history endpoint with userId
       const response = await apiClient.get<OrdersResponse>(
         `/order/guest/history?userId=${guestParams.userId}&page=${page}&limit=${limit}`
       );
       return response.data;
     }
 
-    // Authenticated user flow: only use pagination, userId is taken from JWT
     const response = await apiClient.get<OrdersResponse>(
       `/order/history?page=${page}&limit=${limit}`
     );

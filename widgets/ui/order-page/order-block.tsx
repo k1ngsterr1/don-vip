@@ -142,6 +142,14 @@ export function OrderBlock({
 
   // Get user identifier from various sources
   const getUserIdentifier = (): string | null => {
+    console.log("🔍 Getting user identifier:", {
+      authUserIdentifier: authUser?.identifier,
+      authUserEmail: authUser?.email,
+      meIdentifier: me?.identifier,
+      meEmail: me?.email,
+      guestIdentifier,
+    });
+
     if (authUser?.identifier) return authUser.identifier;
     if (me?.identifier) return me.identifier;
     if (authUser?.email) return authUser.email;
@@ -151,7 +159,7 @@ export function OrderBlock({
 
   const submitOrderWithIdentifier = (identifier: string) => {
     if (!isFormValid || !selectedCurrency) {
-      setError(t("errors.invalidForm"));
+      setError("Please fill in all required fields");
       return;
     }
 
@@ -170,84 +178,85 @@ export function OrderBlock({
       server_id: game.requiresServer ? serverId : undefined,
     };
 
-    try {
-      createOrder(orderData)
-        .then((response: any) => {
-          console.log(response);
+    console.log("🎯 Submitting order with data:", orderData);
 
-          if (selectedPaymentMethod === "tbank") {
-            const params = new URLSearchParams({
-              orderId: response.id,
-              amount: selectedCurrency.amount.toString(),
-              price: numericPrice,
-              currencyName: game.currencyName,
-              gameName: game.name,
-              userId: userId,
-              userIdDB: userIdDB,
-              serverId: game.requiresServer ? serverId : "",
-            });
+    createOrder(orderData)
+      .then((response: any) => {
+        console.log("✅ Order created successfully:", response);
 
-            window.location.href = `/t-bank?${params.toString()}`;
-          }
+        if (selectedPaymentMethod === "tbank") {
+          const params = new URLSearchParams({
+            orderId: response.id,
+            amount: selectedCurrency.amount.toString(),
+            price: numericPrice,
+            currencyName: game.currencyName,
+            gameName: game.name,
+            userId: userId,
+            userIdDB: userIdDB,
+            serverId: game.requiresServer ? serverId : "",
+          });
 
-          if (selectedPaymentMethod === "nspk" && selectedCurrency) {
-            const params = new URLSearchParams({
-              orderId: Math.floor(Math.random() * 1000000).toString(),
-              amount: selectedCurrency.amount.toString(),
-              price: numericPrice,
-              currencyName: game.currencyName,
-              gameName: game.name,
-              userId: userId,
-              serverId: game.requiresServer ? serverId : "",
-            });
-
-            // Additional logic for NSPK payment if needed
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          setError(t("errors.orderFailed"));
-        });
-    } catch (err) {
-      console.log(err);
-      setError(t("errors.orderFailed"));
-    }
+          window.location.href = `/t-bank?${params.toString()}`;
+        }
+      })
+      .catch((err) => {
+        console.error("❌ Order creation failed:", err);
+        setError("Failed to create order. Please try again.");
+      });
   };
 
   const handleSubmitOrder = async () => {
     setError("");
 
     if (!isFormValid || !selectedCurrency) {
-      setError(t("errors.invalidForm"));
+      setError("Please fill in all required fields");
       return;
     }
 
-    // Check if we need identifier for guest users or users without identifier
+    // Get user identifier from various sources
     const userIdentifier = getUserIdentifier();
 
-    if (
-      !userIdentifier &&
-      (isGuestUser || needsIdentifier) &&
-      !identifierCollected.current
-    ) {
-      // Show popup only if we haven't collected identifier yet
+    console.log("🔍 Debug info:", {
+      userIdentifier,
+      authUser: !!authUser,
+      me: !!me,
+      isGuestAuth,
+      isGuestUser,
+      needsIdentifier,
+      guestIdentifier,
+      identifierCollected: identifierCollected.current,
+      hasLocalStorageUserId: !!localStorage.getItem("userId"),
+    });
+
+    // Force popup for testing - remove this condition later
+    const shouldShowPopup =
+      !userIdentifier && !guestIdentifier && !identifierCollected.current;
+
+    console.log("🚀 Should show popup:", shouldShowPopup);
+
+    if (shouldShowPopup) {
+      console.log("🚀 Opening popup - no identifier found");
       setShowGuestAuthPopup(true);
       return;
     }
 
-    // If we already have an identifier (either from user data or collected from popup)
-    const identifier = userIdentifier || guestIdentifier;
-    if (identifier) {
-      submitOrderWithIdentifier(identifier);
-    } else {
+    // Use available identifier
+    const finalIdentifier = userIdentifier || guestIdentifier;
+
+    if (!finalIdentifier) {
       setError("Email or phone number is required");
+      return;
     }
+
+    console.log("✅ Proceeding with identifier:", finalIdentifier);
+    submitOrderWithIdentifier(finalIdentifier);
   };
 
   const handleGuestAuthSubmit = (identifier: string) => {
+    console.log("📧 Guest identifier collected:", identifier);
     setGuestIdentifier(identifier);
     setShowGuestAuthPopup(false);
-    identifierCollected.current = true; // Mark that we've collected the identifier
+    identifierCollected.current = true;
 
     // Submit the order with the collected identifier
     submitOrderWithIdentifier(identifier);
@@ -289,7 +298,17 @@ export function OrderBlock({
           </div>
         </div>
       )}
-      <div className="fixed bottom-20 left-1/2 -translate-x-1/2 px-4 py-2">
+      <div className="fixed bottom-20 left-1/2 -translate-x-1/2 px-4 py-2 flex flex-col gap-2">
+        {/* Debug button - remove after testing */}
+        <button
+          onClick={() => {
+            console.log("🧪 Force opening popup");
+            setShowGuestAuthPopup(true);
+          }}
+          className="bg-red-500 text-white px-4 py-2 rounded text-sm"
+        >
+          Test Popup
+        </button>
         <button
           className={cn(
             "w-[140px] py-3 px-[12px] rounded-full text-white font-medium transition-colors",
@@ -300,9 +319,9 @@ export function OrderBlock({
         >
           {isLoading
             ? isProcessingPayment
-              ? t("summary.redirecting")
+              ? "Redirecting..."
               : "Loading..."
-            : t("summary.buyNow")}
+            : "Buy Now"}
         </button>
       </div>
     </div>
@@ -325,7 +344,7 @@ export function OrderBlock({
             </div>
             <div className="p-6 border-b border-gray-100">
               <h2 className="text-lg font-medium text-gray-800 mb-4">
-                {t("block.selectAmount")}
+                Select Amount
               </h2>
               <CurrencySelector
                 //@ts-ignore
@@ -376,6 +395,16 @@ export function OrderBlock({
           />
         </div>
       </div>
+      {/* Debug button - remove after testing */}
+      <button
+        onClick={() => {
+          console.log("🧪 Force opening popup");
+          setShowGuestAuthPopup(true);
+        }}
+        className="bg-red-500 text-white px-4 py-2 rounded mb-2 mt-4"
+      >
+        Test Popup
+      </button>
     </div>
   );
 
@@ -385,7 +414,10 @@ export function OrderBlock({
       {desktopVersion}
       <GuestAuthPopup
         isOpen={showGuestAuthPopup}
-        onClose={() => setShowGuestAuthPopup(false)}
+        onClose={() => {
+          console.log("🚪 Closing popup");
+          setShowGuestAuthPopup(false);
+        }}
         onSubmit={handleGuestAuthSubmit}
         isLoading={isLoading}
       />
