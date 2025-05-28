@@ -53,7 +53,6 @@ export default function TBankPaymentPage() {
   const checkCouponMutation = useCheckCoupon();
   const applyCouponMutation = useApplyCoupon();
 
-  // Get the system user ID on component mount
   useEffect(() => {
     const fetchUserId = async () => {
       try {
@@ -277,6 +276,7 @@ export default function TBankPaymentPage() {
         window.location.href = result.PaymentURL;
       }
     } catch (err: any) {
+      console.log("Payment initialization error:", err);
       alert(t("errors.paymentInit") || "Ошибка инициализации платежа.");
     } finally {
       setIsLoading(false);

@@ -6,7 +6,7 @@ import { authApi } from "@/entities/auth/api/auth.api";
 let isGetUserIdInProgress = false;
 let cachedUserId: string | null = null;
 
-export const getUserId = async (): Promise<string> => {
+export const getUserId = async (): Promise<string | undefined> => {
   if (typeof window === "undefined")
     throw new Error("❌ getUserId called on server");
 
@@ -97,32 +97,7 @@ export const getUserId = async (): Promise<string> => {
     return user.id.toString();
   }
 
-  try {
-    console.log("👤 [Auth] #29 - getUserId: Creating guest user");
-    const res = await apiClient.post("/auth/guest");
-    const guestUser = res.data;
-
-    if (guestUser?.id && isNumber(guestUser.id.toString())) {
-      setUser(guestUser);
-      setGuestAuth(true); // Explicitly set as guest
-      localStorage.setItem("userId", guestUser.id.toString());
-      console.log(
-        "👤 [Auth] #30 - getUserId: Guest user created, setting isGuestAuth to true",
-        guestUser.id
-      );
-      cachedUserId = guestUser.id.toString();
-      isGetUserIdInProgress = false;
-      return guestUser.id.toString();
-    }
-    console.error("👤 [Auth] #31 - getUserId: Invalid guest user ID");
-    isGetUserIdInProgress = false;
-    throw new Error("Некорректный ID гостя");
-  } catch (error) {
-    console.error(
-      "👤 [Auth] #32 - getUserId: Failed to create guest user",
-      error
-    );
-    isGetUserIdInProgress = false;
-    throw new Error("❌ Не удалось создать гостевого пользователя");
-  }
+  // If all else fails, reset the flag and return undefined
+  isGetUserIdInProgress = false;
+  return undefined;
 };

@@ -76,9 +76,12 @@ export function OrderBlock({
 
   useEffect(() => {
     const local_user = localStorage.getItem("userId");
-    if (local_user) {
-      setUserIdDB(local_user);
+    if (local_user && local_user.trim() !== "") {
+      setUserIdDB(local_user.trim());
+    } else {
+      setUserIdDB(""); // или вообще не устанавливай, если ты обрабатываешь undefined/null
     }
+
     if (product) {
       let replenishmentArray = [];
 
@@ -174,7 +177,7 @@ export function OrderBlock({
       amount: selectedCurrency.amount,
       price: formattedPrice,
       payment_method: selectedPaymentMethod,
-      user_game_id: userId,
+      user_game_id: !userId || userId.trim() === "" ? "unknown" : userId,
       server_id: game.requiresServer ? serverId : undefined,
     };
 

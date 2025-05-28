@@ -41,7 +41,8 @@ export function useCreateOrder(isTbank = false) {
     if (authUser?.id) return authUser.id.toString();
     if (me?.id) return me.id.toString();
     if (typeof window !== "undefined") {
-      return localStorage.getItem("userId");
+      const localUserId = localStorage.getItem("userId");
+      return localUserId && localUserId.trim() !== "" ? localUserId : null;
     }
     return null;
   };
@@ -60,23 +61,22 @@ export function useCreateOrder(isTbank = false) {
     mutationFn: (orderData: CreateOrderDto) => {
       const userId = resolveUserId();
 
-      if (!userId) {
-        throw new Error("User ID is required to create an order");
-      }
-
       if (!orderData.identifier) {
         throw new Error("Identifier (email or phone) is required");
       }
 
       // Map frontend fields to backend API fields - INCLUDE IDENTIFIER
       const apiOrderData = {
-        identifier: orderData.identifier, // ✅ Make sure this is included
+        identifier: orderData.identifier,
         product_id: orderData.game_id,
         item_id: orderData.currency_id,
         payment: orderData.payment_method,
         account_id: orderData.user_game_id,
         server_id: orderData.server_id,
-        user_id: Number.parseInt(userId, 10),
+        user_id:
+          userId && userId.trim() !== ""
+            ? Number.parseInt(userId, 10)
+            : undefined,
       };
 
       console.log("🚀 Sending order data to API:", apiOrderData); // Debug log
