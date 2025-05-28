@@ -41,13 +41,9 @@ export default function GoogleAuthPage() {
 
           setUser(response.data);
 
-          // Add a small delay to ensure state is updated before navigation
           setTimeout(() => {
             if (userId) {
-              // Include locale in the redirect if using i18n
-              const profilePath = locale
-                ? `/${locale}/profile/${userId}`
-                : `/profile/${userId}`;
+              const profilePath = locale ? `/${locale}` : `/`;
               router.push(profilePath);
             } else {
               router.push("/");
@@ -55,7 +51,7 @@ export default function GoogleAuthPage() {
           }, 500);
         } catch (profileError) {
           setTimeout(() => {
-            const fallbackPath = locale ? `/${locale}/profile` : "/profile";
+            const fallbackPath = locale ? `/${locale}` : "/";
             router.push(fallbackPath);
           }, 500);
         }
