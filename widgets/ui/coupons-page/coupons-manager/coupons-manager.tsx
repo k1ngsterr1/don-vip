@@ -53,7 +53,7 @@ export function CouponsManagerWidget() {
           return;
         }
         const id = await getUserId();
-        setUserId(id);
+        setUserId(id as any);
       } catch (error) {
         setError(t("errorGettingUserId"));
       }
@@ -104,7 +104,6 @@ export function CouponsManagerWidget() {
           discountedGames: appliedCouponResponse.discountedGames || [],
           products: appliedCouponResponse.products || [],
         };
-
 
         setCouponData(newCouponData);
         setTotalDiscount(newCouponData.discount);
