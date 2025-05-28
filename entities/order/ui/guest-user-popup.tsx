@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import type React from "react";
 import { useState } from "react";
 
@@ -16,6 +17,7 @@ export function GuestAuthPopup({
   onSubmit,
   isLoading = false,
 }: GuestAuthPopupProps) {
+  const i18n = useTranslations("popup");
   const [identifier, setIdentifier] = useState("");
   const [error, setError] = useState("");
 
@@ -33,14 +35,12 @@ export function GuestAuthPopup({
     setError("");
 
     if (!identifier.trim()) {
-      setError("Please enter your email or phone number");
+      setError(i18n("popup.errorEmpty"));
       return;
     }
 
     if (!validateIdentifier(identifier)) {
-      setError(
-        "Please enter a valid email or phone number (e.g., +77001112233)"
-      );
+      setError(i18n("popup.errorInvalid"));
       return;
     }
 
@@ -64,11 +64,9 @@ export function GuestAuthPopup({
       <div className="relative bg-white rounded-lg shadow-lg max-w-md w-full mx-4 p-6">
         <div className="mb-4">
           <h2 className="text-xl font-semibold text-gray-900 mb-2">
-            Contact Information Required
+            {i18n("popup.title")}
           </h2>
-          <p className="text-gray-600 text-sm">
-            Please provide your email or phone number to complete the order.
-          </p>
+          <p className="text-gray-600 text-sm">{i18n("popup.description")}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -77,12 +75,12 @@ export function GuestAuthPopup({
               htmlFor="identifier"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Email or Phone Number
+              {i18n("popup.label")}
             </label>
             <input
               id="identifier"
               type="text"
-              placeholder="user@example.com or +77001112233"
+              placeholder={i18n("popup.placeholder")}
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
               disabled={isLoading}
@@ -98,14 +96,14 @@ export function GuestAuthPopup({
               disabled={isLoading}
               className="px-4 py-2 text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Cancel
+              {i18n("popup.cancel")}
             </button>
             <button
               type="submit"
               disabled={isLoading || !identifier.trim()}
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? "Processing..." : "Continue"}
+              {isLoading ? i18n("popup.processing") : i18n("popup.continue")}
             </button>
           </div>
         </form>

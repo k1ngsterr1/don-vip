@@ -1,0 +1,13 @@
+{
+  "popup": {
+    "title": "Contact Information Required",
+    "description": "Please provide your email or phone number to complete the order.",
+    "label": "Email or Phone Number",
+    "placeholder": "user@example.com or +77001112233",
+    "errorEmpty": "Please enter your email or phone number",
+    "errorInvalid": "Please enter a valid email or phone number (e.g., +77001112233)",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "processing": "Processing..."
+  }
+}
