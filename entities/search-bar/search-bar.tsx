@@ -260,26 +260,7 @@ export default function SearchBar({
             } ${className}`}
             style={{ height: compact ? "auto" : height }}
           />
-          {searchValue && (
-            <button
-              type="button"
-              onClick={handleClear}
-              className={`absolute top-1/2 transform -translate-y-1/2 ${
-                enhanced
-                  ? `right-${
-                      compact ? "10" : "14"
-                    } md:w-8 md:h-8 md:flex md:items-center md:justify-center md:rounded-full md:hover:bg-gray-200 transition-colors ${
-                      compact ? "md:w-6 md:h-6" : ""
-                    }`
-                  : "right-10"
-              }`}
-            >
-              <X
-                size={compact ? 14 : enhanced ? 18 : 16}
-                className="text-gray-400 hover:text-gray-600"
-              />
-            </button>
-          )}
+
           {enhanced && (
             <button
               type="submit"
@@ -307,7 +288,6 @@ export default function SearchBar({
                 isMobile ? "max-h-[70vh] overflow-y-auto" : ""
               }`}
             >
-              {/* Suggestions */}
               <div className="p-2">
                 {displaySuggestions.length > 0 && (
                   <>
@@ -316,7 +296,6 @@ export default function SearchBar({
                         Результаты поиска
                       </h3>
                     </div>
-
                     {displaySuggestions.map((suggestion, index) => (
                       <motion.div
                         key={`suggestion-${suggestion.id || index}-${
