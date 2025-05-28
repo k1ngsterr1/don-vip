@@ -78,17 +78,6 @@ export const authApi = {
     }
 
     // If guest, use guest endpoint
-    if (isGuestAuth) {
-      const userId = localStorage.getItem("userId");
-      if (userId) {
-        const response = await apiClient.get(`/user/guest-me/${userId}`);
-        const guestUser = response.data;
-        useAuthStore.getState().setUser(guestUser);
-        return guestUser;
-      }
-      // If no userId, fallback to guestAuth
-      return await authApi.guestAuth();
-    }
 
     // Try to get regular user
     try {
@@ -101,14 +90,6 @@ export const authApi = {
       // If not authenticated, fallback to guest
       return await authApi.guestAuth();
     }
-  },
-
-  /**
-   * Get guest user profile by ID (no auth)
-   */
-  getGuestUserById: async (id: number): Promise<any> => {
-    const response = await apiClient.get(`/user/guest-me/${id}`);
-    return response.data;
   },
 
   /**
@@ -177,41 +158,6 @@ export const authApi = {
           id,
         };
       }
-    }
-
-    // ✅ Всё, запускаем guest auth только если дошли до сюда
-    console.log("👤 [Auth] Making guest auth API call");
-    try {
-      setGuestAuthLoading(true);
-
-      const res = await apiClient.post("/auth/guest");
-      const guestUser = res.data;
-
-      if (guestUser?.id) {
-        localStorage.setItem("userId", guestUser.id.toString());
-        setUser(guestUser);
-        setGuestAuth(true);
-
-        if (guestUser.access_token && guestUser.refresh_token) {
-          setTokens(guestUser.access_token, guestUser.refresh_token);
-          console.log("👤 [Auth] Guest tokens set");
-        }
-
-        console.log("👤 [Auth] Guest auth successful");
-        return {
-          success: true,
-          isGuest: true,
-          user: guestUser,
-          id: guestUser.id,
-        };
-      } else {
-        throw new Error("Invalid guest user response");
-      }
-    } catch (err) {
-      console.error("👤 [Auth] Guest auth failed", err);
-      throw err;
-    } finally {
-      setGuestAuthLoading(false);
     }
   },
 

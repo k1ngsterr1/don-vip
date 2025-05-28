@@ -73,43 +73,6 @@ export function GuestAuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       // Mark that we've attempted guest auth
-      guestAuthAttemptedRef.current = true;
-
-      // If we have a userId but no auth storage or isGuestAuth is false, we might need to recreate the guest session
-      if (!userId || !isGuestAuth) {
-        try {
-          console.log("👤 [Auth] #37 - GuestAuthProvider: Creating guest user");
-          const response = await apiClient.post("/auth/guest");
-          const {
-            user: guestUser,
-            access_token,
-            refresh_token,
-          } = response.data;
-
-          if (guestUser?.id) {
-            setUser(guestUser);
-            setGuestAuth(true);
-            console.log(
-              "👤 [Auth] #38 - GuestAuthProvider: Guest user created, setting isGuestAuth to true"
-            );
-
-            // Set tokens if available
-            if (access_token && refresh_token) {
-              setTokens(access_token, refresh_token);
-              console.log(
-                "👤 [Auth] #39 - GuestAuthProvider: Setting guest tokens"
-              );
-            }
-
-            localStorage.setItem("userId", guestUser.id);
-          }
-        } catch (error) {
-          console.error(
-            "👤 [Auth] #40 - GuestAuthProvider: Failed to create guest user",
-            error
-          );
-        }
-      }
     };
 
     checkGuestUser();

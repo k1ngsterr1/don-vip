@@ -22,7 +22,6 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
   const guestAuthAttemptedRef = useRef(false);
 
   useEffect(() => {
-    // Only run this once per component lifecycle
     if (guestAuthAttemptedRef.current) {
       return;
     }
@@ -66,40 +65,6 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
         );
         guestAuthAttemptedRef.current = true;
         return;
-      }
-
-      // Mark that we've attempted guest auth
-      guestAuthAttemptedRef.current = true;
-
-      // If no auth storage or isGuestAuth is false, create a guest user
-      if (!authStorage || !isGuestAuth) {
-        try {
-          console.log("👤 [Auth] #45 - ClientLayout: Creating guest user");
-          const response = await apiClient.post("/auth/guest");
-
-          if (response.data?.id) {
-            localStorage.setItem("userId", response.data.id);
-            setUser(response.data);
-            setGuestAuth(true);
-            console.log(
-              "👤 [Auth] #46 - ClientLayout: Guest user created, setting isGuestAuth to true"
-            );
-
-            // Set tokens if available
-            if (response.data.access_token && response.data.refresh_token) {
-              setTokens(
-                response.data.access_token,
-                response.data.refresh_token
-              );
-              console.log("👤 [Auth] #47 - ClientLayout: Setting guest tokens");
-            }
-          }
-        } catch (error) {
-          console.error(
-            "👤 [Auth] #48 - ClientLayout: Failed to create guest user",
-            error
-          );
-        }
       }
     };
 

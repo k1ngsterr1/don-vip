@@ -36,23 +36,7 @@ export const orderApi = {
   /**
    * Get order history for current user (authenticated or guest)
    */
-  getOrderHistory: async (
-    page = 1,
-    limit = 10,
-    guestParams?: { userId: string }
-  ): Promise<OrdersResponse> => {
-    const isGuestAuth = useAuthStore.getState().isGuestAuth;
-
-    if (isGuestAuth) {
-      if (!guestParams?.userId) {
-        throw new Error("userId is required for guest order history");
-      }
-      const response = await apiClient.get<OrdersResponse>(
-        `/order/guest/history?userId=${guestParams.userId}&page=${page}&limit=${limit}`
-      );
-      return response.data;
-    }
-
+  getOrderHistory: async (page = 1, limit = 10): Promise<OrdersResponse> => {
     const response = await apiClient.get<OrdersResponse>(
       `/order/history?page=${page}&limit=${limit}`
     );

@@ -7,22 +7,8 @@ type OrdersResponse = any;
 
 const getOrderHistory = async (
   page = 1,
-  limit = 10,
-  guestParams?: { userId: string }
+  limit = 10
 ): Promise<OrdersResponse> => {
-  const isGuestAuth = useAuthStore.getState().isGuestAuth;
-
-  if (isGuestAuth) {
-    const userId = guestParams?.userId || (await getUserId());
-    if (!userId) {
-      throw new Error("userId is required for guest order history");
-    }
-    const response = await apiClient.get<OrdersResponse>(
-      `/order/guest/history?userId=${userId}&page=${page}&limit=${limit}`
-    );
-    return response.data;
-  }
-
   const response = await apiClient.get<OrdersResponse>(
     `/order/history?page=${page}&limit=${limit}`
   );
@@ -41,6 +27,6 @@ export const usePurchaseHistory = (
       limit,
       guestParams?.userId || getUserId(),
     ],
-    queryFn: () => getOrderHistory(page, limit, guestParams),
+    queryFn: () => getOrderHistory(page, limit),
   });
 };
