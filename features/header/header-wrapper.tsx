@@ -6,32 +6,11 @@ import Header from "./header";
 export default function HeaderWrapper() {
   const pathname = usePathname();
 
-  const hideSearchBarBasePaths = [
-    "faq",
-    "public-offer",
-    "privacy-policy",
-    "search",
-    "terms",
-    "offer",
-    "reviews",
-    "send-review",
-    "auth/register",
-    "auth/login",
-    "auth/forgot-password",
-    "contact",
-    "coupons+",
-    "order+",
-  ];
-
-  const locales = ["", "/en", "/ru"];
-
-  const hideSearchBarPaths = locales.flatMap((locale) =>
-    hideSearchBarBasePaths.map((path) => `${locale}/${path}`)
-  );
-
+  // Removed hideSearchBarBasePaths and related logic
   const isProfilePath = pathname.startsWith("/profile");
 
-  const isSearchBar = !(hideSearchBarPaths.includes(pathname) || isProfilePath);
+  // Always show search bar except on profile paths
+  const isSearchBar = !isProfilePath;
 
   return <Header isSearchBar={isSearchBar} />;
 }

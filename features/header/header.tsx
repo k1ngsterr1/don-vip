@@ -72,7 +72,6 @@ export default function Header({ isSearchBar = true }: IHeader) {
   };
 
   const handleMobileSearchBlur = () => {
-    // We'll use a timeout to allow clicking on suggestions
     setTimeout(() => {
       setMobileSearchActive(false);
     }, 200);
@@ -108,8 +107,6 @@ export default function Header({ isSearchBar = true }: IHeader) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setActiveMenu(null);
       }
-
-      // Also handle clicks outside mobile search
       if (
         mobileSearchRef.current &&
         !mobileSearchRef.current.contains(event.target as Node)
@@ -119,6 +116,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
     }
 
     document.addEventListener("mousedown", handleClickOutside);
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       if (menuTimeoutRef.current) {
@@ -174,7 +172,6 @@ export default function Header({ isSearchBar = true }: IHeader) {
               onMenuMouseLeave={handleMenuMouseLeave}
             />
           </div>
-
           {isTablet && (
             <div className="hidden sm:block lg:hidden">
               <TabletNav
@@ -225,8 +222,6 @@ export default function Header({ isSearchBar = true }: IHeader) {
             )}
           </AnimatePresence>
         </div>
-
-        {/* Mobile search bar with enhanced dropdown */}
         {isSearchBar && (
           <div
             ref={mobileSearchRef}
@@ -245,7 +240,6 @@ export default function Header({ isSearchBar = true }: IHeader) {
             />
           </div>
         )}
-
         <MobileNav
           isOpen={mobileMenuOpen}
           onLogout={handleLogout}
