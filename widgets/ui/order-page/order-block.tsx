@@ -395,16 +395,6 @@ export function OrderBlock({
           />
         </div>
       </div>
-      {/* Debug button - remove after testing */}
-      <button
-        onClick={() => {
-          console.log("🧪 Force opening popup");
-          setShowGuestAuthPopup(true);
-        }}
-        className="bg-red-500 text-white px-4 py-2 rounded mb-2 mt-4"
-      >
-        Test Popup
-      </button>
     </div>
   );
 
