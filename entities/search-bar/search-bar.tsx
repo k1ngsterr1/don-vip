@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, Mic, Search, X } from "lucide-react";
+import { ArrowRight, Search, X } from "lucide-react";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchProducts } from "../product/hooks/queries/use-search-product";
@@ -55,20 +55,8 @@ export default function SearchBar({
       name: product.name,
     })) || [];
 
-  // If no search results, use popular products as suggestions
-  const popularProducts = [
-    "Mobile Legends",
-    "PUBG Mobile",
-    "Bigo Live",
-    "Free Fire",
-    "TikTok Coins",
-  ];
-
-  // Use search results if available, otherwise use popular products
-  const displaySuggestions: ProductSuggestion[] =
-    suggestions.length > 0
-      ? suggestions
-      : popularProducts.map((name) => ({ id: null, name }));
+  // Only use actual search results, no popular products fallback
+  const displaySuggestions: ProductSuggestion[] = suggestions;
 
   // Get recent searches from localStorage
   const [recentSearches, setRecentSearches] = useState<ProductSuggestion[]>([]);
@@ -321,30 +309,34 @@ export default function SearchBar({
             >
               {/* Suggestions */}
               <div className="p-2">
-                <div className="px-3 py-2">
-                  <h3 className="text-xs font-medium text-gray-500 uppercase">
-                    Популярные запросы
-                  </h3>
-                </div>
+                {displaySuggestions.length > 0 && (
+                  <>
+                    <div className="px-3 py-2">
+                      <h3 className="text-xs font-medium text-gray-500 uppercase">
+                        Результаты поиска
+                      </h3>
+                    </div>
 
-                {displaySuggestions.map((suggestion, index) => (
-                  <motion.div
-                    key={`suggestion-${suggestion.id || index}-${
-                      suggestion.name
-                    }`}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
-                    <button
-                      className="flex items-center px-3 py-2 w-full hover:bg-gray-50 rounded-md text-left"
-                      onClick={() => handleSuggestionClick(suggestion)}
-                    >
-                      <Search size={14} className="text-gray-400 mr-2" />
-                      <span>{suggestion.name}</span>
-                    </button>
-                  </motion.div>
-                ))}
+                    {displaySuggestions.map((suggestion, index) => (
+                      <motion.div
+                        key={`suggestion-${suggestion.id || index}-${
+                          suggestion.name
+                        }`}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                      >
+                        <button
+                          className="flex items-center px-3 py-2 w-full hover:bg-gray-50 rounded-md text-left"
+                          onClick={() => handleSuggestionClick(suggestion)}
+                        >
+                          <Search size={14} className="text-gray-400 mr-2" />
+                          <span>{suggestion.name}</span>
+                        </button>
+                      </motion.div>
+                    ))}
+                  </>
+                )}
 
                 {/* Recent searches */}
                 {recentSearches.length > 0 && (

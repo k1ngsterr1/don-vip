@@ -122,6 +122,7 @@ export function RegisterForm() {
   }>({});
   const [isRedirecting, setIsRedirecting] = useState(false);
   const router = useRouter();
+  const [debugInfo, setDebugInfo] = useState<string | null>(null);
 
   const {
     mutate: register,
@@ -131,16 +132,12 @@ export function RegisterForm() {
 
   const isFormFilled = identifier.trim() !== "" && password.trim() !== "";
 
-  // Detect if input is email or phone number
   useEffect(() => {
     const input = identifier.trim();
     if (input) {
-      // Check if input contains @ symbol (likely an email)
       if (input.includes("@")) {
         setIdentifierType("email");
-      }
-      // Check if input is mostly numeric (likely a phone number)
-      else if (input.replace(/[^0-9]/g, "").length > input.length / 2) {
+      } else if (input.replace(/[^0-9]/g, "").length > input.length / 2) {
         setIdentifierType("phone");
       }
     }
@@ -151,13 +148,11 @@ export function RegisterForm() {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return emailRegex.test(value);
     } else {
-      // Phone validation - check if it has at least 10 digits
       const digitsOnly = value.replace(/\D/g, "");
       return digitsOnly.length >= 10;
     }
   };
 
-  // Update the validatePassword function to allow for medium difficulty passwords
   const validatePassword = (password: string) => {
     const hasMinLength = password.length >= 8;
     const hasUppercase = /[A-Z]/.test(password);
@@ -165,7 +160,6 @@ export function RegisterForm() {
     const hasNumber = /[0-9]/.test(password);
     const hasSpecialChar = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
 
-    // Require at least 3 of the 5 criteria (medium difficulty)
     const criteriaMet = [
       hasMinLength,
       hasUppercase,
@@ -173,11 +167,33 @@ export function RegisterForm() {
       hasNumber,
       hasSpecialChar,
     ].filter(Boolean).length;
-    return criteriaMet >= 3;
+
+    return criteriaMet >= 2;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    const hasMinLength = password.length >= 8;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecialChar = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
+    const criteriaMet = [
+      hasMinLength,
+      hasUppercase,
+      hasLowercase,
+      hasNumber,
+      hasSpecialChar,
+    ].filter(Boolean).length;
+
+    setDebugInfo(`Password: ${password}
+    Length ≥ 8: ${hasMinLength ? "✓" : "✗"}
+    Uppercase: ${hasUppercase ? "✓" : "✗"}
+    Lowercase: ${hasLowercase ? "✓" : "✗"}
+    Number: ${hasNumber ? "✓" : "✗"}
+    Special: ${hasSpecialChar ? "✓" : "✗"}
+    Criteria met: ${criteriaMet}/5`);
 
     const newErrors = {
       identifier: !identifier
@@ -231,6 +247,14 @@ export function RegisterForm() {
           setErrors({
             identifier: errorMessage,
           });
+
+          // Add error details to debug info
+          setDebugInfo(
+            (prev) =>
+              `${prev || ""}\n\nError: ${JSON.stringify(
+                error.response?.data || error.message
+              )}`
+          );
         },
       }
     );
@@ -242,7 +266,7 @@ export function RegisterForm() {
   return (
     <div className="max-w-md mx-auto relative">
       <AuthLoadingOverlay isVisible={showLoadingOverlay} state={loadingState} />
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className={`space-y-5`}>
         <div className="relative">
           <AuthInput
             type={identifierType === "phone" ? "tel" : "email"}
@@ -286,7 +310,6 @@ export function RegisterForm() {
             </button>
           </div>
         </div>
-
         <div className="space-y-1">
           <AuthInput
             type="password"
@@ -300,6 +323,8 @@ export function RegisterForm() {
               if (e.target.value && !showPasswordHints) {
                 setShowPasswordHints(true);
               }
+              // Clear debug info when password changes
+              if (debugInfo) setDebugInfo(null);
             }}
             showPasswordToggle
             disabled={showLoadingOverlay}
@@ -315,6 +340,17 @@ export function RegisterForm() {
             }
           />
           {showPasswordHints && <PasswordStrength password={password} />}
+          {showPasswordHints && password.length > 0 && (
+            <div className="text-xs mt-1">
+              {validatePassword(password) ? (
+                <span className="text-green-600">✓ Password is acceptable</span>
+              ) : (
+                <span className="text-gray-500">
+                  Password needs at least 2 criteria
+                </span>
+              )}
+            </div>
+          )}
         </div>
         {registerError && !showLoadingOverlay && (
           <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
@@ -323,7 +359,6 @@ export function RegisterForm() {
               : translateError("Registration failed", locale)}
           </div>
         )}
-
         <Button
           type="submit"
           className={`w-full rounded-full text-white py-3 md:py-4 text-sm md:text-base ${
