@@ -51,11 +51,8 @@ export const authApi = {
    * Register a new user + userId in body
    */
   register: async (userData: RegisterDto): Promise<TokenResponse> => {
-    const userId = await getUserId();
-
     const response = await apiClient.post<TokenResponse>("/auth/register", {
       ...userData,
-      id: userId,
     });
     return response.data;
   },
