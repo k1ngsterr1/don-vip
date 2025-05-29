@@ -22,6 +22,19 @@ export interface ResendCodePayload {
   lang: "ru" | "en"; // Or your Language enum if defined client-side
 }
 
+// Reset password with token payload
+export interface ResetPasswordWithTokenPayload {
+  new_password: string;
+  token: string;
+}
+
+// Reset password response
+export interface ResetPasswordResponse {
+  id: string;
+  identifier: string;
+  role: string;
+}
+
 function formatBirthDateToISO(date: string): string {
   if (!date) return ""; // Handle cases where date might be undefined or empty
   if (date.includes(".")) {
@@ -163,6 +176,24 @@ export const userApi = {
     // or /user/${userId}/avatar if admin operation or specific user context.
     // Assuming it operates on the authenticated user for simplicity.
     const response = await apiClient.delete<User>(`/user/avatar`);
+    return response.data;
+  },
+
+  /**
+   * Reset password using a token from email link
+   */
+  resetPasswordWithToken: async (
+    data: ResetPasswordWithTokenPayload
+  ): Promise<ResetPasswordResponse> => {
+    const response = await apiClient.post<ResetPasswordResponse>(
+      "/user/reset-password",
+      { new_password: data.new_password },
+      {
+        headers: {
+          Authorization: `Bearer ${data.token}`,
+        },
+      }
+    );
     return response.data;
   },
 };

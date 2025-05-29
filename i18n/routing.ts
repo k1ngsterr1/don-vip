@@ -17,6 +17,7 @@ export const routing = defineRouting({
     "/auth/transitor": "/auth/transitor",
     "/auth/external-callback": "/auth/external-callback",
     "/auth/loading": "/auth/loading",
+    "/reset-password": "/reset-password",
 
     "/contact": "/contact",
     "/games": "/games",

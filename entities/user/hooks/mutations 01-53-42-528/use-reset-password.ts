@@ -1,27 +1,18 @@
-// lib/hooks/user/use-reset-password.ts
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiClient } from "@/shared/config/apiClient";
-
-interface ResetPasswordDto {
-  old_password: string;
-  new_password: string;
-  confirm_password: string;
-}
+import { useMutation } from "@tanstack/react-query";
+import { ResetPasswordWithTokenPayload, userApi } from "../../auth/user-api";
 
 /**
- * Hook to reset the user's password
+ * Hook to reset password using a token from email link
  */
-export function useResetPassword() {
-  const queryClient = useQueryClient();
-
+export function useResetPasswordWithToken() {
   return useMutation({
-    mutationFn: async (data: ResetPasswordDto) => {
-      const response = await apiClient.post("/user/reset-password", data);
-      return response.data;
+    mutationFn: (data: ResetPasswordWithTokenPayload) =>
+      userApi.resetPasswordWithToken(data),
+    onSuccess: (data) => {
+      console.log("Password reset successful:", data);
     },
-    onSuccess: () => {
-      // Invalidate user data after password reset
-      queryClient.invalidateQueries({ queryKey: ["user"] });
+    onError: (error) => {
+      console.error("Password reset failed:", error);
     },
   });
 }
