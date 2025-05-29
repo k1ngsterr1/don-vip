@@ -52,7 +52,7 @@ export function AuthMenu() {
       <>
         <Link
           href="/auth/login"
-          className="text-[15px] md:text-base text-dark font-condensed hover:text-blue-600 transition-colors md:bg-transparent md:hover:bg-gray-50 md:px-4 md:py-2 md:rounded-full"
+          className="text-[15px] !cursor-pointer md:text-base text-dark font-condensed hover:text-blue-600 transition-colors md:bg-transparent md:hover:bg-gray-50 md:px-4 md:py-2 md:rounded-full"
         >
           {t("login")}
         </Link>
@@ -61,7 +61,7 @@ export function AuthMenu() {
           onClick={() =>
             window.open("https://api.don-vip.online/api/auth/google")
           }
-          className="w-[22px] h-[22px] md:w-[36px] md:h-[36px] flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition-colors"
+          className="w-[22px] !cursor-pointer h-[22px] md:w-[36px] md:h-[36px] flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition-colors"
         >
           <Image
             src={google || "/placeholder.svg"}
@@ -88,14 +88,13 @@ export function AuthMenu() {
             className="rounded-full object-cover w-8 h-8"
           />
         ) : (
-          <div className="w-8 h-8 bg-blue rounded-full flex items-center justify-center text-white uppercase">
+          <div className="w-8 h-8 !cursor-pointer bg-blue rounded-full flex items-center justify-center text-white uppercase">
             {currentUser?.first_name?.[0] ||
               currentUser?.identifier?.[0] ||
               "U"}
           </div>
         )}
       </button>
-
       {userMenuOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
           <Link
@@ -103,14 +102,14 @@ export function AuthMenu() {
               pathname: "/profile/[id]",
               params: { id: String(currentUser?.id || 1) },
             }}
-            className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+            className="block !cursor-pointer px-4 py-2 text-gray-800 hover:bg-gray-100"
             onClick={() => setUserMenuOpen(false)}
           >
             {t("profile")}
           </Link>
           <button
             onClick={handleLogout}
-            className="flex items-center w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+            className="flex !cursor-pointer items-center w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
           >
             <LogOut size={16} className="mr-2" />
             {t("logout")}

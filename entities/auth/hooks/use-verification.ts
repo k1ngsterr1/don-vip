@@ -4,7 +4,6 @@ import type React from "react";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { resendVerificationCode, verifyCode } from "../api/verification.api";
 import { translateErrorMessage } from "@/shared/utils/error-translations";
 import { userApi } from "@/entities/user/auth/user-api";
 
@@ -63,7 +62,9 @@ export function useVerification(
         }, 800);
       }, 1500);
     } catch (err: any) {
-      const errorMessage = translateErrorMessage(err.message);
+      const errorMessage = translateErrorMessage(
+        err.message || "Verification failed"
+      );
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -74,12 +75,18 @@ export function useVerification(
     if (resendCooldown > 0) return;
 
     setIsLoading(true);
+    setError(null); // Clear previous errors before resending
     try {
-      await resendVerificationCode(identifier);
+      // Use userApi.resendVerificationCode instead of the imported function
+      await userApi.resendVerificationCode({
+        identifier,
+        lang: locale as "ru" | "en", // Type assertion to match the expected type
+      });
       setResendCooldown(60); // 60 second cooldown
     } catch (err: any) {
-      const errorMessage = translateErrorMessage(err.messagew);
-
+      const errorMessage = translateErrorMessage(
+        err.message || "Failed to resend code"
+      );
       setError(errorMessage);
     } finally {
       setIsLoading(false);

@@ -26,7 +26,7 @@ export default function ExternalCallbackBlock() {
         setTokens(accessToken, refreshToken);
 
         // Redirect to home page
-        router.push("/");
+        router.push("/ru");
       } catch (err) {
         setError(err instanceof Error ? err.message : "Authentication failed");
       }

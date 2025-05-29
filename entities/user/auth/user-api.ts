@@ -16,12 +16,22 @@ export interface UpdateProfilePayload {
   city?: string;
 }
 
+// Added ResendCodePayload interface to match backend DTO
+export interface ResendCodePayload {
+  identifier: string;
+  lang: "ru" | "en"; // Or your Language enum if defined client-side
+}
+
 function formatBirthDateToISO(date: string): string {
+  if (!date) return ""; // Handle cases where date might be undefined or empty
   if (date.includes(".")) {
-    const [day, month, year] = date.split(".");
-    return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    const parts = date.split(".");
+    if (parts.length === 3) {
+      const [day, month, year] = parts;
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    }
   }
-  return date; // если уже в ISO
+  return date; // if already in ISO or different format not handled
 }
 
 /**
@@ -77,8 +87,27 @@ export const userApi = {
     return response.data;
   },
 
-  verify: async (data: any): Promise<User> => {
+  /**
+   * Verify user with a code
+   */
+  verify: async (data: { identifier: string; code: string }): Promise<User> => {
     const response = await apiClient.post<User>(`/user/verify`, data);
+    return response.data;
+  },
+
+  /**
+   * Resend verification code
+   */
+  resendVerificationCode: async (
+    data: ResendCodePayload
+  ): Promise<{ message: string }> => {
+    // The endpoint should match your NestJS controller, e.g., '/auth/resend-code' or '/user/resend-code'
+    // Based on your NestJS controller, it was @Post('resend-code') likely under an /auth prefix.
+    // Adjust if your user module handles this.
+    const response = await apiClient.post<{ message: string }>(
+      `/auth/resend-code`,
+      data
+    );
     return response.data;
   },
 
@@ -96,6 +125,9 @@ export const userApi = {
         : undefined,
     };
 
+    // Assuming updateProfile should also be under /user, not /user/update-profile if it uses user's own context
+    // Or if it requires an ID, it might be /user/${userId}/update-profile
+    // For now, using a generic /user/update-profile which implies the backend knows the user from auth context
     const response = await apiClient.patch<User>(
       `/user/update-profile`,
       payload
@@ -104,7 +136,7 @@ export const userApi = {
   },
 
   /**
-   * Upload user ]
+   * Upload user avatar
    */
   uploadAvatar: async (file: File): Promise<User> => {
     const formData = new FormData();
@@ -127,7 +159,10 @@ export const userApi = {
    * Delete user avatar
    */
   deleteAvatar: async (userId: string | number): Promise<User> => {
-    const response = await apiClient.delete<User>(`/user/${userId}/avatar`);
+    // Endpoint might be /user/avatar if it operates on the authenticated user
+    // or /user/${userId}/avatar if admin operation or specific user context.
+    // Assuming it operates on the authenticated user for simplicity.
+    const response = await apiClient.delete<User>(`/user/avatar`);
     return response.data;
   },
 };

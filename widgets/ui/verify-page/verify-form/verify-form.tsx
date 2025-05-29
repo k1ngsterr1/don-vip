@@ -29,7 +29,7 @@ export function VerifyForm() {
     setError,
     resendCooldown,
     handleSubmit,
-    handleResendCode,
+    handleResendCode, // Use the function directly from the hook
   } = useVerification(identifier, returnUrl, locale);
 
   // Show loading overlay when loading or redirecting
@@ -45,7 +45,6 @@ export function VerifyForm() {
 
   return (
     <div className="max-w-md mx-auto relative">
-      {/* Reusable loading overlay */}
       <AuthLoadingOverlay
         isVisible={showLoadingOverlay}
         //@ts-ignore
@@ -77,7 +76,7 @@ export function VerifyForm() {
         </form>
         <VerificationFooter
           resendCooldown={resendCooldown}
-          onResendCode={handleResendCode}
+          onResendCode={handleResendCode} // Use handleResendCode directly from the hook
           isDisabled={isInputDisabled}
         />
       </div>
