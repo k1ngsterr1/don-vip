@@ -14,7 +14,6 @@ export default function ExternalCallbackBlock() {
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // Extract tokens directly from the URL
         const accessToken = searchParams.get("access");
         const refreshToken = searchParams.get("refresh");
 
@@ -22,10 +21,8 @@ export default function ExternalCallbackBlock() {
           throw new Error("Missing tokens in URL");
         }
 
-        // Save tokens to auth store
         setTokens(accessToken, refreshToken);
 
-        // Redirect to home page
         router.push("/ru");
       } catch (err) {
         setError(err instanceof Error ? err.message : "Authentication failed");

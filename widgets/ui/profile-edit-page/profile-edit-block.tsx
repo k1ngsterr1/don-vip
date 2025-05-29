@@ -22,7 +22,6 @@ export function ProfileEditClient() {
   const uploadAvatarMutation = useUploadAvatar();
   const t = useTranslations("profileEdit");
 
-  // Directly fetch user data with useQuery
   const {
     data: user,
     isLoading,
