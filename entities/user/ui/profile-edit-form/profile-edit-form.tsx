@@ -12,8 +12,57 @@ import {
   UserIcon,
   UserRound,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "@/i18n/routing";
+
+// Phone number formatting function
+function formatPhoneNumber(value: string): string {
+  // Remove all non-digit characters except +
+  const cleaned = value.replace(/[^\d+]/g, "");
+
+  // If it starts with +7, format as Russian number
+  if (cleaned.startsWith("+7") || cleaned.startsWith("7")) {
+    const digits = cleaned.replace(/^\+?7/, "");
+    if (digits.length >= 10) {
+      const formatted = digits.slice(0, 10);
+      return `+7 (${formatted.slice(0, 3)}) ${formatted.slice(
+        3,
+        6
+      )}-${formatted.slice(6, 8)}-${formatted.slice(8, 10)}`;
+    } else if (digits.length > 0) {
+      // Partial formatting for incomplete numbers
+      if (digits.length <= 3) {
+        return `+7 (${digits}`;
+      } else if (digits.length <= 6) {
+        return `+7 (${digits.slice(0, 3)}) ${digits.slice(3)}`;
+      } else if (digits.length <= 8) {
+        return `+7 (${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(
+          6
+        )}`;
+      } else {
+        return `+7 (${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(
+          6,
+          8
+        )}-${digits.slice(8)}`;
+      }
+    }
+  }
+
+  return value;
+}
+
+// Function to get clean phone number for API submission
+function getCleanPhoneNumber(formattedPhone: string): string {
+  // Remove all formatting, keep only digits and +
+  const cleaned = formattedPhone.replace(/[^\d+]/g, "");
+
+  // Ensure it starts with +7 for Russian numbers
+  if (cleaned.startsWith("7") && !cleaned.startsWith("+7")) {
+    return "+" + cleaned;
+  }
+
+  return cleaned;
+}
 
 interface User {
   id?: number;
@@ -47,32 +96,15 @@ export function ProfileEditForm({
   // Check if identifier is email or phone using @ symbol
   const isEmail = user.identifier.includes("@");
 
+  // Initialize form data with proper values
   const [formData, setFormData] = useState({
     first_name: user.first_name || "",
     last_name: user.last_name || "",
     gender: user.gender || "other",
     birth_date: user.birth_date || "",
-    phone: user.phone || "",
-    email: user.email || "",
+    phone: isEmail ? user.phone || "" : formatPhoneNumber(user.identifier), // Format phone from identifier
+    email: isEmail ? user.identifier : user.email || "", // Set email from identifier if is email
   });
-
-  useEffect(() => {
-    if (user.identifier) {
-      if (isEmail) {
-        // If identifier contains @, it's an email
-        setFormData((prev) => ({
-          ...prev,
-          email: user.identifier,
-        }));
-      } else {
-        // If identifier doesn't contain @, it's a phone number
-        setFormData((prev) => ({
-          ...prev,
-          phone: user.identifier,
-        }));
-      }
-    }
-  }, [user.identifier, isEmail]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -80,7 +112,14 @@ export function ProfileEditForm({
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "phone") {
+      // Format phone number as user types
+      const formatted = formatPhoneNumber(value);
+      setFormData((prev) => ({ ...prev, [name]: formatted }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -97,7 +136,7 @@ export function ProfileEditForm({
         ...(formData.birth_date && {
           birth_date: formData.birth_date,
         }),
-        ...(formData.phone && { phone: formData.phone }),
+        ...(formData.phone && { phone: getCleanPhoneNumber(formData.phone) }), // Clean phone for API
         ...(formData.email && { email: formData.email }),
       };
 
@@ -197,23 +236,25 @@ export function ProfileEditForm({
         </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium mb-1">
-          {i18n("fields.email")}
-        </label>
-        <div className="flex items-center relative">
-          <div className="flex-1 p-3 bg-gray-50 rounded-lg border border-gray-200 flex items-center">
-            <Mail size={18} className="text-dark p mr-2" />
-            <span>{formData.email}</span>
+      {isEmail && (
+        <div>
+          <label className="block text-sm font-medium mb-1">
+            {i18n("fields.email")}
+          </label>
+          <div className="flex items-center relative">
+            <div className="flex-1 p-3 bg-gray-50 rounded-lg border border-gray-200 flex items-center">
+              <Mail size={18} className="text-dark p mr-2" />
+              <span>{formData.email}</span>
+            </div>
+            <button
+              type="button"
+              className="ml-2 absolute right-4 text-blue font-medium"
+            >
+              {i18n("buttons.change")}
+            </button>
           </div>
-          <button
-            type="button"
-            className="ml-2 absolute right-4 text-blue font-medium"
-          >
-            {i18n("buttons.change")}
-          </button>
         </div>
-      </div>
+      )}
 
       <div className="pt-4">
         <Button
@@ -321,16 +362,18 @@ export function ProfileEditForm({
             className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
           />
 
-          <FormField
-            label={i18n("fields.email")}
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            type="email"
-            icon={<Mail size={18} />}
-            className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
-            readOnly
-          />
+          {isEmail && (
+            <FormField
+              label={i18n("fields.email")}
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              type="email"
+              icon={<Mail size={18} />}
+              className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
+              readOnly
+            />
+          )}
         </div>
       </div>
 
