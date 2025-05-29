@@ -15,7 +15,7 @@ import {
 import { useState } from "react";
 import { useRouter } from "@/i18n/routing";
 
-// Phone number formatting function
+// Simple +7 phone formatter
 function formatPhoneNumber(value: string): string {
   // Remove all non-digit characters except +
   const cleaned = value.replace(/[^\d+]/g, "");
@@ -46,22 +46,20 @@ function formatPhoneNumber(value: string): string {
         )}-${digits.slice(8)}`;
       }
     }
+    return "+7 (";
   }
 
-  return value;
-}
-
-// Function to get clean phone number for API submission
-function getCleanPhoneNumber(formattedPhone: string): string {
-  // Remove all formatting, keep only digits and +
-  const cleaned = formattedPhone.replace(/[^\d+]/g, "");
-
-  // Ensure it starts with +7 for Russian numbers
-  if (cleaned.startsWith("7") && !cleaned.startsWith("+7")) {
-    return "+" + cleaned;
+  // If it doesn't start with +7 or 7, add +7 prefix
+  if (cleaned && !cleaned.startsWith("+") && !cleaned.startsWith("7")) {
+    return formatPhoneNumber("+7" + cleaned);
   }
 
-  return cleaned;
+  // If it starts with just 7, add + prefix
+  if (cleaned.startsWith("7") && !cleaned.startsWith("+")) {
+    return formatPhoneNumber("+" + cleaned);
+  }
+
+  return cleaned || "+7 (";
 }
 
 interface User {
@@ -72,7 +70,7 @@ interface User {
   birth_date?: string | null;
   phone?: string | null;
   email?: string | null;
-  identifier: string;
+  identifier: string; // This is the primary login credential (phone or email)
   avatar?: string;
   role?: string;
 }
@@ -94,7 +92,7 @@ export function ProfileEditForm({
   const router = useRouter();
 
   // Check if identifier is email or phone using @ symbol
-  const isEmail = user.identifier.includes("@");
+  const isIdentifierEmail = user.identifier?.includes("@");
 
   // Initialize form data with proper values
   const [formData, setFormData] = useState({
@@ -102,8 +100,13 @@ export function ProfileEditForm({
     last_name: user.last_name || "",
     gender: user.gender || "other",
     birth_date: user.birth_date || "",
-    phone: isEmail ? user.phone || "" : formatPhoneNumber(user.identifier), // Format phone from identifier
-    email: isEmail ? user.identifier : user.email || "", // Set email from identifier if is email
+    // Use identifier as primary value, fallback to separate fields
+    phone: isIdentifierEmail
+      ? user.phone
+        ? formatPhoneNumber(user.phone)
+        : ""
+      : formatPhoneNumber(user.identifier || ""),
+    email: isIdentifierEmail ? user.identifier : user.email || "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -114,7 +117,7 @@ export function ProfileEditForm({
     const { name, value } = e.target;
 
     if (name === "phone") {
-      // Format phone number as user types
+      // Format phone number as user types with +7 format
       const formatted = formatPhoneNumber(value);
       setFormData((prev) => ({ ...prev, [name]: formatted }));
     } else {
@@ -136,7 +139,7 @@ export function ProfileEditForm({
         ...(formData.birth_date && {
           birth_date: formData.birth_date,
         }),
-        ...(formData.phone && { phone: getCleanPhoneNumber(formData.phone) }), // Clean phone for API
+        ...(formData.phone && { phone: formData.phone }), // Keep formatting for API
         ...(formData.email && { email: formData.email }),
       };
 
@@ -218,6 +221,11 @@ export function ProfileEditForm({
       <div>
         <label className="block text-sm font-medium mb-1">
           {i18n("fields.phone")}
+          {!isIdentifierEmail && (
+            <span className="ml-1 text-xs text-blue-600">
+              ({i18n("labels.primary")})
+            </span>
+          )}
         </label>
         <div className="flex items-center relative">
           <input
@@ -226,6 +234,7 @@ export function ProfileEditForm({
             value={formData.phone}
             onChange={handleChange}
             className="flex-1 p-3 bg-gray-50 rounded-lg border border-gray-200"
+            placeholder="+7 (XXX) XXX-XX-XX"
           />
           <button
             type="button"
@@ -236,25 +245,32 @@ export function ProfileEditForm({
         </div>
       </div>
 
-      {isEmail && (
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            {i18n("fields.email")}
-          </label>
-          <div className="flex items-center relative">
-            <div className="flex-1 p-3 bg-gray-50 rounded-lg border border-gray-200 flex items-center">
-              <Mail size={18} className="text-dark p mr-2" />
-              <span>{formData.email}</span>
-            </div>
-            <button
-              type="button"
-              className="ml-2 absolute right-4 text-blue font-medium"
-            >
-              {i18n("buttons.change")}
-            </button>
-          </div>
+      <div>
+        <label className="block text-sm font-medium mb-1">
+          {i18n("fields.email")}
+          {isIdentifierEmail && (
+            <span className="ml-1 text-xs text-blue-600">
+              ({i18n("labels.primary")})
+            </span>
+          )}
+        </label>
+        <div className="flex items-center relative">
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            className="flex-1 p-3 bg-gray-50 rounded-lg border border-gray-200"
+            placeholder="example@email.com"
+          />
+          <button
+            type="button"
+            className="ml-2 absolute right-4 text-blue font-medium"
+          >
+            {i18n("buttons.change")}
+          </button>
         </div>
-      )}
+      </div>
 
       <div className="pt-4">
         <Button
@@ -352,28 +368,37 @@ export function ProfileEditForm({
             mask="date"
           />
 
-          <FormField
-            label={i18n("fields.phone")}
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            type="tel"
-            icon={<Phone size={18} />}
-            className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
-          />
-
-          {isEmail && (
+          <div>
+            <label className="block text-sm font-medium mb-2 text-gray-700">
+              {i18n("fields.phone")}
+            </label>
             <FormField
-              label={i18n("fields.email")}
+              label={""}
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              type="tel"
+              icon={<Phone size={18} />}
+              className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
+              placeholder="+7 (XXX) XXX-XX-XX"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2 text-gray-700">
+              {i18n("fields.email")}
+            </label>
+            <FormField
+              label=""
               name="email"
               value={formData.email}
               onChange={handleChange}
               type="email"
               icon={<Mail size={18} />}
               className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
-              readOnly
+              placeholder="example@email.com"
             />
-          )}
+          </div>
         </div>
       </div>
 

@@ -5,8 +5,8 @@ import { getUserId } from "@/shared/hooks/use-get-user-id";
 
 // Types
 export interface UpdateProfilePayload {
-  firstName?: string;
-  lastName?: string;
+  first_name?: string;
+  last_name?: string;
   bio?: string;
   phone?: string;
   birth_date?: string;
@@ -14,6 +14,7 @@ export interface UpdateProfilePayload {
   telegramUsername?: string;
   country?: string;
   city?: string;
+  gender?: string;
 }
 
 // Added ResendCodePayload interface to match backend DTO

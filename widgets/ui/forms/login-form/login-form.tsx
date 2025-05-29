@@ -16,7 +16,6 @@ import { Link } from "@/i18n/navigation";
 import { useRouter } from "@/i18n/routing";
 import {
   formatPhoneNumber,
-  getCleanPhoneNumber,
   isValidPhoneNumber,
 } from "@/shared/utils/phone-formatter";
 
@@ -228,8 +227,9 @@ export function LoginForm() {
     // Format the identifier based on type
     let formattedIdentifier = identifier.trim();
     if (identifierType === "phone") {
-      // For phone numbers, get the clean version for API submission
-      formattedIdentifier = getCleanPhoneNumber(identifier);
+      // For phone numbers, ensure it's properly formatted for API submission
+      // Keep the formatting (parentheses and dashes) as the backend expects it
+      formattedIdentifier = formatPhoneNumber(identifier);
     }
 
     // For debugging - log the identifier that will be sent
