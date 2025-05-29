@@ -14,6 +14,11 @@ import { useLogin } from "@/entities/auth/hooks/use-auth";
 import { PasswordStrength } from "@/shared/ui/password-strength/password-strength";
 import { Link } from "@/i18n/navigation";
 import { useRouter } from "@/i18n/routing";
+import {
+  formatPhoneNumber,
+  getCleanPhoneNumber,
+  isValidPhoneNumber,
+} from "@/shared/utils/phone-formatter";
 
 // Enhanced error translations for all possible input errors
 const errorTranslations: Record<string, Record<string, string>> = {
@@ -163,9 +168,24 @@ export function LoginForm() {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return emailRegex.test(value);
     } else {
-      // Phone validation - check if it has at least 10 digits
-      const digitsOnly = value.replace(/\D/g, "");
-      return digitsOnly.length >= 10;
+      // Use the phone validation utility
+      return isValidPhoneNumber(value);
+    }
+  };
+
+  const handleIdentifierChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    if (identifierType === "phone") {
+      // Format phone number as user types
+      const formatted = formatPhoneNumber(value);
+      setIdentifier(formatted);
+    } else {
+      setIdentifier(value);
+    }
+
+    if (errors.identifier) {
+      setErrors((prev) => ({ ...prev, identifier: undefined }));
     }
   };
 
@@ -208,32 +228,8 @@ export function LoginForm() {
     // Format the identifier based on type
     let formattedIdentifier = identifier.trim();
     if (identifierType === "phone") {
-      // For phone numbers, extract only the digits
-      const digitsOnly = formattedIdentifier.replace(/\D/g, "");
-
-      // Make sure we have digits to work with
-      if (digitsOnly.length > 0) {
-        // If it's a Russian number (starts with +7), format accordingly
-        if (formattedIdentifier.includes("+7")) {
-          // Remove the country code if it's duplicated in the digits
-          const phoneDigits = digitsOnly.startsWith("7")
-            ? digitsOnly.substring(1)
-            : digitsOnly;
-          formattedIdentifier = "+7" + phoneDigits;
-        } else {
-          // For other numbers, ensure it has a + prefix
-          formattedIdentifier =
-            "+" + (digitsOnly.startsWith("1") ? digitsOnly : "1" + digitsOnly);
-        }
-      } else {
-        // If somehow we don't have digits but have a phone type, use a default
-        formattedIdentifier = "+1";
-      }
-
-      // Ensure we're not sending an empty string
-      if (formattedIdentifier === "+" || formattedIdentifier === "") {
-        formattedIdentifier = "+1";
-      }
+      // For phone numbers, get the clean version for API submission
+      formattedIdentifier = getCleanPhoneNumber(identifier);
     }
 
     // For debugging - log the identifier that will be sent
@@ -291,11 +287,7 @@ export function LoginForm() {
                 : i18n("phonePlaceholder") || "Phone number"
             }
             value={identifier}
-            onChange={(e) => {
-              setIdentifier(e.target.value);
-              if (errors.identifier)
-                setErrors((prev) => ({ ...prev, identifier: undefined }));
-            }}
+            onChange={handleIdentifierChange}
             disabled={isLoading || isRedirecting}
             aria-label={
               identifierType === "email"
