@@ -22,6 +22,7 @@ interface User {
   gender?: string;
   birth_date?: string | null;
   phone?: string | null;
+  email?: string | null;
   identifier: string;
   avatar?: string;
   role?: string;
@@ -43,11 +44,8 @@ export function ProfileEditForm({
   const i18n = useTranslations("ProfileEditForm");
   const router = useRouter();
 
-  const isPhoneNumber = (value: string): boolean => {
-    const phoneRegex =
-      /^(\+?\d{1,3}[-.\s]?)?(\(?\d{1,4}\)?[-.\s]?)?\d{1,4}[-.\s]?\d{1,9}$/;
-    return phoneRegex.test(value);
-  };
+  // Check if identifier is email or phone using @ symbol
+  const isEmail = user.identifier.includes("@");
 
   const [formData, setFormData] = useState({
     first_name: user.first_name || "",
@@ -55,21 +53,26 @@ export function ProfileEditForm({
     gender: user.gender || "other",
     birth_date: user.birth_date || "",
     phone: user.phone || "",
-    identifier: user.identifier || "",
+    email: user.email || "",
   });
 
   useEffect(() => {
     if (user.identifier) {
-      const identifierIsPhone = isPhoneNumber(user.identifier);
-
-      if (identifierIsPhone && !user.phone) {
+      if (isEmail) {
+        // If identifier contains @, it's an email
+        setFormData((prev) => ({
+          ...prev,
+          email: user.identifier,
+        }));
+      } else {
+        // If identifier doesn't contain @, it's a phone number
         setFormData((prev) => ({
           ...prev,
           phone: user.identifier,
         }));
       }
     }
-  }, [user.identifier, user.phone]);
+  }, [user.identifier, isEmail]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -95,7 +98,7 @@ export function ProfileEditForm({
           birth_date: formData.birth_date,
         }),
         ...(formData.phone && { phone: formData.phone }),
-        identifier: formData.identifier, // Always include identifier
+        ...(formData.email && { email: formData.email }),
       };
 
       if (onSubmit) {
@@ -121,13 +124,6 @@ export function ProfileEditForm({
       router.back();
     }
   };
-
-  // Determine if identifier is a phone number
-  const identifierIsPhone = isPhoneNumber(user.identifier);
-  const identifierLabel = identifierIsPhone
-    ? i18n("fields.phone")
-    : i18n("fields.email");
-  const IdentifierIcon = identifierIsPhone ? Phone : Mail;
 
   // Mobile version
   const mobileForm = (
@@ -203,12 +199,12 @@ export function ProfileEditForm({
 
       <div>
         <label className="block text-sm font-medium mb-1">
-          {identifierLabel}
+          {i18n("fields.email")}
         </label>
         <div className="flex items-center relative">
           <div className="flex-1 p-3 bg-gray-50 rounded-lg border border-gray-200 flex items-center">
-            <IdentifierIcon size={18} className="text-dark p mr-2" />
-            <span>{user.identifier}</span>
+            <Mail size={18} className="text-dark p mr-2" />
+            <span>{formData.email}</span>
           </div>
           <button
             type="button"
@@ -326,13 +322,14 @@ export function ProfileEditForm({
           />
 
           <FormField
-            label={identifierLabel}
-            name="identifier"
-            value={formData.identifier}
+            label={i18n("fields.email")}
+            name="email"
+            value={formData.email}
             onChange={handleChange}
-            type={identifierIsPhone ? "tel" : "email"}
-            icon={<IdentifierIcon size={18} />}
-            className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200 text-gray-500"
+            type="email"
+            icon={<Mail size={18} />}
+            className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
+            readOnly
           />
         </div>
       </div>
