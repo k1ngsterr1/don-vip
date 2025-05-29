@@ -12,6 +12,128 @@ import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useRouter } from "@/i18n/routing";
 
+const errorTranslations: Record<string, Record<string, string>> = {
+  en: {
+    // Form validation errors
+    "Email or phone is required": "Email or phone is required",
+    "Invalid email format": "Please enter a valid email address",
+    "Invalid phone number": "Please enter a valid phone number",
+
+    // API errors
+    "User not found": "No account found with this email or phone number",
+    "Account not found": "No account found with this email or phone number",
+    "Email not found": "No account found with this email address",
+    "Phone not found": "No account found with this phone number",
+    "Too many requests":
+      "Too many password reset attempts. Please try again later",
+    "Rate limit exceeded":
+      "Too many password reset attempts. Please try again later",
+    "Password reset failed": "Password reset failed. Please try again later",
+    "Invalid email or phone": "Please enter a valid email or phone number",
+    "Service temporarily unavailable":
+      "Service temporarily unavailable. Please try again later",
+
+    // HTTP status code errors
+    "status code 400": "Please enter a valid email or phone number",
+    "status code 401": "Invalid request. Please try again",
+    "status code 403":
+      "Password reset is temporarily disabled for this account",
+    "status code 404": "No account found with this email or phone number",
+    "status code 422": "Please enter a valid email or phone number",
+    "status code 429":
+      "Too many password reset attempts. Please try again later",
+    "status code 500": "Password reset failed. Please try again later",
+    "status code 502":
+      "Service temporarily unavailable. Please try again later",
+    "status code 503":
+      "Service temporarily unavailable. Please try again later",
+  },
+  ru: {
+    // Form validation errors
+    "Email or phone is required": "Email или телефон обязательны",
+    "Invalid email format": "Пожалуйста, введите корректный email адрес",
+    "Invalid phone number": "Пожалуйста, введите корректный номер телефона",
+
+    // API errors
+    "User not found": "Аккаунт с таким email или телефоном не найден",
+    "Account not found": "Аккаунт с таким email или телефоном не найден",
+    "Email not found": "Аккаунт с таким email адресом не найден",
+    "Phone not found": "Аккаунт с таким номером телефона не найден",
+    "Too many requests":
+      "Слишком много попыток сброса пароля. Попробуйте позже",
+    "Rate limit exceeded":
+      "Слишком много попыток сброса пароля. Попробуйте позже",
+    "Password reset failed":
+      "Ошибка сброса пароля. Пожалуйста, попробуйте позже",
+    "Invalid email or phone":
+      "Пожалуйста, введите корректный email или телефон",
+    "Service temporarily unavailable":
+      "Сервис временно недоступен. Попробуйте позже",
+
+    // HTTP status code errors
+    "status code 400": "Пожалуйста, введите корректный email или телефон",
+    "status code 401": "Неверный запрос. Пожалуйста, попробуйте снова",
+    "status code 403": "Сброс пароля временно отключен для этого аккаунта",
+    "status code 404": "Аккаунт с таким email или телефоном не найден",
+    "status code 422": "Пожалуйста, введите корректный email или телефон",
+    "status code 429": "Слишком много попыток сброса пароля. Попробуйте позже",
+    "status code 500": "Ошибка сброса пароля. Пожалуйста, попробуйте позже",
+    "status code 502": "Сервис временно недоступен. Попробуйте позже",
+    "status code 503": "Сервис временно недоступен. Попробуйте позже",
+  },
+};
+
+// Translate any error message based on current locale
+function translateError(message: string, locale: string): string {
+  const translations = errorTranslations[locale === "ru" ? "ru" : "en"];
+
+  // Check for direct translation
+  if (translations[message]) {
+    return translations[message];
+  }
+
+  // Check for status code errors
+  for (const key of Object.keys(translations)) {
+    if (message.includes(key)) {
+      return translations[key];
+    }
+  }
+
+  // Return original message if no translation found
+  return message;
+}
+
+function getHumanReadableError(error: string, locale = "en"): string {
+  if (error.includes("status code 400")) {
+    return translateError("status code 400", locale);
+  }
+  if (error.includes("status code 401")) {
+    return translateError("status code 401", locale);
+  }
+  if (error.includes("status code 403")) {
+    return translateError("status code 403", locale);
+  }
+  if (error.includes("status code 404")) {
+    return translateError("status code 404", locale);
+  }
+  if (error.includes("status code 422")) {
+    return translateError("status code 422", locale);
+  }
+  if (error.includes("status code 429")) {
+    return translateError("status code 429", locale);
+  }
+  if (error.includes("status code 502")) {
+    return translateError("status code 502", locale);
+  }
+  if (error.includes("status code 503")) {
+    return translateError("status code 503", locale);
+  }
+  if (error.includes("status code")) {
+    return translateError("status code 500", locale);
+  }
+  return translateError(error, locale);
+}
+
 export function ForgotPasswordForm() {
   const router = useRouter();
   const t = useTranslations("forgot_auth.forgotPassword");
@@ -20,7 +142,7 @@ export function ForgotPasswordForm() {
     "email"
   );
   const [error, setError] = useState("");
-  const locale = useLocale(); // ⬅️ получаем текущий язык (например, "ru" или "en")
+  const locale = useLocale();
 
   const { mutate: changePassword, isPending: isLoading } = useChangePassword();
 
@@ -56,15 +178,18 @@ export function ForgotPasswordForm() {
     e.preventDefault();
 
     if (!identifier.trim()) {
-      setError(t("error.required"));
+      setError(translateError("Email or phone is required", locale));
       return;
     }
 
     if (!validateIdentifier(identifier, identifierType)) {
       setError(
-        identifierType === "email"
-          ? t("error.invalidEmail")
-          : t("error.invalidPhone")
+        translateError(
+          identifierType === "email"
+            ? "Invalid email format"
+            : "Invalid phone number",
+          locale
+        )
       );
       return;
     }
@@ -115,18 +240,26 @@ export function ForgotPasswordForm() {
       },
       onError: (error: any) => {
         const message = error?.response?.data?.message;
+        let errorMessage = "";
 
         if (Array.isArray(message)) {
-          // Берём первую ошибку и первое сообщение из constraints
+          // Handle array of validation errors
           const firstError = message[0];
           const constraints = firstError?.constraints;
           const firstConstraintMsg =
             constraints && Object.values(constraints)[0];
 
-          setError(firstConstraintMsg || t("error.required"));
+          errorMessage = firstConstraintMsg || "Invalid request";
         } else {
-          setError(message || t("error.required"));
+          // Handle single error message or HTTP status codes
+          errorMessage =
+            message ||
+            (error.message
+              ? getHumanReadableError(error.message, locale)
+              : "Password reset failed");
         }
+
+        setError(translateError(errorMessage, locale));
       },
     });
   };

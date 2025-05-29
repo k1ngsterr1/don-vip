@@ -7,12 +7,15 @@ import { ReviewList } from "@/entities/reviews/ui/review-list/review-list";
 import { FeedbackPrompt } from "@/widgets/ui/reviews-page/prompt-block/prompt-block";
 import { ReviewsSkeleton } from "../reviews-loading/reviews-loading";
 import { Link } from "@/i18n/navigation";
+import { useAuthStore } from "@/entities/auth/store/auth.store";
+import { AuthorizationPopup } from "@/entities/auth/ui/auth-popup/auth-popup";
 
 export function ReviewsBlock() {
   const t = useTranslations("reviews");
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
-
+  const [isAuthPopupOpen, setIsAuthPopupOpen] = useState(false);
+  const { isAuthenticated } = useAuthStore();
   const { data, isLoading, error } = useAcceptedFeedbacks(page, limit);
 
   const reviews: any[] = data?.data
@@ -41,10 +44,17 @@ export function ReviewsBlock() {
       })
     : [];
 
+  const handleLeaveReviewClick = () => {
+    if (!isAuthenticated) {
+      setIsAuthPopupOpen(true);
+    }
+    // If authenticated, the Link component will handle navigation
+  };
+
   return (
     <div className="w-full md:max-w-[1680px] min-h-[80vh] m-auto  mt-[24px] flex flex-col items-center">
       <FeedbackPrompt />
-      <div className="w-full flex items-start justify-start">
+      <div className="w-full flex items-start mt-8 justify-start">
         <button className="w-[78px] h-[30px] text-[10px] bg-gray-50 rounded-md mb-2">
           {t("filters.all")}
         </button>
@@ -84,12 +94,27 @@ export function ReviewsBlock() {
           </button>
         </div>
       )}
-      <Link
-        href="/send-review"
-        className="w-[194px] fixed flex items-center justify-center bottom-[75px] h-[42px] rounded-full font-roboto font-medium text-[12px] text-white bg-blue"
-      >
-        {t("page.leaveReview")}
-      </Link>
+
+      {/* Leave Review Button - Always visible */}
+      {isAuthenticated ? (
+        <Link
+          href="/send-review"
+          className="w-[194px] fixed flex items-center justify-center bottom-[75px] h-[42px] rounded-full font-roboto font-medium text-[12px] text-white bg-blue"
+        >
+          {t("page.leaveReview")}
+        </Link>
+      ) : (
+        <button
+          onClick={handleLeaveReviewClick}
+          className="w-[194px] fixed flex items-center justify-center bottom-[75px] h-[42px] rounded-full font-roboto font-medium text-[12px] text-white bg-blue hover:bg-blue/90 transition-colors"
+        >
+          {t("page.leaveReview")}
+        </button>
+      )}
+      <AuthorizationPopup
+        isOpen={isAuthPopupOpen}
+        onOpenChange={setIsAuthPopupOpen}
+      />
     </div>
   );
 }

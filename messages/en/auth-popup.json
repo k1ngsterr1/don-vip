@@ -1,0 +1,8 @@
+{
+  "authPopup": {
+    "title": "Authentication Required",
+    "description": "To leave a review, please sign in or create an account. Join our community and share your experience!",
+    "cancelButton": "Cancel",
+    "signInButton": "Sign In / Sign Up"
+  }
+}
