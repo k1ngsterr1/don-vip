@@ -1,3 +1,4 @@
+"use client";
 import { cn } from "@/shared/utils/cn";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
