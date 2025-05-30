@@ -39,69 +39,75 @@ export function AuthInput({
 
   // Format phone number as +7 (XXX) XXX-XX-XX
   const formatPhoneNumber = (value: string) => {
-    if (!value) return "+7";
-
-    // Remove all non-numeric characters
-    let phoneNumber = value.replace(/\D/g, "");
-
-    // If the user tries to delete the +7, keep it
-    if (phoneNumber.length === 0) return "+7";
-
-    // If the number starts with 7 or 8 (common in Russia), remove it as we'll add +7
-    if (phoneNumber.startsWith("7") || phoneNumber.startsWith("8")) {
-      phoneNumber = phoneNumber.substring(1);
-    }
-
-    // Limit to 10 digits (excluding the country code)
+    let phoneNumber = value.replace(/\D/g, "").replace(/^7|8/, "");
     phoneNumber = phoneNumber.substring(0, 10);
 
-    // Apply the mask based on the length of the number
-    if (phoneNumber.length === 0) {
-      return "+7";
-    } else if (phoneNumber.length <= 3) {
-      return `+7 (${phoneNumber})`;
-    } else if (phoneNumber.length <= 6) {
+    if (phoneNumber.length === 0) return "+7";
+    if (phoneNumber.length <= 3) return `+7 (${phoneNumber}`;
+    if (phoneNumber.length <= 6)
       return `+7 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
-    } else if (phoneNumber.length <= 8) {
+    if (phoneNumber.length <= 8)
       return `+7 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
         3,
         6
       )}-${phoneNumber.slice(6)}`;
-    } else {
-      return `+7 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
-        3,
-        6
-      )}-${phoneNumber.slice(6, 8)}-${phoneNumber.slice(8, 10)}`;
-    }
+    return `+7 (${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
+      3,
+      6
+    )}-${phoneNumber.slice(6, 8)}-${phoneNumber.slice(8, 10)}`;
   };
 
-  // Handle input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
+    const raw = e.target.value;
+    const cursorPos = e.target.selectionStart ?? raw.length;
 
-    if (isPhoneMask) {
-      // For phone mask, format the value
-      const formattedValue = formatPhoneNumber(newValue);
-      setInputValue(formattedValue);
+    // Получаем только цифры
+    const rawNumbers = raw.replace(/\D/g, "");
 
-      // Create a synthetic event to pass to the original onChange
-      if (onChange) {
-        const syntheticEvent = {
-          ...e,
-          target: {
-            ...e.target,
-            value: formattedValue,
-          },
-        };
-        onChange(syntheticEvent as React.ChangeEvent<HTMLInputElement>);
-      }
-    } else {
-      // For regular inputs, just update the value normally
-      setInputValue(newValue);
-      if (onChange) {
-        onChange(e);
-      }
+    if (!isPhoneMask) {
+      setInputValue(raw);
+      onChange?.(e);
+      return;
     }
+
+    // Подсчитываем, сколько цифр до курсора
+    let digitsBeforeCursor = 0;
+    for (let i = 0; i < cursorPos; i++) {
+      if (/\d/.test(raw[i])) digitsBeforeCursor++;
+    }
+
+    // Форматируем номер
+    const formatted = formatPhoneNumber(rawNumbers);
+
+    // Устанавливаем новое значение
+    setInputValue(formatted);
+
+    // Передаём в onChange
+    if (onChange) {
+      const syntheticEvent = {
+        ...e,
+        target: {
+          ...e.target,
+          value: formatted,
+        },
+      };
+      onChange(syntheticEvent as React.ChangeEvent<HTMLInputElement>);
+    }
+
+    // Подождём и вернём курсор примерно в то же место
+    setTimeout(() => {
+      const input = e.target;
+      // Считаем позицию курсора заново, пройдя formatted и найдя нужное число цифр
+      let newPos = 0;
+      let digitsCounted = 0;
+      while (digitsCounted < digitsBeforeCursor && newPos < formatted.length) {
+        if (/\d/.test(formatted[newPos])) {
+          digitsCounted++;
+        }
+        newPos++;
+      }
+      input.setSelectionRange?.(newPos, newPos);
+    }, 0);
   };
 
   // Sync with external value changes
