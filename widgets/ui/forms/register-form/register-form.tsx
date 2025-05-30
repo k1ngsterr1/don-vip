@@ -310,17 +310,6 @@ export function RegisterForm() {
             }
           />
           {showPasswordHints && <PasswordStrength password={password} />}
-          {showPasswordHints && password.length > 0 && (
-            <div className="text-xs mt-1">
-              {validatePassword(password) ? (
-                <span className="text-green-600">✓ Password is acceptable</span>
-              ) : (
-                <span className="text-gray-500">
-                  Password needs at least 2 criteria
-                </span>
-              )}
-            </div>
-          )}
         </div>
         {registerError && !showLoadingOverlay && (
           <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">

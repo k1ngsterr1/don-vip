@@ -302,16 +302,6 @@ export function OrderBlock({
         </div>
       )}
       <div className="fixed bottom-20 left-1/2 -translate-x-1/2 px-4 py-2 flex flex-col gap-2">
-        {/* Debug button - remove after testing */}
-        <button
-          onClick={() => {
-            console.log("🧪 Force opening popup");
-            setShowGuestAuthPopup(true);
-          }}
-          className="bg-red-500 text-white px-4 py-2 rounded text-sm"
-        >
-          Test Popup
-        </button>
         <button
           className={cn(
             "w-[140px] py-3 px-[12px] rounded-full text-white font-medium transition-colors",

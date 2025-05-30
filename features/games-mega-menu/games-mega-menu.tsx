@@ -164,7 +164,7 @@ export function GamesMegaMenu() {
                 <motion.div
                   key={game.id}
                   onClick={() => navigate.push(`/product/${game.id}` as any)}
-                  className="text-center"
+                  className="text-center !cursor-pointer"
                   variants={itemVariants}
                   custom={index}
                 >
