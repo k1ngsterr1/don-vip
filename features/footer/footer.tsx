@@ -40,10 +40,7 @@ export default function Footer() {
             />
           </div>
         </div>
-
-        {/* Main content wrapper */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-6">
-          {/* Links section - single column on mobile */}
           <nav className="flex flex-col gap-y-3 mt-4 sm:flex-row sm:flex-wrap sm:gap-x-6 md:gap-x-8">
             {footerLinks.map((link) => (
               <Link
@@ -55,8 +52,6 @@ export default function Footer() {
               </Link>
             ))}
           </nav>
-
-          {/* T-bank for desktop */}
           <div className="hidden sm:block">
             <Image
               src={tbank.src || "/placeholder.svg"}
@@ -67,8 +62,6 @@ export default function Footer() {
             />
           </div>
         </div>
-
-        {/* Copyright section */}
         <div className="mt-6 md:mt-8 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
           <div className="text-sm text-gray-400">{i18n("copyright")}</div>
           <div className="text-xs sm:text-sm text-gray-400">
