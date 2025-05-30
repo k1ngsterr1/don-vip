@@ -3,7 +3,6 @@ import { useTranslations } from "next-intl";
 import FAQItem from "@/shared/ui/faq-item/faq-item";
 import { ArrowLeft, HelpCircle, Search } from "lucide-react";
 import { useState } from "react";
-import FAQCategories from "../faq-categories/faq-categories";
 import { getFAQData } from "@/shared/data/faq-data";
 import { Link } from "@/i18n/navigation";
 
@@ -71,12 +70,6 @@ export default function DesktopFAQ() {
               className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
-        </div>
-        <div className="lg:w-1/3">
-          <FAQCategories
-            activeCategory={activeCategory}
-            setActiveCategory={setActiveCategory}
-          />
         </div>
       </div>
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 lg:p-8">
