@@ -18,16 +18,21 @@ export function ReviewsBlock() {
   const { isAuthenticated } = useAuthStore();
   const { data, isLoading, error } = useAcceptedFeedbacks(page, limit);
 
+  console.log("Fetched data:", data);
+  console.log("Loading state:", isLoading);
+  console.log("Error state:", error);
+
   const reviews: any[] = data?.data
     ? data.data.map((feedback: any) => {
         const isAnonymous =
           !feedback.user?.first_name && !feedback.user?.avatar;
 
-        return {
+        const review = {
           id: feedback.id.toString(),
-          author: isAnonymous
-            ? t("anonymous.user") || "Anonymous User"
-            : feedback.user?.first_name || `User ${feedback.user_id}`,
+          author:
+            isAnonymous || !feedback.user?.first_name
+              ? t("user") || t("user")
+              : feedback.user.first_name,
           date: new Date().toLocaleDateString("ru-RU", {
             day: "numeric",
             month: "short",
@@ -36,13 +41,18 @@ export function ReviewsBlock() {
           product: feedback.product,
           text: feedback.text,
           liked: feedback.reaction === true,
-          avatar: isAnonymous ? null : feedback.user?.avatar || "/mavrodi.png",
+          avatar: isAnonymous ? null : feedback.user?.avatar || null,
           isAnonymous,
           game: feedback.product?.name ?? undefined,
           image: feedback.product?.image ?? undefined,
         };
+
+        console.log("Mapped review:", review);
+        return review;
       })
     : [];
+
+  console.log("Final reviews array:", reviews);
 
   const handleLeaveReviewClick = () => {
     if (!isAuthenticated) {

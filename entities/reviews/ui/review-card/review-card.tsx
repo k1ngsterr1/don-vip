@@ -2,7 +2,7 @@
 
 import { MessageSquare, ThumbsDown, ThumbsUp } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Review } from "../../model/types";
 
 import { useTranslations } from "next-intl";
@@ -22,11 +22,15 @@ export function ReviewCard({ review, isGrid = false }: ReviewCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobileExpanded, setIsMobileExpanded] = useState(false);
 
+  useEffect(() => {
+    console.log("review", review);
+  }, [review]);
+
   // Get author name - use anonymous if first_name is null
-  const authorName = review.user?.first_name || i18n("anonymous");
+  const authorName = review.author || i18n("anonymous");
 
   // Get avatar from user object
-  const avatar = review.user?.avatar || null;
+  const avatar = review.avatar || null;
 
   // Get reaction (liked/disliked)
   const reaction = review.liked;
