@@ -16,6 +16,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
       ...(await import(`../messages/${locale}/login.json`)),
       ...(await import(`../messages/${locale}/auth-popup.json`)),
       ...(await import(`../messages/${locale}/history.json`)),
+      ...(await import(`../messages/${locale}/identifier-popup.json`)),
       ...(await import(`../messages/${locale}/popup.json`)),
       ...(await import(`../messages/${locale}/search.json`)),
       ...(await import(`../messages/${locale}/popup.json`)),

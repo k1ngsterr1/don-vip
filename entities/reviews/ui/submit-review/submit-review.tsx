@@ -72,7 +72,6 @@ export function ReviewForm({ gameId, redirectPath }: ReviewFormProps) {
             disabled={isPending}
           />
         </div>
-
         <div className="flex items-center justify-between">
           <div className="flex gap-4">
             <button
@@ -110,7 +109,7 @@ export function ReviewForm({ gameId, redirectPath }: ReviewFormProps) {
           </div>
           <Button
             type="submit"
-            className={`rounded-full px-6 font-bold ${
+            className={`rounded-full xxs:px-2 xs:px-4 px-6 font-bold ${
               reviewText.trim() && sentiment !== null && !isPending
                 ? "bg-blue text-white hover:bg-blue/90"
                 : "bg-[#AAAAAB] text-white hover:bg-gray-400"
@@ -128,8 +127,6 @@ export function ReviewForm({ gameId, redirectPath }: ReviewFormProps) {
           </Button>
         </div>
       </form>
-
-      {/* Error message */}
       {isError && (
         <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md flex items-start">
           <AlertCircle
@@ -150,8 +147,6 @@ export function ReviewForm({ gameId, redirectPath }: ReviewFormProps) {
           </div>
         </div>
       )}
-
-      {/* Success message */}
       {isSuccess && (
         <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-md flex items-start">
           <CheckCircle

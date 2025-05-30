@@ -1,0 +1,17 @@
+{
+  "identifier_popup": {
+    "title": "Enter Your Identifier",
+    "identifierRequired": "Email or phone number is required.",
+    "invalidEmail": "Please enter a valid email address.",
+    "invalidPhone": "Please enter a valid phone number.",
+    "closeModalAriaLabel": "Close modal",
+    "identifierInputLabel": "Email or phone number",
+    "emailPlaceholder": "Email address",
+    "phonePlaceholder": "Phone number",
+    "usePhoneInstead": "Use phone instead",
+    "useEmailInstead": "Use email instead",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "enterIdentifierButton": "Enter Email/Phone"
+  }
+}

@@ -6,7 +6,7 @@
     "searchPlaceholder": "Поиск продуктов...",
     "errorLoading": "Ошибка загрузки продуктов. Пожалуйста, попробуйте еще раз.",
     "noProducts": "Продукты не найдены",
-    "selectedProduct": "Выбранный продукт",
+    "selectedProduct": "Продукт",
     "change": "Изменить"
   }
 }

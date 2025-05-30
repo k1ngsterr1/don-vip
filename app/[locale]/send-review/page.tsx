@@ -127,8 +127,6 @@ export default function SendReview() {
             )}
           </div>
         )}
-
-        {/* Show selected product info if a product is selected but not from URL */}
         {selectedProductId && !productId && (
           <div className="w-full mb-4 p-3 bg-blue-50 rounded-lg border border-blue-100">
             <div className="flex items-center justify-between">
@@ -141,7 +139,7 @@ export default function SendReview() {
               </div>
               <button
                 onClick={() => setSelectedProductId(undefined)}
-                className="text-sm text-blue-600 hover:underline"
+                className="text-sm text-blue-600 ml-2 hover:underline"
               >
                 {i18n("change")}
               </button>

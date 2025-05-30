@@ -165,10 +165,10 @@ export function RegisterForm() {
     }
   };
 
-  const validatePassword = (password: string) => criteriaMet >= 2;
+  const validatePassword = () => hasMinLength && criteriaMet >= 2;
 
   const isFormFilled =
-    identifier.trim() !== "" && password.trim() !== "" && criteriaMet >= 2;
+    identifier.trim() !== "" && password.trim() !== "" && hasMinLength;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -186,7 +186,7 @@ export function RegisterForm() {
         : undefined,
       password: !password
         ? translateError("Password is required", locale)
-        : !validatePassword(password)
+        : !validatePassword()
         ? translateError("Password is too weak", locale)
         : undefined,
     };

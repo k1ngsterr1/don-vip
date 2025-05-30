@@ -1,0 +1,17 @@
+{
+  "identifier_popup": {
+    "title": "Введите ваш идентификатор",
+    "identifierRequired": "Требуется адрес электронной почты или номер телефона.",
+    "invalidEmail": "Пожалуйста, введите действительный адрес электронной почты.",
+    "invalidPhone": "Пожалуйста, введите действительный номер телефона.",
+    "closeModalAriaLabel": "Закрыть модальное окно",
+    "identifierInputLabel": "Адрес электронной почты или номер телефона",
+    "emailPlaceholder": "Адрес электронной почты",
+    "phonePlaceholder": "Номер телефона",
+    "usePhoneInstead": "Использовать телефон",
+    "useEmailInstead": "Использовать email",
+    "submit": "Отправить",
+    "cancel": "Отмена",
+    "enterIdentifierButton": "Ввести Email/Телефон"
+  }
+}
