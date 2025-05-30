@@ -18,7 +18,7 @@ export function ReviewList({ reviews, isGrid = false }: ReviewListProps) {
   }
 
   return (
-    <div className="space-y-2 w-full mt-8">
+    <div className="space-y-2 w-full mt-[15px]">
       {reviews.map((review: any) => (
         <ReviewCard key={review.id} review={review} />
       ))}

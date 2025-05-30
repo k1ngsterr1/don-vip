@@ -48,13 +48,12 @@ export function ReviewsBlock() {
     if (!isAuthenticated) {
       setIsAuthPopupOpen(true);
     }
-    // If authenticated, the Link component will handle navigation
   };
 
   return (
     <div className="w-full md:max-w-[1680px] min-h-[80vh] m-auto  mt-[24px] flex flex-col items-center">
       <FeedbackPrompt />
-      <div className="w-full flex items-start mt-8 justify-start">
+      <div className="w-full flex items-start mt-[15px] justify-start">
         <button className="w-[78px] h-[30px] text-[10px] bg-gray-50 rounded-md mb-2">
           {t("filters.all")}
         </button>
@@ -94,8 +93,6 @@ export function ReviewsBlock() {
           </button>
         </div>
       )}
-
-      {/* Leave Review Button - Always visible */}
       {isAuthenticated ? (
         <Link
           href="/send-review"
