@@ -70,7 +70,6 @@ export default getRequestConfig(async ({ requestLocale }) => {
       ...(await import(`../messages/${locale}/services-mega-menu.json`)),
       ...(await import(`../messages/${locale}/social-input.json`)),
       ...(await import(`../messages/${locale}/mobile-games.json`)),
-      ...(await import(`../messages/${locale}/faq-categories.json`)),
       ...(await import(`../messages/${locale}/faq-data.json`)),
       ...(await import(`../messages/${locale}/auth.json`)),
       ...(await import(`../messages/${locale}/feedback.json`)),
