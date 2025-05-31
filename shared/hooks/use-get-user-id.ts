@@ -12,10 +12,6 @@ export const getUserId = async (): Promise<string | undefined> => {
 
   // If we have a cached user ID, return it immediately
   if (cachedUserId) {
-    console.log(
-      "👤 [Auth] #23.1 - getUserId: Using cached user ID",
-      cachedUserId
-    );
     return cachedUserId;
   }
 
@@ -62,16 +58,13 @@ export const getUserId = async (): Promise<string | undefined> => {
     isGetUserIdInProgress = true;
 
     // Try to get the current user
-    console.log("👤 [Auth] #24 - getUserId: Fetching user from API");
     const response = await authApi.getCurrentUser();
     const fetchedUser = response.data;
 
     if (fetchedUser?.id && isNumber(fetchedUser.id.toString())) {
       setUser(fetchedUser);
       setGuestAuth(false); // Explicitly set as not a guest
-      console.log(
-        "👤 [Auth] #25 - getUserId: User fetch successful, setting isGuestAuth to false"
-      );
+
       cachedUserId = fetchedUser.id.toString();
       isGetUserIdInProgress = false;
       return fetchedUser.id.toString();

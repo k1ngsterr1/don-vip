@@ -74,7 +74,7 @@ export const ContentWrapper: React.FC<ContentWrapperProps> = ({
       sm: "max-w-screen-sm", // 640px
       md: "max-w-screen-md", // 768px
       lg: "max-w-screen-lg", // 1024px
-      xl: "max-w-screen-xl", // 1280px
+      xl: "max-w-[1680px]", // 1280px
       "2xl": "max-w-screen-2xl", // 1536px
       full: "max-w-full",
     }[maxWidth] ||
@@ -82,7 +82,7 @@ export const ContentWrapper: React.FC<ContentWrapperProps> = ({
     maxWidth.includes("%") ||
     maxWidth.includes("rem")
       ? ""
-      : "max-w-screen-xl");
+      : "max-w-[1680px]");
 
   return (
     <>
@@ -97,11 +97,7 @@ export const ContentWrapper: React.FC<ContentWrapperProps> = ({
       >
         {children}
       </Component>
-
-      <VerificationPopup
-        isOpen={showVerificationPopup}
-        onClose={() => setShowVerificationPopup(false)}
-      />
+      <VerificationPopup isOpen={showVerificationPopup} />
     </>
   );
 };

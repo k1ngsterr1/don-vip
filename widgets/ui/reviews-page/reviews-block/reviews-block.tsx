@@ -18,10 +18,6 @@ export function ReviewsBlock() {
   const { isAuthenticated } = useAuthStore();
   const { data, isLoading, error } = useAcceptedFeedbacks(page, limit);
 
-  console.log("Fetched data:", data);
-  console.log("Loading state:", isLoading);
-  console.log("Error state:", error);
-
   const reviews: any[] = data?.data
     ? data.data.map((feedback: any) => {
         const isAnonymous =
@@ -46,13 +42,9 @@ export function ReviewsBlock() {
           game: feedback.product?.name ?? undefined,
           image: feedback.product?.image ?? undefined,
         };
-
-        console.log("Mapped review:", review);
         return review;
       })
     : [];
-
-  console.log("Final reviews array:", reviews);
 
   const handleLeaveReviewClick = () => {
     if (!isAuthenticated) {
@@ -61,7 +53,7 @@ export function ReviewsBlock() {
   };
 
   return (
-    <div className="w-full md:max-w-[1680px] min-h-[80vh] m-auto  mt-[24px] flex flex-col items-center">
+    <div className="w-full  min-h-[80vh] m-auto  mt-[24px] flex flex-col items-center">
       <FeedbackPrompt />
       <div className="w-full flex items-start mt-[15px] justify-start">
         <button className="w-[78px] h-[30px] text-[10px] bg-gray-50 rounded-md mb-2">

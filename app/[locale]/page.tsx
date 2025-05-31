@@ -33,7 +33,7 @@ export default function Home() {
         <HeroBanner slides={heroSlides} />
       </div>
       <ContentWrapper>
-        <div className="w-full max-w-[1680px] ">
+        <div className="w-full max-w-[1680px]">
           <div className="mt-6 sm:mt-8">
             <ServicesBlock />
           </div>

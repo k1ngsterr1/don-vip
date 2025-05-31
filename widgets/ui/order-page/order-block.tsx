@@ -145,14 +145,6 @@ export function OrderBlock({
 
   // Get user identifier from various sources
   const getUserIdentifier = (): string | null => {
-    console.log("🔍 Getting user identifier:", {
-      authUserIdentifier: authUser?.identifier,
-      authUserEmail: authUser?.email,
-      meIdentifier: me?.identifier,
-      meEmail: me?.email,
-      guestIdentifier,
-    });
-
     if (authUser?.identifier) return authUser.identifier;
     if (me?.identifier) return me.identifier;
     if (authUser?.email) return authUser.email;
@@ -181,12 +173,8 @@ export function OrderBlock({
       server_id: game.requiresServer ? serverId : undefined,
     };
 
-    console.log("🎯 Submitting order with data:", orderData);
-
     createOrder(orderData)
       .then((response: any) => {
-        console.log("✅ Order created successfully:", response);
-
         if (selectedPaymentMethod === "tbank") {
           const params = new URLSearchParams({
             orderId: response.id,
@@ -219,26 +207,11 @@ export function OrderBlock({
     // Get user identifier from various sources
     const userIdentifier = getUserIdentifier();
 
-    console.log("🔍 Debug info:", {
-      userIdentifier,
-      authUser: !!authUser,
-      me: !!me,
-      isGuestAuth,
-      isGuestUser,
-      needsIdentifier,
-      guestIdentifier,
-      identifierCollected: identifierCollected.current,
-      hasLocalStorageUserId: !!localStorage.getItem("userId"),
-    });
-
     // Force popup for testing - remove this condition later
     const shouldShowPopup =
       !userIdentifier && !guestIdentifier && !identifierCollected.current;
 
-    console.log("🚀 Should show popup:", shouldShowPopup);
-
     if (shouldShowPopup) {
-      console.log("🚀 Opening popup - no identifier found");
       setShowGuestAuthPopup(true);
       return;
     }
@@ -251,12 +224,10 @@ export function OrderBlock({
       return;
     }
 
-    console.log("✅ Proceeding with identifier:", finalIdentifier);
     submitOrderWithIdentifier(finalIdentifier);
   };
 
   const handleGuestAuthSubmit = (identifier: string) => {
-    console.log("📧 Guest identifier collected:", identifier);
     setGuestIdentifier(identifier);
     setShowGuestAuthPopup(false);
     identifierCollected.current = true;
@@ -398,7 +369,6 @@ export function OrderBlock({
       <GuestAuthPopup
         isOpen={showGuestAuthPopup}
         onClose={() => {
-          console.log("🚪 Closing popup");
           setShowGuestAuthPopup(false);
         }}
         onSubmit={handleGuestAuthSubmit}

@@ -47,7 +47,6 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: true,
           isGuestAuth: false,
         });
-        console.log("🔑 [Auth] #1 - Setting tokens, isGuestAuth set to false");
 
         // Set axios default header for future requests
         apiClient.defaults.headers.common[
@@ -56,20 +55,17 @@ export const useAuthStore = create<AuthState>()(
       },
 
       setGuestAuth: (isGuest) => {
-        console.log(`👤 [Auth] #2 - Setting isGuestAuth to ${isGuest}`);
         set({ isGuestAuth: isGuest });
       },
 
       clearTokens: () => {
         set({ accessToken: null, refreshToken: null, isAuthenticated: false });
-        console.log("🔒 [Auth] #3 - Clearing tokens");
 
         // Clear axios authorization header
         delete apiClient.defaults.headers.common["Authorization"];
       },
 
       logout: () => {
-        console.log("🚪 [Auth] #4 - Logging out, resetting isGuestAuth");
         set({
           user: null,
           accessToken: null,

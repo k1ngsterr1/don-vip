@@ -31,9 +31,6 @@ export const useLogin = () => {
 
       // Explicitly set isGuestAuth to false when logging in
       setGuestAuth(false);
-      console.log(
-        "👤 [Auth] #17 - useLogin: Login successful, setting isGuestAuth to false"
-      );
 
       // Fetch user data
       try {
@@ -65,21 +62,15 @@ export const useGuestAuth = () => {
     mutationFn: () => {
       // Skip if already authenticated as guest
       if (isGuestAuth) {
-        console.log(
-          "👤 [Auth] #18 - useGuestAuth: Already a guest user, skipping API call"
-        );
         return Promise.resolve({ success: true, isGuest: true });
       }
-      console.log("👤 [Auth] #19 - useGuestAuth: Making guest auth API call");
       return authApi.guestAuth();
     },
     onSuccess: async (data) => {
       if (!isGuestAuth) {
         setUser(data);
         setGuestAuth(true);
-        console.log(
-          "👤 [Auth] #20 - useGuestAuth: Guest auth successful, setting isGuestAuth to true"
-        );
+
         await queryClient.invalidateQueries({ queryKey: queryKeys.auth.user });
       }
     },
@@ -102,9 +93,6 @@ export const useRegister = () => {
 
       // Explicitly set isGuestAuth to false when registering
       setGuestAuth(false);
-      console.log(
-        "👤 [Auth] #21 - useRegister: Registration successful, setting isGuestAuth to false"
-      );
 
       // Fetch and set user
       try {
@@ -158,9 +146,6 @@ export const useLogout = () => {
   const queryClient = useQueryClient();
 
   return () => {
-    console.log(
-      "👤 [Auth] #22 - useLogout: Logging out, resetting isGuestAuth"
-    );
     logout();
     queryClient.clear(); // Clear all query cache
     router.push("/auth/login");

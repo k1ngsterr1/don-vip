@@ -79,8 +79,6 @@ export function useCreateOrder(isTbank = false) {
             : undefined,
       };
 
-      console.log("🚀 Sending order data to API:", apiOrderData); // Debug log
-
       return orderApi.createOrder(apiOrderData as any);
     },
 
