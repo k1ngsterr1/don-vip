@@ -1,3 +1,4 @@
+import LightningIcon from "@/shared/icons/lightning-icon";
 import { Check } from "lucide-react";
 import Image from "next/image";
 
@@ -16,8 +17,8 @@ export function Banner({ backgroundImage, height }: BannerProps) {
         fill
         className="object-cover"
       />
-      <div className="absolute bottom-4 left-4 bg-blue text-white text-xs py-1 px-2 rounded-full flex items-center">
-        <Check size={12} className="mr-1" />
+      <div className="absolute bottom-4 right-4 bg-blue/60 text-white text-xs py-1 px-2 rounded-[4px] font-unbounded gap-2 flex items-center">
+        <LightningIcon />
         Мгновенная доставка
       </div>
     </div>
