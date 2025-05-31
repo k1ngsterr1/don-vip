@@ -33,7 +33,6 @@ const errorTranslations: Record<string, Record<string, string>> = {
     "Registration failed":
       "Registration failed. Please check your information.",
 
-    // HTTP status code errors
     "status code 400": "Invalid information provided",
     "status code 409": "This email or phone is already registered",
     "status code 422": "Please check your information",
@@ -41,7 +40,6 @@ const errorTranslations: Record<string, Record<string, string>> = {
     "status code 500": "Registration failed. Please try again later",
   },
   ru: {
-    // Form validation errors
     "Email or phone is required": "Email или телефон обязательны",
     "Invalid email format": "Пожалуйста, введите корректный email",
     "Invalid phone number": "Пожалуйста, введите корректный номер телефона",
@@ -49,7 +47,6 @@ const errorTranslations: Record<string, Record<string, string>> = {
     "Password is too weak":
       "Пароль слишком слабый. Пожалуйста, сделайте его сильнее.",
 
-    // API errors
     "Email already in use": "Email уже используется",
     "Phone number already in use": "Номер телефона уже используется",
     "Invalid information provided": "Предоставлена неверная информация",
@@ -58,7 +55,6 @@ const errorTranslations: Record<string, Record<string, string>> = {
     "Registration failed":
       "Ошибка регистрации. Пожалуйста, проверьте вашу информацию.",
 
-    // HTTP status code errors
     "status code 400": "Предоставлена неверная информация",
     "status code 409": "Этот email или телефон уже зарегистрирован",
     "status code 422": "Пожалуйста, проверьте вашу информацию",
