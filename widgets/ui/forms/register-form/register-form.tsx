@@ -64,7 +64,6 @@ const errorTranslations: Record<string, Record<string, string>> = {
   },
 };
 
-// Translate any error message based on current locale
 function translateError(message: string, locale: string): string {
   const translations = errorTranslations[locale === "ru" ? "ru" : "en"];
 
