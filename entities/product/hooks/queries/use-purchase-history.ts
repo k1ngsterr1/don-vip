@@ -12,6 +12,7 @@ const getOrderHistory = async (
   const response = await apiClient.get<OrdersResponse>(
     `/order/history?page=${page}&limit=${limit}`
   );
+  console.log(response.data);
   return response.data;
 };
 
