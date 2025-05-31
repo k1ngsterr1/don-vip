@@ -7,6 +7,7 @@ import { CustomTooltip } from "@/shared/ui/tooltip/tooltip";
 import { useEffect, useState } from "react";
 import { CustomAlert } from "../alert/alert";
 import { useValidateBigoUser } from "@/entities/bigo/hooks/use-validate-bigo";
+import QuestionIcon from "@/shared/icons/question-icon";
 
 interface UserIdFormProps {
   requiresServer: boolean;
@@ -131,7 +132,7 @@ export function UserIdForm({
           position="top"
           delay={300}
         >
-          <HelpCircle size={16} className="ml-2 text-gray-400 cursor-help" />
+          <QuestionIcon className="ml-2" />
         </CustomTooltip>
       </div>
       <div className="space-y-3">

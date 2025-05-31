@@ -6,12 +6,10 @@ import { useTranslations } from "next-intl";
 
 interface VerificationPopupProps {
   isOpen: boolean;
-  onClose: () => void;
 }
 
 export const VerificationPopup: React.FC<VerificationPopupProps> = ({
   isOpen,
-  onClose,
 }) => {
   const t = useTranslations("verification-popup");
 
@@ -25,7 +23,7 @@ export const VerificationPopup: React.FC<VerificationPopupProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
         <button
-          onClick={onClose}
+          onClick={handleVerifyNow}
           className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
           aria-label={t("close")}
         >
@@ -55,7 +53,7 @@ export const VerificationPopup: React.FC<VerificationPopupProps> = ({
         </div>
         <div className="flex justify-center space-x-3">
           <button
-            onClick={onClose}
+            onClick={handleVerifyNow}
             className="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
           >
             {t("closeButton")}
