@@ -1,4 +1,23 @@
 {
+  "IdentifierPrompt": {
+    "identifierMissingTitle": "Требуется идентификатор",
+    "identifierMissingText": "Для продолжения, пожалуйста, укажите ваш уникальный идентификатор. Нажмите кнопку ниже, чтобы ввести его.",
+    "enterIdentifierButton": "Ввести идентификатор"
+  },
+  "HomePage": {
+    "title": "Демонстрация запроса идентификатора",
+    "currentIdentifierLabel": "Текущий идентификатор",
+    "isModalOpenLabel": "Модальное окно идентификатора открыто",
+    "none": "Отсутствует",
+    "yes": "Да",
+    "no": "Нет",
+    "setIdentifierButton": "Симулировать установку идентификатора",
+    "clearIdentifierButton": "Очистить идентификатор",
+    "closeModalButton": "Симулировать закрытие модального окна",
+    "identifierModalTitle": "Модальное окно ввода идентификатора",
+    "identifierModalText": "Здесь вы обычно вводите свой идентификатор.",
+    "submitIdentifierButton": "Отправить идентификатор (симуляция)"
+  },
   "verify-form_auth": {
     "verifyForm": {
       "title": "Подтвердите ваш аккаунт",

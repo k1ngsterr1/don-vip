@@ -1,4 +1,23 @@
 {
+  "IdentifierPrompt": {
+    "identifierMissingTitle": "Identifier Required",
+    "identifierMissingText": "To continue, please provide your unique identifier. Click the button below to enter it.",
+    "enterIdentifierButton": "Enter Identifier"
+  },
+  "HomePage": {
+    "title": "Identifier Prompt Demo",
+    "currentIdentifierLabel": "Current Identifier",
+    "isModalOpenLabel": "Is Identifier Modal Open",
+    "none": "None",
+    "yes": "Yes",
+    "no": "No",
+    "setIdentifierButton": "Simulate Set Identifier",
+    "clearIdentifierButton": "Clear Identifier",
+    "closeModalButton": "Simulate Close Modal",
+    "identifierModalTitle": "Identifier Input Modal",
+    "identifierModalText": "This is where you would typically enter your identifier.",
+    "submitIdentifierButton": "Submit Identifier (Simulated)"
+  },
   "verify-form_auth": {
     "verifyForm": {
       "title": "Verify Your Account",

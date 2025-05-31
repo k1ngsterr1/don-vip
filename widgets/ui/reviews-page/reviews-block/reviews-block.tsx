@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAcceptedFeedbacks } from "@/entities/reviews/hook/use-feedback";
 import { ReviewList } from "@/entities/reviews/ui/review-list/review-list";
@@ -9,6 +9,7 @@ import { ReviewsSkeleton } from "../reviews-loading/reviews-loading";
 import { Link } from "@/i18n/navigation";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { AuthorizationPopup } from "@/entities/auth/ui/auth-popup/auth-popup";
+import { userApi } from "@/entities/user/auth/user-api";
 
 export function ReviewsBlock() {
   const t = useTranslations("reviews");
@@ -17,6 +18,15 @@ export function ReviewsBlock() {
   const [isAuthPopupOpen, setIsAuthPopupOpen] = useState(false);
   const { isAuthenticated } = useAuthStore();
   const { data, isLoading, error } = useAcceptedFeedbacks(page, limit);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    async function fetchUser() {
+      const userData = await userApi.getCurrentUser();
+      setUser(userData as any);
+    }
+    fetchUser();
+  }, []);
 
   const reviews: any[] = data?.data
     ? data.data.map((feedback: any) => {
@@ -96,12 +106,21 @@ export function ReviewsBlock() {
         </div>
       )}
       {isAuthenticated ? (
-        <Link
-          href="/send-review"
-          className="w-[194px] fixed flex items-center justify-center bottom-[75px] h-[42px] rounded-full font-roboto font-medium text-[12px] text-white bg-blue"
-        >
-          {t("page.leaveReview")}
-        </Link>
+        user?.is_verified ? (
+          <Link
+            href="/send-review"
+            className="w-[194px] fixed flex items-center justify-center bottom-[75px] h-[42px] rounded-full font-roboto font-medium text-[12px] text-white bg-blue hover:bg-blue/90 transition-colors"
+          >
+            {t("page.leaveReview")}
+          </Link>
+        ) : (
+          <button
+            disabled
+            className="w-[194px] fixed flex items-center justify-center bottom-[75px] h-[42px] rounded-full font-roboto font-medium text-[12px] text-white bg-gray-400 cursor-not-allowed"
+          >
+            {t("page.leaveReview")}
+          </button>
+        )
       ) : (
         <button
           onClick={handleLeaveReviewClick}
@@ -110,6 +129,7 @@ export function ReviewsBlock() {
           {t("page.leaveReview")}
         </button>
       )}
+
       <AuthorizationPopup
         isOpen={isAuthPopupOpen}
         onOpenChange={setIsAuthPopupOpen}
