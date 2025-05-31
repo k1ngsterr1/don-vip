@@ -49,10 +49,6 @@ export function UserAgreementMobile() {
 
       setActiveSection(sectionId);
     } else {
-      // If element not found, try alternative method
-      console.log("Element not found, trying alternative method");
-
-      // Try to scroll using hash
       window.location.hash = sectionId;
 
       setTimeout(() => {
@@ -96,32 +92,6 @@ export function UserAgreementMobile() {
             <p className="text-gray-500 text-sm">{t("lastUpdated")}</p>
           </div>
         </div>
-      </div>
-
-      {/* Inline Sidebar for Mobile */}
-      <div className="mb-6 bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-        <h3 className="text-lg font-medium text-gray-800 mb-4">
-          {sidebarT("title")}
-        </h3>
-        <nav>
-          <ul className="space-y-2">
-            {sections.map((section) => (
-              <li key={section.id}>
-                <button
-                  type="button"
-                  className={`block w-full text-left text-sm py-2 px-3 rounded-md transition-all duration-200 ${
-                    activeSection === section.id
-                      ? "bg-blue-50 text-blue-700 font-medium border-l-2 border-blue-500"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                  }`}
-                  onClick={() => scrollToSection(section.id)}
-                >
-                  {sidebarT(section.key)}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
       </div>
 
       {/* Content */}

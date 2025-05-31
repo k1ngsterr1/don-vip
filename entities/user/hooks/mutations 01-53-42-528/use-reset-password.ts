@@ -8,9 +8,6 @@ export function useResetPasswordWithToken() {
   return useMutation({
     mutationFn: (data: ResetPasswordWithTokenPayload) =>
       userApi.resetPasswordWithToken(data),
-    onSuccess: (data) => {
-      console.log("Password reset successful:", data);
-    },
     onError: (error) => {
       console.error("Password reset failed:", error);
     },

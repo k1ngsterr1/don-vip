@@ -97,10 +97,6 @@ export const authApi = {
 
     // ✅ 0. Если userId есть — выходим РАНО, никакой авторизации не делаем
     if (storedUserId) {
-      console.log(
-        "👤 [Auth] Skipping guest auth — userId already in localStorage"
-      );
-
       // Можем опционально восстановить пользователя из стора, если доступен
       return {
         success: true,
@@ -123,9 +119,6 @@ export const authApi = {
 
     // ✅ Если уже авторизован — тоже выходим
     if (isGuestAuth && user?.id) {
-      console.log(
-        "👤 [Auth] Already authenticated as guest, skipping API call"
-      );
       return {
         success: true,
         isGuest: true,
@@ -136,7 +129,6 @@ export const authApi = {
 
     // ✅ Если авторизация в процессе — ждём
     if (guestAuthLoading) {
-      console.log("👤 [Auth] Guest auth in progress... waiting");
       let attempts = 0;
       while (useAuthStore.getState().guestAuthLoading && attempts < 10) {
         await new Promise((res) => setTimeout(res, 100));
@@ -147,7 +139,6 @@ export const authApi = {
       const id = u?.id ?? localStorage.getItem("userId");
 
       if (useAuthStore.getState().isGuestAuth && id) {
-        console.log("👤 [Auth] Guest auth completed by another process");
         return {
           success: true,
           isGuest: true,

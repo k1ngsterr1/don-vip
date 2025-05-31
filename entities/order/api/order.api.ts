@@ -11,11 +11,7 @@ export const orderApi = {
    * Create a new order
    */
   createOrder: async (data: any): Promise<Order> => {
-    console.log("📤 API: Sending order data:", data); // Debug log to see what's being sent
-
     const response = await apiClient.post<Order>("/order", data);
-
-    console.log("📥 API: Received response:", response.data); // Debug log
 
     return response.data;
   },

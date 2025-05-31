@@ -68,13 +68,11 @@ export const userApi = {
 
     if (!id) {
       id = await getUserId();
-      console.log("[userApi.getUserById] No userId provided, fetched id:", id);
     } else {
       console.log("[userApi.getUserById] Using provided userId:", id);
     }
 
     const { isGuestAuth } = useAuthStore.getState();
-    console.log("[userApi.getUserById] isGuestAuth:", isGuestAuth);
 
     const endpoint = isGuestAuth
       ? `/user/guest-profile/${id}`

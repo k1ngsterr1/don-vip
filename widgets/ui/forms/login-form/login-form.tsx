@@ -192,14 +192,6 @@ export function LoginForm() {
     e.preventDefault();
     setErrors({});
 
-    // Debug the current values
-    console.log(
-      "Form submission - identifier:",
-      identifier,
-      "type:",
-      identifierType
-    );
-
     const newErrors: { identifier?: string; password?: string } = {};
     if (!identifier.trim()) {
       newErrors.identifier = translateError(
@@ -231,9 +223,6 @@ export function LoginForm() {
       // Keep the formatting (parentheses and dashes) as the backend expects it
       formattedIdentifier = formatPhoneNumber(identifier);
     }
-
-    // For debugging - log the identifier that will be sent
-    console.log("Sending identifier:", formattedIdentifier);
 
     // Call login mutation with credentials
     login(

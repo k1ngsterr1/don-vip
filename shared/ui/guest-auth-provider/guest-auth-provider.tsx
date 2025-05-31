@@ -43,18 +43,12 @@ export function GuestAuthProvider({ children }: { children: React.ReactNode }) {
 
           // If isGuestAuth is true in storage but not in state, update it
           if (state && state.isGuestAuth && !isGuestAuth) {
-            console.log(
-              "👤 [Auth] #34 - GuestAuthProvider: Found isGuestAuth in storage, updating state"
-            );
             setGuestAuth(true);
             guestAuthAttemptedRef.current = true;
           }
 
           // Clean up old userId if we have auth storage
           if (userId) {
-            console.log(
-              "👤 [Auth] #35 - GuestAuthProvider: Removing old userId from localStorage"
-            );
             localStorage.removeItem("userId");
           }
 

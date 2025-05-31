@@ -29,24 +29,17 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
     const checkGuestUser = async () => {
       const authStorage = localStorage.getItem("auth-storage");
 
-      // If auth-storage exists, check if it contains isGuestAuth
       if (authStorage) {
         try {
           const parsedStorage = JSON.parse(authStorage);
           const state = parsedStorage.state;
 
-          // If isGuestAuth is true in storage but not in state, update it
           if (state && state.isGuestAuth && !isGuestAuth) {
-            console.log(
-              "👤 [Auth] #41 - ClientLayout: Found isGuestAuth in storage, updating state"
-            );
             setGuestAuth(true);
           }
           if (user || isGuestAuth || state?.isGuestAuth) {
             guestAuthAttemptedRef.current = true;
-            console.log(
-              "👤 [Auth] #42.1 - ClientLayout: User or guest auth already set, skipping"
-            );
+
             return;
           }
         } catch (e) {
@@ -54,15 +47,10 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
             "👤 [Auth] #43 - ClientLayout: Error parsing auth storage",
             e
           );
-          // If parsing fails, continue
         }
       }
 
-      // Skip if already authenticated or is a guest user
       if (isAuthenticated || isGuestAuth || user) {
-        console.log(
-          "👤 [Auth] #44 - ClientLayout: Already authenticated or guest, skipping"
-        );
         guestAuthAttemptedRef.current = true;
         return;
       }
