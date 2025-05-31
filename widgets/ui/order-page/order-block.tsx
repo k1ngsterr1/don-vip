@@ -253,6 +253,7 @@ export function OrderBlock({
         selectedId={selectedAmount}
       />
       <UserIdForm
+        apiGame={product?.smile_api_game}
         requiresServer={game.requiresServer}
         userId={userId}
         serverId={serverId}
@@ -322,6 +323,7 @@ export function OrderBlock({
             </div>
             <div className="p-6 border-b border-gray-100">
               <UserIdForm
+                apiGame={product?.smile_api_game}
                 requiresServer={game.requiresServer}
                 userId={userId}
                 serverId={serverId}

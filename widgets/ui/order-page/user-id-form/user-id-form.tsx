@@ -1,15 +1,17 @@
 "use client";
 
-import { HelpCircle, Loader2, Check, AlertCircle } from "lucide-react";
+import { Loader2, Check, AlertCircle } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { CustomTooltip } from "@/shared/ui/tooltip/tooltip";
 import { useEffect, useState } from "react";
 import { CustomAlert } from "../alert/alert";
-import { useValidateBigoUser } from "@/entities/bigo/hooks/use-validate-bigo";
 import QuestionIcon from "@/shared/icons/question-icon";
+import { useValidateBigoUser } from "@/entities/bigo/hooks/use-validate-bigo";
+import { useValidateSmileUser } from "@/entities/smile/hooks/use-validate-smile";
 
 interface UserIdFormProps {
+  apiGame?: string;
   requiresServer: boolean;
   userId: string;
   serverId: string;
@@ -20,6 +22,7 @@ interface UserIdFormProps {
 }
 
 export function UserIdForm({
+  apiGame,
   requiresServer,
   userId,
   serverId,
@@ -31,7 +34,10 @@ export function UserIdForm({
   const t = useTranslations("orderBlock.user");
   const tError = useTranslations("alert.validation");
 
-  const { validateUser, isValidating } = useValidateBigoUser();
+  const { validateUser: validateBigoUser, isValidating: isBigoValidating } =
+    useValidateBigoUser();
+  const { validateUser: validateSmileUser, isValidating: isSmileValidating } =
+    useValidateSmileUser();
   const [userIdInput, setUserIdInput] = useState(userId);
   const [userInfo, setUserInfo] = useState<{
     username?: string;
@@ -52,24 +58,42 @@ export function UserIdForm({
     }
   }, [userIdInput, userId, validationError, userInfo, onUserIdChange]);
 
-  const handleValidateBigoId = async () => {
+  const isValidating = isBigoValidating || isSmileValidating;
+
+  const handleValidateUserId = async () => {
     const trimmed = userIdInput.trim();
 
     if (!trimmed) return;
 
-    // ⛔ Пропускаем валидацию, если это email
+    // Skip validation for email
     if (isEmail(trimmed)) {
       setValidationError("");
       setValidationErrorCode(null);
       setUserInfo({
-        username: trimmed, // <– можно хоть что, лишь бы не null
+        username: trimmed,
         vipStatus: undefined,
       });
       return;
     }
 
     try {
-      const result = await validateUser(trimmed);
+      let result;
+
+      if (requiresServer) {
+        // Use Smile validation when server is required
+        const trimmedServerId = serverId.trim();
+        if (!trimmedServerId) {
+          setValidationError("Server ID is required for validation");
+          setValidationErrorCode(null);
+          setShowErrorAlert(true);
+          setUserInfo(null);
+          return;
+        }
+        result = await validateSmileUser(trimmed, trimmedServerId);
+      } else {
+        // Use Bigo validation when no server is required
+        result = await validateBigoUser(trimmed);
+      }
 
       if (!result.isValid) {
         setValidationError(result.errorMessage || "ID не существует");
@@ -79,7 +103,7 @@ export function UserIdForm({
       } else {
         setUserInfo({
           username: result.username,
-          vipStatus: result.vipStatus,
+          vipStatus: requiresServer ? undefined : (result as any).vipStatus,
         });
         setValidationError("");
         setValidationErrorCode(null);
@@ -151,7 +175,7 @@ export function UserIdForm({
                 setValidationError("");
                 setValidationErrorCode(null);
               }}
-              onBlur={handleValidateBigoId}
+              onBlur={handleValidateUserId}
               className={`w-full p-3 pl-10 border ${
                 validationError
                   ? "border-red-500"
@@ -229,6 +253,11 @@ export function UserIdForm({
                 placeholder={t("userServerPlaceholder")}
                 value={serverId}
                 onChange={(e) => onServerIdChange(e.target.value)}
+                onBlur={() => {
+                  if (userIdInput.trim() && serverId.trim()) {
+                    handleValidateUserId();
+                  }
+                }}
                 className="w-full p-3 px-8 border border-gray-200 rounded-lg text-center"
               />
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
@@ -240,20 +269,20 @@ export function UserIdForm({
           <>
             <div className="mt-4 mb-2">
               <h3 className="text-[16px] font-bold font-condensed mb-2">
-                {t("findBigoId.title")}
+                {t("findUserId.title")}
               </h3>
               <ol className="text-[15px] font-condensed text-gray-600 space-y-1 list-decimal pl-5">
                 <li className="text-black text-[17px]">
-                  {t("findBigoId.step1")}
+                  {t("findUserId.step1")}
                 </li>
                 <li className="text-black font-condensed text-[17px]">
-                  {t("findBigoId.step2")}
+                  {t("findUserId.step2")}
                 </li>
                 <li className="text-black font-condensed text-[17px]">
-                  {t("findBigoId.step3")}
+                  {t("findUserId.step3")}
                 </li>
                 <li className="text-black font-condensed text-[17px]">
-                  {t("findBigoId.step4")}
+                  {t("findUserId.step4")}
                 </li>
               </ol>
             </div>
