@@ -68,6 +68,10 @@ export const ContentWrapper: React.FC<ContentWrapperProps> = ({
     }
   }, [checkVerification]);
 
+  const handleCloseVerificationPopup = () => {
+    setShowVerificationPopup(false);
+  };
+
   // Map maxWidth prop to Tailwind classes
   const maxWidthClass =
     {
@@ -97,7 +101,10 @@ export const ContentWrapper: React.FC<ContentWrapperProps> = ({
       >
         {children}
       </Component>
-      <VerificationPopup isOpen={showVerificationPopup} />
+      <VerificationPopup
+        isOpen={showVerificationPopup}
+        onClose={handleCloseVerificationPopup}
+      />
     </>
   );
 };
