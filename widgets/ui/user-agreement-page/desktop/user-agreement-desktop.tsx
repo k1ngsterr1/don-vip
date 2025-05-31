@@ -11,7 +11,7 @@ export function UserAgreementDesktop() {
   const t = useTranslations("userAgreement.page");
 
   return (
-    <div className="hidden md:block max-w-7xl mx-auto px-6 lg:px-8 py-8 lg:py-12">
+    <div className="hidden md:block  mx-auto px-6 lg:px-8 py-8 lg:py-12">
       <div className="mb-8 lg:mb-12">
         <div className="flex items-center mb-4">
           <Link
