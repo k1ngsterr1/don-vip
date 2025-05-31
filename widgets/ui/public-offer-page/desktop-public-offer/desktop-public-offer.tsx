@@ -9,7 +9,7 @@ export default function DesktopPublicOffer() {
   const i18n = useTranslations("DesktopPublicOffer");
 
   return (
-    <div className="hidden md:block max-w-7xl mx-auto px-6 lg:px-8 py-8 lg:py-12">
+    <div className="hidden md:block w-full py-8 lg:py-12">
       {/* Header section */}
       <div className="mb-8 lg:mb-12">
         <div className="flex items-center mb-4">

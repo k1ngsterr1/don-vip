@@ -25,7 +25,7 @@ export default function FAQBlock() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto px-4 py-4 bg-white">
+    <div className="w-full  mx-auto px-4 py-4 bg-white">
       <div className="w-full flex flex-col items-start justify-start">
         <Link
           href="/"
