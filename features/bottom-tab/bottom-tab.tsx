@@ -31,14 +31,12 @@ export default function BottomTab() {
     {
       id: "profile",
       icon: UserIcon,
-      path: userId ? `/profile/${userId}` : "/profile/NoUser",
+      path: userId ? `/profile/${userId}` : "/auth/login",
     },
   ];
 
-  // Handle navigation to profile tab
   const handleTabClick = async (tabPath: string) => {
-    if (tabPath === "/profile/NoUser") {
-      // Simulate guest auth: create guest user and get id
+    if (tabPath === "/auth/login") {
       const guestId = await createGuestUser();
       localStorage.setItem("userId", guestId);
       setUserId(guestId);
@@ -48,7 +46,6 @@ export default function BottomTab() {
     }
   };
 
-  // Simulate guest user creation (replace with real API call if needed)
   async function createGuestUser(): Promise<string> {
     const user = await authApi.getCurrentUser();
     return user.id;

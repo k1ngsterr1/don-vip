@@ -3,34 +3,138 @@
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import en from "@/assets/EN.webp";
-import ru from "@/assets/RU.webp";
+import { useState, useEffect, useRef } from "react";
+import enFlag from "@/assets/EN.webp"; // Assuming EN.webp is the UK flag
+import ruFlag from "@/assets/RU.webp";
+import { ChevronDown } from "lucide-react"; // Optional: for a dropdown icon
 
 export function LanguageSwitcher() {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
 
-  const otherLocale = locale === "ru" ? "en" : "ru";
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
-  const switchLanguage = () => {
+  const locales = [
+    { code: "en", name: "English (Английский)", flag: enFlag },
+    { code: "ru", name: "Russian (Русский)", flag: ruFlag },
+  ];
+
+  const currentLocaleData =
+    locales.find((l) => l.code === locale) || locales[0];
+
+  const switchLanguage = (newLocale: string) => {
+    if (locale === newLocale) return;
+
     const segments = pathname.split("/");
-    segments[1] = otherLocale;
-    router.push(segments.join("/") as any);
+    if (segments.length > 1 && locales.some((l) => l.code === segments[1])) {
+      segments[1] = newLocale;
+    } else {
+      segments.splice(1, 0, newLocale);
+    }
+    let newPath = segments.join("/");
+    if (newPath.startsWith("//")) {
+      newPath = `/${newLocale}`;
+    } else if (newPath === "" || newPath === "/") {
+      newPath = `/${newLocale}`;
+    }
+
+    router.push(newPath as any);
+    setIsOpen(false); // Close dropdown after selection
   };
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        triggerRef.current &&
+        !triggerRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <button
-      className="flex cursor-pointer h-[32px] items-center group"
-      onClick={switchLanguage}
-    >
-      <Image
-        src={locale === "ru" ? ru.src : en.src}
-        width={32}
-        height={32}
-        alt={locale === "ru" ? "RU" : "EN"}
-        className="h-[32px] w-[32px] xxs:w-[24px] xxs:h-[24px] rounded-full border border-transparent group-hover:border-gray-200"
-      />
-    </button>
+    <div className="relative inline-block text-left">
+      <div>
+        <button
+          ref={triggerRef}
+          type="button"
+          className="flex items-center justify-center gap-2 px-2 py-1 h-auto rounded-md border border-transparent hover:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-neutral-500 transition-colors"
+          id="options-menu"
+          aria-haspopup="true"
+          aria-expanded={isOpen}
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <Image
+            src={
+              currentLocaleData.flag.src ||
+              "/placeholder.svg?width=24&height=24&text=Flag"
+            }
+            width={24}
+            height={24}
+            alt={currentLocaleData.name}
+            className="rounded-full w-7 h-7 border border-gray-200"
+          />
+          <span className="hidden sm:inline text-sm font-medium ">
+            {locale.toUpperCase()}
+          </span>
+          <ChevronDown
+            className={`h-4 w-4 text-gray-500  transition-transform duration-200 ${
+              isOpen ? "transform rotate-180" : ""
+            }`}
+          />
+        </button>
+      </div>
+      {isOpen && (
+        <div
+          ref={dropdownRef}
+          className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-opacity-5 focus:outline-none border border-gray-200  z-10"
+          role="menu"
+          aria-orientation="vertical"
+          aria-labelledby="options-menu"
+        >
+          <div className="py-1" role="none">
+            {locales.map((item) => (
+              <button
+                key={item.code}
+                onClick={() => switchLanguage(item.code)}
+                disabled={locale === item.code}
+                className={`w-full text-left flex items-center gap-3 px-4 py-2 text-sm ${
+                  locale === item.code
+                    ? "bg-gray-100  text-gray-900  font-medium"
+                    : "text-gray-700  hover:bg-gray-50  hover:text-gray-900 "
+                } ${
+                  locale === item.code ? "cursor-default" : "cursor-pointer"
+                }`}
+                role="menuitem"
+              >
+                <Image
+                  src={
+                    item.flag.src ||
+                    "/placeholder.svg?width=24&height=24&text=Flag"
+                  }
+                  width={24}
+                  height={24}
+                  alt={item.name}
+                  className="rounded-full w-5 h-5 border border-gray-100 "
+                />
+                <span>{item.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

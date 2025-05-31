@@ -62,16 +62,8 @@ export default function Footer() {
             />
           </div>
         </div>
-        <div className="mt-6 md:mt-8 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        <div className="mt-6 pb-4 md:mt-8 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
           <div className="text-sm text-gray-400">{i18n("copyright")}</div>
-          <div className="text-xs sm:text-sm text-gray-400">
-            <Link href="/user-agreement" className="hover:text-gray-600 mr-4">
-              {i18n("copyrightLinks.terms")}
-            </Link>
-            <Link href="/privacy-policy" className="hover:text-gray-600">
-              {i18n("copyrightLinks.privacy")}
-            </Link>
-          </div>
         </div>
       </div>
     </footer>

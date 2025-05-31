@@ -312,9 +312,9 @@ export function OrderBlock({
         >
           {isLoading
             ? isProcessingPayment
-              ? "Redirecting..."
+              ? t("summary.redirecting")
               : "Loading..."
-            : "Buy Now"}
+            : t("summary.buyNow")}
         </button>
       </div>
     </div>
@@ -337,7 +337,7 @@ export function OrderBlock({
             </div>
             <div className="p-6 border-b border-gray-100">
               <h2 className="text-lg font-medium text-gray-800 mb-4">
-                Select Amount
+                {t("block.selectAmount")}
               </h2>
               <CurrencySelector
                 //@ts-ignore
