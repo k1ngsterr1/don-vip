@@ -2,6 +2,7 @@
 
 import { useMediaQuery } from "@/shared/hooks/use-media-query";
 import { AnimatePresence, motion } from "framer-motion";
+import { ChevronLast, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -115,50 +116,25 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
           />
         </motion.div>
       </AnimatePresence>
-
-      {/* Navigation arrows - Hidden on small mobile */}
+      <button className="absolute bottom-[22px] left-3 w-[108px] h-[26px] border-white border-[1px] rounded-full text-white text-[10px] z-100 transition-colors hover:bg-blue hover:border-blue">
+        Купить сейчас
+      </button>
       <div className="hidden sm:block">
         <button
           onClick={handlePrev}
           className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 rounded-full p-2 z-10"
           aria-label="Previous slide"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M15 18l-6-6 6-6" />
-          </svg>
+          <ChevronLeft />
         </button>
         <button
           onClick={handleNext}
           className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 rounded-full p-2 z-10"
           aria-label="Next slide"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M9 18l6-6-6-6" />
-          </svg>
+          <ChevronRight />
         </button>
       </div>
-
-      {/* Dots navigation */}
       <div className="absolute bottom-3 left-0 right-0 flex justify-center space-x-1 z-10">
         {slides.map((_, index) => (
           <button
