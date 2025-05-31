@@ -1,6 +1,6 @@
 "use client";
 
-import { Check } from "lucide-react";
+import { Check, Clock, X } from "lucide-react";
 import Image from "next/image";
 import type React from "react";
 import { useState } from "react";
@@ -9,12 +9,12 @@ import { useTranslations } from "next-intl";
 export interface PurchaseCardProps {
   id: number | string;
   date: string;
-  time: string;
+  time?: string;
   gameImage: string;
   currencyImage: string;
-  status: "success" | "fail" | "pending";
+  status: "Paid" | "Pending" | "Cancelled";
   playerId: string;
-  serverId: string;
+  serverId?: string | null;
   diamonds: number;
   price: string;
 }
@@ -33,22 +33,97 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
   const t = useTranslations("purchases");
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const steps = [
-    {
-      key: "purchaseCompleted",
-      description: "purchaseCompletedDesc",
-    },
-    { key: "paymentReceived", description: "paymentReceivedDesc" },
-    {
-      key: "inDelivery",
-      description: "inDeliveryDesc",
-    },
-    {
-      key: "successfulDelivery",
-      description: "successfulDeliveryDesc",
-    },
-    { key: "orderClosed", description: "orderClosedDesc" },
-  ];
+  const getStatusIcon = (stepStatus: "completed" | "pending" | "cancelled") => {
+    switch (stepStatus) {
+      case "completed":
+        return <Check size={14} className="text-white" />;
+      case "pending":
+        return <Clock size={14} className="text-white" />;
+      case "cancelled":
+        return <X size={14} className="text-white" />;
+    }
+  };
+
+  const getStatusColor = (
+    stepStatus: "completed" | "pending" | "cancelled"
+  ) => {
+    switch (stepStatus) {
+      case "completed":
+        return "bg-green-500";
+      case "pending":
+        return "bg-yellow-500";
+      case "cancelled":
+        return "bg-red-500";
+    }
+  };
+
+  const getStepsForStatus = () => {
+    const baseSteps = [
+      {
+        key: "purchaseCompleted",
+        description: "purchaseCompletedDesc",
+        status: "completed" as const,
+      },
+    ];
+
+    if (status === "Paid") {
+      return [
+        ...baseSteps,
+        {
+          key: "inDelivery",
+          description: "inDeliveryDesc",
+          status: "completed" as const,
+        },
+        {
+          key: "successfulDelivery",
+          description: "successfulDeliveryDesc",
+          status: "completed" as const,
+        },
+        {
+          key: "orderClosed",
+          description: "orderClosedDesc",
+          status: "completed" as const,
+        },
+      ];
+    }
+    if (status === "Pending") {
+      return [
+        ...baseSteps,
+        {
+          key: "inPending",
+          description: "inPendingDesc",
+          status: "pending" as const,
+        },
+      ];
+    }
+
+    return baseSteps;
+  };
+
+  const steps = getStepsForStatus();
+
+  const getHeaderStatusIcon = () => {
+    switch (status) {
+      case "Paid":
+        return (
+          <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+            <Check size={14} className="text-white" />
+          </div>
+        );
+      case "Pending":
+        return (
+          <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center">
+            <Clock size={14} className="text-white" />
+          </div>
+        );
+      case "Cancelled":
+        return (
+          <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
+            <X size={14} className="text-white" />
+          </div>
+        );
+    }
+  };
 
   return (
     <div
@@ -66,11 +141,7 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
             </span>
             <span className="text-gray-500 text-sm">{date}</span>
           </div>
-          {status === "success" && (
-            <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-              <Check size={14} className="text-white" />
-            </div>
-          )}
+          {getHeaderStatusIcon()}
         </div>
       </div>
 
@@ -95,11 +166,23 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
               height={48}
               className="rounded-full w-12 h-12 object-contain"
             />
-            {status === "success" && (
-              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center border-2 border-white">
-                <Check size={10} className="text-white" />
-              </div>
-            )}
+            <div
+              className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center border-2 border-white ${getStatusColor(
+                status === "Paid"
+                  ? "completed"
+                  : status === "Pending"
+                  ? "pending"
+                  : "cancelled"
+              )}`}
+            >
+              {getStatusIcon(
+                status === "Paid"
+                  ? "completed"
+                  : status === "Pending"
+                  ? "pending"
+                  : "cancelled"
+              )}
+            </div>
           </div>
         </div>
 
@@ -112,12 +195,20 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
                 <div key={index} className="flex items-start gap-4 relative">
                   {/* Connecting Line */}
                   {index < steps.length - 1 && (
-                    <div className="absolute left-3 top-6 w-0.5 h-[calc(100%-6px)] bg-green-500"></div>
+                    <div
+                      className={`absolute left-3 top-6 w-0.5 h-[calc(100%-6px)] ${getStatusColor(
+                        step.status
+                      )}`}
+                    ></div>
                   )}
 
                   {/* Status Circle */}
-                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Check size={14} className="text-white" />
+                  <div
+                    className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${getStatusColor(
+                      step.status
+                    )}`}
+                  >
+                    {getStatusIcon(step.status)}
                   </div>
 
                   {/* Status Content */}
@@ -174,9 +265,7 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
 
             {/* Price */}
             <div className="flex justify-end mt-4 pt-4 border-t border-gray-100">
-              <div className="text-2xl font-bold text-gray-900">
-                {(Number.parseFloat(price.replace("₽", "")) / 100).toFixed(2)}₽
-              </div>
+              <div className="text-2xl font-bold text-gray-900">{price}</div>
             </div>
           </div>
         )}

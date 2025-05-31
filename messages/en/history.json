@@ -25,6 +25,8 @@
       "success": "Success",
       "fail": "Failed",
       "pending": "Pending"
-    }
+    },
+    "inPending": "Wating for payment",
+    "inPendingDesc": "Wating for payment gateway to finish order"
   }
 }
