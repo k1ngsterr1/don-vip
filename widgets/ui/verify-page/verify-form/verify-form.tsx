@@ -61,7 +61,6 @@ export function VerifyForm() {
       queryParams.set("returnUrl", currentReturnUrl);
     }
     router.push(`/auth/verify?${queryParams.toString()}`);
-    // setIsModalOpen(false); // Not strictly needed, useEffect will handle it
   };
 
   const handleModalClose = () => {

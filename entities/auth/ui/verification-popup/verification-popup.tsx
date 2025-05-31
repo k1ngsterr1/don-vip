@@ -16,7 +16,7 @@ export const VerificationPopup: React.FC<VerificationPopupProps> = ({
   if (!isOpen) return null;
 
   const handleVerifyNow = () => {
-    window.location.href = "/auth/verify";
+    window.location.href = "/ru/auth/verify";
   };
 
   return (
