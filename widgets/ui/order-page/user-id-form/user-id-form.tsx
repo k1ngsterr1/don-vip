@@ -89,7 +89,7 @@ export function UserIdForm({
           setUserInfo(null);
           return;
         }
-        result = await validateSmileUser(trimmed, trimmedServerId);
+        result = await validateSmileUser(trimmed, trimmedServerId, apiGame);
       } else {
         // Use Bigo validation when no server is required
         result = await validateBigoUser(trimmed);
@@ -269,20 +269,20 @@ export function UserIdForm({
           <>
             <div className="mt-4 mb-2">
               <h3 className="text-[16px] font-bold font-condensed mb-2">
-                {t("findUserId.title")}
+                {t("findBigoId.title")}
               </h3>
               <ol className="text-[15px] font-condensed text-gray-600 space-y-1 list-decimal pl-5">
                 <li className="text-black text-[17px]">
-                  {t("findUserId.step1")}
+                  {t("findBigoId.step1")}
                 </li>
                 <li className="text-black font-condensed text-[17px]">
-                  {t("findUserId.step2")}
+                  {t("findBigoId.step2")}
                 </li>
                 <li className="text-black font-condensed text-[17px]">
-                  {t("findUserId.step3")}
+                  {t("findBigoId.step3")}
                 </li>
                 <li className="text-black font-condensed text-[17px]">
-                  {t("findUserId.step4")}
+                  {t("findBigoId.step4")}
                 </li>
               </ol>
             </div>
