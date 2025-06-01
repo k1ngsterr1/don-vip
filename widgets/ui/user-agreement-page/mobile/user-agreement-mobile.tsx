@@ -82,9 +82,7 @@ export function UserAgreementMobile() {
         <div className="flex items-start gap-3">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-2xl font-medium text-gray-800">
-                {t("title")}
-              </h1>
+              <h1 className="text-2xl font-bold text-gray-800">{t("title")}</h1>
               <div className="flex items-center justify-center w-10 h-10 bg-blue-50 rounded-full flex-shrink-0">
                 <FileText className="text-blue-600 w-5 h-5" />
               </div>

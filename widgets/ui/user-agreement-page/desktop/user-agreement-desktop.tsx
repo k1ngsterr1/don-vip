@@ -27,7 +27,7 @@ export function UserAgreementDesktop() {
         </div>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl lg:text-4xl font-medium text-gray-800">
+            <h1 className="font-bold text-3xl lg:text-4xl text-gray-800">
               {t("title")}
             </h1>
             <p className="text-gray-500 mt-2 max-w-2xl">{t("lastUpdated")}</p>
