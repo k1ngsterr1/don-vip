@@ -30,9 +30,9 @@ export function DesktopPrivacyPolicy() {
             <h1 className="text-3xl lg:text-4xl font-unbounded font-medium text-gray-800">
               {t("title")}
             </h1>
-            <p className="text-gray-500 mt-2 max-w-2xl">{`${t(
-              "date"
-            )} • г. Находка`}</p>
+            <p className="text-gray-500 mt-2 max-w-2xl">{`${t("date")} • ${t(
+              "city"
+            )}`}</p>
           </div>
           <div className="hidden lg:flex items-center justify-center w-16 h-16 bg-blue-50 rounded-full">
             <Shield className="text-blue-600 w-8 h-8" />{" "}

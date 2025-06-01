@@ -1,17 +1,16 @@
 "use client";
 
 import { ArrowLeft, FileText } from "lucide-react";
-import { UserAgreementContent } from "../content/user-agreement-content";
-import { UserAgreementSidebar } from "../sidebar/user-agreement-sidebar";
-import { UserAgreementContactFooter } from "../footer/user-agreement-footer";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-
+import { UserAgreementSidebar } from "../sidebar/user-agreement-sidebar";
+import { UserAgreementContent } from "../content/user-agreement-content";
+import { UserAgreementContactFooter } from "../footer/user-agreement-footer";
 export function UserAgreementDesktop() {
   const t = useTranslations("userAgreement.page");
 
   return (
-    <div className="hidden md:block  mx-auto px-6 lg:px-8 py-8 lg:py-12">
+    <div className="hidden md:block mx-auto px-6 lg:px-8 py-8 lg:py-12">
       <div className="mb-8 lg:mb-12">
         <div className="flex items-center mb-4">
           <Link

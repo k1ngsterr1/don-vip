@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
-
 export function UserAgreementSidebar() {
   const [activeSection, setActiveSection] = useState("general-provisions");
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -27,7 +26,6 @@ export function UserAgreementSidebar() {
   ];
 
   useEffect(() => {
-    // Use Intersection Observer for better performance and reliability
     observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -37,51 +35,44 @@ export function UserAgreementSidebar() {
         });
       },
       {
-        rootMargin: "-20% 0px -70% 0px",
-        threshold: 0.1,
+        rootMargin: "-20% 0px -70% 0px", // Adjust based on your layout
+        threshold: 0.1, // A small part of the section is visible
       }
     );
 
-    // Observe all sections after a delay to ensure they're rendered
+    const currentObserver = observerRef.current;
+
     const timer = setTimeout(() => {
       sections.forEach((section) => {
         const element = document.getElementById(section.id);
-        if (element && observerRef.current) {
-          observerRef.current.observe(element);
+        if (element && currentObserver) {
+          currentObserver.observe(element);
         }
       });
-    }, 500);
+    }, 500); // Delay to ensure content is rendered
 
     return () => {
       clearTimeout(timer);
-      if (observerRef.current) {
-        observerRef.current.disconnect();
+      if (currentObserver) {
+        currentObserver.disconnect();
       }
     };
-  }, []);
+  }, []); // Empty dependency array means this runs once on mount
 
   const scrollToSection = (sectionId: string) => {
-    // Find the target element
-    const targetElement = document.getElementById(sectionId);
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const headerOffset = 100; // Adjust as needed for fixed headers
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition =
+        elementPosition + window.pageYOffset - headerOffset;
 
-    if (!targetElement) {
-      console.error(`Section ${sectionId} not found`);
-      return;
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+      setActiveSection(sectionId); // Optimistically update active section
     }
-
-    // Calculate position
-    const headerOffset = 100; // Adjust this value based on your header height
-    const elementPosition = targetElement.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-    // Scroll to position
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: "smooth",
-    });
-
-    // Update active section immediately
-    setActiveSection(sectionId);
   };
 
   return (

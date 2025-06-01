@@ -1,5 +1,4 @@
 "use client";
-
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
@@ -13,7 +12,7 @@ export function UserAgreementContent() {
       </div>
 
       {/* Section 1: General Provisions */}
-      <section id="general-provisions" className="mb-16 pt-4">
+      <section id="general-provisions" className="mb-16 pt-4 scroll-mt-24">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
           {t("sections.1.title")}
         </h2>
@@ -22,7 +21,7 @@ export function UserAgreementContent() {
       </section>
 
       {/* Section 2: Terms and Definitions */}
-      <section id="terms-definitions" className="mb-16 pt-4">
+      <section id="terms-definitions" className="mb-16 pt-4 scroll-mt-24">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
           {t("sections.2.title")}
         </h2>
@@ -63,7 +62,7 @@ export function UserAgreementContent() {
       </section>
 
       {/* Section 3: Registration and Account */}
-      <section id="registration-account" className="mb-16 pt-4">
+      <section id="registration-account" className="mb-16 pt-4 scroll-mt-24">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
           {t("sections.3.title")}
         </h2>
@@ -77,7 +76,7 @@ export function UserAgreementContent() {
       </section>
 
       {/* Section 4: Terms of Use */}
-      <section id="terms-of-use" className="mb-16 pt-4">
+      <section id="terms-of-use" className="mb-16 pt-4 scroll-mt-24">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
           {t("sections.4.title")}
         </h2>
@@ -99,7 +98,7 @@ export function UserAgreementContent() {
       </section>
 
       {/* Section 5: Purchase of Digital Goods */}
-      <section id="digital-goods-purchase" className="mb-16 pt-4">
+      <section id="digital-goods-purchase" className="mb-16 pt-4 scroll-mt-24">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
           {t("sections.5.title")}
         </h2>
@@ -113,7 +112,7 @@ export function UserAgreementContent() {
       </section>
 
       {/* Section 6: Intellectual Property */}
-      <section id="intellectual-property" className="mb-16 pt-4">
+      <section id="intellectual-property" className="mb-16 pt-4 scroll-mt-24">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
           {t("sections.6.title")}
         </h2>
@@ -122,14 +121,14 @@ export function UserAgreementContent() {
       </section>
 
       {/* Section 7: Confidentiality */}
-      <section id="confidentiality" className="mb-16 pt-4">
+      <section id="confidentiality" className="mb-16 pt-4 scroll-mt-24">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
           {t("sections.7.title")}
         </h2>
         <div className="mb-4 p-3 bg-green-50 rounded border border-green-200">
           <p className="text-green-800 text-sm mb-0">
             {t.rich("sections.7.content.info", {
-              link: (chunks) => (
+              link: (chunks: any) => (
                 <Link href="/contact" className="text-green-700 underline">
                   {chunks}
                 </Link>
@@ -142,7 +141,7 @@ export function UserAgreementContent() {
       </section>
 
       {/* Section 8: Limitation of Liability */}
-      <section id="liability-limitation" className="mb-16 pt-4">
+      <section id="liability-limitation" className="mb-16 pt-4 scroll-mt-24">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
           {t("sections.8.title")}
         </h2>
@@ -151,7 +150,7 @@ export function UserAgreementContent() {
       </section>
 
       {/* Section 9: Account Termination */}
-      <section id="account-termination" className="mb-16 pt-4">
+      <section id="account-termination" className="mb-16 pt-4 scroll-mt-24">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
           {t("sections.9.title")}
         </h2>
@@ -159,7 +158,7 @@ export function UserAgreementContent() {
       </section>
 
       {/* Section 10: Force Majeure */}
-      <section id="force-majeure" className="mb-16 pt-4">
+      <section id="force-majeure" className="mb-16 pt-4 scroll-mt-24">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
           {t("sections.10.title")}
         </h2>
@@ -167,7 +166,7 @@ export function UserAgreementContent() {
       </section>
 
       {/* Section 11: Payment Terms */}
-      <section id="payment-conditions" className="mb-16 pt-4">
+      <section id="payment-conditions" className="mb-16 pt-4 scroll-mt-24">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
           {t("sections.11.title")}
         </h2>
@@ -176,7 +175,7 @@ export function UserAgreementContent() {
       </section>
 
       {/* Section 12: Refunds */}
-      <section id="refunds" className="mb-16 pt-4">
+      <section id="refunds" className="mb-16 pt-4 scroll-mt-24">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
           {t("sections.12.title")}
         </h2>
@@ -185,7 +184,7 @@ export function UserAgreementContent() {
       </section>
 
       {/* Section 13: Third Party Liability */}
-      <section id="third-party-liability" className="mb-16 pt-4">
+      <section id="third-party-liability" className="mb-16 pt-4 scroll-mt-24">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
           {t("sections.13.title")}
         </h2>
@@ -193,7 +192,7 @@ export function UserAgreementContent() {
       </section>
 
       {/* Section 14: Applicable Law */}
-      <section id="applicable-law" className="mb-16 pt-4">
+      <section id="applicable-law" className="mb-16 pt-4 scroll-mt-24">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
           {t("sections.14.title")}
         </h2>
@@ -203,7 +202,7 @@ export function UserAgreementContent() {
       </section>
 
       {/* Section 15: Agreement Changes */}
-      <section id="agreement-changes" className="mb-16 pt-4">
+      <section id="agreement-changes" className="mb-16 pt-4 scroll-mt-24">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
           {t("sections.15.title")}
         </h2>

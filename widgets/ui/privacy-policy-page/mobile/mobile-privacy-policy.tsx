@@ -28,7 +28,7 @@ export function MobilePrivacyPolicy() {
       >
         {t("back")}
       </Link>
-      <h1 className="text-2xl mt-2 mb-3 text-gray-800 font-unbounded font-medium">
+      <h1 className="text-xl mt-2 mb-3 text-gray-800 font-unbounded font-medium">
         {t("title")}
       </h1>
       <p className="text-sm text-gray-500 mb-6">{`${t("site")} ${t(

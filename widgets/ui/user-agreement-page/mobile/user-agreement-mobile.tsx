@@ -1,68 +1,14 @@
 "use client";
 
 import { ArrowLeft, FileText } from "lucide-react";
-import { UserAgreementContactFooter } from "../footer/user-agreement-footer";
-import { UserAgreementContent } from "../content/user-agreement-content";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
-
+import { UserAgreementContent } from "../content/user-agreement-content";
+import { UserAgreementContactFooter } from "../footer/user-agreement-footer";
 export function UserAgreementMobile() {
   const t = useTranslations("userAgreement.page");
-  const sidebarT = useTranslations("userAgreement.sidebar");
-  const [activeSection, setActiveSection] = useState("general-provisions");
-
-  const sections = [
-    { id: "general-provisions", key: "section1" },
-    { id: "terms-definitions", key: "section2" },
-    { id: "registration-account", key: "section3" },
-    { id: "terms-of-use", key: "section4" },
-    { id: "digital-goods-purchase", key: "section5" },
-    { id: "intellectual-property", key: "section6" },
-    { id: "confidentiality", key: "section7" },
-    { id: "liability-limitation", key: "section8" },
-    { id: "account-termination", key: "section9" },
-    { id: "force-majeure", key: "section10" },
-    { id: "payment-conditions", key: "section11" },
-    { id: "refunds", key: "section12" },
-    { id: "third-party-liability", key: "section13" },
-    { id: "applicable-law", key: "section14" },
-    { id: "agreement-changes", key: "section15" },
-  ];
-
-  const scrollToSection = (sectionId: string) => {
-    // Use a more aggressive approach to find and scroll to the element
-    const element = document.querySelector(`#${sectionId}`);
-
-    if (element) {
-      // Calculate the position manually
-      const rect = element.getBoundingClientRect();
-      const scrollTop =
-        window.pageYOffset || document.documentElement.scrollTop;
-      const targetPosition = rect.top + scrollTop - 80;
-
-      // Force scroll immediately
-      window.scrollTo({
-        top: targetPosition,
-        behavior: "smooth",
-      });
-
-      setActiveSection(sectionId);
-    } else {
-      window.location.hash = sectionId;
-
-      setTimeout(() => {
-        const retryElement = document.querySelector(`#${sectionId}`);
-        if (retryElement) {
-          retryElement.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-          setActiveSection(sectionId);
-        }
-      }, 100);
-    }
-  };
+  // Removed sidebarT and activeSection logic as there's no mobile sidebar in this component.
+  // The UserAgreementContent itself has IDs for sections.
 
   return (
     <div className="md:hidden px-4 py-6">
@@ -92,6 +38,11 @@ export function UserAgreementMobile() {
         </div>
       </div>
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+        {/* 
+          If a mobile-specific table of contents / scroll navigation is needed, 
+          it would be added here or UserAgreementContent could be adapted.
+          For now, UserAgreementContent provides the sections with IDs.
+        */}
         <UserAgreementContent />
         <UserAgreementContactFooter />
       </div>
