@@ -70,7 +70,7 @@ export function LanguageSwitcher() {
         <button
           ref={triggerRef}
           type="button"
-          className="flex items-center justify-center gap-2 px-2 py-1 h-auto rounded-md border border-transparent hover:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-neutral-500 transition-colors"
+          className="flex items-center justify-center gap-2 px-2 py-1 h-auto rounded-md border border-transparent hover:border-gray-200 focus:outline-none focus:ring-0 focus:ring-offset-0 transition-colors"
           id="options-menu"
           aria-haspopup="true"
           aria-expanded={isOpen}

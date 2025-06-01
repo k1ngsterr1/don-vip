@@ -11,7 +11,7 @@ export default function Home() {
     },
     {
       id: 2,
-      image: "/banner.webp",
+      image: "/banner_mlbb.webp",
     },
     {
       id: 3,
@@ -19,11 +19,7 @@ export default function Home() {
     },
     {
       id: 4,
-      image: "/banner.webp",
-    },
-    {
-      id: 5,
-      image: "/banner.webp",
+      image: "/banner_mlbb.webp",
     },
   ];
 

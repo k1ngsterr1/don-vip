@@ -1,5 +1,4 @@
 import LightningIcon from "@/shared/icons/lightning-icon";
-import { Check } from "lucide-react";
 import Image from "next/image";
 
 interface BannerProps {
@@ -24,7 +23,7 @@ export function Banner({ backgroundImage, height }: BannerProps) {
     </div>
   );
 
-  // Desktop version
+  // Desktop version - now matches mobile styling
   const desktopBanner = (
     <div
       className="hidden md:block relative w-full rounded-lg overflow-hidden shadow-md"
@@ -38,8 +37,8 @@ export function Banner({ backgroundImage, height }: BannerProps) {
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
       <div className="absolute bottom-6 left-6">
-        <div className="bg-blue text-white text-sm py-1.5 px-3 rounded-full flex items-center mb-2 w-fit">
-          <Check size={14} className="mr-1.5" />
+        <div className="bg-blue/60 text-white text-xs py-1 px-2 rounded-[4px] font-unbounded gap-2 flex items-center w-fit">
+          <LightningIcon />
           Мгновенная доставка
         </div>
       </div>
