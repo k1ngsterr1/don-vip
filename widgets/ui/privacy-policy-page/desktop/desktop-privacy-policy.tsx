@@ -1,11 +1,11 @@
 "use client";
 
 import { ArrowLeft, Shield } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
+import { PrivacyPolicySidebar } from "../sidebar/privacy-policy-sidebar";
 import { PrivacyPolicyContent } from "../content/privacy-policy-content";
 import { PrivacyPolicyContactFooter } from "../footer/privacy-policy-footer";
-import { PrivacyPolicySidebar } from "../sidebar/privacy-policy-sidebar";
-import { Link } from "@/i18n/navigation";
 
 export function DesktopPrivacyPolicy() {
   const t = useTranslations("privacyPolicy");
@@ -16,7 +16,7 @@ export function DesktopPrivacyPolicy() {
         <div className="flex items-center mb-4">
           <Link
             href={"/"}
-            className="text-blue hover:text-blue-700 transition-colors flex items-center group"
+            className="text-blue-600 hover:text-blue-700 transition-colors flex items-center group" // Assuming text-blue-600
           >
             <ArrowLeft
               size={16}
@@ -35,7 +35,8 @@ export function DesktopPrivacyPolicy() {
             )} • г. Находка`}</p>
           </div>
           <div className="hidden lg:flex items-center justify-center w-16 h-16 bg-blue-50 rounded-full">
-            <Shield className="text-blue w-8 h-8" />
+            <Shield className="text-blue-600 w-8 h-8" />{" "}
+            {/* Assuming text-blue-600 */}
           </div>
         </div>
       </div>

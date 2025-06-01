@@ -6,88 +6,78 @@ import { useTranslations } from "next-intl";
 export function MobilePrivacyPolicy() {
   const t = useTranslations("privacyPolicy");
 
-  // Helper function to render sections with proper formatting
-  const renderSection = (title: string, content: string[]) => {
+  const renderSection = (title: string, contentKey: string) => {
+    const content = t.raw(contentKey) as string[];
     return (
-      <>
-        <strong>{title}</strong>
-        <br />
-        <br />
+      <section className="mb-6">
+        <h2 className="text-lg font-semibold text-gray-800 mb-3">{title}</h2>
         {content.map((paragraph, idx) => (
-          <span key={idx}>
+          <p key={idx} className="text-gray-700 mb-2 text-sm leading-relaxed">
             {paragraph}
-            <br />
-            <br />
-          </span>
+          </p>
         ))}
-      </>
+      </section>
     );
   };
 
   return (
-    <div className="w-full px-[11px] mt-[24px] flex flex-col items-start md:hidden">
-      <Link href={"/"} className="text-blue text-[15px] font-roboto">
+    <div className="w-full px-4 py-6 md:hidden">
+      <Link
+        href={"/"}
+        className="text-blue-600 text-base font-roboto mb-4 inline-block"
+      >
         {t("back")}
       </Link>
-      <h1 className="text-[14px] mt-[16px] text-dark font-unbounded">
+      <h1 className="text-2xl mt-2 mb-3 text-gray-800 font-unbounded font-medium">
         {t("title")}
       </h1>
-      <span className="text-[13px] text-left text-dark mt-[12px] font-roboto">
-        {`${t("site")} г. Находка ${t("date")}`}
-        <br />
-        <br />
+      <p className="text-sm text-gray-500 mb-6">{`${t("site")} ${t(
+        "date"
+      )}`}</p>
 
-        {/* Introduction */}
-        {t.raw("sections.intro").map((paragraph: string, idx: number) => (
-          <span key={idx}>
-            {paragraph}
-            <br />
-            <br />
-          </span>
-        ))}
+      <div className="prose prose-sm max-w-none">
+        <section className="mb-6">
+          {(t.raw("sections.intro") as string[]).map(
+            (paragraph: string, idx: number) => (
+              <p
+                key={idx}
+                className="text-gray-700 mb-2 text-sm leading-relaxed"
+              >
+                {paragraph}
+              </p>
+            )
+          )}
+        </section>
 
-        {/* Section 1 */}
         {renderSection(
           t("sections.generalProvisions.title"),
-          t.raw("sections.generalProvisions.content")
+          "sections.generalProvisions.content"
         )}
-
-        {/* Section 2 */}
         {renderSection(
           t("sections.processingPurposes.title"),
-          t.raw("sections.processingPurposes.content")
+          "sections.processingPurposes.content"
         )}
-
-        {/* Section 3 */}
         {renderSection(
           t("sections.processingConditions.title"),
-          t.raw("sections.processingConditions.content")
+          "sections.processingConditions.content"
         )}
-
-        {/* Section 4 */}
         {renderSection(
           t("sections.obligations.title"),
-          t.raw("sections.obligations.content")
+          "sections.obligations.content"
         )}
-
-        {/* Section 5 */}
         {renderSection(
           t("sections.liability.title"),
-          t.raw("sections.liability.content")
+          "sections.liability.content"
         )}
-
-        {/* Section 6 */}
         {renderSection(
           t("sections.disputeResolution.title"),
-          t.raw("sections.disputeResolution.content")
+          "sections.disputeResolution.content"
         )}
-
-        {/* Section 7 */}
         {renderSection(
           t("sections.additionalTerms.title"),
-          t.raw("sections.additionalTerms.content")
+          "sections.additionalTerms.content"
         )}
-      </span>
+      </div>
     </div>
   );
 }
