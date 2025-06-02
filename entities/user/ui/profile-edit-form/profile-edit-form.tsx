@@ -375,6 +375,7 @@ export function ProfileEditForm({
             <FormField
               label={""}
               name="phone"
+              maxLength={11}
               value={formData.phone}
               onChange={handleChange}
               type="tel"

@@ -1,8 +1,8 @@
 "use client";
 
 import { authApi } from "@/entities/auth/api/auth.api";
+import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useRouter } from "@/i18n/routing";
-import { getUserId } from "@/shared/hooks/use-get-user-id";
 import HomeIcon from "@/shared/icons/home-icon";
 import UserIcon from "@/shared/icons/user-icon";
 import { Search } from "lucide-react";
@@ -12,18 +12,7 @@ import { useEffect, useState } from "react";
 export default function BottomTab() {
   const router = useRouter();
   const pathname = usePathname();
-  const [userId, setUserId] = useState<string | null>(null);
-
-  // Update userId on mount and whenever pathname changes to a profile page
-  useEffect(() => {
-    // Always check localStorage for userId on mount and when pathname changes
-    const storedUserId = localStorage.getItem("userId");
-    setUserId(storedUserId);
-  }, [pathname]);
-
-  useEffect(() => {
-    console.log("userId state updated:", userId);
-  }, [userId]);
+  const { isAuthenticated, user } = useAuthStore();
 
   const tabs = [
     { id: "home", icon: HomeIcon, path: "/" },
@@ -31,29 +20,17 @@ export default function BottomTab() {
     {
       id: "profile",
       icon: UserIcon,
-      path: userId ? `/profile/${userId}` : "/auth/login",
+      path: isAuthenticated && user?.id ? `/profile/${user.id}` : "/auth/login",
     },
   ];
 
-  const handleTabClick = async (tabPath: string) => {
-    if (tabPath === "/auth/login") {
-      const guestId = await createGuestUser();
-      localStorage.setItem("userId", guestId);
-      setUserId(guestId);
-      router.push(`/profile/${guestId}` as any);
-    } else {
-      router.push(tabPath as any);
-    }
+  const handleTabClick = (tabPath: string) => {
+    router.push(tabPath as any);
   };
-
-  async function createGuestUser(): Promise<string> {
-    const user = await authApi.getCurrentUser();
-    return user.id;
-  }
 
   const isTabActive = (tabId: string, tabPath: string) => {
     if (tabId === "home") {
-      return /^\/[a-z]{2}$/.test(pathname); // /ru, /en, /de и т.д.
+      return /^\/[a-z]{2}$/.test(pathname); // /ru, /en, /de и т.п.
     }
     if (tabId === "search") {
       return pathname.includes("/search");
