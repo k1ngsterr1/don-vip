@@ -1,13 +1,11 @@
 "use client";
 
-import { authApi } from "@/entities/auth/api/auth.api";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useRouter } from "@/i18n/routing";
 import HomeIcon from "@/shared/icons/home-icon";
 import UserIcon from "@/shared/icons/user-icon";
 import { Search } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 
 export default function BottomTab() {
   const router = useRouter();

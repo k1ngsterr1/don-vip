@@ -33,6 +33,7 @@ export function UserIdForm({
 }: UserIdFormProps) {
   const t = useTranslations("orderBlock.user");
   const tError = useTranslations("alert.validation");
+  const isPubgMobile = apiGame === "pubgmobile";
 
   const { validateUser: validateBigoUser, isValidating: isBigoValidating } =
     useValidateBigoUser();
@@ -136,8 +137,13 @@ export function UserIdForm({
     <div className="px-4 mb-6">
       <div className="flex items-center mb-4">
         <h2 className="text-dark font-roboto font-medium">
-          {t("step")}{" "}
-          {requiresServer ? t("enterIdAndServer") : t("enterIdNoPrefix")}
+          {isPubgMobile
+            ? requiresServer
+              ? "Enter your Email and Server ID"
+              : "Enter your Email"
+            : requiresServer
+            ? t("enterIdAndServer")
+            : t("enterIdNoPrefix")}
         </h2>
         <CustomTooltip
           content={
@@ -162,12 +168,18 @@ export function UserIdForm({
       <div className="space-y-3">
         {!requiresServer && (
           <div className="relative">
-            <div className="absolute left-3 font-roboto font-black text-black text-[13px] top-1/2 transform -translate-y-1/2 text-sm">
-              {t("idPrefix")}
-            </div>
+            {!isPubgMobile && (
+              <div className="absolute left-3 font-roboto font-black text-black text-[13px] top-1/2 transform -translate-y-1/2 text-sm">
+                {t("idPrefix")}
+              </div>
+            )}
             <input
-              type="text"
-              placeholder={t("userIdPlaceholder")}
+              type={isPubgMobile ? "email" : "text"}
+              placeholder={
+                isPubgMobile
+                  ? t("userEmailPlaceholder")
+                  : t("userIdPlaceholder")
+              }
               value={userIdInput}
               onChange={(e) => {
                 setUserIdInput(e.target.value);
@@ -176,7 +188,9 @@ export function UserIdForm({
                 setValidationErrorCode(null);
               }}
               onBlur={handleValidateUserId}
-              className={`w-full p-3 pl-10 border ${
+              className={`w-full p-3 ${
+                isPubgMobile ? "pl-3" : "pl-10"
+              } border ${
                 validationError
                   ? "border-red-500"
                   : userInfo
@@ -235,8 +249,12 @@ export function UserIdForm({
         {requiresServer ? (
           <>
             <input
-              type="text"
-              placeholder={t("userIdPlaceholder")}
+              type={isPubgMobile ? "email" : "text"}
+              placeholder={
+                isPubgMobile
+                  ? t("userEmailPlaceholder")
+                  : t("userIdPlaceholder")
+              }
               value={userIdInput}
               onChange={(e) => {
                 setUserIdInput(e.target.value);
@@ -267,32 +285,36 @@ export function UserIdForm({
           </>
         ) : (
           <>
-            <div className="mt-4 mb-2">
-              <h3 className="text-[16px] font-bold font-condensed mb-2">
-                {t("findBigoId.title")}
-              </h3>
-              <ol className="text-[15px] font-condensed text-gray-600 space-y-1 list-decimal pl-5">
-                <li className="text-black text-[17px]">
-                  {t("findBigoId.step1")}
-                </li>
-                <li className="text-black font-condensed text-[17px]">
-                  {t("findBigoId.step2")}
-                </li>
-                <li className="text-black font-condensed text-[17px]">
-                  {t("findBigoId.step3")}
-                </li>
-                <li className="text-black font-condensed text-[17px]">
-                  {t("findBigoId.step4")}
-                </li>
-              </ol>
-            </div>
-            <Image
-              src="/check.webp"
-              width={250}
-              height={46}
-              className="w-[250px] h-[46px]"
-              alt={t("checkImageAlt")}
-            />
+            {!isPubgMobile && (
+              <>
+                <div className="mt-4 mb-2">
+                  <h3 className="text-[16px] font-bold font-condensed mb-2">
+                    {t("findBigoId.title")}
+                  </h3>
+                  <ol className="text-[15px] font-condensed text-gray-600 space-y-1 list-decimal pl-5">
+                    <li className="text-black text-[17px]">
+                      {t("findBigoId.step1")}
+                    </li>
+                    <li className="text-black font-condensed text-[17px]">
+                      {t("findBigoId.step2")}
+                    </li>
+                    <li className="text-black font-condensed text-[17px]">
+                      {t("findBigoId.step3")}
+                    </li>
+                    <li className="text-black font-condensed text-[17px]">
+                      {t("findBigoId.step4")}
+                    </li>
+                  </ol>
+                </div>
+                <Image
+                  src="/check.webp"
+                  width={250}
+                  height={46}
+                  className="w-[250px] h-[46px]"
+                  alt={t("checkImageAlt")}
+                />
+              </>
+            )}
           </>
         )}
       </div>
