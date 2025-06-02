@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 
 type PaymentSuccessWidgetProps = {
@@ -27,6 +28,12 @@ export function PaymentSuccessWidget({
       </div>
       <h3 className="font-medium text-lg mb-2">{t("title")}</h3>
       <p className="text-sm text-gray-600 mb-2">{t("description")}</p>
+      <Link
+        href="/"
+        className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+      >
+        {t("returnToMainPage")}
+      </Link>
     </div>
   );
 
@@ -53,6 +60,12 @@ export function PaymentSuccessWidget({
         {t("title")}
       </h3>
       <p className="text-lg text-gray-600 mb-4 max-w-md">{t("description")}</p>
+      <Link
+        href="/"
+        className="mt-6 bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+      >
+        {t("returnToMainPage")}
+      </Link>
     </div>
   );
 

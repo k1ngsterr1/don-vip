@@ -4,6 +4,7 @@
     "description": "Thank you for your purchase! Your payment has been processed successfully. You will receive a confirmation email shortly.",
     "orderNumber": "Order Number",
     "amount": "Amount Paid",
-    "imageAlt": "Payment success icon"
+    "imageAlt": "Payment success icon",
+    "returnToMainPage": "Return to Main Page"
   }
 }
