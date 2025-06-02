@@ -46,7 +46,7 @@ export default function Footer() {
               <Link
                 key={link.id}
                 href={link.href as any}
-                className="text-[13px] md:text-sm text-dark uppercase hover:text-blue-600 transition-colors whitespace-nowrap"
+                className="text-[12px] font-medium md:text-sm text-dark uppercase hover:text-blue-600 transition-colors whitespace-nowrap"
               >
                 {i18n(`links.${link.id}`)}
               </Link>

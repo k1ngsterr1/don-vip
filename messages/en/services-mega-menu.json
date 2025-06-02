@@ -12,6 +12,10 @@
     "compare_prices": "Compare Prices",
     "promotions": "Promotions",
     "coupons": "Coupons",
+    "help": {
+      "title": "Help",
+      "coupons": "Coupons"
+    },
     "faq": "FAQ",
     "learn_more": "Learn More",
     "order_now": "Order Now"

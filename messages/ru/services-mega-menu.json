@@ -11,6 +11,10 @@
     "how_to_topup": "Как пополнить счет",
     "compare_prices": "Сравнить цены",
     "promotions": "Акции и скидки",
+    "help": {
+      "title": "Помощь",
+      "coupons": "Coupons"
+    },
     "coupons": "Купоны",
     "faq": "Часто задаваемые вопросы",
     "learn_more": "Подробнее",
