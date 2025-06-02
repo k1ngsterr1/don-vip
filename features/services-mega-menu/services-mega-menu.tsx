@@ -44,10 +44,7 @@ export function ServicesMegaMenu() {
     }
   }, [productsData]);
 
-  const helpLinks: NavLink[] = [
-    { id: "coupons", link: "/coupons" },
-    { id: "faq", link: "/faq" },
-  ];
+  const helpLinks: NavLink[] = [{ id: "coupons", link: "/coupons" }];
 
   // Animation variants
   const containerVariants = {

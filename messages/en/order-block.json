@@ -15,6 +15,7 @@
       "enterIdNoPrefix": "(DO NOT ENTER \"ID:\")",
       "idPrefix": "ID:",
       "userIdPlaceholder": "USER ID",
+
       "userServerPlaceholder": "USER SERVER",
       "confirmDataCorrectness": "I confirm the correctness of the entered data",
       "findBigoId": {
