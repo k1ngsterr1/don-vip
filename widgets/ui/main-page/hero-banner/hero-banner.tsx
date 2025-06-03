@@ -124,20 +124,20 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
       <div className="hidden sm:block">
         <button
           onClick={handlePrev}
-          className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 rounded-full p-2 z-10"
+          className="absolute left-6 top-1/2 -translate-y-1/2 bg-white/70 rounded-full p-2 z-10"
           aria-label="Previous slide"
         >
           <ChevronLeft />
         </button>
         <button
           onClick={handleNext}
-          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 rounded-full p-2 z-10"
+          className="absolute right-6 top-1/2 -translate-y-1/2 bg-white/70 rounded-full p-2 z-10"
           aria-label="Next slide"
         >
           <ChevronRight />
         </button>
       </div>
-      <div className="absolute bottom-3 left-0 right-0 flex justify-center space-x-1 z-10">
+      <div className="absolute bottom-3 left-6 right-0 flex justify-center space-x-1 z-10">
         {slides.map((_, index) => (
           <button
             key={index}
