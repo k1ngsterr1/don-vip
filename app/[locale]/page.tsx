@@ -7,7 +7,7 @@ export default function Home() {
   const heroSlides = [
     {
       id: 1,
-      image: "/banner.webp",
+      image: "/banner_new.webp",
     },
     {
       id: 2,

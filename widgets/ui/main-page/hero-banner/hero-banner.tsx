@@ -67,7 +67,7 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
   return (
     <div
       className="relative w-full overflow-hidden bg-gray-100"
-      style={{ height: isMobile ? "180px" : "421px" }}
+      style={{ height: isMobile ? "180px" : "621px" }}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={() => setIsPaused(true)}
