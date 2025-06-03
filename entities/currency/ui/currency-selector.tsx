@@ -97,7 +97,6 @@ export function CurrencySelector({
                 <Check className="text-white" size={14} />
               </div>
             )}
-
             <div className="flex items-center mb-2">
               {currencyImage ? (
                 <>
