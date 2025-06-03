@@ -161,7 +161,7 @@ export function ServicesMegaMenu() {
                     custom={index}
                   >
                     <motion.div
-                      className="relative w-full aspect-square rounded-lg overflow-hidden mb-2 shadow-sm"
+                      className="relative w-32 h-32 md:w-36 md:h-36 rounded-lg overflow-hidden mb-2 shadow-sm mx-auto"
                       variants={cardVariants}
                       initial="rest"
                       whileHover="hover"
