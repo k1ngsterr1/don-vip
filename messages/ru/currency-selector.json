@@ -1,7 +1,7 @@
 {
   "CurrencySelector": {
     "title": "1 ВЫБЕРИТЕ СУММУ ПОПОЛНЕНИЯ",
-    "amountWithCurrency": "{amount} {currencyName}",
+    "amountWithCurrency": "{amount}",
     "currencyIconAlt": "Иконка {currencyName}"
   }
 }

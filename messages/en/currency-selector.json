@@ -1,7 +1,7 @@
 {
   "CurrencySelector": {
     "title": "1 SELECT TOP-UP AMOUNT",
-    "amountWithCurrency": "{amount} {currencyName}",
+    "amountWithCurrency": "{amount}",
     "currencyIconAlt": "{currencyName} icon"
   }
 }

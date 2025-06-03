@@ -48,6 +48,11 @@ export function CurrencySelector({
               </div>
             )}
             <span className="text-dark font-bold text-lg">{item.price}</span>
+            <span className="text-sm text-gray-600">
+              {i18n("amountWithCurrency", {
+                amount: item.amount,
+              })}
+            </span>
             <div className="flex items-center justify-between w-full mt-1">
               {currencyImage ? (
                 <Image
@@ -92,15 +97,23 @@ export function CurrencySelector({
                 <Check className="text-white" size={14} />
               </div>
             )}
+
             <div className="flex items-center mb-2">
               {currencyImage ? (
-                <Image
-                  src={currencyImage || "/placeholder.svg"}
-                  width={36}
-                  height={36}
-                  alt={i18n("currencyIconAlt", { currencyName })}
-                  className="object-contain mr-2"
-                />
+                <>
+                  <Image
+                    src={currencyImage || "/placeholder.svg"}
+                    width={36}
+                    height={36}
+                    alt={i18n("currencyIconAlt", { currencyName })}
+                    className="object-contain mr-2"
+                  />
+                  <span className="text-sm text-gray-600">
+                    {i18n("amountWithCurrency", {
+                      amount: item.amount,
+                    })}
+                  </span>
+                </>
               ) : (
                 <Image
                   src="/diamond.webp"
