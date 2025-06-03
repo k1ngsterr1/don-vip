@@ -3,6 +3,7 @@
 import { useMediaQuery } from "@/shared/hooks/use-media-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLast, ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -20,6 +21,7 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
   const [direction, setDirection] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const isMobile = useMediaQuery("(max-width: 640px)");
+  const t = useTranslations("buyNow");
 
   // Auto-advance slides
   useEffect(() => {
@@ -117,7 +119,7 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
         </motion.div>
       </AnimatePresence>
       <button className="absolute bottom-[32px] left-5 w-[140px] h-[40px] border-white border-[1px] rounded-full text-white text-[14px] font-medium z-100 transition-colors hover:bg-blue hover:border-blue">
-        Купить сейчас
+        {t("title")}
       </button>
       <div className="hidden sm:block">
         <button

@@ -234,7 +234,7 @@ export function ProfileEditForm({
             value={formData.phone}
             onChange={handleChange}
             className="flex-1 p-3 bg-gray-50 rounded-lg border border-gray-200"
-            placeholder="+7 (XXX) XXX-XX-XX"
+            placeholder="+7 (XXX)  XXX-XX-XX"
           />
           <button
             type="button"
@@ -375,13 +375,13 @@ export function ProfileEditForm({
             <FormField
               label={""}
               name="phone"
-              maxLength={11}
+              maxLength={18}
               value={formData.phone}
               onChange={handleChange}
               type="tel"
               icon={<Phone size={18} />}
               className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
-              placeholder="+7 (XXX) XXX-XX-XX"
+              placeholder="+7 (XXX)  XXX-XX-XX"
             />
           </div>
 

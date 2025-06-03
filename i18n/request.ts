@@ -24,6 +24,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
       ...(await import(`../messages/${locale}/forgotpasssuccess.json`)),
       ...(await import(`../messages/${locale}/google-auth.json`)),
       ...(await import(`../messages/${locale}/alert.json`)),
+      ...(await import(`../messages/${locale}/buy-now.json`)),
       ...(await import(`../messages/${locale}/payment-success.json`)),
       ...(await import(`../messages/${locale}/payment-failed.json`)),
       ...(await import(`../messages/${locale}/verify-auth.json`)),
