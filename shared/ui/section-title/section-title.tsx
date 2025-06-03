@@ -16,7 +16,7 @@ export default function SectionTitle({
     <div className={`flex flex-col items-start mb-3 sm:mb-4 ${className}`}>
       <div className="flex items-center">
         <span className="mr-2 text-lg sm:text-xl md:text-2xl">{icon}</span>
-        <h2 className="text-[18px] sm:text-[20px] md:text-[28px] font-medium text-dark font-unbounded capitalize">
+        <h2 className="text-[18px] sm:text-[20px] md:text-[22px] font-medium text-dark font-unbounded capitalize">
           {title}
         </h2>
       </div>

@@ -118,10 +118,7 @@ export function useCreateOrder(isTbank = false) {
       setIsProcessingPayment(false);
 
       if (paymentData.web_url) {
-        if (isSafariBrowser()) {
-          alert("Сейчас откроется платёжная страница");
-        }
-        window.open(paymentData.web_url, "_blank");
+        window.location.href = paymentData.web_url;
       }
     },
 

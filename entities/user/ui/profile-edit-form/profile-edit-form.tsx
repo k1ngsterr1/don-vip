@@ -15,7 +15,6 @@ import {
 import { useState } from "react";
 import { useRouter } from "@/i18n/routing";
 
-// Simple +7 phone formatter
 function formatPhoneNumber(value: string): string {
   // Remove all non-digit characters except +
   const cleaned = value.replace(/[^\d+]/g, "");
