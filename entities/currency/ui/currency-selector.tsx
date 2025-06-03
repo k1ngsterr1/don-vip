@@ -49,11 +49,6 @@ export function CurrencySelector({
             )}
             <span className="text-dark font-bold text-lg">{item.price}</span>
             <div className="flex items-center justify-between w-full mt-1">
-              <span className="text-sm text-gray-600">
-                {i18n("amountWithCurrency", {
-                  amount: item.amount,
-                })}
-              </span>
               {currencyImage ? (
                 <Image
                   src={currencyImage || "/placeholder.svg"}
@@ -115,12 +110,6 @@ export function CurrencySelector({
                   className="object-contain mr-2"
                 />
               )}
-              <span className="text-gray-700 font-medium">
-                {i18n("amountWithCurrency", {
-                  amount: item.amount,
-                  currencyName,
-                })}
-              </span>
             </div>
             <span className="text-2xl font-bold text-gray-900">
               {item.price}
