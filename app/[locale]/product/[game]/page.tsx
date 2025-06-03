@@ -80,20 +80,15 @@ function OrderPageSkeleton() {
       </div>
       <div className="hidden md:block max-w-6xl mx-auto px-6 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Left column - Main content */}
           <div className="lg:w-2/3">
-            {/* Banner skeleton */}
             <Skeleton className="w-full h-[250px] rounded-lg" />
             <div className="bg-white rounded-lg shadow-sm border border-gray-100 mt-6 overflow-hidden">
-              {/* Product info skeleton */}
               <div className="p-6 border-b border-gray-100">
                 <Skeleton className="w-1/2 h-7 mb-3" />
                 <Skeleton className="w-full h-4 mb-2" />
                 <Skeleton className="w-full h-4 mb-2" />
                 <Skeleton className="w-3/4 h-4" />
               </div>
-
-              {/* Currency selector skeleton */}
               <div className="p-6 border-b border-gray-100">
                 <Skeleton className="w-1/3 h-6 mb-4" />
                 <div className="grid grid-cols-2 gap-4">

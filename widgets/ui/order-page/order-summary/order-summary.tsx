@@ -53,14 +53,11 @@ export function OrderSummary({
             <p className="text-sm text-gray-500">{game.currencyName}</p>
           </div>
         </div>
-
         {selectedCurrency && (
           <div className="bg-gray-50 rounded-lg p-4 mb-4">
             <div className="flex justify-between mb-2">
               <span className="text-gray-600">{t("summary.quantity")}:</span>
-              <span className="font-medium">
-                {selectedCurrency.amount} {game.currencyName}
-              </span>
+              <span className="font-medium">{selectedCurrency.amount}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">{t("summary.cost")}:</span>
@@ -68,7 +65,6 @@ export function OrderSummary({
             </div>
           </div>
         )}
-
         {userId && !isEmail(userId) && (
           <div className="mb-4">
             <h4 className="text-sm font-medium text-gray-700 mb-2">
