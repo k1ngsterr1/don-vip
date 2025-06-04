@@ -12,6 +12,14 @@ export default function BottomTab() {
   const pathname = usePathname();
   const { isAuthenticated, user } = useAuthStore();
 
+  const segments = pathname.split("/").filter(Boolean);
+  const isTechworksPath = segments.length === 2 && segments[1] === "techworks";
+
+  // Если мы на странице "/{locale}/techworks", прячем BottomTab
+  if (isTechworksPath) {
+    return null;
+  }
+
   const tabs = [
     { id: "home", icon: HomeIcon, path: "/" },
     { id: "search", icon: Search, path: "/search" },

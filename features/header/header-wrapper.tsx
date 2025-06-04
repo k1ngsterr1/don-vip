@@ -4,13 +4,18 @@ import { usePathname } from "next/navigation";
 import Header from "./header";
 
 export default function HeaderWrapper() {
-  const pathname = usePathname();
+  const pathname = usePathname() || "";
 
-  // Removed hideSearchBarBasePaths and related logic
-  const isProfilePath = pathname.startsWith("/profile");
+  // Проверим, что путь имеет формат "/<locale>/techworks" (без дополнительных сегментов)
+  // Например: "/en/techworks" или "/ru/techworks"
+  const segments = pathname.split("/").filter(Boolean); // ["en", "techworks"] или ["ru", "techworks"]
+  const isTechworksPath = segments.length === 2 && segments[1] === "techworks";
 
-  // Always show search bar except on profile paths
-  const isSearchBar = !isProfilePath;
+  // Если мы на /{locale}/techworks, вообще не рендерим Header
+  if (isTechworksPath) {
+    return null;
+  }
 
-  return <Header isSearchBar={isSearchBar} />;
+  // Остальные страницы – рендерим Header
+  return <Header />;
 }

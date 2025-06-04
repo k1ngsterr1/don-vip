@@ -13,6 +13,7 @@ import { notFound } from "next/navigation";
 import Script from "next/script"; // <-- ✅ Import Script
 import "./globals.css";
 import { getMessages, getTranslations } from "next-intl/server";
+import FooterWrapper from "@/features/footer/footer-wrapper";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -97,7 +98,7 @@ export default async function LocaleLayout({
             <HeaderWrapper />
             <main>{children}</main>
             <BottomTab />
-            <Footer />
+            <FooterWrapper />
           </ClientLayout>
         </NextIntlClientProvider>
       </body>
