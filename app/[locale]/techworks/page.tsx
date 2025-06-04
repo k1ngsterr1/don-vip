@@ -25,7 +25,7 @@ export default function TechworksPage() {
         </h1>
       </div>
 
-      <div className="absolute w-[90%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+      <div className="absolute w-[90%] bottom-[0px] left-1/2 -translate-x-1/2 -translate-y-1/2">
         <CountdownTimer targetDate={targetDate} />
       </div>
     </div>
