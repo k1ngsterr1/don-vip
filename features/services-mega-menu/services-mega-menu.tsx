@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { ServicesMegaMenuSkeleton } from "./services-mega-menu-skeleton";
 import { useProducts } from "@/entities/product/hooks/queries/use-products";
@@ -25,6 +25,7 @@ export function ServicesMegaMenu() {
   const t = useTranslations("ServicesMegaMenu");
   const { data: productsData, isLoading } = useProducts();
   const [bigoServices, setBigoServices] = useState<ServiceItem[]>([]);
+  const locale = useLocale();
 
   // Filter to only include Bigo products when data is loaded
   useEffect(() => {
@@ -204,7 +205,11 @@ export function ServicesMegaMenu() {
                       href={link.link}
                       className="text-dark hover:text-blue-600 transition-colors"
                     >
-                      {t(`help.${link.id}`)}
+                      {link.id === "coupons"
+                        ? locale === "ru"
+                          ? "Купоны"
+                          : "Coupons"
+                        : t(`help.${link.id}`)}
                     </Link>
                   </motion.li>
                 ))}

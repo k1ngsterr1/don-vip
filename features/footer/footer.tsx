@@ -20,7 +20,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-white px-4 sm:px-6 md:px-8 lg:px-10 mt-6 py-6 pb-16 sm:pb-12 border-t border-gray-200">
-      <div className="max-w-[1680px]  pb-4 mx-auto">
+      <div className="max-w-[1680px]   mx-auto">
         {/* Logo and T-bank section - mobile first */}
         <div className="flex items-center justify-between mb-6 sm:mb-0">
           <Image
@@ -62,7 +62,7 @@ export default function Footer() {
             />
           </div>
         </div>
-        <div className="mt-6 pb-4 md:mt-8 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        <div className="mt-6  md:mt-8 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
           <div className="text-sm text-gray-400">{i18n("copyright")}</div>
         </div>
       </div>
