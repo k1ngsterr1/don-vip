@@ -11,12 +11,8 @@ const FIXED_TECHWORK_ID = 1; // All operations will use this ID
  */
 export interface Techwork {
   id: number;
-  name: string; // Example property
-  description: string; // Example property
-  isActive?: boolean; // Example property
-  techWorksEndsAt: any; // Add other properties as defined in your backend
-  createdAt: string;
-  updatedAt: string;
+  isTechWorks?: boolean;
+  techWorksEndsAt: string;
 }
 
 /**
