@@ -2,62 +2,42 @@
 
 import reactQueryClient from "@/shared/config/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { type ReactNode, useEffect, useRef } from "react";
-import { apiClient } from "@/shared/config/apiClient";
-import { useAuthStore } from "@/entities/auth/store/auth.store";
+import { type ReactNode, useEffect, useRef, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { Techwork, techworksApi } from "@/entities/techworks/api/techworks.api";
 
 interface ClientLayoutProps {
   children: ReactNode;
 }
 
 const ClientLayout = ({ children }: ClientLayoutProps) => {
-  const {
-    user,
-    setUser,
-    setTokens,
-    isAuthenticated,
-    isGuestAuth,
-    setGuestAuth,
-  } = useAuthStore();
-  const guestAuthAttemptedRef = useRef(false);
+  const [techworkData, setTechworkData] = useState<Techwork | null>(null);
+  const techworkFetched = useRef(false);
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
-    if (guestAuthAttemptedRef.current) {
-      return;
-    }
+    if (techworkFetched.current) return;
 
-    const checkGuestUser = async () => {
-      const authStorage = localStorage.getItem("auth-storage");
-
-      if (authStorage) {
-        try {
-          const parsedStorage = JSON.parse(authStorage);
-          const state = parsedStorage.state;
-
-          if (state && state.isGuestAuth && !isGuestAuth) {
-            setGuestAuth(true);
-          }
-          if (user || isGuestAuth || state?.isGuestAuth) {
-            guestAuthAttemptedRef.current = true;
-
-            return;
-          }
-        } catch (e) {
-          console.error(
-            "👤 [Auth] #43 - ClientLayout: Error parsing auth storage",
-            e
-          );
-        }
-      }
-
-      if (isAuthenticated || isGuestAuth || user) {
-        guestAuthAttemptedRef.current = true;
-        return;
+    const fetchTechwork = async () => {
+      try {
+        const data = await techworksApi.getTechwork();
+        setTechworkData(data);
+        techworkFetched.current = true;
+        console.log("[Techwork] Fetched:", data);
+      } catch (err) {
+        console.error("[Techwork] Fetch error:", err);
       }
     };
 
-    checkGuestUser();
-  }, [isAuthenticated, isGuestAuth, user, setUser, setTokens, setGuestAuth]);
+    fetchTechwork();
+  }, []);
+
+  useEffect(() => {
+    if (!pathname.startsWith("/techworks")) {
+      router.push("/techworks");
+    }
+  }, [pathname, router]);
 
   return (
     <QueryClientProvider client={reactQueryClient}>
