@@ -14,6 +14,8 @@
     "purchaseCompleted": "Purchase Completed",
     "purchaseCompletedDesc": "Your purchase has been successfully completed",
     "paymentReceived": "Payment Received",
+    "paymentCancelled": "Payment Cancelled",
+    "paymentCancelledDesc": "Your payment has been cancelled",
     "paymentReceivedDesc": "We've received your payment",
     "inDelivery": "In Delivery",
     "inDeliveryDesc": "Your purchase is being processed for delivery",

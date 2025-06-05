@@ -12,6 +12,8 @@
     "noPurchases": "Покупок пока нет",
     "sadDiamondAlt": "Грустный алмаз",
     "purchaseCompleted": "Покупка завершена",
+    "paymentCancelled": "Оплата отменена",
+    "paymentCancelledDesc": "Ваша оплата была отменена",
     "purchaseCompletedDesc": "Ваша покупка успешно завершена",
     "paymentReceived": "Оплата получена",
     "paymentReceivedDesc": "Мы получили вашу оплату",

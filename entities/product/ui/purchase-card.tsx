@@ -96,6 +96,16 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
         },
       ];
     }
+    if (status === "Cancelled") {
+      return [
+        ...baseSteps,
+        {
+          key: "paymentCancelled",
+          description: "paymentCancelledDesc",
+          status: "cancelled" as const,
+        },
+      ];
+    }
 
     return baseSteps;
   };
