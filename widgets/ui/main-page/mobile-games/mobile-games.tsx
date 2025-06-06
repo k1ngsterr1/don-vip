@@ -76,7 +76,7 @@ export const MobileGamesBlock = () => {
           ))
         ) : (
           <div className="col-span-full p-4 text-center text-muted-foreground">
-            No games available at the moment.
+            {t("services.notFound")}
           </div>
         )}
       </div>

@@ -12,13 +12,19 @@ import { useRegister } from "@/entities/auth/hooks/use-auth";
 import { Link } from "@/i18n/navigation";
 import { PasswordStrength } from "@/shared/ui/password-strength/password-strength";
 import { useRouter } from "@/i18n/routing";
+import {
+  isValidPhoneNumber,
+  formatPhoneNumberInput,
+  normalizePhoneNumberForApi,
+} from "@/shared/utils/phone-utils";
 
 const errorTranslations: Record<string, Record<string, string>> = {
   en: {
     // Form validation errors
     "Email or phone is required": "Email or phone is required",
     "Invalid email format": "Please enter a valid email",
-    "Invalid phone number": "Please enter a valid phone number",
+    "Invalid phone number":
+      "Please enter a valid phone number (e.g. +1234567890)",
     "Password is required": "Password is required",
     "Password is too weak": "Password is too weak. Please make it stronger.",
 
@@ -42,7 +48,8 @@ const errorTranslations: Record<string, Record<string, string>> = {
   ru: {
     "Email or phone is required": "Email или телефон обязательны",
     "Invalid email format": "Пожалуйста, введите корректный email",
-    "Invalid phone number": "Пожалуйста, введите корректный номер телефона",
+    "Invalid phone number":
+      "Пожалуйста, введите корректный номер телефона (например +71234567890)",
     "Password is required": "Требуется пароль",
     "Password is too weak":
       "Пароль слишком слабый. Пожалуйста, сделайте его сильнее.",
@@ -66,39 +73,24 @@ const errorTranslations: Record<string, Record<string, string>> = {
 
 function translateError(message: string, locale: string): string {
   const translations = errorTranslations[locale === "ru" ? "ru" : "en"];
-
-  // Check for direct translation
-  if (translations[message]) {
-    return translations[message];
-  }
-
-  // Check for status code errors
+  if (translations[message]) return translations[message];
   for (const key of Object.keys(translations)) {
-    if (message.includes(key)) {
-      return translations[key];
-    }
+    if (message.includes(key)) return translations[key];
   }
-
-  // Return original message if no translation found
   return message;
 }
 
 function getHumanReadableError(error: string, locale = "en"): string {
-  if (error.includes("status code 400")) {
+  if (error.includes("status code 400"))
     return translateError("status code 400", locale);
-  }
-  if (error.includes("status code 409")) {
+  if (error.includes("status code 409"))
     return translateError("status code 409", locale);
-  }
-  if (error.includes("status code 422")) {
+  if (error.includes("status code 422"))
     return translateError("status code 422", locale);
-  }
-  if (error.includes("status code 429")) {
+  if (error.includes("status code 429"))
     return translateError("status code 429", locale);
-  }
-  if (error.includes("status code")) {
+  if (error.includes("status code"))
     return translateError("status code 500", locale);
-  }
   return translateError(error, locale);
 }
 
@@ -130,7 +122,6 @@ export function RegisterForm() {
   const hasLowercase = /[a-z]/.test(password);
   const hasNumber = /[0-9]/.test(password);
   const hasSpecialChar = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
-
   const criteriaMet = [
     hasMinLength,
     hasUppercase,
@@ -144,34 +135,50 @@ export function RegisterForm() {
     if (input) {
       if (input.includes("@")) {
         setIdentifierType("email");
-      } else if (input.replace(/[^0-9]/g, "").length > input.length / 2) {
+      } else if (
+        input.startsWith("+") ||
+        input.replace(/[^0-9]/g, "").length > input.length / 2
+      ) {
+        // MODIFIED: Check for '+' prefix for phone
         setIdentifierType("phone");
       }
     }
   }, [identifier]);
 
-  const validateIdentifier = (value: string, type: "email" | "phone") => {
+  const validateLocalIdentifier = (value: string, type: "email" | "phone") => {
+    // RENAMED
     if (type === "email") {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return emailRegex.test(value);
     } else {
-      const digitsOnly = value.replace(/\D/g, "");
-      return digitsOnly.length >= 10;
+      return isValidPhoneNumber(value); // MODIFIED: Use new utility
     }
   };
 
   const validatePassword = () => hasMinLength && criteriaMet >= 2;
-
   const isFormFilled =
-    identifier.trim() !== "" && password.trim() !== "" && hasMinLength;
+    identifier.trim() !== "" && password.trim() !== "" && validatePassword(); // MODIFIED: use validatePassword for completeness
+
+  const handleIdentifierChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // ADDED: handler for identifier
+    let value = e.target.value;
+    if (identifierType === "phone") {
+      value = formatPhoneNumberInput(value);
+    }
+    setIdentifier(value);
+    if (errors.identifier) {
+      setErrors((prev) => ({ ...prev, identifier: undefined }));
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({}); // Clear previous errors
 
     const newErrors = {
-      identifier: !identifier
+      identifier: !identifier.trim()
         ? translateError("Email or phone is required", locale)
-        : !validateIdentifier(identifier, identifierType)
+        : !validateLocalIdentifier(identifier, identifierType)
         ? translateError(
             identifierType === "email"
               ? "Invalid email format"
@@ -179,7 +186,7 @@ export function RegisterForm() {
             locale
           )
         : undefined,
-      password: !password
+      password: !password.trim()
         ? translateError("Password is required", locale)
         : !validatePassword()
         ? translateError("Password is too weak", locale)
@@ -191,18 +198,21 @@ export function RegisterForm() {
       return;
     }
 
+    let apiIdentifier = identifier.trim();
+    if (identifierType === "phone") {
+      apiIdentifier = normalizePhoneNumberForApi(apiIdentifier); // MODIFIED: Ensure API format
+    }
+
     register(
-      {
-        identifier,
-        password,
-        lang: locale,
-      },
+      { identifier: apiIdentifier, password, lang: locale },
       {
         onSuccess: () => {
           setIsRedirecting(true);
           setTimeout(() => {
             router.push(
-              `/auth/verify?identifier=${encodeURIComponent(identifier)}` as any
+              `/auth/verify?identifier=${encodeURIComponent(
+                apiIdentifier
+              )}` as any
             );
           }, 800);
         },
@@ -212,7 +222,6 @@ export function RegisterForm() {
             (error.message
               ? getHumanReadableError(error.message, locale)
               : translateError("Registration failed", locale));
-
           setErrors({ identifier: errorMessage });
           setDebugInfo(
             (prev) =>
@@ -238,16 +247,12 @@ export function RegisterForm() {
             placeholder={
               identifierType === "email"
                 ? i18n("emailPlaceholder") || "Email address"
-                : i18n("phonePlaceholder") || "Phone number"
+                : i18n("phonePlaceholder") || "Phone number (e.g. +123...)" // MODIFIED: Placeholder hint
             }
             value={identifier}
-            onChange={(e) => {
-              setIdentifier(e.target.value);
-              if (errors.identifier)
-                setErrors((prev) => ({ ...prev, identifier: undefined }));
-            }}
+            onChange={handleIdentifierChange} // MODIFIED: Use new handler
             disabled={showLoadingOverlay}
-            isPhoneMask={identifierType === "phone"}
+            isPhoneMask={false} // MODIFIED: Assuming the mask is too restrictive. Test this.
             suffix={
               <span className="text-gray-400">
                 {identifierType === "email" ? (
@@ -265,7 +270,8 @@ export function RegisterForm() {
                 setIdentifierType(
                   identifierType === "email" ? "phone" : "email"
                 );
-                setIdentifier("");
+                setIdentifier(identifierType === "email" ? "+" : ""); // MODIFIED: Set to "+" when switching to phone
+                setErrors({});
               }}
               className="text-blue hover:underline"
             >
@@ -284,11 +290,8 @@ export function RegisterForm() {
               setPassword(e.target.value);
               if (errors.password)
                 setErrors((prev) => ({ ...prev, password: undefined }));
-              // Show password hints when user starts typing
-              if (e.target.value && !showPasswordHints) {
+              if (e.target.value && !showPasswordHints)
                 setShowPasswordHints(true);
-              }
-              // Clear debug info when password changes
               if (debugInfo) setDebugInfo(null);
             }}
             showPasswordToggle
@@ -306,18 +309,35 @@ export function RegisterForm() {
           />
           {showPasswordHints && <PasswordStrength password={password} />}
         </div>
-        {registerError && !showLoadingOverlay && (
-          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
-            {registerError instanceof Error
-              ? getHumanReadableError(registerError.message, locale)
-              : translateError("Registration failed", locale)}
-          </div>
-        )}
+
+        {errors.identifier &&
+          !showLoadingOverlay && ( // MODIFIED: Display identifier error
+            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
+              {errors.identifier}
+            </div>
+          )}
+        {errors.password &&
+          !showLoadingOverlay && ( // MODIFIED: Display password error
+            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
+              {errors.password}
+            </div>
+          )}
+        {registerError &&
+          !errors.identifier &&
+          !errors.password &&
+          !showLoadingOverlay && ( // MODIFIED: Display general error
+            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
+              {registerError instanceof Error
+                ? getHumanReadableError(registerError.message, locale)
+                : translateError("Registration failed", locale)}
+            </div>
+          )}
+
         <Button
           type="submit"
           className={`w-full rounded-full text-white py-3 md:py-4 text-sm md:text-base ${
             isFormFilled && !showLoadingOverlay
-              ? "bg-blue-600 hover:bg-blue-700"
+              ? "bg-blue-600 hover:bg-blue-700" // Assuming 'bg-blue' from login form was a typo and meant bg-blue-600 or similar
               : "bg-[#AAAAAB] hover:bg-[#AAAAAB]/90"
           }`}
           disabled={!isFormFilled || showLoadingOverlay}

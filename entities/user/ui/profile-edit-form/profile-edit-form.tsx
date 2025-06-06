@@ -15,50 +15,33 @@ import {
 import { useState } from "react";
 import { useRouter } from "@/i18n/routing";
 
+// Updated formatPhoneNumber for worldwide numbers
 function formatPhoneNumber(value: string): string {
-  // Remove all non-digit characters except +
-  const cleaned = value.replace(/[^\d+]/g, "");
+  // Remove all non-digit characters except a leading +
+  let cleaned = value.replace(/[^\d+]/g, "");
 
-  // If it starts with +7, format as Russian number
-  if (cleaned.startsWith("+7") || cleaned.startsWith("7")) {
-    const digits = cleaned.replace(/^\+?7/, "");
-    if (digits.length >= 10) {
-      const formatted = digits.slice(0, 10);
-      return `+7 (${formatted.slice(0, 3)}) ${formatted.slice(
-        3,
-        6
-      )}-${formatted.slice(6, 8)}-${formatted.slice(8, 10)}`;
-    } else if (digits.length > 0) {
-      // Partial formatting for incomplete numbers
-      if (digits.length <= 3) {
-        return `+7 (${digits}`;
-      } else if (digits.length <= 6) {
-        return `+7 (${digits.slice(0, 3)}) ${digits.slice(3)}`;
-      } else if (digits.length <= 8) {
-        return `+7 (${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(
-          6
-        )}`;
-      } else {
-        return `+7 (${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(
-          6,
-          8
-        )}-${digits.slice(8)}`;
-      }
+  // If '+' is present but not at the beginning, or multiple '+' signs, simplify
+  if (cleaned.includes("+")) {
+    if (cleaned.startsWith("+")) {
+      // Keep the first '+', remove others
+      cleaned = "+" + cleaned.substring(1).replace(/\+/g, "");
+    } else {
+      // If '+' is not at the start, remove all '+' and treat as digits-only
+      cleaned = cleaned.replace(/\+/g, "");
     }
-    return "+7 (";
   }
 
-  // If it doesn't start with +7 or 7, add +7 prefix
-  if (cleaned && !cleaned.startsWith("+") && !cleaned.startsWith("7")) {
-    return formatPhoneNumber("+7" + cleaned);
+  // If it's just digits and not empty, prepend '+'
+  if (cleaned && !cleaned.startsWith("+") && /^\d+$/.test(cleaned)) {
+    cleaned = "+" + cleaned;
   }
 
-  // If it starts with just 7, add + prefix
-  if (cleaned.startsWith("7") && !cleaned.startsWith("+")) {
-    return formatPhoneNumber("+" + cleaned);
+  // If after cleaning it's empty or just "+", return "+" as the base for an empty field
+  if (!cleaned || cleaned === "+") {
+    return "+";
   }
 
-  return cleaned || "+7 (";
+  return cleaned;
 }
 
 interface User {
@@ -90,21 +73,18 @@ export function ProfileEditForm({
   const i18n = useTranslations("ProfileEditForm");
   const router = useRouter();
 
-  // Check if identifier is email or phone using @ symbol
   const isIdentifierEmail = user.identifier?.includes("@");
 
-  // Initialize form data with proper values
   const [formData, setFormData] = useState({
     first_name: user.first_name || "",
     last_name: user.last_name || "",
     gender: user.gender || "other",
     birth_date: user.birth_date || "",
-    // Use identifier as primary value, fallback to separate fields
     phone: isIdentifierEmail
       ? user.phone
         ? formatPhoneNumber(user.phone)
-        : ""
-      : formatPhoneNumber(user.identifier || ""),
+        : "+" // Default empty state
+      : formatPhoneNumber(user.identifier || "+"), // Default empty state for identifier
     email: isIdentifierEmail ? user.identifier : user.email || "",
   });
 
@@ -116,7 +96,6 @@ export function ProfileEditForm({
     const { name, value } = e.target;
 
     if (name === "phone") {
-      // Format phone number as user types with +7 format
       const formatted = formatPhoneNumber(value);
       setFormData((prev) => ({ ...prev, [name]: formatted }));
     } else {
@@ -129,17 +108,14 @@ export function ProfileEditForm({
     setIsSubmitting(true);
 
     try {
-      // Create payload with only non-empty values and correct date format
       const payload = {
-        ...(user.id && { id: user.id }), // Include ID if it exists
-        ...(formData.first_name && { first_name: formData.first_name }),
-        ...(formData.last_name && { last_name: formData.last_name }),
-        ...(formData.gender && { gender: formData.gender }),
-        ...(formData.birth_date && {
-          birth_date: formData.birth_date,
-        }),
-        ...(formData.phone && { phone: formData.phone }), // Keep formatting for API
-        ...(formData.email && { email: formData.email }),
+        ...(user.id && { id: user.id }),
+        first_name: formData.first_name || null,
+        last_name: formData.last_name || null,
+        gender: formData.gender,
+        birth_date: formData.birth_date || null,
+        phone: formData.phone && formData.phone !== "+" ? formData.phone : null, // Send null if phone is just "+"
+        email: formData.email || null,
       };
 
       if (onSubmit) {
@@ -233,7 +209,7 @@ export function ProfileEditForm({
             value={formData.phone}
             onChange={handleChange}
             className="flex-1 p-3 bg-gray-50 rounded-lg border border-gray-200"
-            placeholder="+7 (XXX)  XXX-XX-XX"
+            placeholder={i18n("fields.phonePlaceholder") || "+1234567890"} // Updated placeholder
           />
           <button
             type="button"
@@ -374,13 +350,13 @@ export function ProfileEditForm({
             <FormField
               label={""}
               name="phone"
-              maxLength={18}
+              maxLength={20} // Increased maxLength for international numbers
               value={formData.phone}
               onChange={handleChange}
               type="tel"
               icon={<Phone size={18} />}
               className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
-              placeholder="+7 (XXX)  XXX-XX-XX"
+              placeholder={i18n("fields.phonePlaceholder") || "+1234567890"} // Updated placeholder
             />
           </div>
 

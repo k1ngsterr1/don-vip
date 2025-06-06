@@ -60,7 +60,7 @@ export const ServicesBlock = () => {
           ))
         ) : (
           <div className="col-span-full p-4 text-center text-muted-foreground">
-            No Bigo products available at the moment.
+            {t("services.notFound")}
           </div>
         )}
       </div>

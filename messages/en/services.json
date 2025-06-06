@@ -1,5 +1,6 @@
 {
   "services": {
-    "title": "services"
+    "title": "services",
+    "notFound": "No products available at the moment."
   }
 }

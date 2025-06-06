@@ -15,9 +15,10 @@ import { PasswordStrength } from "@/shared/ui/password-strength/password-strengt
 import { Link } from "@/i18n/navigation";
 import { useRouter } from "@/i18n/routing";
 import {
-  formatPhoneNumber,
   isValidPhoneNumber,
-} from "@/shared/utils/phone-formatter";
+  formatPhoneNumberInput,
+  normalizePhoneNumberForApi,
+} from "@/shared/utils/phone-utils";
 
 // Enhanced error translations for all possible input errors
 const errorTranslations: Record<string, Record<string, string>> = {
@@ -25,7 +26,7 @@ const errorTranslations: Record<string, Record<string, string>> = {
     // Form validation errors
     "Email or phone is required": "Email or phone is required",
     "Invalid email format": "Invalid email format",
-    "Invalid phone number": "Invalid phone number",
+    "Invalid phone number": "Invalid phone number (e.g. +1234567890)",
     "Password is required": "Password is required",
     "Password is too weak": "Password is too weak",
 
@@ -53,7 +54,7 @@ const errorTranslations: Record<string, Record<string, string>> = {
     // Form validation errors
     "Email or phone is required": "Email или телефон обязательны",
     "Invalid email format": "Неверный формат email",
-    "Invalid phone number": "Неверный номер телефона",
+    "Invalid phone number": "Неверный номер телефона (например +71234567890)",
     "Password is required": "Требуется пароль",
     "Password is too weak": "Пароль слишком слабый",
 
@@ -139,49 +140,42 @@ export function LoginForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // Get login mutation from our auth API hooks
   const { mutate: login, isPending: isLoading, error: loginError } = useLogin();
-
-  // Check if we have a return URL to redirect back to after login
   const returnUrl = searchParams.get("returnUrl");
-
   const isFormFilled = identifier.trim() !== "" && password.trim() !== "";
 
-  // Detect if input is email or phone number
   useEffect(() => {
     const input = identifier.trim();
     if (input) {
-      // Check if input contains @ symbol (likely an email)
       if (input.includes("@")) {
         setIdentifierType("email");
-      }
-      // Check if input is mostly numeric (likely a phone number)
-      else if (input.replace(/[^0-9]/g, "").length > input.length / 2) {
+      } else if (
+        input.startsWith("+") ||
+        input.replace(/[^0-9]/g, "").length > input.length / 2
+      ) {
+        // MODIFIED: Check for '+' prefix for phone
         setIdentifierType("phone");
       }
     }
   }, [identifier]);
 
-  const validateIdentifier = (value: string, type: "email" | "phone") => {
+  const validateLocalIdentifier = (value: string, type: "email" | "phone") => {
+    // RENAMED: to avoid conflict with imported isValidPhoneNumber
     if (type === "email") {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return emailRegex.test(value);
     } else {
-      // Use the phone validation utility
-      return isValidPhoneNumber(value);
+      return isValidPhoneNumber(value); // MODIFIED: Use new utility
     }
   };
 
   const handleIdentifierChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    let value = e.target.value;
 
     if (identifierType === "phone") {
-      // Format phone number as user types
-      const formatted = formatPhoneNumber(value);
-      setIdentifier(formatted);
-    } else {
-      setIdentifier(value);
+      value = formatPhoneNumberInput(value); // MODIFIED: Use new formatter
     }
+    setIdentifier(value);
 
     if (errors.identifier) {
       setErrors((prev) => ({ ...prev, identifier: undefined }));
@@ -198,7 +192,8 @@ export function LoginForm() {
         "Email or phone is required",
         locale
       );
-    } else if (!validateIdentifier(identifier, identifierType)) {
+    } else if (!validateLocalIdentifier(identifier, identifierType)) {
+      // MODIFIED: Use renamed local validator
       newErrors.identifier = translateError(
         identifierType === "email"
           ? "Invalid email format"
@@ -216,54 +211,41 @@ export function LoginForm() {
       return;
     }
 
-    // Format the identifier based on type
-    let formattedIdentifier = identifier.trim();
+    let apiIdentifier = identifier.trim();
     if (identifierType === "phone") {
-      // For phone numbers, ensure it's properly formatted for API submission
-      // Keep the formatting (parentheses and dashes) as the backend expects it
-      formattedIdentifier = formatPhoneNumber(identifier);
+      apiIdentifier = normalizePhoneNumberForApi(apiIdentifier); // MODIFIED: Ensure API format
     }
 
-    // Call login mutation with credentials
     login(
-      { identifier: formattedIdentifier, password },
+      { identifier: apiIdentifier, password },
       {
         onSuccess: (data: any) => {
-          // Set redirecting state to show loading overlay
           setIsRedirecting(true);
-
-          // Redirect to return URL if available, or to profile page
           setTimeout(() => {
             if (returnUrl) {
               router.push(decodeURIComponent(returnUrl) as any);
             } else {
               router.push(`/profile/${data.id}` as any);
             }
-          }, 800); // Small delay for a smoother transition
+          }, 800);
         },
         onError: (error: any) => {
-          // Handle login errors with user-friendly messages
           const errorMessage =
             error.response?.data?.message ||
             (error.message
               ? getHumanReadableError(error.message, locale)
               : translateError("Invalid email or password", locale));
-
-          setErrors({
-            identifier: errorMessage,
-          });
+          setErrors({ identifier: errorMessage });
         },
       }
     );
   };
 
-  // Show loading overlay when loading or redirecting
   const showLoadingOverlay = isLoading || isRedirecting;
   const loadingState = isRedirecting ? "redirecting" : "loading";
 
   return (
     <div className="max-w-md mx-auto relative">
-      {/* Reusable loading overlay */}
       <AuthLoadingOverlay isVisible={showLoadingOverlay} state={loadingState} />
       <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
         <div className="relative">
@@ -273,7 +255,7 @@ export function LoginForm() {
             placeholder={
               identifierType === "email"
                 ? i18n("emailPlaceholder") || "Email address"
-                : i18n("phonePlaceholder") || "Phone number"
+                : i18n("phonePlaceholder") || "Phone number (e.g. +123...)" // MODIFIED: Placeholder hint
             }
             value={identifier}
             onChange={handleIdentifierChange}
@@ -283,7 +265,9 @@ export function LoginForm() {
                 ? i18n("ariaLabels.email") || "Email"
                 : i18n("ariaLabels.phone") || "Phone"
             }
-            isPhoneMask={identifierType === "phone"}
+            // isPhoneMask prop might need to be false if it enforces a specific format.
+            // The formatPhoneNumberInput function will handle the desired format.
+            isPhoneMask={false} // MODIFIED: Assuming the mask is too restrictive. Test this.
             suffix={
               <span className="text-gray-400">
                 {identifierType === "email" ? (
@@ -301,7 +285,8 @@ export function LoginForm() {
                 setIdentifierType(
                   identifierType === "email" ? "phone" : "email"
                 );
-                setIdentifier("");
+                setIdentifier(identifierType === "email" ? "+" : ""); // MODIFIED: Set to "+" when switching to phone
+                setErrors({});
               }}
               className="text-blue hover:underline"
             >
@@ -336,10 +321,7 @@ export function LoginForm() {
               </button>
             }
           />
-
-          {/* Show password hints when button is clicked */}
           {showPasswordHints && <PasswordStrength password={password} />}
-
           <div className="flex justify-end">
             <Link
               href="/auth/forgot-password"
@@ -353,13 +335,28 @@ export function LoginForm() {
           </div>
         </div>
 
-        {loginError && !showLoadingOverlay && (
-          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
-            {loginError instanceof Error
-              ? getHumanReadableError(loginError.message, locale)
-              : translateError("Invalid email or password", locale)}
-          </div>
-        )}
+        {errors.identifier &&
+          !showLoadingOverlay && ( // MODIFIED: Display identifier error if present
+            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
+              {errors.identifier}
+            </div>
+          )}
+        {errors.password &&
+          !showLoadingOverlay && ( // MODIFIED: Display password error if present
+            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
+              {errors.password}
+            </div>
+          )}
+        {loginError &&
+          !errors.identifier &&
+          !errors.password &&
+          !showLoadingOverlay && ( // MODIFIED: Display general login error if no specific field error
+            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
+              {loginError instanceof Error
+                ? getHumanReadableError(loginError.message, locale)
+                : translateError("Invalid email or password", locale)}
+            </div>
+          )}
 
         <Button
           type="submit"

@@ -1,6 +1,7 @@
 {
   "mobile_games": {
     "title": "mobile games",
-    "view_all": "View all games"
+    "view_all": "View all games",
+    "notFound": "No products available at the moment."
   }
 }
