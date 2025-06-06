@@ -1,7 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import type React from "react";
+import type { useTranslations } from "next-intl";
 
 export interface FAQItem {
   question: string;
@@ -89,6 +88,3 @@ export function getFAQData(t: ReturnType<typeof useTranslations>): FAQItem[] {
     },
   ];
 }
-
-// This is a fallback for non-client components that can't use hooks
-export const faqItems: FAQItem[] = [];

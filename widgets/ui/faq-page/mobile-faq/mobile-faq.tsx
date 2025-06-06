@@ -1,19 +1,18 @@
 "use client";
+
 import { useTranslations } from "next-intl";
-import SearchBar from "@/entities/search-bar/search-bar";
-import FAQItem from "@/shared/ui/faq-item/faq-item";
 import { useState } from "react";
 import { getFAQData } from "@/shared/data/faq-data";
-import { Link } from "@/i18n/navigation";
+import FAQItem from "@/shared/ui/faq-item/faq-item";
+import { Search } from "lucide-react";
 
 export default function MobileFAQ() {
   const i18n = useTranslations("MobileFAQ");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [openItem, setOpenItem] = useState<number | null>(1);
-
-  // Use the translated FAQ data
   const t = useTranslations("faq");
   const faqItems = getFAQData(t);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [openItem, setOpenItem] = useState<number | null>(1);
 
   const filteredFAQs = faqItems.filter((item) =>
     item.question.toLowerCase().includes(searchQuery.toLowerCase())
@@ -24,25 +23,19 @@ export default function MobileFAQ() {
   };
 
   return (
-    <div className="w-full  mt-[24px] px-4 flex flex-col items-center md:hidden">
-      <div className="w-full max-w-md mx-auto  bg-white">
-        <div className="w-full flex flex-col items-start justify-start">
-          <Link
-            href="/"
-            className="text-blue font-roboto mt-[28px] text-[15px] text-left"
-          >
-            {i18n("backLink")}
-          </Link>
-          <h1 className="font-unbounded mt-[24px] text-[14px] font-medium mb-[24px] text-dark">
-            {i18n("title")}
-          </h1>
+    <div className="w-full flex flex-col items-center md:hidden py-6 px-4">
+      <div className="w-full max-w-md mx-auto bg-white p-4 rounded-lg shadow-sm">
+        <div className="relative mb-4">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+          <input
+            type="text"
+            placeholder={i18n("searchPlaceholder")}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-3 h-12 bg-gray-100 border-transparent text-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
         </div>
-        <SearchBar
-          height="48px"
-          placeholder={i18n("searchPlaceholder")}
-          onSearch={setSearchQuery}
-        />
-        <div className="space-y-3 mt-[24px]">
+        <div className="space-y-3 mt-4">
           {filteredFAQs.map((item, index) => (
             <FAQItem
               key={index}
