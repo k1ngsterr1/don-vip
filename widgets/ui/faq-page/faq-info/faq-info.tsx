@@ -4,13 +4,14 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import SearchBar from "@/entities/search-bar/search-bar";
 import FAQItem from "@/shared/ui/faq-item/faq-item";
-import { faqItems } from "@/shared/data/faq-data";
 import { Link } from "@/i18n/navigation";
+import { getFAQData } from "@/shared/data/faq-data";
 
 export default function FAQBlock() {
   const i18n = useTranslations("emptyFaq");
   const [searchQuery, setSearchQuery] = useState("");
   const [openItem, setOpenItem] = useState<number | null>(1); // Set the second item open by default
+  const faqItems = getFAQData(i18n);
 
   const filteredFAQs = faqItems.filter((item) =>
     item.question.toLowerCase().includes(searchQuery.toLowerCase())
