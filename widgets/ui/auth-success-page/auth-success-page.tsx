@@ -3,17 +3,35 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
+import { Button } from "@/shared/ui/button/button"; // Assuming this is your Button component
+import { useRouter } from "next/navigation";
 
 export function AuthSuccessWidget() {
   const t = useTranslations("auth_success");
   const user = useAuthStore((state) => state.user);
-  const email = user?.email || "";
+  const identifier = user?.identifier || "";
+  const userId = user?.id;
+  const router = useRouter();
+
+  const handleGoToProfile = () => {
+    if (userId) {
+      router.push(`/profile/${userId}/edit`);
+    } else {
+      // Fallback if user.id is somehow not available
+      console.error("User ID not found for profile redirection.");
+      router.push("/"); // Or some other appropriate fallback
+    }
+  };
+
+  const handleReturnHome = () => {
+    router.push("/");
+  };
 
   const mobileVersion = (
-    <div className="bg-gray-50 p-6 rounded-lg flex flex-col items-center text-center">
+    <div className="w-full bg-gray-50 p-6 rounded-lg flex flex-col items-center text-center">
       <div className="mb-4">
         <Image
-          src={"/diamond_mail.webp"}
+          src="/diamond_mail.webp" // Ensure this image is in your public folder
           alt={t("empty.imageAlt")}
           width={80}
           height={80}
@@ -21,12 +39,30 @@ export function AuthSuccessWidget() {
       </div>
       <h3 className="font-medium text-lg mb-2">{t("title")}</h3>
       <p className="text-sm text-gray-600 mb-2">{t("description")}</p>
-      {email && <p className="text-sm text-blue-600 font-medium">{email}</p>}
+      {identifier && (
+        <p className="text-sm text-blue-600 font-medium mb-6">{identifier}</p>
+      )}
+
+      <div className="w-full space-y-3">
+        <Button
+          onClick={handleGoToProfile}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+          disabled={!userId}
+        >
+          Перейти в личный кабинет
+        </Button>
+        <Button
+          onClick={handleReturnHome}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white" // Example outline style if no variant
+        >
+          Вернуться
+        </Button>
+      </div>
     </div>
   );
 
   const desktopVersion = (
-    <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-12 flex flex-col items-center text-center shadow-sm border border-gray-200">
+    <div className="w-full bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-12 flex flex-col items-center text-center shadow-sm border border-gray-200">
       <div className="mb-8 relative">
         <div className="absolute -inset-4 bg-blue-50 rounded-full opacity-70 blur-xl"></div>
         <motion.div
@@ -36,7 +72,7 @@ export function AuthSuccessWidget() {
           className="relative"
         >
           <Image
-            src={"/diamond_mail.webp"}
+            src="/diamond_mail.webp" // Ensure this image is in your public folder
             alt={t("empty.imageAlt")}
             width={120}
             height={120}
@@ -48,14 +84,32 @@ export function AuthSuccessWidget() {
         {t("title")}
       </h3>
       <p className="text-lg text-gray-600 mb-4 max-w-md">{t("description")}</p>
-      {email && <p className="text-md text-blue-700 font-semibold">{email}</p>}
+      {identifier && (
+        <p className="text-md text-blue-700 font-semibold mb-8">{identifier}</p>
+      )}
+
+      <div className="w-full max-w-xs space-y-4">
+        <Button
+          onClick={handleGoToProfile}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-md"
+          disabled={!userId}
+        >
+          Перейти в личный кабинет
+        </Button>
+        <Button
+          onClick={handleReturnHome}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-md" // Example outline style if no variant
+        >
+          Вернуться
+        </Button>
+      </div>
     </div>
   );
 
   return (
     <>
-      <div className="block md:hidden">{mobileVersion}</div>
-      <div className="hidden md:block">{desktopVersion}</div>
+      <div className="block md:hidden w-full">{mobileVersion}</div>
+      <div className="hidden md:block w-full">{desktopVersion}</div>
     </>
   );
 }
