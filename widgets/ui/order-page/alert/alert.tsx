@@ -23,7 +23,6 @@ export function CustomAlert({
   const [mounted, setMounted] = useState(false);
   const t = useTranslations("alert");
 
-  // Set default title based on alert type if not provided
   const alertTitle =
     title ||
     (type === "error"
@@ -36,7 +35,6 @@ export function CustomAlert({
     setMounted(true);
 
     if (isOpen) {
-      // Prevent scrolling when alert is open
       document.body.style.overflow = "hidden";
     }
 
@@ -57,11 +55,9 @@ export function CustomAlert({
 
   if (!mounted || !isOpen) return null;
 
-  // Get icon based on alert type
   const AlertIcon =
     type === "error" ? AlertCircle : type === "success" ? CheckCircle : Info;
 
-  // Get color based on alert type
   const iconColor =
     type === "error"
       ? "text-red-500"
@@ -96,7 +92,6 @@ export function CustomAlert({
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 transition-colors rounded-full p-1 hover:bg-gray-100"
-              aria-label={t("close")}
             >
               <X size={18} />
             </button>

@@ -16,7 +16,6 @@
       "idPrefix": "ID:",
       "userIdPlaceholder": "USER ID",
       "userEmailPlaceholder": "USER EMAIL",
-
       "userServerPlaceholder": "USER SERVER",
       "confirmDataCorrectness": "Я подтверждаю правильность ввода данных",
       "findBigoId": {
@@ -33,6 +32,36 @@
       "server": "Сервер",
       "selectServer": "Выберите сервер",
       "agreeToTerms": "Я согласен с условиями предоставления услуг"
+    },
+    "coupon": {
+      "enterCouponCode": "Введите промокод",
+      "tooltipText": "Введите действующий промокод для применения скидки к вашему заказу. Промокоды нечувствительны к регистру и будут автоматически проверены.",
+      "couponPlaceholder": "Введите промокод (например, SAVE10)",
+      "confirmCouponTerms": "Я согласен с условиями использования промокодов",
+      "howToUseCoupons": {
+        "title": "Как использовать промокоды",
+        "step1": "Введите ваш промокод в поле выше",
+        "step2": "Система автоматически проверит код",
+        "step3": "Скидка будет применена к общей сумме заказа",
+        "step4": "Завершите покупку, чтобы использовать скидку"
+      }
+    }
+  },
+  "alert": {
+    "alerts": {
+      "errorTitle": "Ошибка",
+      "successTitle": "Успешно",
+      "infoTitle": "Информация",
+      "close": "Закрыть",
+      "okButton": "ОК"
+    },
+    "validation": {
+      "couponNotFound": "Промокод не найден",
+      "couponExpired": "Срок действия промокода истек",
+      "couponAlreadyUsed": "Промокод уже был использован",
+      "invalidCoupon": "Неверный формат промокода",
+      "networkError": "Ошибка сети",
+      "validationFailed": "Ошибка проверки"
     }
   }
 }

@@ -2,18 +2,22 @@
   "orderSummary": {
     "summary": {
       "title": "Your Order",
+      "redirecting": "Loading...",
       "quantity": "Quantity",
-      "redirecting": "Loading..",
       "processing": "Loading...",
       "cost": "Cost",
-      "userInfo": "User information",
+      "subtotal": "Subtotal",
+      "discount": "Discount",
+      "total": "Total",
+      "youSave": "You save",
+      "userInfo": "User Information",
       "server": "Server",
       "buyNow": "Buy Now",
-      "securityMessage": "Your payment is protected. We use modern encryption technologies to ensure the security of your data.",
+      "securityMessage": "Your payment is secure. We use modern encryption technologies to ensure the security of your data.",
       "benefits": {
-        "instantDelivery": "Instant delivery",
+        "instantDelivery": "Instant Delivery",
         "support": "24/7 Support",
-        "securePayment": "Secure payment"
+        "securePayment": "Secure Payment"
       }
     }
   }
