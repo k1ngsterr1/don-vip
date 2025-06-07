@@ -2,10 +2,11 @@
 
 import type React from "react";
 import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation"; // Added
+import { usePathname, useRouter } from "next/navigation"; // Added
 import { cn } from "@/shared/utils/cn";
 import { userApi } from "@/entities/user/auth/user-api";
 import { VerificationPopup } from "@/entities/auth/ui/verification-popup/verification-popup";
+import { useAuthStore } from "@/entities/auth/store/auth.store";
 
 interface ContentWrapperProps {
   children: React.ReactNode;
@@ -47,6 +48,8 @@ export const ContentWrapper: React.FC<ContentWrapperProps> = ({
   checkVerification = true,
 }) => {
   const [showVerificationPopup, setShowVerificationPopup] = useState(false);
+  const router = useRouter();
+  const user = useAuthStore().user;
 
   const [isLoading, setIsLoading] = useState(true);
   const pathname = usePathname();
@@ -92,6 +95,8 @@ export const ContentWrapper: React.FC<ContentWrapperProps> = ({
 
   const handleCloseVerificationPopup = () => {
     setShowVerificationPopup(false);
+    const redirectPath = user && user.id ? `/profile/${user.id}/edit` : "/";
+    router.push(redirectPath);
   };
 
   // Map maxWidth prop to Tailwind classes

@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 export function AuthSuccessWidget() {
   const t = useTranslations("auth_success");
   const user = useAuthStore((state) => state.user);
-  const identifier = user?.identifier || "";
   const userId = user?.id;
   const router = useRouter();
 
@@ -21,10 +20,6 @@ export function AuthSuccessWidget() {
       console.error("User ID not found for profile redirection.");
       router.push("/"); // Or some other appropriate fallback
     }
-  };
-
-  const handleReturnHome = () => {
-    router.push("/");
   };
 
   const mobileVersion = (
@@ -39,9 +34,6 @@ export function AuthSuccessWidget() {
       </div>
       <h3 className="font-medium text-lg mb-2">{t("title")}</h3>
       <p className="text-sm text-gray-600 mb-2">{t("description")}</p>
-      {identifier && (
-        <p className="text-sm text-blue-600 font-medium mb-6">{identifier}</p>
-      )}
 
       <div className="w-full space-y-3">
         <Button
@@ -50,12 +42,6 @@ export function AuthSuccessWidget() {
           disabled={!userId}
         >
           Перейти в личный кабинет
-        </Button>
-        <Button
-          onClick={handleReturnHome}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white" // Example outline style if no variant
-        >
-          Вернуться
         </Button>
       </div>
     </div>
@@ -84,9 +70,6 @@ export function AuthSuccessWidget() {
         {t("title")}
       </h3>
       <p className="text-lg text-gray-600 mb-4 max-w-md">{t("description")}</p>
-      {identifier && (
-        <p className="text-md text-blue-700 font-semibold mb-8">{identifier}</p>
-      )}
 
       <div className="w-full max-w-xs space-y-4">
         <Button
@@ -95,12 +78,6 @@ export function AuthSuccessWidget() {
           disabled={!userId}
         >
           Перейти в личный кабинет
-        </Button>
-        <Button
-          onClick={handleReturnHome}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-md" // Example outline style if no variant
-        >
-          Вернуться
         </Button>
       </div>
     </div>

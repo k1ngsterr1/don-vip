@@ -1,6 +1,8 @@
 {
   "auth_success": {
     "title": "Thank you for registering",
-    "description": "You can use the website now!"
+    "description": "You can use the website now!",
+    "goProfile": "Go to profile",
+    "backLink": "Back"
   }
 }
