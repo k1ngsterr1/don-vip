@@ -33,6 +33,8 @@ const errorTranslations: Record<string, Record<string, string>> = {
     "Account is locked": "Account is locked",
     "Too many login attempts": "Too many login attempts",
     "Invalid email or password": "Invalid email or password",
+    "Invalid password":
+      "The password you entered is incorrect. Please try again.",
     "Login failed. Please try again later":
       "Login failed. Please try again later",
     "Account not found": "Account not found",
@@ -61,6 +63,8 @@ const errorTranslations: Record<string, Record<string, string>> = {
     "Account is locked": "Аккаунт заблокирован",
     "Too many login attempts": "Слишком много попыток входа",
     "Invalid email or password": "Неверный email или пароль",
+    "Invalid password":
+      "Введенный пароль неверен. Пожалуйста, попробуйте еще раз.",
     "Login failed. Please try again later":
       "Ошибка входа. Пожалуйста, попробуйте позже",
     "Account not found": "Аккаунт не найден",
@@ -216,10 +220,14 @@ export function LoginForm() {
         },
         onError: (error: any) => {
           const errorMessage =
-            error.response?.data?.message ||
-            (error.message
-              ? getHumanReadableError(error.message, locale)
-              : translateError("Invalid email or password", locale));
+            error.response?.data?.statusCode || error.statusCode
+              ? getHumanReadableError(
+                  `status code ${
+                    error.response?.data?.statusCode || error.statusCode
+                  }`,
+                  locale
+                )
+              : translateError("Invalid email or password", locale);
           setErrors({ identifier: errorMessage });
         },
       }
