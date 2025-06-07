@@ -4,6 +4,15 @@
  */
 
 export const queryKeys = {
+  banks: {
+    all: ["banks"] as const,
+    lists: () => [...queryKeys.banks.all, "list"] as const,
+    list: (filters: any) => [...queryKeys.banks.lists(), { filters }] as const,
+    details: () => [...queryKeys.banks.all, "detail"] as const,
+    detail: (id: string | number) =>
+      [...queryKeys.banks.details(), id] as const,
+    active: () => [...queryKeys.banks.all, "active"] as const, // Key for active banks
+  },
   // Auth related keys
   auth: {
     user: ["auth", "user"] as const,

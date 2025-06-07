@@ -8,6 +8,7 @@
       "tbank": "T-Bank (SBP)",
       "card": "Bank card",
       "qiwi": "QIWI"
-    }
+    },
+    "noMethodsAvailable": "No payment methods available"
   }
 }

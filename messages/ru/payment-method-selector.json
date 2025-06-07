@@ -8,6 +8,7 @@
       "tbank": "T-Bank (SBP)",
       "card": "Банковская карта",
       "qiwi": "QIWI"
-    }
+    },
+    "noMethodsAvailable": "Нет доступных способов оплаты"
   }
 }
