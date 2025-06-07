@@ -188,6 +188,7 @@ export function OrderBlock({
       payment_method: selectedPaymentMethod,
       user_game_id: !userId || userId.trim() === "" ? "unknown" : userId,
       server_id: game.requiresServer ? serverId : undefined,
+      coupon_code: couponInfo?.code || undefined,
     };
 
     createOrder(orderData)

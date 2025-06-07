@@ -65,7 +65,7 @@ export function useCreateOrder(isTbank = false) {
         throw new Error("Identifier (email or phone) is required");
       }
 
-      // Map frontend fields to backend API fields - INCLUDE IDENTIFIER
+      // Map frontend fields to backend API fields - INCLUDE IDENTIFIER AND COUPON CODE
       const apiOrderData = {
         identifier: orderData.identifier,
         product_id: orderData.game_id,
@@ -73,6 +73,7 @@ export function useCreateOrder(isTbank = false) {
         payment: orderData.payment_method,
         account_id: orderData.user_game_id,
         server_id: orderData.server_id,
+        coupon_code: orderData.coupon_code || undefined,
         user_id:
           userId && userId.trim() !== ""
             ? Number.parseInt(userId, 10)

@@ -3,27 +3,21 @@
 
 import type React from "react";
 import { useState, useEffect } from "react";
-import { Mail, Phone, User } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { generateToken } from "@/widgets/ui/t-bank-form/utils/payment-utils";
 import { PaymentHeaderInfo } from "@/widgets/ui/t-bank-form/ui/payment-header-info";
 import { AmountInput } from "@/widgets/ui/t-bank-form/ui/amount-input";
-import { PromocodeInput } from "@/widgets/ui/t-bank-form/ui/promocode-input";
 import { FormInput } from "@/widgets/ui/t-bank-form/ui/form-input";
 import { SubmitButton } from "@/widgets/ui/t-bank-form/ui/submit-button";
 import { PaymentFooter } from "@/widgets/ui/t-bank-form/ui/payment-footer";
-import {
-  useCheckCoupon,
-  useApplyCoupon,
-} from "@/entities/coupons/hooks/use-coupon.mutation";
 import { getUserId } from "@/shared/hooks/use-get-user-id";
 
 export default function TBankPaymentPage() {
   const searchParams = useSearchParams();
   const t = useTranslations("tpayment");
   const formT = useTranslations("tpayment.form");
-  const promocodeT = useTranslations("tpayment.form.promocode");
   const descriptionT = useTranslations("tpayment.form.description");
 
   const orderId = searchParams.get("orderId");
@@ -37,21 +31,7 @@ export default function TBankPaymentPage() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [paymentAmount, setPaymentAmount] = useState(price);
-  const [originalAmount, setOriginalAmount] = useState(price);
   const [systemUserId, setSystemUserId] = useState<string | null>(null);
-  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-
-  const [promocode, setPromocode] = useState("");
-  const [appliedPromocode, setAppliedPromocode] = useState<{
-    code: string;
-    discount: number;
-  } | null>(null);
-
-  const [promocodeError, setPromocodeError] = useState("");
-
-  // Use the coupon API hooks
-  const checkCouponMutation = useCheckCoupon();
-  const applyCouponMutation = useApplyCoupon();
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -65,104 +45,6 @@ export default function TBankPaymentPage() {
 
     fetchUserId();
   }, []);
-
-  const calculateDiscountedAmount = (
-    originalAmount: string,
-    discountPercent: number
-  ): string => {
-    const originalValue = Number.parseFloat(originalAmount);
-    if (isNaN(originalValue)) return originalAmount;
-
-    const discountMultiplier = (100 - discountPercent) / 100;
-    const discountedValue = originalValue * discountMultiplier;
-
-    return discountedValue.toFixed(2);
-  };
-
-  const handleApplyPromocode = async () => {
-    if (!promocode.trim()) {
-      setPromocodeError(promocodeT("errors.empty"));
-      return;
-    }
-
-    if (!systemUserId) {
-      setPromocodeError("User ID not available. Please refresh the page.");
-      return;
-    }
-
-    setIsLoading(true);
-    setPromocodeError("");
-
-    try {
-      // First check if the coupon is valid
-      const checkResult = await checkCouponMutation.mutateAsync({
-        code: promocode,
-      });
-
-      // Determine if the coupon is valid based on the response structure
-      const isCouponValid =
-        // Format 1: { valid: true, coupon: {...} }
-        (checkResult.valid && checkResult.coupon) ||
-        // Format 2: { status: "Active", ... }
-        checkResult.status === "Active" ||
-        // Format 3: Direct coupon object with code and discount
-        (checkResult.code && checkResult.discount);
-
-      if (isCouponValid) {
-        // Apply the coupon
-        const appliedCouponResponse = await applyCouponMutation.mutateAsync({
-          code: promocode,
-          user_id: Number.parseInt(systemUserId, 10),
-        });
-
-        // Get the discount percentage
-        const discountPercent =
-          appliedCouponResponse.discount ||
-          checkResult.coupon?.discount ||
-          checkResult.discount ||
-          0;
-
-        // Calculate the discounted amount
-        const discountedAmount = calculateDiscountedAmount(
-          originalAmount,
-          discountPercent
-        );
-
-        // Update state with the applied promocode
-        setAppliedPromocode({
-          code: promocode,
-          discount: discountPercent,
-        });
-
-        // Update the payment amount
-        setPaymentAmount(discountedAmount);
-
-        // Show success popup
-        setShowSuccessPopup(true);
-
-        // Clear any errors
-        setPromocodeError("");
-      } else {
-        // Handle invalid coupon
-        setPromocodeError(checkResult.message || promocodeT("errors.invalid"));
-      }
-    } catch (err) {
-      setPromocodeError(promocodeT("errors.invalid"));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleCloseSuccessPopup = () => {
-    setShowSuccessPopup(false);
-  };
-
-  const handleRemovePromocode = () => {
-    setAppliedPromocode(null);
-    setPromocode("");
-    setPromocodeError("");
-    setPaymentAmount(originalAmount);
-  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -189,9 +71,7 @@ export default function TBankPaymentPage() {
       const realUserId = await getUserId();
 
       const finalOrderId = `${orderId}_${realUserId || "unknown"}`;
-      const amountInKopecks = Math.round(
-        Number.parseFloat(paymentAmount) * 100
-      );
+      const amountInKopecks = Math.round(Number.parseFloat(price) * 100);
 
       const receiptData = {
         EmailCompany: "mail@mail.com",
@@ -220,10 +100,6 @@ export default function TBankPaymentPage() {
         Email: email || undefined,
         Phone: phone || undefined,
         Name: name || undefined,
-        // Include promocode information if applied
-        Promocode: appliedPromocode ? appliedPromocode.code : undefined,
-        Discount: appliedPromocode ? appliedPromocode.discount : undefined,
-        OriginalAmount: originalAmount,
       };
 
       const paymentPayload = {
@@ -303,28 +179,12 @@ export default function TBankPaymentPage() {
               <div className="mt-6 space-y-4">
                 <div className="flex justify-between">
                   <span className="text-gray-600">{t("subtotal")}</span>
-                  <span className="font-medium">{originalAmount} ₽</span>
+                  <span className="font-medium">{price} ₽</span>
                 </div>
-
-                {appliedPromocode && (
-                  <div className="flex justify-between text-green-600">
-                    <span>
-                      {t("discount")} ({appliedPromocode.discount}%)
-                    </span>
-                    <span>
-                      -
-                      {(
-                        Number.parseFloat(originalAmount) -
-                        Number.parseFloat(paymentAmount)
-                      ).toFixed(2)}{" "}
-                      ₽
-                    </span>
-                  </div>
-                )}
 
                 <div className="flex justify-between text-lg font-bold pt-2 border-t">
                   <span>{t("total")}</span>
-                  <span>{paymentAmount} ₽</span>
+                  <span>{price} ₽</span>
                 </div>
               </div>
             </div>
@@ -344,20 +204,6 @@ export default function TBankPaymentPage() {
                 <div className="grid grid-cols-1  gap-6">
                   <div className="md:col-span-2">
                     <AmountInput amount={paymentAmount} />
-                  </div>
-                  <div className="md:col-span-2">
-                    <PromocodeInput
-                      promocode={promocode}
-                      setPromocode={setPromocode}
-                      appliedPromocode={appliedPromocode}
-                      promocodeError={promocodeError}
-                      onApply={handleApplyPromocode}
-                      onRemove={handleRemovePromocode}
-                      isLoading={
-                        checkCouponMutation.isPending ||
-                        applyCouponMutation.isPending
-                      }
-                    />
                   </div>
                   <FormInput
                     id="email"

@@ -7,6 +7,7 @@ export interface CreateOrderDto {
   price: number | string;
   payment_method: string;
   user_game_id: string;
+  coupon_code: string;
   server_id?: string;
 }
 
