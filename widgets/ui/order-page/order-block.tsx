@@ -16,6 +16,7 @@ import { OrderBlockSkeleton } from "./loading/skeleton-loading";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useGetMe } from "@/entities/auth/hooks/use-auth";
 import { GuestAuthPopup } from "@/entities/order/ui/guest-user-popup";
+import { CouponForm } from "./coupon-form/coupon-form";
 
 interface OrderBlockProps {
   gameSlug: number;
@@ -54,9 +55,13 @@ export function OrderBlock({
   const [userId, setUserId] = useState("");
   const [serverId, setServerId] = useState("");
   const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [agreeToCouponTerms, setAgreeToCouponTerms] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("tbank");
   const [showGuestAuthPopup, setShowGuestAuthPopup] = useState(false);
   const [guestIdentifier, setGuestIdentifier] = useState("");
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedDiscount, setAppliedDiscount] = useState<number>(0);
+  const [couponInfo, setCouponInfo] = useState<any>(null);
 
   // Flag to prevent popup from showing twice
   const identifierCollected = useRef(false);
@@ -141,6 +146,7 @@ export function OrderBlock({
     selectedCurrency !== null &&
     userId.trim() !== "" &&
     agreeToTerms &&
+    agreeToCouponTerms &&
     (!game.requiresServer || serverId.trim() !== "");
 
   // Get user identifier from various sources
@@ -152,6 +158,11 @@ export function OrderBlock({
     return guestIdentifier || null;
   };
 
+  const handleCouponApplied = (discount: number, couponData: any) => {
+    setAppliedDiscount(discount);
+    setCouponInfo(couponData);
+  };
+
   const submitOrderWithIdentifier = (identifier: string) => {
     if (!isFormValid || !selectedCurrency) {
       setError("Please fill in all required fields");
@@ -159,7 +170,13 @@ export function OrderBlock({
     }
 
     const numericPrice = selectedCurrency.price.replace(/[^0-9.]/g, "");
-    const formattedPrice = Number(numericPrice).toFixed(2);
+    const originalPrice = Number(numericPrice);
+    const discountAmount =
+      couponInfo?.type === "percentage"
+        ? (originalPrice * appliedDiscount) / 100
+        : appliedDiscount;
+    const finalPrice = Math.max(0, originalPrice - discountAmount);
+    const formattedPrice = finalPrice.toFixed(2);
 
     const orderData: CreateOrderDto = {
       identifier: identifier,
@@ -262,6 +279,13 @@ export function OrderBlock({
         onServerIdChange={setServerId}
         onAgreeChange={setAgreeToTerms}
       />
+      <CouponForm
+        couponCode={couponCode}
+        agreeToTerms={agreeToCouponTerms}
+        onCouponCodeChange={setCouponCode}
+        onAgreeChange={setAgreeToCouponTerms}
+        onCouponApplied={handleCouponApplied}
+      />
       <PaymentMethodSelector
         onSelect={setSelectedPaymentMethod}
         selectedMethod={selectedPaymentMethod}
@@ -322,6 +346,15 @@ export function OrderBlock({
               />
             </div>
             <div className="p-6 border-b border-gray-100">
+              <CouponForm
+                couponCode={couponCode}
+                agreeToTerms={agreeToCouponTerms}
+                onCouponCodeChange={setCouponCode}
+                onAgreeChange={setAgreeToCouponTerms}
+                onCouponApplied={handleCouponApplied}
+              />
+            </div>
+            <div className="p-6 border-b border-gray-100">
               <UserIdForm
                 apiGame={product?.smile_api_game}
                 requiresServer={game.requiresServer}
@@ -353,6 +386,8 @@ export function OrderBlock({
           <OrderSummary
             game={game}
             selectedCurrency={selectedCurrency}
+            appliedDiscount={appliedDiscount}
+            couponInfo={couponInfo}
             isFormValid={isFormValid}
             userId={userId}
             serverId={serverId}

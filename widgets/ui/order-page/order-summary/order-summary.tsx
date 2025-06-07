@@ -1,13 +1,20 @@
 "use client";
 
 import { cn } from "@/shared/utils/cn";
-import { Check, ShieldCheck } from "lucide-react";
+import { Check, ShieldCheck, Percent } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
 interface OrderSummaryProps {
   game: any;
   selectedCurrency: any;
+  appliedDiscount?: number;
+  couponInfo?: {
+    code: string;
+    discount: number;
+    type: "percentage" | "fixed";
+    description: string;
+  } | null;
   isFormValid: boolean;
   userId: string;
   serverId: string;
@@ -18,6 +25,8 @@ interface OrderSummaryProps {
 export function OrderSummary({
   game,
   selectedCurrency,
+  appliedDiscount = 0,
+  couponInfo,
   isFormValid,
   userId,
   serverId,
@@ -28,6 +37,17 @@ export function OrderSummary({
 
   const isEmail = (value: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+
+  // Calculate prices
+  const originalPrice = selectedCurrency
+    ? Number(selectedCurrency.price.replace(/[^0-9.]/g, ""))
+    : 0;
+  const discountAmount =
+    couponInfo?.type === "percentage"
+      ? (originalPrice * appliedDiscount) / 100
+      : appliedDiscount;
+  const finalPrice = Math.max(0, originalPrice - discountAmount);
+  const hasDiscount = appliedDiscount > 0 && couponInfo;
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-100 sticky top-8">
@@ -40,7 +60,7 @@ export function OrderSummary({
           <div className="w-16 h-16 flex items-center justify-center rounded-lg overflow-hidden mr-4 bg-gray-100 flex-shrink-0">
             {game.currencyImage && (
               <Image
-                src={game.currencyImage}
+                src={game.currencyImage || "/placeholder.svg"}
                 alt={game.currencyName}
                 width={64}
                 height={64}
@@ -53,18 +73,83 @@ export function OrderSummary({
             <p className="text-sm text-gray-500">{game.currencyName}</p>
           </div>
         </div>
+
         {selectedCurrency && (
           <div className="bg-gray-50 rounded-lg p-4 mb-4">
             <div className="flex justify-between mb-2">
               <span className="text-gray-600">{t("summary.quantity")}:</span>
               <span className="font-medium">{selectedCurrency.amount}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">{t("summary.cost")}:</span>
-              <span className="font-medium">{selectedCurrency.price}</span>
+
+            {/* Price breakdown */}
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-gray-600">
+                  {t("summary.subtotal") || "Subtotal"}:
+                </span>
+                <span
+                  className={cn(
+                    "font-medium",
+                    hasDiscount && "line-through text-gray-500"
+                  )}
+                >
+                  {originalPrice.toFixed(2)} RUB
+                </span>
+              </div>
+
+              {hasDiscount && (
+                <>
+                  <div className="flex justify-between text-green-600">
+                    <div className="flex items-center">
+                      <Percent size={14} className="mr-1" />
+                      <span className="text-sm">
+                        {t("summary.discount") || "Discount"} ({couponInfo.code}
+                        ):
+                      </span>
+                    </div>
+                    <span className="font-medium">
+                      -
+                      {couponInfo.type === "percentage"
+                        ? `${appliedDiscount}%`
+                        : `${appliedDiscount.toFixed(2)} RUB`}
+                    </span>
+                  </div>
+
+                  <div className="border-t pt-2">
+                    <div className="flex justify-between">
+                      <span className="font-semibold text-gray-800">
+                        {t("summary.total") || "Total"}:
+                      </span>
+                      <span className="font-semibold text-lg text-green-600">
+                        {finalPrice.toFixed(2)} RUB
+                      </span>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {!hasDiscount && (
+                <div className="flex justify-between">
+                  <span className="text-gray-600">{t("summary.cost")}:</span>
+                  <span className="font-medium">{selectedCurrency.price}</span>
+                </div>
+              )}
             </div>
+
+            {/* Savings highlight */}
+            {hasDiscount && (
+              <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-center justify-center">
+                  <span className="text-sm font-medium text-green-700">
+                    🎉 {t("summary.youSave") || "You save"}:{" "}
+                    {discountAmount.toFixed(2)} RUB
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         )}
+
         {userId && !isEmail(userId) && (
           <div className="mb-4">
             <h4 className="text-sm font-medium text-gray-700 mb-2">
@@ -103,7 +188,14 @@ export function OrderSummary({
               {t("summary.redirecting")}{" "}
             </div>
           ) : (
-            t("summary.buyNow")
+            <span className="flex items-center justify-center">
+              {t("summary.buyNow")}
+              {hasDiscount && (
+                <span className="ml-2 text-sm">
+                  ({finalPrice.toFixed(2)} RUB)
+                </span>
+              )}
+            </span>
           )}
         </button>
 

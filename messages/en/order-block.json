@@ -15,7 +15,6 @@
       "enterIdNoPrefix": "(DO NOT ENTER \"ID:\")",
       "idPrefix": "ID:",
       "userIdPlaceholder": "USER ID",
-
       "userServerPlaceholder": "USER SERVER",
       "confirmDataCorrectness": "I confirm the correctness of the entered data",
       "findBigoId": {
@@ -32,6 +31,36 @@
       "server": "Server",
       "selectServer": "Select server",
       "agreeToTerms": "I agree to the terms and conditions of the service"
+    },
+    "coupon": {
+      "enterCouponCode": "Enter Coupon Code",
+      "tooltipText": "Enter a valid coupon code to apply discounts to your order. Coupon codes are case-insensitive and will be automatically validated.",
+      "couponPlaceholder": "Enter coupon code (e.g., SAVE10)",
+      "confirmCouponTerms": "I agree to the coupon terms and conditions",
+      "howToUseCoupons": {
+        "title": "How to Use Coupon Codes",
+        "step1": "Enter your coupon code in the field above",
+        "step2": "The system will automatically validate the code",
+        "step3": "Discount will be applied to your order total",
+        "step4": "Complete your purchase to use the discount"
+      }
+    }
+  },
+  "alert": {
+    "alerts": {
+      "errorTitle": "Error",
+      "successTitle": "Success",
+      "infoTitle": "Information",
+      "close": "Close",
+      "okButton": "OK"
+    },
+    "validation": {
+      "couponNotFound": "Coupon code not found",
+      "couponExpired": "Coupon has expired",
+      "couponAlreadyUsed": "Coupon has already been used",
+      "invalidCoupon": "Invalid coupon code format",
+      "networkError": "Network error occurred",
+      "validationFailed": "Validation failed"
     }
   }
 }
