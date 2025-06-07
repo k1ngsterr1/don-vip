@@ -2,7 +2,7 @@
   "faq": {
     "paymentError": {
       "question": "I'm getting a payment error. What should I do?",
-      "answer": "If you encounter a payment error, please check the following:\n\n1. Do you have sufficient funds on your card\n2. Are the card details entered correctly\n3. Is your card blocked for online payments\n\nIf the problem persists, please contact us:\n\nTelegram: @Davo_dior55\nWhatsApp: +7 (924) 004 0070\nE-mail: hoyakap@gmail.com"
+      "answer": "If you encounter a payment error, please contact support and specify which game you are referring to, which payment method you chose, and also attach a screenshot of the error and your game data (ID/email)."
     },
     "wrongUid": {
       "question": "What should I do if I entered the wrong UID?",
@@ -10,55 +10,83 @@
     },
     "cancelOrder": {
       "question": "Can I cancel or return my order?",
-      "answer": "Refund or order cancellation is only possible before its processing.\n\nIf your order has not yet been processed, contact us as soon as possible:\n\nTelegram: @Davo_dior55\nWhatsApp: +7 (924) 004 0070\nE-mail: hoyakap@gmail.com\n\nPlease note that after order processing has begun, cancellation is not possible according to our policy."
+      "answer": "After payment and transaction confirmation, the order is considered complete, and no refund is issued. However, if the order was placed in error — contact support. We will try to help as much as possible."
     },
     "orderProcessing": {
       "question": "What to do if the order is 'in processing'?",
-      "answer": "If your order is in \"Processing\" status, it means we've already started working on it.\n\nUsually processing takes from 5 to 30 minutes during working hours (from 09:00 to 21:00 MSK).\n\nIf more time has passed and the status hasn't changed, contact us:\n\nTelegram: @Davo_dior55\nWhatsApp: +7 (924) 004 0070\nE-mail: hoyakap@gmail.com"
+      "answer": "This status means that we have received your payment and it is being processed. If more than 30 minutes have passed and the diamonds have not arrived, contact us — we will check."
     },
     "paymentNoDiamonds": {
       "question": "What to do if the payment went through but diamonds didn't arrive?",
-      "answer": "If your payment was successful but diamonds didn't appear in your account, don't worry. Sometimes it takes some time to process the payment and credit the diamonds.\n\nWe recommend:\n\n1. Wait 10-15 minutes and restart the app\n2. Check if the entered ID is correct\n3. Check the order status in your account\n\nIf diamonds still haven't arrived after this, contact us:\n\nTelegram: @Davo_dior55\nWhatsApp: +7 (924) 004 0070\nE-mail: hoyakap@gmail.com"
+      "answer": "Make sure you have entered the correct ID. Check the order status in your personal account. Contact support and attach:\n\nA screenshot of the payment\nYour Bigo Live ID\nE-mail specified during the order"
     },
     "whatAreDiamonds": {
       "question": "What are Bigo Live diamonds and what are they for?",
-      "answer": "Bigo Live diamonds are the internal currency of the Bigo Live app, which is used for:\n\n• Sending virtual gifts to streamers\n• Increasing your account level\n• Participating in special events\n• Purchasing premium features and content\n\nDiamonds allow you to support your favorite streamers and get additional features in the app."
+      "answer": "Diamonds are a virtual currency within the Bigo Live application, which can be used to:\n\nSend gifts to your favorite streamers during broadcasts.\nGet access to exclusive features and events.\nIncrease your account level and interaction with other users."
     },
     "howToTopUp": {
       "question": "How to top up Bigo Live balance on your website?",
-      "answer": "Topping up your Bigo Live balance on our website is very simple:\n\n1. Find your Bigo Live ID (instructions in a separate question)\n2. Select the desired amount of diamonds on our website\n3. Enter your Bigo Live ID in the appropriate field\n4. Choose a convenient payment method\n5. Complete the payment\n\nAfter successful payment, diamonds will be credited to your account within minutes."
+      "answer": "Select the desired diamond package. Proceed to checkout. Enter your Bigo Live ID data (carefully!). Confirm the correctness of the data entry. Choose a payment method. Complete the payment and wait for confirmation. Diamonds will be automatically credited to your account after processing."
     },
     "findBigoId": {
       "question": "Where to find my Bigo Live ID?",
-      "answer": "To find your Bigo Live ID, follow these steps:\n\n1. Open the Bigo Live app\n2. Go to your profile (tap the avatar in the bottom right corner)\n3. Your ID will be displayed under your name in the format \"ID: XXXXXXXX\"\n\nYou can also find your ID:\n\n• In profile settings\n• When tapping the \"Share profile\" button\n\nImportant: The ID consists only of numbers. Don't confuse it with your username."
+      "answer": "Open the Bigo Live application. Go to the \"Me\" section (profile). Your ID will be indicated under your nickname. Important: Enter only numbers, without the 'ID:' prefix. For example: 100123456"
     },
     "deliveryTime": {
       "question": "How fast are diamonds delivered?",
-      "answer": "Diamond delivery happens automatically and usually takes:\n\n• 1 to 5 minutes during working hours (09:00-21:00 MSK)\n• Up to 30 minutes outside working hours\n\nIn rare cases, during high server load or maintenance, delivery may take up to 1 hour.\n\nIf diamonds haven't arrived within the specified time, please contact our support team."
+      "answer": "After successful payment, diamonds usually arrive in your account within a few minutes. In rare cases, delivery may take up to 30 minutes. If more time has passed — write to support."
     },
     "paymentMethods": {
       "question": "What payment methods are available?",
-      "answer": "Our website offers the following payment methods:\n\n• Bank cards (Visa, MasterCard, Mir)\n• E-wallets (YooMoney, QIWI)\n• Mobile payments (from phone balance)\n• Cryptocurrencies (Bitcoin, Ethereum, USDT)\n• Fast payment systems (FPS)\n\nAll payments go through secure communication channels and are processed instantly."
+      "answer": "We support many convenient methods:\n\nBank cards (Visa, SBP, MasterCard, UnionPay, T-Pay, SberPay). As well as local payment methods depending on the region."
     },
     "isItSafe": {
       "question": "Is it safe to order from you?",
-      "answer": "Yes, ordering from us is completely safe:\n\n• We've been operating officially since 2020\n• We use secure SSL connection for all transactions\n• We don't store your bank card details\n• We have thousands of positive customer reviews\n• We provide receipts and confirmations for every purchase\n\nYou can check our customer reviews in the \"Reviews\" section or on independent platforms."
+      "answer": "Yes! DON-VIP is an official authorized reseller of Bigo Live diamonds. We use secure payment gateways and guarantee transaction security."
     },
     "howProductsDelivered": {
       "question": "How are products purchased from you delivered?",
-      "answer": "All our products (diamonds, in-game currency and other virtual goods) are delivered digitally:\n\n• Bigo Live diamonds are credited directly to your account by ID\n• Activation codes and keys are sent to your specified email\n• In-game items are transferred through the respective game's gifting system\n\nPhysical delivery is not required as all our products are virtual."
+      "answer": "The process looks like this: The client pays for the product. The payment is sent to the bank's or application's server. The bank confirms to us that the payment has been received. We notify your game/application developer that the order is paid, and you receive your product."
     },
     "hasBot": {
       "question": "Do you have a helper bot?",
-      "answer": "Yes, we have an automatic helper bot on Telegram that can:\n\n• Accept and process orders\n• Answer frequently asked questions\n• Check your order status\n• Provide information about our services\n\nYou can find our bot at: @DonVipBot on Telegram.\n\nFor complex questions, live support is always available."
+      "answer": "Yes! We have a digital assistant DON-VIP Assist, which:\n\nWill suggest how to place an order\nWill help with choosing a package\nWill quickly solve common problems\nWill direct you to support if needed\n\nTo get started — just write to us on Telegram: @davo_dior55"
     },
     "orderDeliveryTime": {
       "question": "How long does order delivery take?",
-      "answer": "Order delivery time depends on the product type:\n\n• Bigo Live diamonds: 1-30 minutes\n• In-game currency: 5-60 minutes\n• Activation keys: instantly after payment\n\nDuring working hours (09:00-21:00 MSK) delivery is faster.\n\nIf your order hasn't been delivered within the specified time, please contact our support team."
+      "answer": "Delivery time depends on the selected payment channel. Some payment methods can be processed instantly, while others may take more time. Please review the processing time information for your chosen payment method."
     },
     "contactSupport": {
       "question": "How to contact support?",
-      "answer": "You can contact our support team in any convenient way:\n\nTelegram: @Davo_dior55\nWhatsApp: +7 (924) 004 0070\nE-mail: hoyakap@gmail.com\n\nSupport working hours: daily from 09:00 to 21:00 Moscow time.\n\nOutside working hours you can leave a message and we'll respond at the beginning of the next working day."
+      "answer": "E-mail: hoyakap@gmail.com\nTelegram: @davo_dior55\nWhatsApp: +7 (924) 004 0070\nAn assistant is also available on the website."
+    },
+    "createAccount": {
+      "question": "Do I need to create an account to purchase?",
+      "answer": "You can place an order without registration, but with an account, it's more convenient to track your purchase history and contact support."
+    },
+    "secureAccount": {
+      "question": "How to protect my account?",
+      "answer": "Use a unique password and do not share it with third parties. We also recommend enabling two-factor authentication if it is available."
+    },
+    "accountHacked": {
+      "question": "What to do if my account was hacked?",
+      "answer": "Contact our support service immediately — we will suspend access and help you regain control of your account."
+    },
+    "internalBalance": {
+      "question": "Is there an internal balance on the site?",
+      "answer": "No, DON-VIP.COM does not have an internal balance. Payment is made directly at the time of purchase."
+    },
+    "checkOrderStatus": {
+      "question": "How to check order status?",
+      "answer": "Go to your personal account — in the \"My Orders\" section, you will see the current status of each order."
+    },
+    "getReceipt": {
+      "question": "How to get a receipt or proof of payment?",
+      "answer": "It is automatically sent to your email immediately after payment. You can also download it from your personal account."
+    },
+    "regionalRestrictions": {
+      "question": "Are there regional restrictions?",
+      "answer": "Yes, some products may be restricted for certain countries. This information is indicated on the product page."
     }
   }
 }

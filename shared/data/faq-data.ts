@@ -86,5 +86,40 @@ export function getFAQData(t: ReturnType<typeof useTranslations>): FAQItem[] {
       answer: t("contactSupport.answer"),
       category: "support",
     },
+    {
+      question: t("createAccount.question"),
+      answer: t("createAccount.answer"),
+      category: "account",
+    },
+    {
+      question: t("secureAccount.question"),
+      answer: t("secureAccount.answer"),
+      category: "account",
+    },
+    {
+      question: t("accountHacked.question"),
+      answer: t("accountHacked.answer"),
+      category: "account",
+    },
+    {
+      question: t("internalBalance.question"),
+      answer: t("internalBalance.answer"),
+      category: "payment",
+    },
+    {
+      question: t("checkOrderStatus.question"),
+      answer: t("checkOrderStatus.answer"),
+      category: "order",
+    },
+    {
+      question: t("getReceipt.question"),
+      answer: t("getReceipt.answer"),
+      category: "payment",
+    },
+    {
+      question: t("regionalRestrictions.question"),
+      answer: t("regionalRestrictions.answer"),
+      category: "products",
+    },
   ];
 }
