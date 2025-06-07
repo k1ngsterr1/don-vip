@@ -197,7 +197,7 @@ export function OrderBlock({
           const params = new URLSearchParams({
             orderId: response.id,
             amount: selectedCurrency.amount.toString(),
-            price: numericPrice,
+            price: formattedPrice, // Changed from numericPrice to formattedPrice (discounted price)
             currencyName: game.currencyName,
             gameName: game.name,
             userId: userId,
