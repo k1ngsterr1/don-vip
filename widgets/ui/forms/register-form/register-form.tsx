@@ -11,7 +11,7 @@ import { AuthLoadingOverlay } from "@/shared/ui/auth-loading/auth-loading";
 import { useRegister } from "@/entities/auth/hooks/use-auth";
 import { Link } from "@/i18n/navigation";
 import { PasswordStrength } from "@/shared/ui/password-strength/password-strength";
-import { PhoneInput } from "@/shared/ui/phone-input/phone-input"; // Assuming this path
+import { PhoneInput } from "@/shared/ui/phone-input/phone-input";
 import { useRouter } from "@/i18n/routing";
 import { isValidPhoneNumber } from "react-phone-number-input";
 
@@ -222,29 +222,13 @@ export function RegisterForm() {
   const loadingState = isRedirecting ? "redirecting" : "processing";
 
   const handlePhoneInputChange = (newValue?: string) => {
-    let proposedValue = newValue;
+    // Simply update the state with the new value from the library
+    // The react-phone-number-input library handles formatting and validation internally
+    setIdentifier(newValue || "");
 
-    // 1. Handle undefined (input cleared by library) -> default to "+"
-    if (proposedValue === undefined) {
-      proposedValue = "+";
-    }
-
-    // 2. Strict check on raw digit count.
-    const digits = (proposedValue.match(/\d/g) || []).join("");
-    const MAX_DIGITS = 15; // E.164 standard
-
-    if (digits.length > MAX_DIGITS) {
-      // If the number of digits is too high, do not update the state.
-      // The `maxLength` on the input field provides the UI stop.
-      return;
-    }
-
-    // 3. Update state if the value is valid so far and has changed.
-    if (proposedValue !== identifier) {
-      setIdentifier(proposedValue);
-      if (errors.identifier) {
-        setErrors((prev) => ({ ...prev, identifier: undefined }));
-      }
+    // Clear any existing identifier errors when user starts typing
+    if (errors.identifier) {
+      setErrors((prev) => ({ ...prev, identifier: undefined }));
     }
   };
 
