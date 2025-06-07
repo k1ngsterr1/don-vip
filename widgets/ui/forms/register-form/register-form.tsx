@@ -6,17 +6,14 @@ import { AuthInput } from "@/shared/ui/auth-input/auth-input";
 import { Button } from "@/shared/ui/button/button";
 import { SocialAuth } from "@/shared/ui/social-input/social-input";
 import { useState, useEffect } from "react";
-import { Loader2, Info, Mail, Phone } from "lucide-react";
+import { Loader2, Info, Mail } from "lucide-react";
 import { AuthLoadingOverlay } from "@/shared/ui/auth-loading/auth-loading";
 import { useRegister } from "@/entities/auth/hooks/use-auth";
 import { Link } from "@/i18n/navigation";
 import { PasswordStrength } from "@/shared/ui/password-strength/password-strength";
+import { PhoneInput } from "@/shared/ui/phone-input/phone-input"; // Assuming this path
 import { useRouter } from "@/i18n/routing";
-import {
-  isValidPhoneNumber,
-  formatPhoneNumberInput,
-  normalizePhoneNumberForApi,
-} from "@/shared/utils/phone-utils";
+import { isValidPhoneNumber } from "react-phone-number-input";
 
 const errorTranslations: Record<string, Record<string, string>> = {
   en: {
@@ -97,7 +94,7 @@ function getHumanReadableError(error: string, locale = "en"): string {
 export function RegisterForm() {
   const i18n = useTranslations("register-form_auth.registerForm");
   const locale = useLocale();
-  const [identifier, setIdentifier] = useState("");
+  const [identifier, setIdentifier] = useState<string>("");
   const [identifierType, setIdentifierType] = useState<"email" | "phone">(
     "email"
   );
@@ -139,32 +136,26 @@ export function RegisterForm() {
         input.startsWith("+") ||
         input.replace(/[^0-9]/g, "").length > input.length / 2
       ) {
-        // MODIFIED: Check for '+' prefix for phone
         setIdentifierType("phone");
       }
     }
   }, [identifier]);
 
   const validateLocalIdentifier = (value: string, type: "email" | "phone") => {
-    // RENAMED
     if (type === "email") {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return emailRegex.test(value);
     } else {
-      return isValidPhoneNumber(value); // MODIFIED: Use new utility
+      return isValidPhoneNumber(value);
     }
   };
 
   const validatePassword = () => hasMinLength && criteriaMet >= 2;
   const isFormFilled =
-    identifier.trim() !== "" && password.trim() !== "" && validatePassword(); // MODIFIED: use validatePassword for completeness
+    identifier.trim() !== "" && password.trim() !== "" && validatePassword();
 
   const handleIdentifierChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // ADDED: handler for identifier
-    let value = e.target.value;
-    if (identifierType === "phone") {
-      value = formatPhoneNumberInput(value);
-    }
+    const value = e.target.value;
     setIdentifier(value);
     if (errors.identifier) {
       setErrors((prev) => ({ ...prev, identifier: undefined }));
@@ -173,7 +164,7 @@ export function RegisterForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setErrors({}); // Clear previous errors
+    setErrors({});
 
     const newErrors = {
       identifier: !identifier.trim()
@@ -198,21 +189,14 @@ export function RegisterForm() {
       return;
     }
 
-    let apiIdentifier = identifier.trim();
-    if (identifierType === "phone") {
-      apiIdentifier = normalizePhoneNumberForApi(apiIdentifier); // MODIFIED: Ensure API format
-    }
-
     register(
-      { identifier: apiIdentifier, password, lang: locale },
+      { identifier: identifier.trim(), password, lang: locale },
       {
         onSuccess: () => {
           setIsRedirecting(true);
           setTimeout(() => {
             router.push(
-              `/auth/verify?identifier=${encodeURIComponent(
-                apiIdentifier
-              )}` as any
+              `/auth/verify?identifier=${encodeURIComponent(identifier)}` as any
             );
           }, 800);
         },
@@ -237,32 +221,56 @@ export function RegisterForm() {
   const showLoadingOverlay = isLoading || isRedirecting;
   const loadingState = isRedirecting ? "redirecting" : "processing";
 
+  const handlePhoneInputChange = (newValue?: string) => {
+    let proposedValue = newValue;
+
+    // 1. Handle undefined (input cleared by library) -> default to "+"
+    if (proposedValue === undefined) {
+      proposedValue = "+";
+    }
+
+    // 2. Strict check on raw digit count.
+    const digits = (proposedValue.match(/\d/g) || []).join("");
+    const MAX_DIGITS = 15; // E.164 standard
+
+    if (digits.length > MAX_DIGITS) {
+      // If the number of digits is too high, do not update the state.
+      // The `maxLength` on the input field provides the UI stop.
+      return;
+    }
+
+    // 3. Update state if the value is valid so far and has changed.
+    if (proposedValue !== identifier) {
+      setIdentifier(proposedValue);
+      if (errors.identifier) {
+        setErrors((prev) => ({ ...prev, identifier: undefined }));
+      }
+    }
+  };
+
   return (
     <div className="max-w-md mx-auto relative">
       <AuthLoadingOverlay isVisible={showLoadingOverlay} state={loadingState} />
       <form onSubmit={handleSubmit} className={`space-y-5`}>
         <div className="relative">
-          <AuthInput
-            type={identifierType === "phone" ? "tel" : "email"}
-            placeholder={
-              identifierType === "email"
-                ? i18n("emailPlaceholder") || "Email address"
-                : i18n("phonePlaceholder") || "Phone number (e.g. +123...)" // MODIFIED: Placeholder hint
-            }
-            value={identifier}
-            onChange={handleIdentifierChange} // MODIFIED: Use new handler
-            disabled={showLoadingOverlay}
-            isPhoneMask={false} // MODIFIED: Assuming the mask is too restrictive. Test this.
-            suffix={
-              <span className="text-gray-400">
-                {identifierType === "email" ? (
-                  <Mail size={16} />
-                ) : (
-                  <Phone size={16} />
-                )}
-              </span>
-            }
-          />
+          {identifierType === "email" ? (
+            <AuthInput
+              type="email"
+              placeholder={i18n("emailPlaceholder") || "Email address"}
+              value={identifier}
+              onChange={handleIdentifierChange}
+              disabled={showLoadingOverlay}
+              suffix={<Mail size={16} className="text-gray-400" />}
+            />
+          ) : (
+            <PhoneInput
+              placeholder={i18n("phonePlaceholder") || "Phone number"}
+              value={identifier}
+              onChange={handlePhoneInputChange}
+              disabled={showLoadingOverlay}
+              error={errors.identifier}
+            />
+          )}
           <div className="mt-1 text-xs text-gray-500 flex justify-end">
             <button
               type="button"
@@ -270,7 +278,7 @@ export function RegisterForm() {
                 setIdentifierType(
                   identifierType === "email" ? "phone" : "email"
                 );
-                setIdentifier(identifierType === "email" ? "+" : ""); // MODIFIED: Set to "+" when switching to phone
+                setIdentifier(""); // Clear identifier on type switch
                 setErrors({});
               }}
               className="text-blue hover:underline"
@@ -310,22 +318,15 @@ export function RegisterForm() {
           {showPasswordHints && <PasswordStrength password={password} />}
         </div>
 
-        {errors.identifier &&
-          !showLoadingOverlay && ( // MODIFIED: Display identifier error
-            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
-              {errors.identifier}
-            </div>
-          )}
-        {errors.password &&
-          !showLoadingOverlay && ( // MODIFIED: Display password error
-            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
-              {errors.password}
-            </div>
-          )}
+        {(errors.identifier || errors.password) && !showLoadingOverlay && (
+          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
+            {errors.identifier || errors.password}
+          </div>
+        )}
         {registerError &&
           !errors.identifier &&
           !errors.password &&
-          !showLoadingOverlay && ( // MODIFIED: Display general error
+          !showLoadingOverlay && (
             <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
               {registerError instanceof Error
                 ? getHumanReadableError(registerError.message, locale)
@@ -336,8 +337,10 @@ export function RegisterForm() {
         <Button
           type="submit"
           className={`w-full rounded-full text-white py-3 md:py-4 text-sm md:text-base ${
-            isFormFilled && !showLoadingOverlay
-              ? "bg-blue-600 hover:bg-blue-700" // Assuming 'bg-blue' from login form was a typo and meant bg-blue-600 or similar
+            isFormFilled &&
+            !showLoadingOverlay &&
+            validateLocalIdentifier(identifier, identifierType)
+              ? "bg-blue-600 hover:bg-blue-700"
               : "bg-[#AAAAAB] hover:bg-[#AAAAAB]/90"
           }`}
           disabled={!isFormFilled || showLoadingOverlay}

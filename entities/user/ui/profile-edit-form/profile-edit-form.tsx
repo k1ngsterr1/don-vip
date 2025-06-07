@@ -356,7 +356,7 @@ export function ProfileEditForm({
               type="tel"
               icon={<Phone size={18} />}
               className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
-              placeholder={i18n("fields.phonePlaceholder") || "+1234567890"} // Updated placeholder
+              placeholder={"+1234567890"} // Updated placeholder
             />
           </div>
 
