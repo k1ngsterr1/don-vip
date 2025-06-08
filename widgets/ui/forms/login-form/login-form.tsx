@@ -13,9 +13,9 @@ import { AuthLoadingOverlay } from "@/shared/ui/auth-loading/auth-loading";
 import { useLogin } from "@/entities/auth/hooks/use-auth";
 import { PasswordStrength } from "@/shared/ui/password-strength/password-strength";
 import { Link } from "@/i18n/navigation";
-import { PhoneInput } from "@/shared/ui/phone-input/phone-input"; // Corrected path based on your file
 import { useRouter } from "@/i18n/routing";
 import { isValidPhoneNumber } from "react-phone-number-input";
+import { PhoneInputWithCountry } from "@/shared/ui/phone-input/phone-input";
 
 // Enhanced error translations for all possible input errors
 const errorTranslations: Record<string, Record<string, string>> = {
@@ -279,11 +279,10 @@ export function LoginForm() {
               suffix={<Mail size={16} className="text-gray-400" />}
             />
           ) : (
-            <PhoneInput
+            <PhoneInputWithCountry
               placeholder={i18n("phonePlaceholder") || "Phone number"}
               value={identifier}
               onChange={handlePhoneInputChange}
-              disabled={showLoadingOverlay}
               error={errors.identifier}
             />
           )}
