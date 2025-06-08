@@ -133,7 +133,7 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
           />
         </motion.div>
       </AnimatePresence>
-      <button className="absolute bottom-[32px] left-5 w-[140px] h-[40px] bg-white text-blue rounded-full  text-[14px] font-medium z-100 transition-colors hover:bg-blue hover:text-white hover:border-blue">
+      <button className="absolute bottom-[32px] left-5 w-[140px] font-unbounded h-[40px] bg-white text-blue rounded-full  text-[14px] font-medium z-100 transition-colors hover:bg-blue hover:text-white hover:border-blue">
         {t("title")}
       </button>
       <div className="hidden sm:block">
