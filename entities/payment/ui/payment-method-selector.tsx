@@ -4,6 +4,7 @@ import Image, { type StaticImageData } from "next/image";
 import { useTranslations } from "next-intl";
 import tbankIcon from "@/assets/T-Bank.webp"; // Ensure these paths are correct
 import mastercardIcon from "@/assets/mastercard.webp";
+import sbpIcon from "@/assets/sbp.svg";
 import { useGetActiveBanks } from "@/entities/bank/hooks/use-get-active-banks"; // Adjusted path
 import { Loader2 } from "lucide-react";
 
@@ -39,9 +40,15 @@ export function PaymentMethodSelector({
       descriptionKey: "tbankDescription",
     },
     {
+      id: "sbp",
+      translationKey: "methods.sbp",
+      apiName: "SBP",
+      icon: sbpIcon,
+    },
+    {
       id: "card",
       translationKey: "methods.card",
-      apiName: "Card", // Example: This should match for card payments
+      apiName: "Card",
       icon: mastercardIcon,
     },
     // Add other payment methods here if needed

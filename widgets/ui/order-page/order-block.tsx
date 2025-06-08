@@ -74,7 +74,7 @@ export function OrderBlock({
     setError,
     isGuestUser,
     needsIdentifier,
-  } = useCreateOrder(selectedPaymentMethod === "tbank");
+  } = useCreateOrder(selectedPaymentMethod);
 
   const { user: authUser, isGuestAuth } = useAuthStore();
   const { data: me } = useGetMe();

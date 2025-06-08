@@ -27,7 +27,7 @@ function isSafariBrowser(): boolean {
 /**
  * Hook to create a new order and process payment
  */
-export function useCreateOrder(isTbank = false) {
+export function useCreateOrder(paymentMethod: string) {
   const queryClient = useQueryClient();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -85,7 +85,7 @@ export function useCreateOrder(isTbank = false) {
 
     onSuccess: (orderData, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.orders.all });
-      if (isTbank) {
+      if (paymentMethod === "tbank") {
         return;
       } else {
         processPayment(orderData.id.toString(), variables);
@@ -143,6 +143,7 @@ export function useCreateOrder(isTbank = false) {
         typeof orderData.price === "string"
           ? orderData.price
           : orderData.price.toFixed(2),
+      name: orderData.payment_method === "sbp" ? "SBP" : "Card",
     };
 
     paymentMutation.mutate(paymentData);

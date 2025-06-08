@@ -7,7 +7,7 @@
     "methods": {
       "tbank": "T-Bank (SBP)",
       "card": "Банковская карта",
-      "qiwi": "QIWI"
+      "SBP": "СБП"
     },
     "noMethodsAvailable": "Нет доступных способов оплаты"
   }
