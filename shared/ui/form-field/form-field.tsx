@@ -125,50 +125,39 @@ export function FormField({
         onChange(syntheticEvent as React.ChangeEvent<HTMLInputElement>);
       }
     } else if (mask === "phone") {
-      // Apply phone mask (+X XXX XXX-XX-XX)
-      const digits = newValue.replace(/\D/g, "");
-      let maskedValue = "";
+      const rawDigits = newValue.replace(/\D/g, "");
+      let maskedValue = "+";
 
-      if (digits.length > 0) {
-        maskedValue = `+${digits.substring(0, 1)}`;
-
-        if (digits.length > 1) {
-          maskedValue = `+${digits.substring(0, 1)} ${digits.substring(1, 4)}`;
-
-          if (digits.length > 4) {
-            maskedValue = `+${digits.substring(0, 1)} ${digits.substring(
-              1,
-              4
-            )} ${digits.substring(4, 7)}`;
-
-            if (digits.length > 7) {
-              maskedValue = `+${digits.substring(0, 1)} ${digits.substring(
-                1,
-                4
-              )} ${digits.substring(4, 7)}-${digits.substring(7, 9)}`;
-
-              if (digits.length > 9) {
-                maskedValue = `+${digits.substring(0, 1)} ${digits.substring(
-                  1,
-                  4
-                )} ${digits.substring(4, 7)}-${digits.substring(
-                  7,
-                  9
-                )}-${digits.substring(9, 11)}`;
-              }
-            }
-          }
-        }
+      if (rawDigits.startsWith("7")) {
+        const rest = rawDigits.slice(1);
+        maskedValue = "+7";
+        if (rest.length > 0) maskedValue += ` (${rest.slice(0, 3)}`;
+        if (rest.length >= 3) maskedValue += `) ${rest.slice(3, 6)}`;
+        if (rest.length >= 6) maskedValue += `-${rest.slice(6, 8)}`;
+        if (rest.length >= 8) maskedValue += `-${rest.slice(8, 10)}`;
+      } else if (rawDigits.startsWith("1")) {
+        const rest = rawDigits.slice(1);
+        maskedValue = "+1";
+        if (rest.length > 0) maskedValue += ` (${rest.slice(0, 3)}`;
+        if (rest.length >= 3) maskedValue += `) ${rest.slice(3, 6)}`;
+        if (rest.length >= 6) maskedValue += `-${rest.slice(6, 10)}`;
+      } else if (rawDigits.startsWith("44")) {
+        const rest = rawDigits.slice(2);
+        maskedValue = "+44";
+        if (rest.length > 0) maskedValue += ` (${rest.slice(0, 4)}`;
+        if (rest.length >= 4) maskedValue += `) ${rest.slice(4, 10)}`;
+      } else {
+        maskedValue = "+" + rawDigits;
       }
 
+      // Обновляем state и передаём наверх
       setInputValue(maskedValue);
-
       if (onChange) {
         const syntheticEvent = {
           ...e,
           target: {
             ...e.target,
-            name: name,
+            name,
             value: maskedValue,
           },
         };

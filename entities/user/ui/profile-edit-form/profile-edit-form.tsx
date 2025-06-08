@@ -15,35 +15,6 @@ import {
 import { useState } from "react";
 import { useRouter } from "@/i18n/routing";
 
-// Updated formatPhoneNumber for worldwide numbers
-function formatPhoneNumber(value: string): string {
-  // Remove all non-digit characters except a leading +
-  let cleaned = value.replace(/[^\d+]/g, "");
-
-  // If '+' is present but not at the beginning, or multiple '+' signs, simplify
-  if (cleaned.includes("+")) {
-    if (cleaned.startsWith("+")) {
-      // Keep the first '+', remove others
-      cleaned = "+" + cleaned.substring(1).replace(/\+/g, "");
-    } else {
-      // If '+' is not at the start, remove all '+' and treat as digits-only
-      cleaned = cleaned.replace(/\+/g, "");
-    }
-  }
-
-  // If it's just digits and not empty, prepend '+'
-  if (cleaned && !cleaned.startsWith("+") && /^\d+$/.test(cleaned)) {
-    cleaned = "+" + cleaned;
-  }
-
-  // If after cleaning it's empty or just "+", return "+" as the base for an empty field
-  if (!cleaned || cleaned === "+") {
-    return "+";
-  }
-
-  return cleaned;
-}
-
 interface User {
   id?: number;
   first_name?: string | null;
@@ -80,11 +51,7 @@ export function ProfileEditForm({
     last_name: user.last_name || "",
     gender: user.gender || "other",
     birth_date: user.birth_date || "",
-    phone: isIdentifierEmail
-      ? user.phone
-        ? formatPhoneNumber(user.phone)
-        : "+" // Default empty state
-      : formatPhoneNumber(user.identifier || "+"), // Default empty state for identifier
+    phone: isIdentifierEmail ? user.phone || "+" : user.identifier || "+",
     email: isIdentifierEmail ? user.identifier : user.email || "",
   });
 
@@ -95,12 +62,7 @@ export function ProfileEditForm({
   ) => {
     const { name, value } = e.target;
 
-    if (name === "phone") {
-      const formatted = formatPhoneNumber(value);
-      setFormData((prev) => ({ ...prev, [name]: formatted }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -219,7 +181,6 @@ export function ProfileEditForm({
           </button>
         </div>
       </div>
-
       <div>
         <label className="block text-sm font-medium mb-1">
           {i18n("fields.email")}
@@ -283,7 +244,6 @@ export function ProfileEditForm({
             icon={<UserRound size={18} />}
             className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
           />
-
           <div>
             <label className="block text-sm font-medium mb-2 text-gray-700">
               {i18n("fields.gender")}
@@ -329,7 +289,6 @@ export function ProfileEditForm({
             </div>
           </div>
         </div>
-
         <div className="space-y-6">
           <FormField
             label={i18n("fields.birthDate")}
@@ -342,21 +301,21 @@ export function ProfileEditForm({
             className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
             mask="date"
           />
-
           <div>
             <label className="block text-sm font-medium mb-2 text-gray-700">
               {i18n("fields.phone")}
             </label>
             <FormField
-              label={""}
+              label=""
               name="phone"
-              maxLength={20} // Increased maxLength for international numbers
+              maxLength={20}
               value={formData.phone}
               onChange={handleChange}
               type="tel"
               icon={<Phone size={18} />}
               className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
-              placeholder={"+1234567890"} // Updated placeholder
+              placeholder="+7 (___) ___-__-__"
+              mask="phone"
             />
           </div>
 
@@ -377,7 +336,6 @@ export function ProfileEditForm({
           </div>
         </div>
       </div>
-
       <div className="mt-8 pt-6 border-t border-gray-100 flex items-center justify-between">
         <button
           type="button"

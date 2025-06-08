@@ -7,7 +7,7 @@
     "methods": {
       "tbank": "T-Bank (SBP)",
       "card": "Банковская карта",
-      "SBP": "СБП"
+      "sbp": "СБП"
     },
     "noMethodsAvailable": "Нет доступных способов оплаты"
   }

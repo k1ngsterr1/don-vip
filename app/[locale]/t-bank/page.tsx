@@ -218,6 +218,7 @@ export default function TBankPaymentPage() {
                     <FormInput
                       id="phone"
                       label="Phone"
+                      mask="phone"
                       type="tel"
                       placeholder="+1 (123) 456-7890"
                       Icon={Phone}

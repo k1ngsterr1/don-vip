@@ -106,7 +106,7 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
           transition={{
             x: { type: "tween", duration: 0.3, ease: "easeInOut" },
           }}
-          className="absolute inset-0"
+          className="absolute inset-0 w-full h-full"
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={0.7}
@@ -128,11 +128,12 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
             }
             alt="Slide"
             fill
-            className="object-cover"
+            className="object-contain"
             priority={currentSlide === 0}
           />
         </motion.div>
       </AnimatePresence>
+
       <button className="absolute bottom-[32px] left-5 w-[140px] font-unbounded h-[40px] bg-white text-blue rounded-full  text-[11px] font-medium z-100 transition-colors hover:bg-blue hover:text-white hover:border-blue">
         {t("title")}
       </button>
