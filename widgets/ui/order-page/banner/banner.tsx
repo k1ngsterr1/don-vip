@@ -7,7 +7,6 @@ interface BannerProps {
 }
 
 export function Banner({ backgroundImage, height }: BannerProps) {
-  // Mobile version (unchanged)
   const mobileBanner = (
     <div className="relative w-full md:hidden" style={{ height }}>
       <Image

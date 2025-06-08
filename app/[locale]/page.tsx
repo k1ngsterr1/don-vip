@@ -7,19 +7,24 @@ export default function Home() {
   const heroSlides = [
     {
       id: 1,
-      image: "/banner_new.webp",
+      image: {
+        desktop: "/bigo_banner_pc.webp",
+        mobile: "/bigo_banner_mob.webp",
+      },
     },
     {
       id: 2,
-      image: "/banner_mlbb.webp",
+      image: {
+        desktop: "/mlbb_banner_pc.webp",
+        mobile: "/banner_new.webp",
+      },
     },
     {
       id: 3,
-      image: "/banner.webp",
-    },
-    {
-      id: 4,
-      image: "/banner_mlbb.webp",
+      image: {
+        desktop: "/pubg_banner_pc.webp",
+        mobile: "/pubg_banner_mob.webp",
+      },
     },
   ];
 

@@ -9,7 +9,10 @@ import { useEffect, useState } from "react";
 
 interface Slide {
   id: number;
-  image: string;
+  image: {
+    desktop: string;
+    mobile: string;
+  };
 }
 
 interface HeroBannerProps {
@@ -69,7 +72,7 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
   return (
     <div
       className="relative w-full overflow-hidden bg-gray-100"
-      style={{ height: isMobile ? "180px" : "500px" }}
+      style={{ height: isMobile ? "190px" : "500px" }}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={() => setIsPaused(true)}
@@ -81,7 +84,13 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
             width={377}
             height={211}
             key={`preload-${slide.id}`}
-            src={slide.image || "/placeholder.svg"}
+            src={
+              typeof slides[currentSlide].image === "string"
+                ? slides[currentSlide].image
+                : isMobile
+                ? slides[currentSlide].image.mobile
+                : slides[currentSlide].image.desktop
+            }
             alt="Preload"
           />
         ))}
@@ -110,7 +119,13 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
           }}
         >
           <Image
-            src={slides[currentSlide].image || "/placeholder.svg"}
+            src={
+              typeof slides[currentSlide].image === "string"
+                ? slides[currentSlide].image
+                : isMobile
+                ? slides[currentSlide].image.mobile
+                : slides[currentSlide].image.desktop
+            }
             alt="Slide"
             fill
             className="object-cover"
