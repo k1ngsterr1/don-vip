@@ -146,7 +146,6 @@ export function OrderBlock({
     selectedCurrency !== null &&
     userId.trim() !== "" &&
     agreeToTerms &&
-    agreeToCouponTerms &&
     (!game.requiresServer || serverId.trim() !== "");
 
   // Get user identifier from various sources
@@ -282,7 +281,6 @@ export function OrderBlock({
       />
       <CouponForm
         couponCode={couponCode}
-        agreeToTerms={agreeToCouponTerms}
         onCouponCodeChange={setCouponCode}
         onAgreeChange={setAgreeToCouponTerms}
         onCouponApplied={handleCouponApplied}
@@ -349,7 +347,6 @@ export function OrderBlock({
             <div className="p-6 border-b border-gray-100">
               <CouponForm
                 couponCode={couponCode}
-                agreeToTerms={agreeToCouponTerms}
                 onCouponCodeChange={setCouponCode}
                 onAgreeChange={setAgreeToCouponTerms}
                 onCouponApplied={handleCouponApplied}

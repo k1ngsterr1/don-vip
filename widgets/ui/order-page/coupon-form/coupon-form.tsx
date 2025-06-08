@@ -11,7 +11,6 @@ import { extractErrorMessage } from "@/shared/config/apiClient";
 
 interface CouponFormProps {
   couponCode: string;
-  agreeToTerms: boolean;
   onCouponCodeChange: (value: string) => void;
   onAgreeChange: (value: boolean) => void;
   onCouponApplied?: (discount: number, couponInfo: any) => void;
@@ -19,7 +18,6 @@ interface CouponFormProps {
 
 export function CouponForm({
   couponCode,
-  agreeToTerms,
   onCouponCodeChange,
   onAgreeChange,
   onCouponApplied,
@@ -261,20 +259,6 @@ export function CouponForm({
               <AlertCircle size={18} className="text-red-500" />
             </div>
           )}
-        </div>
-
-        <div className="flex items-center mt-4">
-          <input
-            type="checkbox"
-            id="coupon-terms"
-            checked={agreeToTerms}
-            onChange={(e) => handleCheckboxValidation(e.target.checked)}
-            className="mr-2 h-4 w-4 accent-blue-500"
-          />
-          <label htmlFor="coupon-terms" className="text-[11px] text-gray-600">
-            {t("confirmCouponTerms") ||
-              "I agree to the coupon terms and conditions"}
-          </label>
         </div>
 
         <div className="mt-4 mb-2">
