@@ -26,8 +26,6 @@ export function GamesMegaMenu() {
   const { data: productsData, isLoading } = useProducts();
   const [nonBigoGames, setNonBigoGames] = useState<GameItem[]>([]);
 
-  const helpLinks: NavLink[] = [{ id: "coupons", link: "/coupons" }];
-
   // Filter out Bigo products when data is loaded
   useEffect(() => {
     if (productsData?.data) {
@@ -201,33 +199,6 @@ export function GamesMegaMenu() {
                 </Link>
               ))}
             </div>
-            <motion.div
-              className="w-64 pl-8 ml-6 border-l border-gray-100"
-              variants={itemVariants} // You can reuse itemVariants or create specific ones if needed
-            >
-              <motion.h3
-                className="font-medium text-sm uppercase text-gray-500 mb-2"
-                variants={itemVariants} // Or a specific variant for the title
-              >
-                {t("help.title")}
-              </motion.h3>
-              <ul className="space-y-2">
-                {helpLinks.map((link, idx) => (
-                  <motion.li
-                    key={link.id}
-                    variants={linkVariants} // Reusing existing linkVariants
-                    custom={idx} // Pass index for stagger effect
-                  >
-                    <Link
-                      href={link.link as any} // Cast to any if type issues with i18n Link
-                      className="text-dark hover:text-blue-600 transition-colors"
-                    >
-                      {t(`help.${link.id}`)}
-                    </Link>
-                  </motion.li>
-                ))}
-              </ul>
-            </motion.div>
           </div>
         ) : (
           <div className="flex">

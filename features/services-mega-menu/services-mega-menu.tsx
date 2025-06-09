@@ -45,8 +45,6 @@ export function ServicesMegaMenu() {
     }
   }, [productsData]);
 
-  const helpLinks: NavLink[] = [{ id: "coupons", link: "/coupons" }];
-
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0, y: -20 },
@@ -186,35 +184,6 @@ export function ServicesMegaMenu() {
                 </Link>
               ))}
             </div>
-            <motion.div
-              className="w-64 pl-8 border-l border-gray-100"
-              variants={itemVariants}
-            >
-              <motion.h3 className="font-medium text-sm uppercase text-gray-500 mb-2">
-                {t("help.title")}
-              </motion.h3>
-              <ul className="space-y-2">
-                {helpLinks.map((link, index) => (
-                  <motion.li
-                    key={link.id}
-                    variants={linkVariants}
-                    custom={index}
-                  >
-                    <Link
-                      //@ts-ignore
-                      href={link.link}
-                      className="text-dark hover:text-blue-600 transition-colors"
-                    >
-                      {link.id === "coupons"
-                        ? locale === "ru"
-                          ? "Купоны"
-                          : "Coupons"
-                        : t(`help.${link.id}`)}
-                    </Link>
-                  </motion.li>
-                ))}
-              </ul>
-            </motion.div>
           </div>
         ) : (
           <div className="flex">
