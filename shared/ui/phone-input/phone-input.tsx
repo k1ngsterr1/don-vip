@@ -416,7 +416,7 @@ const PhoneInputWithCountry = forwardRef<
           <input
             ref={inputRef}
             type="tel"
-            maxLength={12}
+            maxLength={13}
             value={inputValue}
             onChange={handleInputChange}
             placeholder={placeholder}
