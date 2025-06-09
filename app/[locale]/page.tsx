@@ -8,21 +8,21 @@ export default function Home() {
     {
       id: 1,
       image: {
-        desktop: "/bigo_banner_pc.webp",
+        desktop: "/bigo_pc.webp",
         mobile: "/bigo_banner_mob.webp",
       },
     },
     {
       id: 2,
       image: {
-        desktop: "/mlbb_banner_pc.webp",
+        desktop: "/mlbb_pc.webp",
         mobile: "/banner_new.webp",
       },
     },
     {
       id: 3,
       image: {
-        desktop: "/pubg_banner_pc.webp",
+        desktop: "/pubg_pc.webp",
         mobile: "/pubg_banner_mob.webp",
       },
     },

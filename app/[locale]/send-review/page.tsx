@@ -115,7 +115,6 @@ export default function SendReview() {
                         }
                         alt={product.name}
                         fill
-                        className="object-contain"
                       />
                     </div>
                     <h4 className="text-sm font-medium text-center truncate">

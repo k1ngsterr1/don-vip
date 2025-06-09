@@ -128,12 +128,10 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
             }
             alt="Slide"
             fill
-            className="object-contain"
             priority={currentSlide === 0}
           />
         </motion.div>
       </AnimatePresence>
-
       <button className="absolute bottom-[32px] left-5 w-[140px] font-unbounded h-[40px] bg-white text-blue rounded-full  text-[11px] font-medium z-100 transition-colors hover:bg-blue hover:text-white hover:border-blue">
         {t("title")}
       </button>

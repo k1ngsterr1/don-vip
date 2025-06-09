@@ -14,6 +14,7 @@
       "tooltipTextWithoutServer": "Enter your user ID to proceed with the order. Make sure to provide the correct ID as shown in the instructions below.",
       "enterIdNoPrefix": "(DO NOT ENTER \"ID:\")",
       "idPrefix": "ID:",
+      "userEmailPlaceholder": "USER EMAIL",
       "userIdPlaceholder": "USER ID",
       "userServerPlaceholder": "USER SERVER",
       "confirmDataCorrectness": "I confirm the correctness of the entered data",
