@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "don-vip.online",
+        hostname: "don-vip.com",
       },
     ],
   },

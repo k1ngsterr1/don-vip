@@ -16,9 +16,7 @@ export function SocialAuth() {
       </div>
       <div className="flex justify-center space-x-4">
         <button
-          onClick={() =>
-            window.open("https://api.don-vip.online/api/auth/google")
-          }
+          onClick={() => window.open("https://api.don-vip.com/api/auth/google")}
           className="p-2 cursor-pointer w-[80px] h-[80px] md:w-[90px] md:h-[90px] flex items-center justify-center border-gray-200 rounded-full bg-[#F3F4F7] hover:bg-gray-200 transition-colors"
         >
           <Image
