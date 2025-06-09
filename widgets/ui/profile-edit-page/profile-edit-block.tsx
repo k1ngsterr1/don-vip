@@ -11,12 +11,10 @@ import {
   useUpdateProfile,
   useUploadAvatar,
 } from "@/entities/user/hooks/use-user.mutation";
-import { userApi } from "@/entities/user/auth/user-api";
 import { useTranslations } from "next-intl";
 import { authApi } from "@/entities/auth/api/auth.api";
 
 export function ProfileEditClient() {
-  const router = useRouter();
   const { setUser } = useAuthStore();
   const updateProfileMutation = useUpdateProfile();
   const uploadAvatarMutation = useUploadAvatar();

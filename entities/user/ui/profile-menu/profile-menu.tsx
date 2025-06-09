@@ -33,13 +33,7 @@ export function ProfileMenu() {
       color: "bg-orange", // фон за иконкой
       description: i18n("items.purchases.description"),
     },
-    {
-      icon: <CouponIcon width={28} height={45} color="#fff" />,
-      label: i18n("items.coupons.label"),
-      href: "/coupons",
-      color: "bg-blue",
-      description: i18n("items.coupons.description"),
-    },
+
     {
       icon: <TelegramIcon width={24} height={24} />,
       label: i18n("items.chatBot.label"),
