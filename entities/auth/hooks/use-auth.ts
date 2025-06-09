@@ -115,19 +115,7 @@ export const useRegister = () => {
 export const useChangePassword = () => {
   return useMutation({
     mutationFn: (data: { email?: string; phone?: string; lang?: string }) => {
-      let identifier: string | undefined = data.email;
-      if (data.phone) {
-        // Format phone as +7 (XXX) XXX-XX-XX
-        const cleaned = data.phone.replace(/\D/g, "");
-        if (cleaned.length === 11 && cleaned.startsWith("7")) {
-          identifier = `+7 (${cleaned.slice(1, 4)}) ${cleaned.slice(
-            4,
-            7
-          )}-${cleaned.slice(7, 9)}-${cleaned.slice(9, 11)}`;
-        } else {
-          identifier = data.phone; // fallback to raw input if not matching
-        }
-      }
+      const identifier = data.email || data.phone;
       const payload: ChangePasswordDto = {
         identifier,
         lang: data.lang,

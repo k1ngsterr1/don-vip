@@ -52,7 +52,7 @@ const errorTranslations: Record<string, Record<string, string>> = {
     // Form validation errors
     "Email or phone is required": "Email или телефон обязательны",
     "Invalid email format": "Пожалуйста, введите корректный email адрес",
-    "Invalid phone number": "Пожалуйста, введите корректный номер телефона",
+    "Invalid phone number": "Пожалуйста, введите ��орректный номер телефона",
 
     // API errors
     "User not found": "Аккаунт с таким email или телефоном не найден",
@@ -134,6 +134,12 @@ function getHumanReadableError(error: string, locale = "en"): string {
   return translateError(error, locale);
 }
 
+// Clean phone number to format +77759932587
+function cleanPhoneNumber(phone: string): string {
+  // Remove all non-digit characters except the + sign at the beginning
+  return phone.replace(/[^\d+]/g, "");
+}
+
 export function ForgotPasswordForm() {
   const router = useRouter();
   const t = useTranslations("forgot_auth.forgotPassword");
@@ -196,24 +202,22 @@ export function ForgotPasswordForm() {
 
     // Format the identifier based on type
     let formattedIdentifier = identifier.trim();
-    if (identifierType === "phone") {
-      // For phone numbers, extract only the digits
-      const digitsOnly = formattedIdentifier.replace(/\D/g, "");
 
-      // Make sure we have digits to work with
-      if (digitsOnly.length > 0) {
-        // If it's a Russian number (starts with +7), format accordingly
-        if (formattedIdentifier.includes("+7")) {
-          // Remove the country code if it's duplicated in the digits
-          const phoneDigits = digitsOnly.startsWith("7")
-            ? digitsOnly.substring(1)
-            : digitsOnly;
-          formattedIdentifier = "+7" + phoneDigits;
-        } else {
-          // For other numbers, ensure it has a + prefix
-          formattedIdentifier =
-            "+" + (digitsOnly.startsWith("1") ? digitsOnly : "1" + digitsOnly);
-        }
+    if (identifierType === "phone") {
+      // Clean the phone number to remove all formatting
+      formattedIdentifier = cleanPhoneNumber(formattedIdentifier);
+
+      // Ensure it starts with +7
+      if (formattedIdentifier.startsWith("+7")) {
+        // Already in correct format
+      } else if (formattedIdentifier.startsWith("7")) {
+        formattedIdentifier = `+${formattedIdentifier}`;
+      } else if (formattedIdentifier.length === 10) {
+        // Assuming 10-digit number without country code
+        formattedIdentifier = `+7${formattedIdentifier}`;
+      } else {
+        setError(translateError("Invalid phone number", locale));
+        return;
       }
     }
 
