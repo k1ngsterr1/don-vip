@@ -220,7 +220,7 @@ export default function TBankPaymentPage() {
                       label="Phone"
                       mask="phone"
                       type="tel"
-                      placeholder="+1 (123) 456-7890"
+                      placeholder="(123) 456-7890"
                       Icon={Phone}
                       translationNamespace="phone"
                     />

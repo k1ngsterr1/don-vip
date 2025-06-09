@@ -310,7 +310,7 @@ export function ProfileEditForm({
               value={formData.phone}
               onChange={handleChange as any}
               className=" !bg-gray-50 !rounded-lg"
-              placeholder="+7 (___) ___-__-__"
+              placeholder="(___) ___-__-__"
             />
           </div>
 
