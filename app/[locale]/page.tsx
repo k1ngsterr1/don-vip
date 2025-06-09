@@ -30,7 +30,7 @@ export default function Home() {
 
   return (
     <div className="w-full flex flex-col items-center pb-20">
-      <div className="w-full">
+      <div className="w-full m-auto">
         <HeroBanner slides={heroSlides} />
       </div>
       <ContentWrapper>
