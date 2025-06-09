@@ -61,7 +61,7 @@ export function FormInput({
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 w-full md:col-span-2">
       <label
         htmlFor={id}
         className="text-sm font-medium flex items-center gap-2 text-gray-700"

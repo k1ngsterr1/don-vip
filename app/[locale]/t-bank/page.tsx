@@ -13,6 +13,7 @@ import { FormInput } from "@/widgets/ui/t-bank-form/ui/form-input";
 import { SubmitButton } from "@/widgets/ui/t-bank-form/ui/submit-button";
 import { PaymentFooter } from "@/widgets/ui/t-bank-form/ui/payment-footer";
 import { getUserId } from "@/shared/hooks/use-get-user-id";
+import { PhoneInputWithCountry } from "@/shared/ui/phone-input/phone-input";
 
 export default function TBankPaymentPage() {
   const searchParams = useSearchParams();
@@ -201,7 +202,7 @@ export default function TBankPaymentPage() {
                 onSubmit={handleSubmit}
                 className="p-8 space-y-6"
               >
-                <div className="grid grid-cols-1  gap-6">
+                <div className="grid grid-cols-1 w-full  gap-6">
                   <div className="md:col-span-2">
                     <AmountInput amount={paymentAmount} />
                   </div>
@@ -213,9 +214,8 @@ export default function TBankPaymentPage() {
                     Icon={Mail}
                     translationNamespace="email"
                   />
-
                   <div className="md:col-span-2">
-                    <FormInput
+                    <PhoneInputWithCountry
                       id="phone"
                       label="Phone"
                       mask="phone"
@@ -225,7 +225,6 @@ export default function TBankPaymentPage() {
                       translationNamespace="phone"
                     />
                   </div>
-
                   <div className="md:col-span-2">
                     <SubmitButton
                       isLoading={isLoading}

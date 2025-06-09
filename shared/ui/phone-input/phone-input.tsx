@@ -391,7 +391,7 @@ const PhoneInputWithCountry = forwardRef<
       <div className={cn("relative w-full", className)}>
         <div
           className={cn(
-            "flex items-center w-full px-3 py-2.5 border rounded-[12px] bg-[#F3F4F7] text-sm focus-within:ring-1",
+            "flex items-center w-full px-3 py-2.5 border rounded-lg bg-gray-50 text-sm focus-within:ring-1",
             error
               ? "border-[#ff272c] focus-within:ring-[#ff272c]"
               : "border-gray-300 focus-within:ring-blue-500"

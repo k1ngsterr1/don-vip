@@ -260,32 +260,7 @@ export function CouponForm({
             </div>
           )}
         </div>
-
-        <div className="mt-4 mb-2">
-          <h3 className="text-[16px] font-bold font-condensed mb-2">
-            {t("howToUseCoupons.title") || "How to Use Coupon Codes"}
-          </h3>
-          <ol className="text-[15px] font-condensed text-gray-600 space-y-1 list-decimal pl-5">
-            <li className="text-black text-[17px]">
-              {t("howToUseCoupons.step1") ||
-                "Enter your coupon code in the field above"}
-            </li>
-            <li className="text-black font-condensed text-[17px]">
-              {t("howToUseCoupons.step2") ||
-                "The system will automatically validate the code"}
-            </li>
-            <li className="text-black font-condensed text-[17px]">
-              {t("howToUseCoupons.step3") ||
-                "Discount will be applied to your order total"}
-            </li>
-            <li className="text-black font-condensed text-[17px]">
-              {t("howToUseCoupons.step4") ||
-                "Complete your purchase to use the discount"}
-            </li>
-          </ol>
-        </div>
       </div>
-
       <CustomAlert
         isOpen={showErrorAlert}
         onClose={() => setShowErrorAlert(false)}

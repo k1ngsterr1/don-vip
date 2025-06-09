@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "@/i18n/routing";
+import { PhoneInputWithCountry } from "@/shared/ui/phone-input/phone-input";
 
 interface User {
   id?: number;
@@ -305,17 +306,11 @@ export function ProfileEditForm({
             <label className="block text-sm font-medium mb-2 text-gray-700">
               {i18n("fields.phone")}
             </label>
-            <FormField
-              label=""
-              name="phone"
-              maxLength={20}
+            <PhoneInputWithCountry
               value={formData.phone}
-              onChange={handleChange}
-              type="tel"
-              icon={<Phone size={18} />}
-              className="w-full p-3 bg-gray-50 rounded-lg border border-gray-200"
+              onChange={handleChange as any}
+              className=" !bg-gray-50 !rounded-lg"
               placeholder="+7 (___) ___-__-__"
-              mask="phone"
             />
           </div>
 
