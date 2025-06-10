@@ -1,7 +1,9 @@
+// Updated server-side implementation
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 
 function stableStringify(value: any): string {
+  if (value === undefined) return "";
   if (Array.isArray(value)) {
     return `[${value.map(stableStringify).join(",")}]`;
   } else if (value !== null && typeof value === "object") {
@@ -17,12 +19,25 @@ function stableStringify(value: any): string {
 }
 
 function generateToken(params: Record<string, any>, secretKey: string) {
-  const sortedKeys = Object.keys(params).sort();
+  const tokenParams = {
+    TerminalKey: params.TerminalKey,
+    Amount: params.Amount,
+    OrderId: params.OrderId,
+    Description: params.Description,
+    CustomerKey: params.CustomerKey,
+    SuccessURL: params.SuccessURL,
+    FailURL: params.FailURL,
+  };
+
+  const sortedKeys = Object.keys(tokenParams).sort();
   let tokenStr = "";
 
   for (const key of sortedKeys) {
-    const value = params[key];
-    tokenStr += key + stableStringify(value);
+    const value = tokenParams[key] as any;
+    if (value !== undefined) {
+      // Skip undefined values
+      tokenStr += key + stableStringify(value);
+    }
   }
 
   tokenStr += secretKey;
@@ -38,7 +53,7 @@ export async function POST(req: Request) {
   const {
     Amount,
     OrderId,
-    Description,
+    Description = "Payment", // Default value
     CustomerKey,
     DATA,
     Receipt,
@@ -49,14 +64,15 @@ export async function POST(req: Request) {
   const TerminalKey = process.env.NEXT_PUBLIC_TINKOFF_TERMINAL_KEY!;
   const SecretKey = process.env.TINKOFF_SECRET_KEY!;
 
-  console.log("ENV TerminalKey:", TerminalKey);
-  console.log(
-    "ENV SecretKey (partial):",
-    SecretKey
-      ? `${SecretKey.slice(0, 4)}***${SecretKey.slice(-4)}`
-      : "undefined"
-  );
+  // Verify environment variables
+  if (!TerminalKey || !SecretKey) {
+    return NextResponse.json(
+      { Success: false, Message: "Server configuration error" },
+      { status: 500 }
+    );
+  }
 
+  // Generate token with the same parameters as client-side
   const token = generateToken(
     {
       TerminalKey,
@@ -64,10 +80,9 @@ export async function POST(req: Request) {
       OrderId,
       Description,
       CustomerKey,
-      DATA,
-      Receipt,
       SuccessURL,
       FailURL,
+      // Note: Excluding DATA and Receipt from token generation
     },
     SecretKey
   );
@@ -86,14 +101,22 @@ export async function POST(req: Request) {
   };
 
   console.log("Sending to Tinkoff:", JSON.stringify(finalPayload, null, 2));
-  const tinkoffRes = await fetch("https://securepay.tinkoff.ru/v2/Init", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(finalPayload),
-  });
 
-  const result = await tinkoffRes.json();
-  console.log("Tinkoff response:", result);
+  try {
+    const tinkoffRes = await fetch("https://securepay.tinkoff.ru/v2/Init", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(finalPayload),
+    });
 
-  return NextResponse.json(result);
+    const result = await tinkoffRes.json();
+    console.log("Tinkoff response:", result);
+    return NextResponse.json(result);
+  } catch (error) {
+    console.error("API call failed:", error);
+    return NextResponse.json(
+      { Success: false, Message: "Network error" },
+      { status: 500 }
+    );
+  }
 }
