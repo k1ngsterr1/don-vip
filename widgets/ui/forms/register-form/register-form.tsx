@@ -18,6 +18,9 @@ import { PhoneInputWithCountry } from "@/shared/ui/phone-input/phone-input";
 const errorTranslations: Record<string, Record<string, string>> = {
   en: {
     // Form validation errors
+
+    "User with this email already exists": "Email already in use",
+
     "Email or phone is required": "Email or phone is required",
     "Invalid email format": "Please enter a valid email",
     "Invalid phone number":
@@ -43,6 +46,7 @@ const errorTranslations: Record<string, Record<string, string>> = {
     "status code 500": "Registration failed. Please try again later",
   },
   ru: {
+    "User with this email already exists": "Email уже используется",
     "Email or phone is required": "Email или телефон обязательны",
     "Invalid email format": "Пожалуйста, введите корректный email",
     "Invalid phone number":
@@ -248,7 +252,7 @@ export function RegisterForm() {
             />
           ) : (
             <PhoneInputWithCountry
-              placeholder={i18n("phonePlaceholder") || "Phone number"}
+              placeholder="(123) 456-7890"
               value={identifier}
               onChange={handlePhoneInputChange}
               error={errors.identifier}

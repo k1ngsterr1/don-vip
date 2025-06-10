@@ -129,7 +129,6 @@ export function ReviewsBlock() {
           {t("page.leaveReview")}
         </button>
       )}
-
       <AuthorizationPopup
         isOpen={isAuthPopupOpen}
         onOpenChange={setIsAuthPopupOpen}

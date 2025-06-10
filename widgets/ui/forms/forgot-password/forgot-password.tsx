@@ -11,6 +11,7 @@ import { useChangePassword } from "@/entities/auth/hooks/use-auth";
 import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useRouter } from "@/i18n/routing";
+import { PhoneInputWithCountry } from "@/shared/ui/phone-input/phone-input";
 
 const errorTranslations: Record<string, Record<string, string>> = {
   en: {
@@ -276,35 +277,30 @@ export function ForgotPasswordForm() {
 
       <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
         <div className="relative">
-          <AuthInput
-            type={identifierType === "phone" ? "tel" : "email"}
-            placeholder={
-              identifierType === "email"
-                ? t("email.placeholder")
-                : t("phone.placeholder") || "Phone number"
-            }
-            label={
-              identifierType === "email"
-                ? t("email.label")
-                : t("phone.label") || "Phone"
-            }
-            value={identifier}
-            onChange={(e) => {
-              setIdentifier(e.target.value);
-              if (error) setError("");
-            }}
-            disabled={isLoading}
-            isPhoneMask={identifierType === "phone"}
-            suffix={
-              <span className="text-gray-400">
-                {identifierType === "email" ? (
-                  <Mail size={16} />
-                ) : (
-                  <Phone size={16} />
-                )}
-              </span>
-            }
-          />
+          {identifierType === "email" ? (
+            <AuthInput
+              type="email"
+              placeholder={t("email.placeholder")}
+              label={t("email.label")}
+              value={identifier}
+              onChange={(e) => {
+                setIdentifier(e.target.value);
+                if (error) setError("");
+              }}
+              disabled={isLoading}
+              suffix={<Mail size={16} className="text-gray-400" />}
+            />
+          ) : (
+            <PhoneInputWithCountry
+              value={identifier}
+              onChange={(val) => {
+                setIdentifier(val || "");
+                if (error) setError("");
+              }}
+              placeholder={t("phone.placeholder") || "Phone number"}
+              error={error}
+            />
+          )}
           <div className="mt-1 text-xs text-gray-500 flex justify-end">
             <button
               type="button"
