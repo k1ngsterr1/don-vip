@@ -1,15 +1,33 @@
-// app/api/tinkoff/init/route.ts
-
 import { NextResponse } from "next/server";
 import crypto from "crypto";
+
+function stableStringify(value: any): string {
+  if (Array.isArray(value)) {
+    return `[${value.map(stableStringify).join(",")}]`;
+  } else if (value !== null && typeof value === "object") {
+    const keys = Object.keys(value).sort();
+    return `{${keys
+      .map((key) => `"${key}":${stableStringify(value[key])}`)
+      .join(",")}}`;
+  } else if (typeof value === "string") {
+    return JSON.stringify(value);
+  } else {
+    return String(value);
+  }
+}
 
 function generateToken(params: Record<string, any>, secretKey: string) {
   const sortedKeys = Object.keys(params).sort();
   let tokenStr = "";
+
   for (const key of sortedKeys) {
-    tokenStr += key + params[key];
+    const value = params[key];
+    tokenStr += key + stableStringify(value);
   }
+
   tokenStr += secretKey;
+
+  console.log("Token string before hashing:", tokenStr);
   return crypto.createHash("sha256").update(tokenStr).digest("hex");
 }
 
@@ -31,6 +49,14 @@ export async function POST(req: Request) {
   const TerminalKey = process.env.NEXT_PUBLIC_TINKOFF_TERMINAL_KEY!;
   const SecretKey = process.env.TINKOFF_SECRET_KEY!;
 
+  console.log("ENV TerminalKey:", TerminalKey);
+  console.log(
+    "ENV SecretKey (partial):",
+    SecretKey
+      ? `${SecretKey.slice(0, 4)}***${SecretKey.slice(-4)}`
+      : "undefined"
+  );
+
   const token = generateToken(
     {
       TerminalKey,
@@ -38,6 +64,8 @@ export async function POST(req: Request) {
       OrderId,
       Description,
       CustomerKey,
+      DATA,
+      Receipt,
       SuccessURL,
       FailURL,
     },
