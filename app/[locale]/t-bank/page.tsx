@@ -70,6 +70,7 @@ export default function TBankPaymentPage() {
       }
 
       const realUserId = await getUserId();
+
       const finalOrderId = `${orderId}_${realUserId || "unknown"}`;
       const amountInKopecks = Math.round(Number.parseFloat(price) * 100);
 
@@ -81,7 +82,7 @@ export default function TBankPaymentPage() {
         Phone: phone || undefined,
         Items: [
           {
-            Name: "Payment", // Simplified from description
+            Name: description || "Оплата",
             Price: amountInKopecks,
             Quantity: 1,
             Amount: amountInKopecks,
@@ -94,34 +95,60 @@ export default function TBankPaymentPage() {
       };
 
       const dataObject = {
+        UserId: userIdDB || undefined,
         OrderId: orderId || undefined,
+        ServerId: serverId || undefined,
         Email: email || undefined,
         Phone: phone || undefined,
+        Name: name || undefined,
       };
 
       const paymentPayload = {
+        TerminalKey: "1731053917858", // ✅ Замените на ваш
         Amount: amountInKopecks,
         OrderId: finalOrderId,
-        Description: "Payment", // Simplified description
+        Description: description,
         CustomerKey: userId,
         DATA: dataObject,
         Receipt: receiptData,
-        SuccessURL: "https://don-vip.com/payment/success",
-        FailURL: "https://don-vip.com",
+        SuccessURL: "https://don-vip.online/payment/success",
+        FailURL: "https://don-vip.online",
       };
 
-      const response = await fetch("/api/tinkoff/init", {
+      // Генерация токена без Receipt и DATA
+      const token = await generateToken(
+        {
+          TerminalKey: paymentPayload.TerminalKey,
+          Amount: paymentPayload.Amount,
+          OrderId: paymentPayload.OrderId,
+          Description: paymentPayload.Description,
+          CustomerKey: paymentPayload.CustomerKey,
+          SuccessURL: paymentPayload.SuccessURL,
+          FailURL: paymentPayload.FailURL,
+        },
+        "Fq%F0Hs9KbCxZkix" // ✅ Ваш SecretKey
+      );
+
+      const finalPayload = {
+        ...paymentPayload,
+        Token: token,
+      };
+
+      const response = await fetch("https://securepay.tinkoff.ru/v2/Init", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(paymentPayload),
+        body: JSON.stringify(finalPayload),
       });
 
-      const result = await response.json();
+      const responseText = await response.text();
+
+      const result = JSON.parse(responseText);
 
       if (!result.Success) {
         throw new Error(result.Message || t("errors.paymentInit"));
       }
 
+      // Перенаправление на оплату
       if (result.PaymentURL) {
         window.location.href = result.PaymentURL;
       }
@@ -193,7 +220,7 @@ export default function TBankPaymentPage() {
                       label="Phone"
                       mask="phone"
                       type="tel"
-                      placeholder="(123) 456-7890"
+                      placeholder="+1 (123) 456-7890"
                       Icon={Phone}
                       translationNamespace="phone"
                     />
