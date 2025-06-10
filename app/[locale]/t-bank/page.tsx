@@ -70,7 +70,6 @@ export default function TBankPaymentPage() {
       }
 
       const realUserId = await getUserId();
-
       const finalOrderId = `${orderId}_${realUserId || "unknown"}`;
       const amountInKopecks = Math.round(Number.parseFloat(price) * 100);
 
@@ -104,7 +103,6 @@ export default function TBankPaymentPage() {
       };
 
       const paymentPayload = {
-        TerminalKey: "1731053917835DEMO", // ✅ Замените на ваш
         Amount: amountInKopecks,
         OrderId: finalOrderId,
         Description: description,
@@ -115,40 +113,19 @@ export default function TBankPaymentPage() {
         FailURL: "https://don-vip.com",
       };
 
-      // Генерация токена без Receipt и DATA
-      const token = await generateToken(
-        {
-          TerminalKey: paymentPayload.TerminalKey,
-          Amount: paymentPayload.Amount,
-          OrderId: paymentPayload.OrderId,
-          Description: paymentPayload.Description,
-          CustomerKey: paymentPayload.CustomerKey,
-          SuccessURL: paymentPayload.SuccessURL,
-          FailURL: paymentPayload.FailURL,
-        },
-        "M3u78sPoxlVxe5fj" // ✅ Ваш SecretKey
-      );
-
-      const finalPayload = {
-        ...paymentPayload,
-        Token: token,
-      };
-
-      const response = await fetch("https://securepay.tinkoff.ru/v2/Init", {
+      // 🧠 Улетает на backend API
+      const response = await fetch("/api/tinkoff/init", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(finalPayload),
+        body: JSON.stringify(paymentPayload),
       });
 
-      const responseText = await response.text();
-
-      const result = JSON.parse(responseText);
+      const result = await response.json();
 
       if (!result.Success) {
         throw new Error(result.Message || t("errors.paymentInit"));
       }
 
-      // Перенаправление на оплату
       if (result.PaymentURL) {
         window.location.href = result.PaymentURL;
       }
