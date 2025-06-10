@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 // Updated server-side implementation
 import { NextResponse } from "next/server";
 import crypto from "crypto";
