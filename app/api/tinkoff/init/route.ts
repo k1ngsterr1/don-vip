@@ -15,6 +15,7 @@ function generateToken(params: Record<string, any>, secretKey: string) {
 
 export async function POST(req: Request) {
   const body = await req.json();
+  console.log("Received payload:", JSON.stringify(body, null, 2));
 
   const {
     Amount,
@@ -56,6 +57,7 @@ export async function POST(req: Request) {
     Token: token,
   };
 
+  console.log("Sending to Tinkoff:", JSON.stringify(finalPayload, null, 2));
   const tinkoffRes = await fetch("https://securepay.tinkoff.ru/v2/Init", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -63,5 +65,7 @@ export async function POST(req: Request) {
   });
 
   const result = await tinkoffRes.json();
+  console.log("Tinkoff response:", result);
+
   return NextResponse.json(result);
 }

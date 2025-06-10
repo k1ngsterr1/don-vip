@@ -81,7 +81,7 @@ export default function TBankPaymentPage() {
         Phone: phone || undefined,
         Items: [
           {
-            Name: description || "Оплата",
+            Name: "Payment", // Simplified from description
             Price: amountInKopecks,
             Quantity: 1,
             Amount: amountInKopecks,
@@ -94,18 +94,15 @@ export default function TBankPaymentPage() {
       };
 
       const dataObject = {
-        UserId: userIdDB || undefined,
         OrderId: orderId || undefined,
-        ServerId: serverId || undefined,
         Email: email || undefined,
         Phone: phone || undefined,
-        Name: name || undefined,
       };
 
       const paymentPayload = {
         Amount: amountInKopecks,
         OrderId: finalOrderId,
-        Description: description,
+        Description: "Payment", // Simplified description
         CustomerKey: userId,
         DATA: dataObject,
         Receipt: receiptData,
@@ -113,7 +110,6 @@ export default function TBankPaymentPage() {
         FailURL: "https://don-vip.com",
       };
 
-      // 🧠 Улетает на backend API
       const response = await fetch("/api/tinkoff/init", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
