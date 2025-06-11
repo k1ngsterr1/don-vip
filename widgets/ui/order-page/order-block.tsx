@@ -16,7 +16,6 @@ import { OrderBlockSkeleton } from "./loading/skeleton-loading";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useGetMe } from "@/entities/auth/hooks/use-auth";
 import { GuestAuthPopup } from "@/entities/order/ui/guest-user-popup";
-import { CouponForm } from "./coupon-form/coupon-form";
 
 interface OrderBlockProps {
   gameSlug: number;
@@ -279,13 +278,6 @@ export function OrderBlock({
         onServerIdChange={setServerId}
         onAgreeChange={setAgreeToTerms}
       />
-      <CouponForm
-        couponCode={couponCode}
-        isAvailable={false}
-        onCouponCodeChange={setCouponCode}
-        onAgreeChange={setAgreeToCouponTerms}
-        onCouponApplied={handleCouponApplied}
-      />
       <PaymentMethodSelector
         onSelect={setSelectedPaymentMethod}
         selectedMethod={selectedPaymentMethod}
@@ -345,15 +337,7 @@ export function OrderBlock({
                 enhanced={true}
               />
             </div>
-            <div className="p-6 border-b border-gray-100">
-              <CouponForm
-                couponCode={couponCode}
-                onCouponCodeChange={setCouponCode}
-                onAgreeChange={setAgreeToCouponTerms}
-                onCouponApplied={handleCouponApplied}
-                isAvailable={false}
-              />
-            </div>
+
             <div className="p-6 border-b border-gray-100">
               <UserIdForm
                 apiGame={product?.smile_api_game}
