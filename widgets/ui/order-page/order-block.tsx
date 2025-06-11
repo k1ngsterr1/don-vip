@@ -281,6 +281,7 @@ export function OrderBlock({
       />
       <CouponForm
         couponCode={couponCode}
+        isAvailable={false}
         onCouponCodeChange={setCouponCode}
         onAgreeChange={setAgreeToCouponTerms}
         onCouponApplied={handleCouponApplied}
@@ -350,6 +351,7 @@ export function OrderBlock({
                 onCouponCodeChange={setCouponCode}
                 onAgreeChange={setAgreeToCouponTerms}
                 onCouponApplied={handleCouponApplied}
+                isAvailable={false}
               />
             </div>
             <div className="p-6 border-b border-gray-100">

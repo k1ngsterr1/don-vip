@@ -138,7 +138,7 @@ export function ServicesMegaMenu() {
 
   return (
     <motion.div
-      className="absolute left-0 right-0 bg-white border-b border-gray-100 shadow-lg z-50"
+      className="absolute left-0 right-0 bg-white 1min-h-full border-b border-gray-100 shadow-lg z-50"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -160,20 +160,20 @@ export function ServicesMegaMenu() {
                     custom={index}
                   >
                     <motion.div
-                      className="relative w-32 h-32 md:w-48 md:h-48 rounded-lg overflow-hidden mb-2 shadow-sm mx-auto"
+                      className="relative w-32 h-32 md:w-48 md:h-48 rounded-lg overflow-hidden mb-2 mx-auto"
                       variants={cardVariants}
                       initial="rest"
                       whileHover="hover"
                     >
                       <motion.div
-                        className="w-full h-full"
+                        className="w-full !min-h-full"
                         variants={imageHoverVariants}
                       >
                         <Image
                           src={service.image || "/placeholder.svg"}
                           alt={service.name}
                           fill
-                          className="object-cover"
+                          className="object-cover "
                         />
                       </motion.div>
                     </motion.div>

@@ -129,7 +129,7 @@ export function ReviewCard({ review, isGrid = false }: ReviewCardProps) {
               alt={gameName}
               width={40}
               height={40}
-              className="object-contain rounded-full w-[18px] h-[18px] flex-shrink-0"
+              className="object-cover rounded-full w-[18px] h-[18px] flex-shrink-0"
             />
           )}
           <p className="text-blue text-sm truncate">{gameName}</p>

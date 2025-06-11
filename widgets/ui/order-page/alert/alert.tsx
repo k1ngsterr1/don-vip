@@ -9,7 +9,7 @@ interface CustomAlertProps {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
-  message: string;
+  message: any;
   type?: "error" | "success" | "info";
 }
 

@@ -24,6 +24,9 @@ export default function MobileFAQ() {
 
   return (
     <div className="w-full flex flex-col items-center md:hidden py-6 px-4">
+      <h1 className="text-2xl font-bold text-center mb-6 text-gray-900">
+        {i18n("title")}
+      </h1>
       <div className="w-full max-w-md mx-auto bg-white p-4 rounded-lg shadow-sm">
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />

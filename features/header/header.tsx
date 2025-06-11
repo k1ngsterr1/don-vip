@@ -15,6 +15,7 @@ import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { TabletNav } from "./tablet-nav";
 import { ServicesMegaMenu } from "../services-mega-menu/services-mega-menu";
 import { useRouter } from "@/i18n/routing";
+import { usePathname } from "next/navigation";
 
 interface IHeader {
   isSearchBar?: boolean;
@@ -24,6 +25,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
   const t = useTranslations("Header");
   const router = useRouter();
   const { isAuthenticated, logout } = useAuthStore();
+  const pathname = usePathname();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -135,6 +137,11 @@ export default function Header({ isSearchBar = true }: IHeader) {
       document.removeEventListener("closeMobileMenu", closeMobileMenu);
     };
   }, []);
+
+  // Close mobile menu when navigating to a new page
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   return (
     <motion.header

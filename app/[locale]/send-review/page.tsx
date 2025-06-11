@@ -113,6 +113,7 @@ export default function SendReview() {
                           "/placeholder.svg?height=80&width=120&query=product" ||
                           "/placeholder.svg"
                         }
+                        className="object-contain"
                         alt={product.name}
                         fill
                       />

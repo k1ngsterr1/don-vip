@@ -1,8 +1,8 @@
 "use client";
 
-import { Loader2, Check, AlertCircle } from "lucide-react";
+import { Loader2, Check, AlertCircle, AlertTriangle } from "lucide-react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { CustomTooltip } from "@/shared/ui/tooltip/tooltip";
 import { useEffect, useState } from "react";
 import { CustomAlert } from "../alert/alert";
@@ -32,14 +32,15 @@ export function UserIdForm({
   onAgreeChange,
 }: UserIdFormProps) {
   const t = useTranslations("orderBlock.user");
-  const tError = useTranslations("alert.validation");
   const isPubgMobile = apiGame === "pubgmobile";
+  const locale = useLocale();
 
   const { validateUser: validateBigoUser, isValidating: isBigoValidating } =
     useValidateBigoUser();
   const { validateUser: validateSmileUser, isValidating: isSmileValidating } =
     useValidateSmileUser();
   const [userIdInput, setUserIdInput] = useState(userId);
+  const [serverIdInput, setServerIdInput] = useState(serverId);
   const [userInfo, setUserInfo] = useState<{
     username?: string;
     vipStatus?: string;
@@ -49,6 +50,38 @@ export function UserIdForm({
     null
   );
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [showSpaceWarning, setShowSpaceWarning] = useState(false);
+  const [spaceWarningField, setSpaceWarningField] = useState<
+    "userId" | "serverId"
+  >("userId");
+
+  const errorMessages = {
+    en: {
+      accountNotFound: "Account not found. Please check your ID and try again.",
+      invalidUserId: "Invalid user ID format. Please enter a valid ID.",
+      validationFailed: "Validation failed. Please try again.",
+      networkError:
+        "Network error. Please check your connection and try again.",
+      serverIdRequired: "Server ID is required for validation.",
+      idNotExists: "ID does not exist.",
+      validationError: "Failed to validate ID.",
+      spaceWarning:
+        "Spaces are not allowed and have been automatically removed.",
+    },
+    ru: {
+      accountNotFound:
+        "Аккаунт не найден. Пожалуйста, проверьте ID и попробуйте снова.",
+      invalidUserId:
+        "Неверный формат ID пользователя. Пожалуйста, введите корректный ID.",
+      validationFailed: "Проверка не удалась. Пожалуйста, попробуйте снова.",
+      networkError:
+        "Ошибка сети. Пожалуйста, проверьте подключение и попробуйте снова.",
+      serverIdRequired: "Требуется ID сервера для проверки.",
+      idNotExists: "ID не существует.",
+      validationError: "Не удалось проверить ID.",
+      spaceWarning: "Пробелы не допускаются и были автоматически удалены.",
+    },
+  };
 
   const isEmail = (value: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
@@ -60,6 +93,32 @@ export function UserIdForm({
   }, [userIdInput, userId, validationError, userInfo, onUserIdChange]);
 
   const isValidating = isBigoValidating || isSmileValidating;
+
+  const handleSpaceDetection = (
+    value: string,
+    field: "userId" | "serverId"
+  ) => {
+    if (value.includes(" ")) {
+      setSpaceWarningField(field);
+      setShowSpaceWarning(true);
+      return value.replace(/\s/g, ""); // Remove all spaces
+    }
+    return value;
+  };
+
+  const handleUserIdChange = (value: string) => {
+    const cleanValue = handleSpaceDetection(value, "userId");
+    setUserIdInput(cleanValue);
+    setUserInfo(null);
+    setValidationError("");
+    setValidationErrorCode(null);
+  };
+
+  const handleServerIdChange = (value: string) => {
+    const cleanValue = handleSpaceDetection(value, "serverId");
+    setServerIdInput(cleanValue);
+    onServerIdChange(cleanValue);
+  };
 
   const handleValidateUserId = async () => {
     const trimmed = userIdInput.trim();
@@ -82,9 +141,13 @@ export function UserIdForm({
 
       if (requiresServer) {
         // Use Smile validation when server is required
-        const trimmedServerId = serverId.trim();
+        const trimmedServerId = serverIdInput.trim();
         if (!trimmedServerId) {
-          setValidationError("Server ID is required for validation");
+          setValidationError(
+            locale === "ru"
+              ? errorMessages.ru.serverIdRequired
+              : errorMessages.en.serverIdRequired
+          );
           setValidationErrorCode(null);
           setShowErrorAlert(true);
           setUserInfo(null);
@@ -97,7 +160,12 @@ export function UserIdForm({
       }
 
       if (!result.isValid) {
-        setValidationError(result.errorMessage || "ID не существует");
+        setValidationError(
+          result.errorMessage ||
+            (locale === "ru"
+              ? errorMessages.ru.idNotExists
+              : errorMessages.en.idNotExists)
+        );
         setValidationErrorCode(result.errorCode || null);
         setShowErrorAlert(true);
         setUserInfo(null);
@@ -110,27 +178,41 @@ export function UserIdForm({
         setValidationErrorCode(null);
       }
     } catch (err) {
-      setValidationError("Не удалось проверить ID");
+      setValidationError(
+        locale === "ru"
+          ? errorMessages.ru.validationError
+          : errorMessages.en.validationError
+      );
       setValidationErrorCode(null);
       setShowErrorAlert(true);
       setUserInfo(null);
     }
   };
 
-  // Format error message based on error code
+  // Format error message based on error code and locale
   const getFormattedErrorMessage = () => {
+    const messages = locale === "ru" ? errorMessages.ru : errorMessages.en;
+
     switch (validationErrorCode) {
       case -32024:
-        return tError("accountNotFound");
+        return messages.accountNotFound;
       case -32025:
-        return tError("invalidUserId");
+        return messages.invalidUserId;
       case -32026:
-        return tError("validationFailed");
+        return messages.validationFailed;
       case -1:
-        return tError("networkError");
+        return messages.networkError;
       default:
-        return validationError || tError("validationFailed");
+        return validationError || messages.validationFailed;
     }
+  };
+
+  // Get space warning message based on locale
+  const getSpaceWarningMessage = () => {
+    if (locale === "ru") {
+      return errorMessages.ru.spaceWarning;
+    }
+    return errorMessages.en.spaceWarning;
   };
 
   return (
@@ -181,12 +263,7 @@ export function UserIdForm({
                   : t("userIdPlaceholder")
               }
               value={userIdInput}
-              onChange={(e) => {
-                setUserIdInput(e.target.value);
-                setUserInfo(null);
-                setValidationError("");
-                setValidationErrorCode(null);
-              }}
+              onChange={(e) => handleUserIdChange(e.target.value)}
               onBlur={handleValidateUserId}
               className={`w-full p-3 ${
                 isPubgMobile ? "pl-3" : "pl-10"
@@ -256,10 +333,7 @@ export function UserIdForm({
                   : t("userIdPlaceholder")
               }
               value={userIdInput}
-              onChange={(e) => {
-                setUserIdInput(e.target.value);
-                onUserIdChange(e.target.value);
-              }}
+              onChange={(e) => handleUserIdChange(e.target.value)}
               className="w-full p-3 border border-gray-200 rounded-lg"
             />
             <div className="relative">
@@ -269,10 +343,10 @@ export function UserIdForm({
               <input
                 type="text"
                 placeholder={t("userServerPlaceholder")}
-                value={serverId}
-                onChange={(e) => onServerIdChange(e.target.value)}
+                value={serverIdInput}
+                onChange={(e) => handleServerIdChange(e.target.value)}
                 onBlur={() => {
-                  if (userIdInput.trim() && serverId.trim()) {
+                  if (userIdInput.trim() && serverIdInput.trim()) {
                     handleValidateUserId();
                   }
                 }}
@@ -324,6 +398,34 @@ export function UserIdForm({
         isOpen={showErrorAlert}
         onClose={() => setShowErrorAlert(false)}
         message={getFormattedErrorMessage()}
+      />
+
+      {/* Space Warning Alert */}
+      <CustomAlert
+        isOpen={showSpaceWarning}
+        onClose={() => setShowSpaceWarning(false)}
+        message={
+          <div className="space-y-2">
+            <div className="flex items-center text-amber-600">
+              <AlertTriangle size={16} className="mr-2" />
+              <span className="font-medium">
+                {locale === "ru" ? "Предупреждение" : "Warning"}
+              </span>
+            </div>
+            <div className="text-sm">
+              {locale === "en" && (
+                <div className="mb-1">🇺🇸 {errorMessages.en.spaceWarning}</div>
+              )}
+              {locale === "ru" && <div>🇷🇺 {errorMessages.ru.spaceWarning}</div>}
+              {locale !== "en" && locale !== "ru" && (
+                <>
+                  <div className="mb-1">🇺🇸 {errorMessages.en.spaceWarning}</div>
+                  <div>🇷🇺 {errorMessages.ru.spaceWarning}</div>
+                </>
+              )}
+            </div>
+          </div>
+        }
       />
     </div>
   );

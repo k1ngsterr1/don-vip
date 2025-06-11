@@ -159,11 +159,6 @@ export function ProfileEditForm({
       <div>
         <label className="block text-sm font-medium mb-1">
           {i18n("fields.phone")}
-          {!isIdentifierEmail && (
-            <span className="ml-1 text-xs text-blue-600">
-              ({i18n("labels.primary")})
-            </span>
-          )}
         </label>
         <div className="flex items-center relative">
           <input
@@ -185,11 +180,6 @@ export function ProfileEditForm({
       <div>
         <label className="block text-sm font-medium mb-1">
           {i18n("fields.email")}
-          {isIdentifierEmail && (
-            <span className="ml-1 text-xs text-blue-600">
-              ({i18n("labels.primary")})
-            </span>
-          )}
         </label>
         <div className="flex items-center relative">
           <input
