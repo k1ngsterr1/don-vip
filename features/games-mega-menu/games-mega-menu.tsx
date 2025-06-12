@@ -185,7 +185,7 @@ export function GamesMegaMenu() {
                           src={game.image || "/placeholder.svg"}
                           alt={game.name}
                           fill
-                          className="object-cover"
+                          className="!object-cover"
                         />
                       </motion.div>
                     </motion.div>

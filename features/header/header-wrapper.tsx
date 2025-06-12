@@ -6,16 +6,23 @@ import Header from "./header";
 export default function HeaderWrapper() {
   const pathname = usePathname() || "";
 
-  // Проверим, что путь имеет формат "/<locale>/techworks" (без дополнительных сегментов)
-  // Например: "/en/techworks" или "/ru/techworks"
-  const segments = pathname.split("/").filter(Boolean); // ["en", "techworks"] или ["ru", "techworks"]
+  const segments = pathname.split("/").filter(Boolean); // Removes leading and trailing slashes
+
+  // Match "/{locale}/techworks"
   const isTechworksPath = segments.length === 2 && segments[1] === "techworks";
 
-  // Если мы на /{locale}/techworks, вообще не рендерим Header
+  // Match "/{locale}/search"
+  const isSearchPath = segments.length === 2 && segments[1] === "search";
+
+  // Don't render Header on "/{locale}/techworks"
   if (isTechworksPath) {
     return null;
   }
 
-  // Остальные страницы – рендерим Header
+  if (isSearchPath) {
+    return <Header isSearchBar={false} />;
+  }
+
+  // Default case – render Header without props (or with default props)
   return <Header />;
 }

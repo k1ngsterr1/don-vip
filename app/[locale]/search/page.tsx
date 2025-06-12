@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ContentWrapper } from "@/shared/ui/content-wrapper/content-wrapper";
-import { ArrowLeft, Loader2, SearchIcon } from "lucide-react";
-import Link from "next/link";
+import { Loader2, SearchIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSearchProducts } from "@/entities/product/hooks/queries/use-search-product";
 import SearchBar from "@/entities/search-bar/search-bar";
