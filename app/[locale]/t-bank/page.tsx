@@ -112,7 +112,7 @@ export default function TBankPaymentPage() {
         DATA: dataObject,
         Receipt: receiptData,
         SuccessURL: "https://don-vip.com/payment/success",
-        FailURL: "https://don-vip.com",
+        FailURL: "https://don-vip.com/payment/fail",
       };
 
       // Генерация токена без Receipt и DATA
