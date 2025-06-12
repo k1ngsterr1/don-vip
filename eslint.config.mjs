@@ -16,15 +16,7 @@ const eslintConfig = [
     files: ["**/*.ts", "**/*.tsx"],
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/ban-ts-comment": [
-        "error",
-        {
-          "ts-expect-error": "allow-with-description",
-          "ts-ignore": false,
-          "ts-nocheck": false,
-          "ts-check": false,
-        },
-      ],
+      "ts-expect-error": "allow-with-description",
       "@typescript-eslint/ban-ts-comment": [
         "error",
         {
