@@ -50,7 +50,7 @@ export default function SearchBar({
   );
 
   const suggestions: any =
-    searchResults?.data?.map((product) => ({
+    searchResults?.items?.map((product) => ({
       id: product.id,
       name: product.name,
     })) || [];
