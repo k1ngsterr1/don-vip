@@ -19,6 +19,7 @@ export interface Product {
   id: number;
   name: string;
   description: string;
+  description_en: string;
   image: string;
   replenishment: ReplenishmentItem[];
   smile_api_game?: string;

@@ -4,7 +4,7 @@ import { CurrencySelector } from "@/entities/currency/ui/currency-selector";
 import { PaymentMethodSelector } from "@/entities/payment/ui/payment-method-selector";
 import { cn } from "@/shared/utils/cn";
 import { useState, useEffect, useRef } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Banner } from "./banner/banner";
 import { OrderSummary } from "./order-summary/order-summary";
 import { ProductInfo } from "./product-info/product-info";
@@ -74,6 +74,7 @@ export function OrderBlock({
     isGuestUser,
     needsIdentifier,
   } = useCreateOrder(selectedPaymentMethod);
+  const locale = useLocale();
 
   const { user: authUser, isGuestAuth } = useAuthStore();
   const { data: me } = useGetMe();
@@ -112,7 +113,8 @@ export function OrderBlock({
       setGame({
         id: product.id,
         name: product.name,
-        description: product.description,
+        description:
+          locale === "ru" ? product.description : product.description_en,
         image: product.image,
         currencyName: formattedCurrencyName,
         currencyImage:
