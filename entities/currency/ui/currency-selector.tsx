@@ -4,6 +4,7 @@ import type { CurrencyOption } from "@/entities/currency/model/types";
 import { cn } from "@/shared/utils/cn";
 import { Check } from "lucide-react";
 import Image from "next/image";
+import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
 
 interface CurrencySelectorProps {
@@ -24,6 +25,14 @@ export function CurrencySelector({
   enhanced = false,
 }: CurrencySelectorProps) {
   const i18n = useTranslations("CurrencySelector");
+  const locale = useLocale();
+
+  const getDisplayName = (item: CurrencyOption & { type?: string }) => {
+    if (item.type === "Пропуск") {
+      return locale === "ru" ? "Алмазный пропуск" : "Diamond Pass";
+    }
+    return i18n("amountWithCurrency", { amount: item.amount });
+  };
 
   const mobileSelector = (
     <div className={enhanced ? "hidden" : "px-4 mb-6"}>
@@ -49,9 +58,7 @@ export function CurrencySelector({
             )}
             <span className="text-dark font-bold text-lg">{item.price}</span>
             <span className="text-sm text-gray-600">
-              {i18n("amountWithCurrency", {
-                amount: item.amount,
-              })}
+              {getDisplayName(item)}
             </span>
             <div className="flex items-center justify-between w-full mt-1">
               {currencyImage ? (
@@ -108,9 +115,7 @@ export function CurrencySelector({
                     className="object-contain mr-2"
                   />
                   <span className="text-sm text-gray-600">
-                    {i18n("amountWithCurrency", {
-                      amount: item.amount,
-                    })}
+                    {getDisplayName(item)}
                   </span>
                 </>
               ) : (
