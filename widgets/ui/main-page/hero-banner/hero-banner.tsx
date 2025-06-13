@@ -138,7 +138,7 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
       <Link
         // @ts-ignore
         href={`${slides[currentSlide].link}`}
-        className="absolute bottom-[32px] left-5 w-[140px] font-unbounded h-[40px] bg-white text-blue rounded-full  text-[11px] font-medium z-10 transition-colors hover:bg-blue hover:text-white hover:border-blue"
+        className="absolute bottom-[32px] flex items-center justify-center left-5 w-[140px] font-unbounded h-[40px] bg-white text-blue rounded-full  text-[11px] font-medium z-10 transition-colors hover:bg-blue hover:text-white hover:border-blue"
       >
         {t("title")}
       </Link>
