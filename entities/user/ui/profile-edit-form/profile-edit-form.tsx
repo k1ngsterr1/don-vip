@@ -161,20 +161,12 @@ export function ProfileEditForm({
           {i18n("fields.phone")}
         </label>
         <div className="flex items-center relative">
-          <input
-            type="tel"
-            name="phone"
+          <PhoneInputWithCountry
             value={formData.phone}
-            onChange={handleChange}
-            className="flex-1 p-3 bg-gray-50 rounded-lg border border-gray-200"
-            placeholder={i18n("fields.phonePlaceholder") || "+1234567890"} // Updated placeholder
+            onChange={handleChange as any}
+            className=" !bg-gray-50 !rounded-lg"
+            placeholder="(___) ___-__-__"
           />
-          <button
-            type="button"
-            className="ml-2 absolute right-4 text-blue font-medium"
-          >
-            {i18n("buttons.change")}
-          </button>
         </div>
       </div>
       <div>
@@ -190,12 +182,6 @@ export function ProfileEditForm({
             className="flex-1 p-3 bg-gray-50 rounded-lg border border-gray-200"
             placeholder="example@email.com"
           />
-          <button
-            type="button"
-            className="ml-2 absolute right-4 text-blue font-medium"
-          >
-            {i18n("buttons.change")}
-          </button>
         </div>
       </div>
 
