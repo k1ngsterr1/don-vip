@@ -1,5 +1,6 @@
 "use client";
 
+import { Link } from "@/i18n/routing";
 import { useMediaQuery } from "@/shared/hooks/use-media-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLast, ChevronLeft, ChevronRight } from "lucide-react";
@@ -13,6 +14,7 @@ interface Slide {
     desktop: string;
     mobile: string;
   };
+  link: string;
 }
 
 interface HeroBannerProps {
@@ -133,9 +135,13 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
           />
         </motion.div>
       </AnimatePresence>
-      <button className="absolute bottom-[32px] left-5 w-[140px] font-unbounded h-[40px] bg-white text-blue rounded-full  text-[11px] font-medium z-10 transition-colors hover:bg-blue hover:text-white hover:border-blue">
+      <Link
+        // @ts-ignore
+        href={`${slides[currentSlide].link}`}
+        className="absolute bottom-[32px] left-5 w-[140px] font-unbounded h-[40px] bg-white text-blue rounded-full  text-[11px] font-medium z-10 transition-colors hover:bg-blue hover:text-white hover:border-blue"
+      >
         {t("title")}
-      </button>
+      </Link>
       <div className="hidden sm:block">
         <button
           onClick={handlePrev}

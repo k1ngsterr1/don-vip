@@ -11,6 +11,7 @@ export default function Home() {
         desktop: "/bigo_pc.webp",
         mobile: "/bigo_banner_mob.webp",
       },
+      link: "/product/1",
     },
     {
       id: 2,
@@ -18,6 +19,7 @@ export default function Home() {
         desktop: "/mlbb_pc.webp",
         mobile: "/banner_new.webp",
       },
+      link: "/product/3",
     },
     {
       id: 3,
@@ -25,6 +27,7 @@ export default function Home() {
         desktop: "/pubg_pc.webp",
         mobile: "/pubg_banner_mob.webp",
       },
+      link: "/product/2",
     },
   ];
 
