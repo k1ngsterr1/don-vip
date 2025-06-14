@@ -237,11 +237,15 @@ export function ForgotPasswordForm() {
             : "resetPasswordPhone",
           formattedIdentifier
         );
-        router.push(
-          `/auth/forgot-password/success?identifier=${encodeURIComponent(
-            formattedIdentifier
-          )}` as any
-        );
+        if (identifierType === "phone") {
+          router.push(`/auth/forgot-password/code` as any);
+        } else {
+          router.push(
+            `/auth/forgot-password/success?identifier=${encodeURIComponent(
+              formattedIdentifier
+            )}` as any
+          );
+        }
       },
       onError: (error: any) => {
         const message = error?.response?.data?.message;

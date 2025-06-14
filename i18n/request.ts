@@ -76,6 +76,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
       ...(await import(`../messages/${locale}/auth.json`)),
       ...(await import(`../messages/${locale}/feedback.json`)),
       ...(await import(`../messages/${locale}/reset-password.json`)),
+      ...(await import(`../messages/${locale}/resetPassword.json`)),
     },
   };
 });
