@@ -4,10 +4,10 @@ import reactQueryClient from "@/shared/config/queryClient"; // Assuming this pat
 import { QueryClientProvider } from "@tanstack/react-query";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import {
-  type Techwork,
-  techworksApi,
-} from "@/entities/techworks/api/techworks.api"; // Assuming this path and types are correct
+// import {
+//   type Techwork,
+//   techworksApi,
+// } from "@/entities/techworks/api/techworks.api"; // Assuming this path and types are correct
 
 interface ClientLayoutProps {
   children: ReactNode;
@@ -22,90 +22,90 @@ const getLocaleFromPathname = (pathname: string): string | null => {
 };
 
 const ClientLayout = ({ children }: ClientLayoutProps) => {
-  const [techworkData, setTechworkData] = useState<Techwork | null>(null);
-  const techworkFetched = useRef(false);
-  const pathname = usePathname();
-  const router = useRouter();
+  // const [techworkData, setTechworkData] = useState<Techwork | null>(null);
+  // const techworkFetched = useRef(false);
+  // const pathname = usePathname();
+  // const router = useRouter();
 
-  useEffect(() => {
-    if (techworkFetched.current) return;
+  // useEffect(() => {
+  //   if (techworkFetched.current) return;
 
-    const fetchTechwork = async () => {
-      try {
-        const data = await techworksApi.getTechwork();
-        setTechworkData(data);
-        console.log("[Techwork] Fetched data:", data);
-      } catch (err) {
-        console.error("[Techwork] Fetch error:", err);
-      } finally {
-        techworkFetched.current = true;
-      }
-    };
+  //   const fetchTechwork = async () => {
+  //     try {
+  //       const data = await techworksApi.getTechwork();
+  //       setTechworkData(data);
+  //       console.log("[Techwork] Fetched data:", data);
+  //     } catch (err) {
+  //       console.error("[Techwork] Fetch error:", err);
+  //     } finally {
+  //       techworkFetched.current = true;
+  //     }
+  //   };
 
-    fetchTechwork();
-  }, []);
+  //   fetchTechwork();
+  // }, []);
 
-  useEffect(() => {
-    if (!techworkFetched.current) {
-      return;
-    }
+  // useEffect(() => {
+  //   if (!techworkFetched.current) {
+  //     return;
+  //   }
 
-    const locale = getLocaleFromPathname(pathname);
-    if (!locale) {
-      console.warn(
-        "[Techwork] Locale not determined for path:",
-        pathname,
-        ". No redirection applied for tech status."
-      );
-      return;
-    }
+  //   const locale = getLocaleFromPathname(pathname);
+  //   if (!locale) {
+  //     console.warn(
+  //       "[Techwork] Locale not determined for path:",
+  //       pathname,
+  //       ". No redirection applied for tech status."
+  //     );
+  //     return;
+  //   }
 
-    const dynamicTechWorksActivePagePath = `/${locale}/techworks`;
-    const dynamicLocalizedRootPath = `/${locale}/`;
+  //   const dynamicTechWorksActivePagePath = `/${locale}/techworks`;
+  //   const dynamicLocalizedRootPath = `/${locale}/`;
 
-    const isTechWorksActive = techworkData ? techworkData.isTechWorks : false;
+  //   const isTechWorksActive = techworkData ? techworkData.isTechWorks : false;
 
-    if (isTechWorksActive) {
-      if (pathname !== dynamicTechWorksActivePagePath) {
-        console.log(
-          `[Techwork] Active. Redirecting from ${pathname} to ${dynamicTechWorksActivePagePath}`
-        );
-        router.push(dynamicTechWorksActivePagePath);
-      }
-    } else {
-      if (pathname === dynamicTechWorksActivePagePath) {
-        console.log(
-          `[Techwork] Not active. Redirecting from ${dynamicTechWorksActivePagePath} to ${dynamicLocalizedRootPath}`
-        );
-        router.push(dynamicLocalizedRootPath);
-      }
-    }
-  }, [techworkData, pathname, router, techworkFetched]);
+  //   if (isTechWorksActive) {
+  //     if (pathname !== dynamicTechWorksActivePagePath) {
+  //       console.log(
+  //         `[Techwork] Active. Redirecting from ${pathname} to ${dynamicTechWorksActivePagePath}`
+  //       );
+  //       router.push(dynamicTechWorksActivePagePath);
+  //     }
+  //   } else {
+  //     if (pathname === dynamicTechWorksActivePagePath) {
+  //       console.log(
+  //         `[Techwork] Not active. Redirecting from ${dynamicTechWorksActivePagePath} to ${dynamicLocalizedRootPath}`
+  //       );
+  //       router.push(dynamicLocalizedRootPath);
+  //     }
+  //   }
+  // }, [techworkData, pathname, router, techworkFetched]);
 
-  if (!techworkFetched.current) {
-    return null;
-  }
+  // if (!techworkFetched.current) {
+  //   return null;
+  // }
 
-  const locale = getLocaleFromPathname(pathname);
-  const isCurrentlyTechWorksActive = techworkData
-    ? techworkData.isTechWorks
-    : false;
+  // const locale = getLocaleFromPathname(pathname);
+  // const isCurrentlyTechWorksActive = techworkData
+  //   ? techworkData.isTechWorks
+  //   : false;
 
-  if (locale) {
-    const dynamicTechWorksActivePagePath = `/${locale}/techworks`;
-    if (
-      isCurrentlyTechWorksActive &&
-      pathname !== dynamicTechWorksActivePagePath
-    ) {
-      return null;
-    }
-    if (
-      !isCurrentlyTechWorksActive &&
-      pathname === dynamicTechWorksActivePagePath
-    ) {
-      return null;
-    }
-  }
+  // if (locale) {
+  //   const dynamicTechWorksActivePagePath = `/${locale}/techworks`;
+  //   if (
+  //     isCurrentlyTechWorksActive &&
+  //     pathname !== dynamicTechWorksActivePagePath
+  //   ) {
+  //     return null;
+  //   }
+  //   if (
+  //     !isCurrentlyTechWorksActive &&
+  //     pathname === dynamicTechWorksActivePagePath
+  //   ) {
+  //     return null;
+  //   }
+  // }
 
   return (
     <QueryClientProvider client={reactQueryClient}>
