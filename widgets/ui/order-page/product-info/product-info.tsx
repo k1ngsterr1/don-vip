@@ -2,6 +2,7 @@
 
 import { cn } from "@/shared/utils/cn";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface ProductInfoProps {
   isExpanded: boolean;
@@ -14,6 +15,8 @@ export function ProductInfo({
   onToggle,
   description,
 }: ProductInfoProps) {
+  const t = useTranslations("productInfo");
+
   const mobileInfo = (
     <div className="md:hidden px-4 mt-8 mb-6">
       <div
@@ -27,7 +30,7 @@ export function ProductInfo({
           aria-expanded={isExpanded}
           aria-controls="product-description-content"
         >
-          <span className="font-medium">Информация о товаре</span>
+          <span className="font-medium">{t("productInfo.information")}</span>
           {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
         </button>
         {isExpanded && (
