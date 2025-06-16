@@ -59,12 +59,12 @@ export function AuthMenu() {
 
         <button
           onClick={() => window.open("https://api.don-vip.com/api/auth/google")}
-          className="w-[22px] !cursor-pointer h-[22px] md:w-[36px] md:h-[36px] flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition-colors"
+          className="w-[24px] h-[24px] aspect-square flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition-colors"
         >
           <Image
             src={google || "/placeholder.svg"}
             alt="Google"
-            className="w-[12px] h-[12px] md:w-[16px] md:h-[16px]"
+            className="w-1/2 h-1/2 object-contain"
           />
         </button>
       </>
