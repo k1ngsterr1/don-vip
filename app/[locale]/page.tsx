@@ -8,24 +8,24 @@ export default function Home() {
     {
       id: 1,
       image: {
-        desktop: "/bigo_pc.webp",
-        mobile: "/bigo_banner_mob.webp",
+        desktop: "/bigo_3x.webp",
+        mobile: "/bigo_3x_mob.webp",
       },
       link: "/product/1",
     },
     {
       id: 2,
       image: {
-        desktop: "/mlbb_pc.webp",
-        mobile: "/banner_new.webp",
+        desktop: "/mlbb_3x.webp",
+        mobile: "/mlbb_3x_mob.webp",
       },
       link: "/product/3",
     },
     {
       id: 3,
       image: {
-        desktop: "/pubg_pc.webp",
-        mobile: "/pubg_banner_mob.webp",
+        desktop: "/pubg_3x.webp",
+        mobile: "/pubg_3x_mob.webp",
       },
       link: "/product/2",
     },
