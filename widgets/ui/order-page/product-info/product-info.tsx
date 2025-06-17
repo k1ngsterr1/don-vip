@@ -30,7 +30,7 @@ export function ProductInfo({
           aria-expanded={isExpanded}
           aria-controls="product-description-content"
         >
-          <span className="font-medium">{t("productInfo.information")}</span>
+          <span className="font-medium">{t("information")}</span>
           {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
         </button>
         {isExpanded && (
