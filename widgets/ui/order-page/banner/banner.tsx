@@ -1,4 +1,6 @@
 import LightningIcon from "@/shared/icons/lightning-icon";
+import { useTranslations } from "next-intl";
+import { use } from "react";
 
 interface BannerProps {
   backgroundImage: string;
@@ -6,6 +8,8 @@ interface BannerProps {
 }
 
 export function Banner({ backgroundImage, height }: BannerProps) {
+  const t = useTranslations("orderSummary");
+
   const mobileBanner = (
     <div
       className="relative w-full md:hidden bg-cover bg-center"
@@ -16,7 +20,7 @@ export function Banner({ backgroundImage, height }: BannerProps) {
     >
       <div className="absolute bottom-4 right-4 bg-blue/60 text-white text-xs py-1 px-2 rounded-[4px] font-unbounded gap-2 flex items-center">
         <LightningIcon />
-        Мгновенная доставка
+        {t("benefits.instantDelivery")}
       </div>
     </div>
   );
@@ -33,7 +37,7 @@ export function Banner({ backgroundImage, height }: BannerProps) {
       <div className="absolute bottom-6 left-6">
         <div className="bg-blue/60 text-white text-xs py-1 px-2 rounded-[4px] font-unbounded gap-2 flex items-center w-fit">
           <LightningIcon />
-          Мгновенная доставка
+          {t("benefits.instantDelivery")}
         </div>
       </div>
     </div>
