@@ -35,6 +35,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
       ...(await import(`../messages/${locale}/user-agreement.json`)),
       ...(await import(`../messages/${locale}/t-bank.json`)),
       ...(await import(`../messages/${locale}/send-review.json`)),
+      ...(await import(`../messages/${locale}/product_info.json`)),
       ...(await import(`../messages/${locale}/empty-faq.json`)),
       ...(await import(`../messages/${locale}/metadata.json`)),
       ...(await import(`../messages/${locale}/profile-edit.json`)),
