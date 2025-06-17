@@ -15,7 +15,7 @@ export function ProductInfo({
   onToggle,
   description,
 }: ProductInfoProps) {
-  const t = useTranslations("productInfo");
+  const t = useTranslations("product_info");
 
   const mobileInfo = (
     <div className="md:hidden px-4 mt-8 mb-6">
