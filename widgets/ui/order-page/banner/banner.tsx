@@ -8,7 +8,11 @@ interface BannerProps {
 }
 
 export function Banner({ backgroundImage, height }: BannerProps) {
-  const t = useTranslations("orderSummary");
+  const t = useTranslations("orderSummary.summary.benefits");
+
+  console.log("Translations:", {
+    instantDelivery: t("benefits.instantDelivery"),
+  });
 
   const mobileBanner = (
     <div
@@ -20,7 +24,7 @@ export function Banner({ backgroundImage, height }: BannerProps) {
     >
       <div className="absolute bottom-4 right-4 bg-blue/60 text-white text-xs py-1 px-2 rounded-[4px] font-unbounded gap-2 flex items-center">
         <LightningIcon />
-        {t("benefits.instantDelivery")}
+        {t("instantDelivery")}
       </div>
     </div>
   );
@@ -37,7 +41,7 @@ export function Banner({ backgroundImage, height }: BannerProps) {
       <div className="absolute bottom-6 left-6">
         <div className="bg-blue/60 text-white text-xs py-1 px-2 rounded-[4px] font-unbounded gap-2 flex items-center w-fit">
           <LightningIcon />
-          {t("benefits.instantDelivery")}
+          {t("instantDelivery")}
         </div>
       </div>
     </div>
