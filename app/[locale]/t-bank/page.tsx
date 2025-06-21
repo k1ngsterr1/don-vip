@@ -214,7 +214,7 @@ export default function TBankPaymentPage() {
                     Icon={Mail}
                     translationNamespace="email"
                   />
-                  <div className="md:col-span-2">
+                  <div className="md:col-span-2 !hidden">
                     <PhoneInputWithCountry
                       id="phone"
                       label="Phone"
