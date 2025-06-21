@@ -214,17 +214,7 @@ export default function TBankPaymentPage() {
                     Icon={Mail}
                     translationNamespace="email"
                   />
-                  <div className="md:col-span-2">
-                    <PhoneInputWithCountry
-                      id="phone"
-                      label="Phone"
-                      mask="phone"
-                      type="tel"
-                      placeholder="+1 (123) 456-7890"
-                      Icon={Phone}
-                      translationNamespace="phone"
-                    />
-                  </div>
+
                   <div className="md:col-span-2">
                     <SubmitButton
                       isLoading={isLoading}
