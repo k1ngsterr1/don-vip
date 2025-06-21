@@ -15,10 +15,8 @@ interface UserIdFormProps {
   requiresServer: boolean;
   userId: string;
   serverId: string;
-  agreeToTerms: boolean;
   onUserIdChange: (value: string) => void;
   onServerIdChange: (value: string) => void;
-  onAgreeChange: (value: boolean) => void;
 }
 
 export function UserIdForm({
@@ -26,10 +24,8 @@ export function UserIdForm({
   requiresServer,
   userId,
   serverId,
-  agreeToTerms,
   onUserIdChange,
   onServerIdChange,
-  onAgreeChange,
 }: UserIdFormProps) {
   const t = useTranslations("orderBlock.user");
   const isPubgMobile = apiGame === "pubgmobile";
@@ -309,19 +305,6 @@ export function UserIdForm({
             )}
           </div>
         )}
-
-        <div className="flex items-center mt-2">
-          <input
-            type="checkbox"
-            id="terms"
-            checked={agreeToTerms}
-            onChange={() => onAgreeChange(!agreeToTerms)}
-            className="mr-2 h-4 w-4 accent-blue-500"
-          />
-          <label htmlFor="terms" className="text-[11px] text-gray-600">
-            {t("confirmDataCorrectness")}
-          </label>
-        </div>
 
         {requiresServer ? (
           <>
