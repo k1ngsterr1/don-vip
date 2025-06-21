@@ -20,6 +20,7 @@ export function ProfileHeaderEditable({
   readOnly = false,
 }: ProfileHeaderEditableProps) {
   const i18n = useTranslations("profileEdit");
+  const i18nHeader = useTranslations("profile-header-editable");
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(user.avatar);
   const [isUploading, setIsUploading] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
@@ -113,7 +114,30 @@ export function ProfileHeaderEditable({
   };
 
   return (
-    <div className="flex flex-col items-center py-6 md:py-4">
+    <div className="flex flex-col items-center py-6 md:py-4 w-full">
+      <div className="w-full flex items-center mb-4">
+        <button
+          type="button"
+          onClick={() => window.history.back()}
+          className="flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            className="w-5 h-5 mr-1"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 19.5L8.25 12l7.5-7.5"
+            />
+          </svg>
+          {i18nHeader("back")}
+        </button>
+      </div>
       <div
         className={`relative w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden mb-3 ${
           readOnly ? "" : "cursor-pointer"
