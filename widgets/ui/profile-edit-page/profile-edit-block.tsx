@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { ProfileEditForm } from "@/entities/user/ui/profile-edit-form/profile-edit-form";
