@@ -2,7 +2,7 @@
   "forgot_auth": {
     "forgotPassword": {
       "title": "Forgot your password?",
-      "description": "Enter your email address or phone number to receive a password reset link.",
+      "description": "Enter your email or phone number to reset your password. If you didn't receive the code, check your spam folder for email or WhatsApp if you provided a phone number.",
       "email": {
         "placeholder": "Enter your email",
         "label": "Email"
@@ -11,7 +11,7 @@
         "placeholder": "Enter your phone number",
         "label": "Phone"
       },
-      "submit": "Send reset link",
+      "submit": "Reset Password",
       "loading": "Processing...",
       "privacy": {
         "text": "By continuing, you agree to our",
