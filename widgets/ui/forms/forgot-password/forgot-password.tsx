@@ -240,11 +240,7 @@ export function ForgotPasswordForm() {
         if (identifierType === "phone") {
           router.push(`/auth/forgot-password/code` as any);
         } else {
-          router.push(
-            `/auth/forgot-password/success?identifier=${encodeURIComponent(
-              formattedIdentifier
-            )}` as any
-          );
+          router.push(`/auth/forgot-password/code` as any);
         }
       },
       onError: (error: any) => {
