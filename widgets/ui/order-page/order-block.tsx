@@ -53,8 +53,6 @@ export function OrderBlock({
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [userId, setUserId] = useState("");
   const [serverId, setServerId] = useState("");
-  const [agreeToTerms, setAgreeToTerms] = useState(false);
-  const [agreeToCouponTerms, setAgreeToCouponTerms] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("tbank");
   const [showGuestAuthPopup, setShowGuestAuthPopup] = useState(false);
   const [guestIdentifier, setGuestIdentifier] = useState("");
@@ -146,7 +144,6 @@ export function OrderBlock({
   const isFormValid =
     selectedCurrency !== null &&
     userId.trim() !== "" &&
-    agreeToTerms &&
     (!game.requiresServer || serverId.trim() !== "");
 
   // Get user identifier from various sources
@@ -275,10 +272,10 @@ export function OrderBlock({
         requiresServer={game.requiresServer}
         userId={userId}
         serverId={serverId}
-        agreeToTerms={agreeToTerms}
+        // agreeToTerms={agreeToTerms} // removed
         onUserIdChange={setUserId}
         onServerIdChange={setServerId}
-        onAgreeChange={setAgreeToTerms}
+        // onAgreeChange={setAgreeToTerms} // removed
       />
       <PaymentMethodSelector
         onSelect={setSelectedPaymentMethod}
@@ -346,10 +343,10 @@ export function OrderBlock({
                 requiresServer={game.requiresServer}
                 userId={userId}
                 serverId={serverId}
-                agreeToTerms={agreeToTerms}
+                // agreeToTerms={agreeToTerms} // removed
                 onUserIdChange={setUserId}
                 onServerIdChange={setServerId}
-                onAgreeChange={setAgreeToTerms}
+                // onAgreeChange={setAgreeToTerms} // removed
               />
             </div>
             <div className="p-6">
