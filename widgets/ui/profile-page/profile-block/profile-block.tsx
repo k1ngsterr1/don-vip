@@ -4,12 +4,15 @@ import { useProfile } from "@/entities/user/hooks/use-profile";
 import { ProfileHeaderEditable } from "@/entities/user/ui/profile-header-editable/profile-header-editable";
 import { ProfileMenu } from "@/entities/user/ui/profile-menu/profile-menu";
 import { ProfileLoading } from "@/widgets/ui/profile-page/profile-skeleton/profile-skeleton";
-import { useParams } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 import React from "react";
 
 export default function ProfileBlock() {
-  const { id } = useParams();
+  const { locale, id } = useParams();
+
   const { data: user, isLoading, error } = useProfile(id as string);
+  const router = useRouter();
 
   if (isLoading) {
     return <ProfileLoading />;
@@ -28,6 +31,19 @@ export default function ProfileBlock() {
 
   return (
     <div className="md:max-w-6xl md:mx-auto md:px-8 md:py-8 lg:py-12">
+      <button
+        onClick={() => router.back()}
+        className="flex items-center text-blue-600 hover:text-blue-700 transition-colors mb-6"
+      >
+        <ArrowLeft
+          size={18}
+          className="mr-2 transition-transform group-hover:-translate-x-1"
+        />
+        <span className="text-base">
+          {locale === "en" ? "Return" : "Вернуться"}
+        </span>
+      </button>
+
       <div className="md:flex md:gap-8 lg:gap-12">
         <div className="md:w-1/3 lg:w-1/4">
           <div className="md:bg-white md:rounded-xl md:shadow-sm md:border md:border-gray-100 md:p-6">
