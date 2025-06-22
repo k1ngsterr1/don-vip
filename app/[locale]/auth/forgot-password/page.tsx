@@ -8,7 +8,7 @@ export default function ForgotPasswordPage() {
   return (
     <main className="md:min-h-[80vh] flex items-center justify-center">
       <div className="px-4 py-6  ">
-        <h1 className="text-[28px] font-unbounded text-center font-medium mb-6">
+        <h1 className="text-[28px] font-unbounded capitalize text-center font-medium mb-6">
           {i18n("title")}
         </h1>
         <ForgotPasswordForm />

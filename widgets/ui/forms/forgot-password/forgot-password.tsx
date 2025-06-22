@@ -237,11 +237,11 @@ export function ForgotPasswordForm() {
             : "resetPasswordPhone",
           formattedIdentifier
         );
-        if (identifierType === "phone") {
-          router.push(`/auth/forgot-password/code` as any);
-        } else {
-          router.push(`/auth/forgot-password/code` as any);
-        }
+        router.push(
+          `/auth/forgot-password/code?identifier=${encodeURIComponent(
+            formattedIdentifier
+          )}` as any
+        );
       },
       onError: (error: any) => {
         const message = error?.response?.data?.message;
@@ -263,6 +263,7 @@ export function ForgotPasswordForm() {
               ? getHumanReadableError(error.message, locale)
               : "Password reset failed");
         }
+        console.log("The error", errorMessage);
 
         setError(translateError(errorMessage, locale));
       },
@@ -319,7 +320,9 @@ export function ForgotPasswordForm() {
           </div>
         </div>
 
-        {error && <p className="text-[#ff272c] text-xs md:text-sm">{error}</p>}
+        {identifierType === "email" && error && (
+          <p className="text-[#ff272c] text-xs md:text-sm">{error}</p>
+        )}
 
         <Button
           type="submit"

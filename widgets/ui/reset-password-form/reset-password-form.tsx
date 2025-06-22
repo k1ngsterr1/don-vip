@@ -1,16 +1,25 @@
 "use client";
 
 import { apiClient } from "@/shared/config/apiClient";
-import { PhoneInputWithCountry } from "@/shared/ui/phone-input/phone-input";
+import { cn } from "@/shared/utils/cn";
 import { useMutation } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Button } from "@/shared/ui/button/button";
 
 export default function ResetPasswordForm() {
   const i18n = useTranslations("resetPassword");
+  const searchParams = useSearchParams();
   const [code, setCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [identifier, setIdentifier] = useState("");
+  useEffect(() => {
+    const id = searchParams.get("identifier");
+    if (id) {
+      setIdentifier(id);
+    }
+  }, [searchParams]);
 
   const mutation = useMutation({
     mutationFn: async ({
@@ -33,7 +42,11 @@ export default function ResetPasswordForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    mutation.mutate({ code, new_password: newPassword, identifier });
+    mutation.mutate({
+      code: code,
+      new_password: newPassword,
+      identifier: identifier,
+    });
   };
 
   return (
@@ -42,19 +55,9 @@ export default function ResetPasswordForm() {
       className="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-lg shadow-blue-100/40 space-y-6 mt-12"
       style={{ boxShadow: "0 6px 32px 0 rgba(28, 52, 255, 0.08)" }}
     >
-      <h2 className="text-2xl font-extrabold mb-6 text-center text-blue-700 tracking-tight">
+      <h2 className="text-2xl font-unbounded mb-6 text-center tracking-tight">
         {i18n("title", { default: "Reset Password" })}
       </h2>
-      <div>
-        <label className="block mb-2 font-semibold text-gray-700">
-          {i18n("identifier")}
-        </label>
-        <PhoneInputWithCountry
-          value={identifier}
-          onChange={(val) => setIdentifier(val || "")}
-          placeholder={i18n("identifier", { default: "Identifier" })}
-        />
-      </div>
       <div>
         <label className="block mb-2 font-semibold text-gray-700">
           {i18n("code", { default: "Code" })}
@@ -72,7 +75,7 @@ export default function ResetPasswordForm() {
           {i18n("newPassword", { default: "New Password" })}
         </label>
         <input
-          type="password"
+          type="text"
           className="w-full rounded-lg px-4 py-3 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-200 outline-none transition"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
@@ -89,15 +92,19 @@ export default function ResetPasswordForm() {
           {i18n("success", { default: "Password reset successful!" })}
         </div>
       )}
-      <button
+      <Button
         type="submit"
-        className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-lg font-bold text-lg shadow-md hover:from-blue-600 hover:to-blue-700 transition disabled:opacity-50 mt-2"
         disabled={mutation.isPending}
+        className={`w-full rounded-full text-white py-3 md:py-4 text-sm md:text-base ${
+          !mutation.isPending
+            ? "bg-blue hover:bg-blue/90"
+            : "bg-[#AAAAAB] hover:bg-[#AAAAAB]/90"
+        }`}
       >
         {mutation.isPending
           ? i18n("loading", { default: "Resetting..." })
           : i18n("submit", { default: "Reset Password" })}
-      </button>
+      </Button>
     </form>
   );
 }
