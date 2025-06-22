@@ -1,8 +1,7 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ChevronRight } from "lucide-react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import CouponIcon from "@/shared/icons/coupon-icon";
@@ -11,11 +10,13 @@ import BoxIcon from "@/shared/icons/box-icon";
 import SettingsIcon from "@/shared/icons/settings-icon";
 import LogoutIcon from "@/shared/icons/logout-icon";
 import { useRouter } from "@/i18n/routing";
+import Link from "next/link";
 
 export function ProfileMenu() {
   const i18n = useTranslations("ProfileMenu");
   const params = useParams();
   const router = useRouter();
+  const locale = useLocale();
   const { logout } = useAuthStore();
 
   const userId = params?.id;
@@ -29,7 +30,7 @@ export function ProfileMenu() {
     {
       icon: <BoxIcon width={24} height={24} color="#fff" />,
       label: i18n("items.purchases.label"),
-      href: `/profile/${userId}/purchases/`,
+      href: `/${locale}/profile/${userId}/purchases/`,
       color: "bg-orange", // фон за иконкой
       description: i18n("items.purchases.description"),
     },
@@ -50,7 +51,7 @@ export function ProfileMenu() {
     {
       icon: <SettingsIcon width={24} height={24} />,
       label: i18n("items.settings.label"),
-      href: `/profile/${userId}/edit/`,
+      href: `/${locale}/profile/${userId}/edit/`,
       color: "bg-gray-500",
       description: i18n("items.settings.description"),
     },
