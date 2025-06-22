@@ -2,7 +2,7 @@
   "forgot_auth": {
     "forgotPassword": {
       "title": "Forgot your password?",
-      "description": "Enter your email or phone number to reset your password. If you didn't receive the code, check your spam folder for email or WhatsApp if you provided a phone number.",
+      "description": "Enter your email or phone number to reset your password. If you haven't received the code, please check your spam folder or WhatsApp if you're resetting via phone.",
       "email": {
         "placeholder": "Enter your email",
         "label": "Email"
