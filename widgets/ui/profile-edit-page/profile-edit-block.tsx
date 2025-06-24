@@ -111,6 +111,7 @@ export function ProfileEditClient() {
           <div className="md:w-1/3 md:pr-8 md:border-r md:border-gray-100">
             <ProfileHeaderEditable
               user={user}
+              isBackButtonVisible={true}
               onAvatarChange={handleAvatarChange as any}
             />
           </div>
