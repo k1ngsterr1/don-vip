@@ -65,11 +65,7 @@ export function ReviewsBlock() {
   return (
     <div className="w-full  min-h-[80vh] m-auto  mt-[24px] flex flex-col items-center">
       <FeedbackPrompt />
-      <div className="w-full flex items-start mt-[15px] justify-start">
-        <button className="w-[78px] h-[30px] text-[10px] bg-gray-50 rounded-md mb-2">
-          {t("filters.all")}
-        </button>
-      </div>
+
       {isLoading ? (
         <ReviewsSkeleton />
       ) : error ? (

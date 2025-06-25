@@ -1,40 +1,38 @@
+"use client";
+
 import { ContentWrapper } from "@/shared/ui/content-wrapper/content-wrapper";
 import HeroBanner from "@/widgets/ui/main-page/hero-banner/hero-banner";
 import { MobileGamesBlock } from "@/widgets/ui/main-page/mobile-games/mobile-games";
 import { ServicesBlock } from "@/widgets/ui/main-page/services-block/services-block";
+import { useBanners } from "@/shared/hooks/useBanners";
+import React from "react";
+
+function HeroBannerSkeleton() {
+  return (
+    <div
+      className="relative max-w-[1616px] w-full mx-auto bg-gray-200 animate-pulse overflow-hidden rounded-xl"
+      style={{ height: "401px" }}
+    >
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="w-32 h-8 bg-gray-300 rounded-full" />
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
-  const heroSlides = [
-    {
-      id: 1,
-      image: {
-        desktop: "/bigo_3x.webp",
-        mobile: "/bigo_3x_mob.webp",
-      },
-      link: "/product/1",
-    },
-    {
-      id: 2,
-      image: {
-        desktop: "/mlbb_3x.webp",
-        mobile: "/mlbb_3x_mob.webp",
-      },
-      link: "/product/3",
-    },
-    {
-      id: 3,
-      image: {
-        desktop: "/pubg_3x.webp",
-        mobile: "/pubg_3x_mob.webp",
-      },
-      link: "/product/2",
-    },
-  ];
+  const { data: slides, isLoading, error } = useBanners();
 
   return (
     <div className="w-full flex flex-col items-center pb-20">
       <div className="w-full m-auto">
-        <HeroBanner slides={heroSlides} />
+        {isLoading ? (
+          <HeroBannerSkeleton />
+        ) : error ? (
+          <div>Error loading banners</div>
+        ) : slides && slides.length > 0 ? (
+          <HeroBanner slides={slides} />
+        ) : null}
       </div>
       <ContentWrapper>
         <div className="w-full max-w-[1680px]">

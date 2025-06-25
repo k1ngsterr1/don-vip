@@ -102,6 +102,7 @@ export function RegisterForm() {
   const [identifierType, setIdentifierType] = useState<"email" | "phone">(
     "email"
   );
+  const [userSelectedType, setUserSelectedType] = useState(false); // Track if user manually selected type
   const [password, setPassword] = useState("");
   const [showPasswordHints, setShowPasswordHints] = useState(false);
   const [errors, setErrors] = useState<{
@@ -132,18 +133,21 @@ export function RegisterForm() {
   ].filter(Boolean).length;
 
   useEffect(() => {
-    const input = identifier.trim();
-    if (input) {
-      if (input.includes("@")) {
-        setIdentifierType("email");
-      } else if (
-        input.startsWith("+") ||
-        input.replace(/[^0-9]/g, "").length > input.length / 2
-      ) {
-        setIdentifierType("phone");
+    // Only auto-detect type if user hasn't manually selected one
+    if (!userSelectedType) {
+      const input = identifier.trim();
+      if (input) {
+        if (input.includes("@")) {
+          setIdentifierType("email");
+        } else if (
+          input.startsWith("+") ||
+          input.replace(/[^0-9]/g, "").length > input.length / 2
+        ) {
+          setIdentifierType("phone");
+        }
       }
     }
-  }, [identifier]);
+  }, [identifier, userSelectedType]);
 
   const validateLocalIdentifier = (value: string, type: "email" | "phone") => {
     if (type === "email") {
@@ -161,6 +165,12 @@ export function RegisterForm() {
   const handleIdentifierChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setIdentifier(value);
+
+    // Reset user selection flag if field becomes empty
+    if (!value.trim()) {
+      setUserSelectedType(false);
+    }
+
     if (errors.identifier) {
       setErrors((prev) => ({ ...prev, identifier: undefined }));
     }
@@ -230,6 +240,11 @@ export function RegisterForm() {
     // The react-phone-number-input library handles formatting and validation internally
     setIdentifier(newValue || "");
 
+    // Reset user selection flag if field becomes empty
+    if (!newValue?.trim()) {
+      setUserSelectedType(false);
+    }
+
     // Clear any existing identifier errors when user starts typing
     if (errors.identifier) {
       setErrors((prev) => ({ ...prev, identifier: undefined }));
@@ -262,9 +277,9 @@ export function RegisterForm() {
             <button
               type="button"
               onClick={() => {
-                setIdentifierType(
-                  identifierType === "email" ? "phone" : "email"
-                );
+                const newType = identifierType === "email" ? "phone" : "email";
+                setIdentifierType(newType);
+                setUserSelectedType(true); // Mark that user has manually selected type
                 setIdentifier(""); // Clear identifier on type switch
                 setErrors({});
               }}

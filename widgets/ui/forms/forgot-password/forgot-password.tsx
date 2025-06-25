@@ -271,7 +271,7 @@ export function ForgotPasswordForm() {
   };
 
   return (
-    <div className="max-w-md mx-auto md:bg-white md:rounded-lg md:shadow-sm md:border md:border-gray-100 md:p-8">
+    <div className="max-w-md  mx-auto md:bg-white md:rounded-lg md:shadow-sm md:border md:border-gray-100 md:p-8">
       <p className="text-sm md:text-base text-gray-600 mb-6 md:mb-8 md:text-center">
         {t("description")}
       </p>

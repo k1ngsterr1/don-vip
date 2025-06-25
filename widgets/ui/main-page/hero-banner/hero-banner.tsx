@@ -22,6 +22,11 @@ interface HeroBannerProps {
 }
 
 export default function HeroBanner({ slides }: HeroBannerProps) {
+  // Защита от пустого массива
+  if (!slides || slides.length === 0) {
+    return null;
+  }
+
   const [currentSlide, setCurrentSlide] = useState(0);
   const [direction, setDirection] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -30,7 +35,13 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
 
   // Auto-advance slides
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || slides.length === 0) return;
+
+    // Сбрасываем currentSlide если он больше длины массива
+    if (currentSlide >= slides.length) {
+      setCurrentSlide(0);
+      return;
+    }
 
     const interval = setInterval(() => {
       setDirection(1);
@@ -38,7 +49,7 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [slides.length, isPaused]);
+  }, [slides.length, isPaused, currentSlide]);
 
   const handleNext = () => {
     setDirection(1);
@@ -87,11 +98,12 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
             height={211}
             key={`preload-${slide.id}`}
             src={
+              slides[currentSlide] &&
               typeof slides[currentSlide].image === "string"
                 ? slides[currentSlide].image
-                : isMobile
+                : slides[currentSlide] && isMobile
                 ? slides[currentSlide].image.mobile
-                : slides[currentSlide].image.desktop
+                : slides[currentSlide]?.image.desktop || ""
             }
             alt="Preload"
           />
@@ -122,11 +134,12 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
         >
           <Image
             src={
+              slides[currentSlide] &&
               typeof slides[currentSlide].image === "string"
                 ? slides[currentSlide].image
-                : isMobile
+                : slides[currentSlide] && isMobile
                 ? slides[currentSlide].image.mobile
-                : slides[currentSlide].image.desktop
+                : slides[currentSlide]?.image.desktop || ""
             }
             className="object-cover"
             alt="Slide"
@@ -137,7 +150,7 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
       </AnimatePresence>
       <Link
         // @ts-ignore
-        href={`${slides[currentSlide].link}`}
+        href={`${slides[currentSlide]?.link || "#"}`}
         className="absolute bottom-[32px] flex items-center justify-center left-5 w-[140px] font-unbounded h-[40px] bg-white text-blue rounded-full  text-[11px] font-medium z-10 transition-colors hover:bg-blue hover:text-white hover:border-blue"
       >
         {t("title")}
