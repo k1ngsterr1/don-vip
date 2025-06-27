@@ -14,6 +14,7 @@ import Script from "next/script"; // <-- ✅ Import Script
 import "./globals.css";
 import { getMessages, getTranslations } from "next-intl/server";
 import FooterWrapper from "@/features/footer/footer-wrapper";
+import { CookieBanner } from "@/shared/ui/cookie-banner/cookie-banner";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -124,6 +125,7 @@ export default async function LocaleLayout({
             <BottomTab />
             <FooterWrapper />
           </ClientLayout>
+          <CookieBanner />
         </NextIntlClientProvider>
       </body>
     </html>

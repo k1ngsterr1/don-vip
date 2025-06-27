@@ -2,6 +2,7 @@
 
 import logo from "@/assets/Logo.webp";
 import tbank from "@/assets/T-Bank.webp";
+import sbp from "@/assets/sbp.png";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -30,9 +31,16 @@ export default function Footer() {
             alt={i18n("altText.logo")}
             className="w-[140px] h-auto sm:w-[161px] md:w-[180px]"
           />
-          <div className="sm:hidden">
+          <div className="sm:hidden flex items-center gap-2">
             <Image
               src={tbank.src || "/placeholder.svg"}
+              width={32}
+              height={32}
+              className="w-[32px] h-[32px] object-contain"
+              alt={i18n("altText.tbank")}
+            />
+            <Image
+              src={sbp.src || "/placeholder.svg"}
               width={32}
               height={32}
               className="w-[32px] h-[32px] object-contain"
@@ -52,9 +60,16 @@ export default function Footer() {
               </Link>
             ))}
           </nav>
-          <div className="hidden sm:block">
+          <div className="hidden sm:flex items-center gap-2">
             <Image
               src={tbank.src || "/placeholder.svg"}
+              width={40}
+              height={40}
+              className="w-[36px] h-[36px] md:w-[40px] md:h-[40px] object-contain"
+              alt={i18n("altText.tbank")}
+            />
+            <Image
+              src={sbp.src || "/placeholder.svg"}
               width={40}
               height={40}
               className="w-[36px] h-[36px] md:w-[40px] md:h-[40px] object-contain"

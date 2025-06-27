@@ -1,4 +1,3 @@
-// app/[locale]/layout.tsx
 import type React from "react";
 import type { Metadata } from "next";
 import { Roboto, Roboto_Condensed, Unbounded } from "next/font/google";
