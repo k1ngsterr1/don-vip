@@ -3,7 +3,7 @@
 import { apiClient } from "@/shared/config/apiClient";
 import { cn } from "@/shared/utils/cn";
 import { useMutation } from "@tanstack/react-query";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/shared/ui/button/button";
@@ -16,6 +16,8 @@ export default function ResetPasswordForm() {
   const [code, setCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [identifier, setIdentifier] = useState("");
+  const locale = useLocale();
+
   useEffect(() => {
     const id = searchParams.get("identifier");
     if (id) {
@@ -93,13 +95,23 @@ export default function ResetPasswordForm() {
         />
         <PasswordStrength password={newPassword} />
       </div>
-      {mutation.isError && (
-        <div className="text-red-600 text-sm text-center">
-          {(mutation.error as any)?.response?.data?.message ||
-            (mutation.error as any)?.message ||
-            "Unknown error"}
-        </div>
-      )}
+      {mutation.isError &&
+        (console.error("Mutation error:", mutation.error),
+        (
+          <div className="text-red-600 text-sm text-center">
+            {(mutation.error as any)?.response?.status === 404
+              ? locale === "ru" || locale.startsWith("ru")
+                ? "Пользователь не найден"
+                : "User not found"
+              : (mutation.error as any)?.response?.status === 400
+              ? locale === "ru" || locale.startsWith("ru")
+                ? "Неверный код"
+                : "Invalid code"
+              : (mutation.error as any)?.response?.data?.message ||
+                (mutation.error as any)?.message ||
+                "Unknown error"}
+          </div>
+        ))}
       {mutation.isSuccess && (
         <div className="text-green-600 text-sm text-center">
           {passwordT("resetSuccess")}
