@@ -7,6 +7,7 @@ import { X } from "lucide-react";
 
 export function CookieBanner() {
   const [isVisible, setIsVisible] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const t = useTranslations("cookieBanner");
 
   useEffect(() => {
@@ -22,9 +23,12 @@ export function CookieBanner() {
     setIsVisible(false);
   };
 
-  const declineCookies = () => {
-    localStorage.setItem("cookiesAccepted", "false");
-    setIsVisible(false);
+  const openSettings = () => {
+    setShowSettings(true);
+  };
+
+  const closeSettings = () => {
+    setShowSettings(false);
   };
 
   if (!isVisible) return null;
@@ -36,20 +40,16 @@ export function CookieBanner() {
           <p className="text-sm text-gray-600">
             {t("message") ||
               "Мы используем cookie. Они помогают нам понять, как вы взаимодействуете с сайтом."}{" "}
-            <a href="/privacy-policy" className="text-blue-600 hover:underline">
+            <button
+              onClick={openSettings}
+              className="text-blue-600 hover:underline cursor-pointer"
+            >
               {t("learnMore") || "Изменить настройки"}
-            </a>
+            </button>
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <Button
-            onClick={declineCookies}
-            variant="secondary"
-            className="text-gray-600 hover:bg-gray-50 px-4 py-2 text-sm"
-          >
-            {t("decline") || "Отклонить"}
-          </Button>
           <Button
             onClick={acceptCookies}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm"
@@ -57,15 +57,65 @@ export function CookieBanner() {
             {t("accept") || "ОК"}
           </Button>
         </div>
-
-        <button
-          onClick={declineCookies}
-          className="absolute top-2 right-2 md:hidden p-2 text-gray-400 hover:text-gray-600"
-          aria-label="Close"
-        >
-          <X size={16} />
-        </button>
       </div>
+
+      {/* Cookie Settings Popup */}
+      {showSettings && (
+        <div className="fixed inset-0 bg-black/30 z-60 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">
+                {t("settingsTitle") || "Настройка cookie-файлов"}
+              </h3>
+              <button
+                onClick={closeSettings}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">
+                    {t("technicalCookies") || "Технические cookie-файлы"}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {t("technicalDescription") || "Необходимы для работы сайта"}
+                  </p>
+                </div>
+                <div className="w-12 h-6 bg-green-500 rounded-full flex items-center justify-end px-1">
+                  <div className="w-4 h-4 bg-white rounded-full"></div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">
+                    {t("analyticalCookies") || "Аналитические cookie-файлы"}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {t("analyticalDescription") || "Помогают улучшить сайт"}
+                  </p>
+                </div>
+                <div className="w-12 h-6 bg-green-500 rounded-full flex items-center justify-end px-1">
+                  <div className="w-4 h-4 bg-white rounded-full"></div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 flex gap-3">
+              <Button
+                onClick={acceptCookies}
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                {t("accept") || "ОК"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -3,6 +3,11 @@
     "message": "We use cookies. They help us understand how you interact with the site.",
     "learnMore": "Change settings",
     "accept": "OK",
-    "decline": "Decline"
+    "decline": "Decline",
+    "settingsTitle": "Cookie Settings",
+    "technicalCookies": "Technical cookies",
+    "technicalDescription": "Required for the site to work",
+    "analyticalCookies": "Analytical cookies",
+    "analyticalDescription": "Help improve the site"
   }
 }
