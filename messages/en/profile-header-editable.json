@@ -1,3 +1,10 @@
 {
-  "back": "Back"
+  "profile-header-editable": {
+    "back": "Back",
+    "userId": "User ID",
+    "copyId": "Copy ID",
+    "copied": "Copied!",
+    "lastUpdate": "Last update",
+    "editProfile": "Edit profile"
+  }
 }

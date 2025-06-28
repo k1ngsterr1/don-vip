@@ -70,7 +70,7 @@ export function LanguageSwitcher() {
         <button
           ref={triggerRef}
           type="button"
-          className="flex items-center justify-center gap-2 px-2 py-1 h-auto rounded-md border border-transparent hover:border-gray-200 focus:outline-none focus:ring-0 focus:ring-offset-0 transition-colors"
+          className="flex items-center justify-center gap-1 sm:gap-2 px-1 sm:px-2 py-1 h-auto rounded-md border border-transparent hover:border-gray-200 focus:outline-none focus:ring-0 focus:ring-offset-0 transition-colors"
           id="options-menu"
           aria-haspopup="true"
           aria-expanded={isOpen}
@@ -81,16 +81,16 @@ export function LanguageSwitcher() {
               currentLocaleData.flag.src ||
               "/placeholder.svg?width=24&height=24&text=Flag"
             }
-            width={24}
-            height={24}
+            width={20}
+            height={20}
             alt={currentLocaleData.name}
-            className="rounded-full w-7 h-7 border border-gray-200"
+            className="rounded-full w-5 h-5 sm:w-7 sm:h-7 border border-gray-200"
           />
-          <span className="hidden sm:inline text-sm font-medium ">
+          <span className="hidden sm:inline text-xs sm:text-sm font-medium">
             {locale.toUpperCase()}
           </span>
           <ChevronDown
-            className={`h-4 w-4 text-gray-500  transition-transform duration-200 ${
+            className={`h-3 w-3 sm:h-4 sm:w-4 text-gray-500 transition-transform duration-200 ${
               isOpen ? "transform rotate-180" : ""
             }`}
           />
@@ -99,7 +99,7 @@ export function LanguageSwitcher() {
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-opacity-5 focus:outline-none border border-gray-200  z-10"
+          className="origin-top-right absolute right-0 mt-2 w-40 sm:w-56 rounded-md shadow-lg bg-white ring-opacity-5 focus:outline-none border border-gray-200 z-10"
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="options-menu"
@@ -110,10 +110,10 @@ export function LanguageSwitcher() {
                 key={item.code}
                 onClick={() => switchLanguage(item.code)}
                 disabled={locale === item.code}
-                className={`w-full text-left flex items-center gap-3 px-4 py-2 text-sm ${
+                className={`w-full text-left flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 text-xs sm:text-sm ${
                   locale === item.code
-                    ? "bg-gray-100  text-gray-900  font-medium"
-                    : "text-gray-700  hover:bg-gray-50  hover:text-gray-900 "
+                    ? "bg-gray-100 text-gray-900 font-medium"
+                    : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
                 } ${
                   locale === item.code ? "cursor-default" : "cursor-pointer"
                 }`}
@@ -124,10 +124,10 @@ export function LanguageSwitcher() {
                     item.flag.src ||
                     "/placeholder.svg?width=24&height=24&text=Flag"
                   }
-                  width={24}
-                  height={24}
+                  width={20}
+                  height={20}
                   alt={item.name}
-                  className="rounded-full w-5 h-5 border border-gray-100 "
+                  className="rounded-full w-4 h-4 sm:w-5 sm:h-5 border border-gray-100"
                 />
                 <span>{item.name}</span>
               </button>

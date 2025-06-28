@@ -15,7 +15,7 @@ export default function PurchaseProfileBlock() {
   const hasPurchases = data?.data?.length > 0;
 
   return (
-    <div className="w-full mx-auto mt-8 px-4 max-w-6xl min-h-[100vh]">
+    <div className="w-full mx-auto mt-8 px-4 max-w-6xl ">
       <div className="mb-6 w-full">
         <div className="w-full flex items-center justify-between mb-4">
           <button

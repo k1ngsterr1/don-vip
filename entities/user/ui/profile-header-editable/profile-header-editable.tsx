@@ -118,7 +118,7 @@ export function ProfileHeaderEditable({
   return (
     <div className="flex flex-col items-center py-6 md:py-4 w-full">
       {isBackButtonVisible && (
-        <div className="w-full flex items-center mb-4">
+        <div className="w-full hidden md:flex items-center mb-4">
           <button
             type="button"
             onClick={() => window.history.back()}

@@ -18,6 +18,9 @@ export default function ResetPasswordForm() {
   const [identifier, setIdentifier] = useState("");
   const locale = useLocale();
 
+  // Password validation
+  const isPasswordValid = newPassword.length >= 8;
+
   useEffect(() => {
     const id = searchParams.get("identifier");
     if (id) {
@@ -94,22 +97,23 @@ export default function ResetPasswordForm() {
           required
         />
         <PasswordStrength password={newPassword} />
+        {newPassword.length > 0 && !isPasswordValid && (
+          <div className="text-red-600 text-xs mt-1">
+            {i18n("errors.passwordTooShort")}
+          </div>
+        )}
       </div>
       {mutation.isError &&
         (console.error("Mutation error:", mutation.error),
         (
           <div className="text-red-600 text-sm text-center">
             {(mutation.error as any)?.response?.status === 404
-              ? locale === "ru" || locale.startsWith("ru")
-                ? "Пользователь не найден"
-                : "User not found"
+              ? i18n("errors.userNotFound")
               : (mutation.error as any)?.response?.status === 400
-              ? locale === "ru" || locale.startsWith("ru")
-                ? "Неверный код"
-                : "Invalid code"
+              ? i18n("errors.invalidCode")
               : (mutation.error as any)?.response?.data?.message ||
                 (mutation.error as any)?.message ||
-                "Unknown error"}
+                i18n("errors.generic")}
           </div>
         ))}
       {mutation.isSuccess && (
@@ -119,11 +123,11 @@ export default function ResetPasswordForm() {
       )}
       <Button
         type="submit"
-        disabled={mutation.isPending}
+        disabled={mutation.isPending || !isPasswordValid || !code.trim()}
         className={`w-full rounded-full text-white py-3 md:py-4 text-sm md:text-base ${
-          !mutation.isPending
+          !mutation.isPending && isPasswordValid && code.trim()
             ? "bg-blue hover:bg-blue/90"
-            : "bg-[#AAAAAB] hover:bg-[#AAAAAB]/90"
+            : "bg-[#AAAAAB] hover:bg-[#AAAAAB]/90 cursor-not-allowed"
         }`}
       >
         {mutation.isPending ? i18n("loading") : i18n("submit")}

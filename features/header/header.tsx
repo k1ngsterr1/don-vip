@@ -35,6 +35,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
   const [isScrolled, setIsScrolled] = useState(false);
   // FIXED: Added client-side only state for tablet detection
   const [isTablet, setIsTablet] = useState(false);
+  const [isMediumScreen, setIsMediumScreen] = useState(false);
   // Track if mobile search is active to adjust UI
   const [mobileSearchActive, setMobileSearchActive] = useState(false);
 
@@ -88,6 +89,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
     // Check tablet size on client-side only
     const checkTablet = () => {
       setIsTablet(window.innerWidth >= 930 && window.innerWidth < 1024);
+      setIsMediumScreen(window.innerWidth >= 1024 && window.innerWidth < 1200);
     };
 
     // Initial checks
@@ -164,7 +166,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
               <SearchBar
                 placeholder={t("searchPlaceholder")}
                 onSearch={handleSearch}
-                height={isTablet ? "40px" : "44px"}
+                height={isTablet ? "40px" : isMediumScreen ? "48px" : "44px"}
                 className="rounded-full"
                 enhanced={true}
                 compact={true}

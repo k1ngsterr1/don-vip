@@ -79,6 +79,50 @@ export default function Footer() {
         </div>
         <div className="mt-6  md:mt-8 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
           <div className="text-sm text-gray-400">{i18n("copyright")}</div>
+          <div className="flex flex-wrap items-center gap-2 md:gap-3">
+            <Image
+              src={require("@/assets/visa.webp")}
+              width={40}
+              height={24}
+              alt="Visa"
+              className="h-6 w-auto"
+            />
+            <Image
+              src={require("@/assets/mastercard.webp")}
+              width={40}
+              height={24}
+              alt="Mastercard"
+              className="h-6 w-auto"
+            />
+            <Image
+              src={require("@/assets/mir.webp")}
+              width={40}
+              height={24}
+              alt="Mir"
+              className="h-6 w-auto"
+            />
+            <Image
+              src={require("@/assets/payment.webp")}
+              width={40}
+              height={24}
+              alt="Mir"
+              className="h-6 w-auto"
+            />
+            <Image
+              src={require("@/assets/sber.webp")}
+              width={40}
+              height={24}
+              alt="Sber"
+              className="h-6 w-auto"
+            />
+            <Image
+              src={require("@/assets/paypal.webp")}
+              width={40}
+              height={24}
+              alt="PayPal"
+              className="h-6 w-auto"
+            />
+          </div>
         </div>
       </div>
     </footer>

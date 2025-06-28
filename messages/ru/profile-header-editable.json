@@ -1,3 +1,10 @@
 {
-  "back": "Назад"
+  "profile-header-editable": {
+    "back": "Назад",
+    "userId": "ID пользователя",
+    "copyId": "Скопировать ID",
+    "copied": "Скопировано!",
+    "lastUpdate": "Последнее обновление",
+    "editProfile": "Редактировать профиль"
+  }
 }

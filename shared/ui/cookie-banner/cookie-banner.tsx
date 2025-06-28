@@ -8,6 +8,8 @@ import { X } from "lucide-react";
 export function CookieBanner() {
   const [isVisible, setIsVisible] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [technicalCookies, setTechnicalCookies] = useState(true); // Always true, required
+  const [analyticalCookies, setAnalyticalCookies] = useState(true);
   const t = useTranslations("cookieBanner");
 
   useEffect(() => {
@@ -16,11 +18,28 @@ export function CookieBanner() {
     if (!hasAccepted) {
       setIsVisible(true);
     }
+
+    // Load saved cookie settings
+    const savedAnalytical = localStorage.getItem("analyticalCookies");
+    if (savedAnalytical !== null) {
+      setAnalyticalCookies(savedAnalytical === "true");
+    }
   }, []);
 
   const acceptCookies = () => {
     localStorage.setItem("cookiesAccepted", "true");
+    localStorage.setItem("technicalCookies", "true");
+    localStorage.setItem("analyticalCookies", analyticalCookies.toString());
     setIsVisible(false);
+    setShowSettings(false);
+  };
+
+  const saveCookieSettings = () => {
+    localStorage.setItem("cookiesAccepted", "true");
+    localStorage.setItem("technicalCookies", "true"); // Always true
+    localStorage.setItem("analyticalCookies", analyticalCookies.toString());
+    setIsVisible(false);
+    setShowSettings(false);
   };
 
   const openSettings = () => {
@@ -85,7 +104,7 @@ export function CookieBanner() {
                     {t("technicalDescription") || "Необходимы для работы сайта"}
                   </p>
                 </div>
-                <div className="w-12 h-6 bg-green-500 rounded-full flex items-center justify-end px-1">
+                <div className="w-12 h-6 bg-gray-300 rounded-full flex items-center justify-end px-1 cursor-not-allowed">
                   <div className="w-4 h-4 bg-white rounded-full"></div>
                 </div>
               </div>
@@ -99,15 +118,22 @@ export function CookieBanner() {
                     {t("analyticalDescription") || "Помогают улучшить сайт"}
                   </p>
                 </div>
-                <div className="w-12 h-6 bg-green-500 rounded-full flex items-center justify-end px-1">
-                  <div className="w-4 h-4 bg-white rounded-full"></div>
-                </div>
+                <button
+                  onClick={() => setAnalyticalCookies(!analyticalCookies)}
+                  className={`w-12 h-6 rounded-full flex items-center px-1 transition-colors cursor-pointer ${
+                    analyticalCookies
+                      ? "bg-green-500 justify-end"
+                      : "bg-gray-300 justify-start"
+                  }`}
+                >
+                  <div className="w-4 h-4 bg-white rounded-full transition-transform"></div>
+                </button>
               </div>
             </div>
 
             <div className="mt-6 flex gap-3">
               <Button
-                onClick={acceptCookies}
+                onClick={saveCookieSettings}
                 className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
               >
                 {t("accept") || "ОК"}
