@@ -338,6 +338,16 @@ const PhoneInputWithCountry = forwardRef<
     const inputRef = useRef<HTMLInputElement>(null);
     const callingCode = getCountryCallingCode(selectedCountry);
 
+    const [isYandexBrowser, setIsYandexBrowser] = useState(false);
+
+    // detect Yandex.Browser on mount
+    useEffect(() => {
+      const ua = window.navigator.userAgent;
+      if (ua.includes("YaBrowser")) {
+        setIsYandexBrowser(true);
+      }
+    }, []);
+
     // Forward the ref
     useEffect(() => {
       if (ref) {
@@ -373,9 +383,14 @@ const PhoneInputWithCountry = forwardRef<
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (isYandexBrowser) {
+        const newRaw = e.target.value.replace(/\D/g, "");
+        setInputValue(newRaw);
+        onChange(newRaw ? `+${callingCode}${newRaw}` : undefined);
+        return;
+      }
       const newValue = e.target.value;
       const digits = newValue.replace(/\D/g, "");
-
       // Format the input value for display
       setInputValue(formatPhoneNumber(digits, selectedCountry));
 
@@ -387,14 +402,31 @@ const PhoneInputWithCountry = forwardRef<
       }
     };
 
+    if (isYandexBrowser) {
+      return (
+        <input
+          type="tel"
+          value={value || ""}
+          placeholder={placeholder}
+          onChange={(e) => {
+            const raw = e.target.value.replace(/\D/g, "");
+            onChange(raw ? `+${raw}` : undefined);
+          }}
+          className={cn(
+            "w-full px-3 py-2 border rounded-lg bg-white text-sm focus:outline-none",
+            className
+          )}
+          {...restProps}
+        />
+      );
+    }
+
     return (
       <div className={cn("relative w-full", className)}>
         <div
           className={cn(
             "flex items-center w-full px-3 py-2.5 border rounded-lg bg-gray-50 text-sm focus-within:ring-1",
-            error
-              ? "border-[#ff272c] focus-within:ring-[#ff272c]"
-              : "border-gray-300 focus-within:ring-blue-500"
+            "border-gray-300 focus-within:ring-blue-500"
           )}
         >
           {/* Country selector */}
@@ -510,7 +542,7 @@ const PhoneInputWithCountry = forwardRef<
         )}
 
         {/* Error message */}
-        {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+        {/* {error && <p className="mt-1 text-sm text-red-600">{error}</p>} */}
       </div>
     );
   }

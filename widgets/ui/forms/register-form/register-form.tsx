@@ -14,12 +14,13 @@ import { PasswordStrength } from "@/shared/ui/password-strength/password-strengt
 import { useRouter } from "@/i18n/routing";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { PhoneInputWithCountry } from "@/shared/ui/phone-input/phone-input";
+import { useParams } from "next/navigation";
 
 const errorTranslations: Record<string, Record<string, string>> = {
   en: {
     // Form validation errors
 
-    "User with this email already exists": "Email already in use",
+    "User with this email already exists": "Email or phone already in use",
 
     "Email or phone is required": "Email or phone is required",
     "Invalid email format": "Please enter a valid email",
@@ -46,7 +47,7 @@ const errorTranslations: Record<string, Record<string, string>> = {
     "status code 500": "Registration failed. Please try again later",
   },
   ru: {
-    "User with this email already exists": "Email уже используется",
+    "User with this email already exists": "Email или телефон уже используется",
     "Email or phone is required": "Email или телефон обязательны",
     "Invalid email format": "Пожалуйста, введите корректный email",
     "Invalid phone number":
@@ -82,6 +83,7 @@ function translateError(message: string, locale: string): string {
 }
 
 function getHumanReadableError(error: string, locale = "en"): string {
+  console.log("Error received:", error, locale);
   if (error.includes("status code 400"))
     return translateError("status code 400", locale);
   if (error.includes("status code 409"))
@@ -97,7 +99,8 @@ function getHumanReadableError(error: string, locale = "en"): string {
 
 export function RegisterForm() {
   const i18n = useTranslations("register-form_auth.registerForm");
-  const locale = useLocale();
+  const router = useRouter();
+  const { locale } = useParams<{ locale: string }>();
   const [identifier, setIdentifier] = useState<string>("");
   const [identifierType, setIdentifierType] = useState<"email" | "phone">(
     "email"
@@ -110,7 +113,7 @@ export function RegisterForm() {
     password?: string;
   }>({});
   const [isRedirecting, setIsRedirecting] = useState(false);
-  const router = useRouter();
+
   const [debugInfo, setDebugInfo] = useState<string | null>(null);
 
   const {
@@ -215,8 +218,9 @@ export function RegisterForm() {
           }, 800);
         },
         onError: (error: any) => {
+          console.error("Registration error:", error);
           const errorMessage =
-            error.response?.data?.message ||
+            getHumanReadableError(error.response?.data?.message, locale) ||
             (error.message
               ? getHumanReadableError(error.message, locale)
               : translateError("Registration failed", locale));
