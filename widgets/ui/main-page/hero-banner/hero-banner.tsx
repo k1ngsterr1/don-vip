@@ -15,6 +15,7 @@ interface Slide {
     mobile: string;
   };
   link: string;
+  title?: string | null;
 }
 
 interface HeroBannerProps {
@@ -148,6 +149,13 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
           />
         </motion.div>
       </AnimatePresence>
+      {/* Banner title (always rendered, independent of Link) */}
+      <div
+        className="absolute left-5 bottom-[80px] z-10 text-white text-xl font-unbounded drop-shadow-md max-w-[60vw] md:max-w-[40vw] overflow-hidden text-ellipsis whitespace-nowrap"
+        style={{ textShadow: "0 2px 8px rgba(0,0,0,0.25)" }}
+      >
+        {slides[currentSlide]?.title}
+      </div>
       <Link
         // @ts-ignore
         href={`${slides[currentSlide]?.link || "#"}`}
