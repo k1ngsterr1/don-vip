@@ -39,13 +39,6 @@ export default function Footer() {
               className="w-[32px] h-[32px] object-contain"
               alt={i18n("altText.tbank")}
             />
-            <Image
-              src={sbp.src || "/placeholder.svg"}
-              width={32}
-              height={32}
-              className="w-[32px] h-[32px] object-contain"
-              alt={i18n("altText.tbank")}
-            />
           </div>
         </div>
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-6">
@@ -74,6 +67,13 @@ export default function Footer() {
           <div className="text-sm text-gray-400">{i18n("copyright")}</div>
           <div className="flex flex-wrap items-center gap-2 md:gap-3">
             <Image
+              src={require("@/assets/mir.webp")}
+              width={40}
+              height={24}
+              alt="Mir"
+              className="h-6 w-auto"
+            />
+            <Image
               src={require("@/assets/tbank.webp")}
               width={40}
               height={24}
@@ -95,17 +95,10 @@ export default function Footer() {
               className="h-6 w-auto"
             />
             <Image
-              src={require("@/assets/mir.webp")}
-              width={40}
-              height={24}
-              alt="Mir"
-              className="h-6 w-auto"
-            />
-            <Image
               src={require("@/assets/payment.webp")}
               width={40}
               height={24}
-              alt="Mir"
+              alt="Payment"
               className="h-6 w-auto"
             />
             <Image
