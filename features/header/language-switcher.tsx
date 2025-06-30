@@ -41,7 +41,7 @@ export function LanguageSwitcher() {
       newPath = `/${newLocale}`;
     }
 
-    router.push(newPath as any);
+    router.replace(newPath as any);
     setIsOpen(false); // Close dropdown after selection
   };
 

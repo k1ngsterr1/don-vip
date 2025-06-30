@@ -68,18 +68,18 @@ export default function Footer() {
               className="w-[36px] h-[36px] md:w-[40px] md:h-[40px] object-contain"
               alt={i18n("altText.tbank")}
             />
-            <Image
-              src={sbp.src || "/placeholder.svg"}
-              width={40}
-              height={40}
-              className="w-[36px] h-[36px] md:w-[40px] md:h-[40px] object-contain"
-              alt={i18n("altText.tbank")}
-            />
           </div>
         </div>
         <div className="mt-6  md:mt-8 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
           <div className="text-sm text-gray-400">{i18n("copyright")}</div>
           <div className="flex flex-wrap items-center gap-2 md:gap-3">
+            <Image
+              src={require("@/assets/tbank.webp")}
+              width={40}
+              height={24}
+              alt="Visa"
+              className="h-6 w-auto"
+            />
             <Image
               src={require("@/assets/visa.webp")}
               width={40}
