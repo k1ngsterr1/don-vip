@@ -31,15 +31,6 @@ export default function Footer() {
             alt={i18n("altText.logo")}
             className="w-[140px] h-auto sm:w-[161px] md:w-[180px]"
           />
-          <div className="sm:hidden flex items-center gap-2">
-            <Image
-              src={tbank.src || "/placeholder.svg"}
-              width={32}
-              height={32}
-              className="w-[32px] h-[32px] object-contain"
-              alt={i18n("altText.tbank")}
-            />
-          </div>
         </div>
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-6">
           <nav className="flex flex-col gap-y-3 mt-4 sm:flex-row sm:flex-wrap sm:gap-x-6 md:gap-x-8">
@@ -53,15 +44,6 @@ export default function Footer() {
               </Link>
             ))}
           </nav>
-          <div className="hidden sm:flex items-center gap-2">
-            <Image
-              src={tbank.src || "/placeholder.svg"}
-              width={40}
-              height={40}
-              className="w-[36px] h-[36px] md:w-[40px] md:h-[40px] object-contain"
-              alt={i18n("altText.tbank")}
-            />
-          </div>
         </div>
         <div className="mt-6  md:mt-8 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
           <div className="text-sm text-gray-400">{i18n("copyright")}</div>
