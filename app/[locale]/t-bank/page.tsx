@@ -77,7 +77,7 @@ export default function TBankPaymentPage() {
       const receiptData = {
         EmailCompany: "mail@mail.com",
         Taxation: "patent",
-        FfdVersion: "1.2",
+        FfdVersion: "1.05",
         Email: email || undefined,
         Phone: phone || undefined,
         Items: [
