@@ -3,37 +3,41 @@
 import { useEffect, useState } from "react";
 import CountdownTimer from "@/features/countdown/countdown";
 import Image from "next/image";
-// import {
-//   techworksApi,
-//   type Techwork,
-// } from "@/entities/techworks/api/techworks.api";
+import {
+  techworksApi,
+  type Techwork,
+} from "@/entities/techworks/api/techworks.api";
 
 export default function TechworksPage() {
   const [targetDate, setTargetDate] = useState<Date | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   const fetchTechwork = async () => {
-  //     try {
-  //       const data: Techwork = await techworksApi.getTechwork();
+  useEffect(() => {
+    const fetchTechwork = async () => {
+      try {
+        const data: Techwork = await techworksApi.getTechwork();
 
-  //       if (data.techWorksEndsAt) {
-  //         const parsedDate = new Date(data.techWorksEndsAt);
-  //         setTargetDate(parsedDate);
-  //       } else {
-  //         const fallbackDate = new Date();
-  //         fallbackDate.setHours(fallbackDate.getHours() + 2);
-  //         setTargetDate(fallbackDate);
-  //       }
-  //     } catch (error) {
-  //       console.error("[TechworksPage] Failed to fetch:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+        if (data.techWorksEndsAt) {
+          const parsedDate = new Date(data.techWorksEndsAt);
+          setTargetDate(parsedDate);
+        } else {
+          const fallbackDate = new Date();
+          fallbackDate.setHours(fallbackDate.getHours() + 2);
+          setTargetDate(fallbackDate);
+        }
+      } catch (error) {
+        console.error("[TechworksPage] Failed to fetch:", error);
+        // Set fallback date even if API fails
+        const fallbackDate = new Date();
+        fallbackDate.setHours(fallbackDate.getHours() + 2);
+        setTargetDate(fallbackDate);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  //   fetchTechwork();
-  // }, []);
+    fetchTechwork();
+  }, []);
 
   if (loading || !targetDate) return null;
 

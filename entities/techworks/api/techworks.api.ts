@@ -39,23 +39,37 @@ export interface TechworkToggleResult {
 /**
  * Techworks API service for interacting with the /techworks endpoints.
  */
-// export const techworksApi = {
-//   /**
-//    * Fetches the techwork data for the fixed ID (1).
-//    * Corresponds to: GET /techworks/:id
-//    */
-//   getTechwork: async (): Promise<Techwork> => {
-//     try {
-//       const response = await apiClient.get<Techwork>(
-//         `${TECHWORK_BASE_PATH}/${FIXED_TECHWORK_ID}`
-//       );
-//       return response.data; // Assuming apiClient returns full Axios response
-//     } catch (error) {
-//       console.error(
-//         `Error fetching techwork (ID: ${FIXED_TECHWORK_ID}):`,
-//         error
-//       );
-//       throw error; // Re-throw for the caller to handle
-//     }
-//   },
-// };
+export const techworksApi = {
+  /**
+   * Fetches the techwork data for the fixed ID (1).
+   * Corresponds to: GET /techworks/:id
+   */
+  getTechwork: async (): Promise<Techwork> => {
+    try {
+      const response = await apiClient.get<Techwork>(
+        `${TECHWORK_BASE_PATH}/${FIXED_TECHWORK_ID}`
+      );
+      return response.data; // Assuming apiClient returns full Axios response
+    } catch (error) {
+      console.error(
+        `Error fetching techwork (ID: ${FIXED_TECHWORK_ID}):`,
+        error
+      );
+      throw error; // Re-throw for the caller to handle
+    }
+  },
+
+  /**
+   * Checks if techworks is active for the hardcoded ID 1.
+   * Returns true if techworks is active, false otherwise.
+   */
+  checkTechworksStatus: async (): Promise<boolean> => {
+    try {
+      const techwork = await techworksApi.getTechwork();
+      return techwork.isTechWorks === true;
+    } catch (error) {
+      console.error("Error checking techworks status:", error);
+      return false; // Default to false if API call fails
+    }
+  },
+};
