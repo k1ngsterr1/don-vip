@@ -1,0 +1,16 @@
+{
+  "title": "Платеж DonatBank",
+  "subtitle": "Введите сумму для пополнения",
+  "amount": "Сумма (RUB)",
+  "amountPlaceholder": "0.00",
+  "continueToPayment": "Продолжить к оплате",
+  "processing": "Обработка...",
+  "securePayment": "Безопасная оплата",
+  "securePaymentDescription": "Ваш платеж будет безопасно обработан через DonatBank. Вы будете перенаправлены для завершения платежа.",
+  "paymentDetails": "Детали платежа",
+  "errors": {
+    "invalidAmount": "Пожалуйста, введите корректную сумму",
+    "paymentUrlMissing": "URL платежа не получен",
+    "paymentFailed": "Не удалось создать платеж. Пожалуйста, попробуйте снова."
+  }
+}

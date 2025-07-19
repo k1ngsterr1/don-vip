@@ -52,10 +52,23 @@ export interface PagsmileNotificationDto {
   };
 }
 
-export type PaymentMethod = "card" | "tbank" | "qiwi";
+export interface DonatBankBalanceDto {
+  amount: number;
+}
+
+export interface DonatBankBalanceResponse {
+  id: string;
+  status: string;
+  paymentUrl: string;
+  amount: number;
+  created_at: string;
+}
+
+export type PaymentMethod = "card" | "tbank" | "qiwi" | "donatbank";
 
 export const PAYMENT_METHOD_MAPPING: Record<string, string> = {
   card: "credit_card",
   tbank: "bank_transfer",
   qiwi: "qiwi_wallet",
+  donatbank: "donatbank",
 };

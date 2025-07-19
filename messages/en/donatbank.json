@@ -1,0 +1,16 @@
+{
+  "title": "DonatBank Payment",
+  "subtitle": "Enter the amount you want to top up",
+  "amount": "Amount (RUB)",
+  "amountPlaceholder": "0.00",
+  "continueToPayment": "Continue to Payment",
+  "processing": "Processing...",
+  "securePayment": "Secure Payment",
+  "securePaymentDescription": "Your payment will be processed securely through DonatBank. You will be redirected to complete the payment.",
+  "paymentDetails": "Payment Details",
+  "errors": {
+    "invalidAmount": "Please enter a valid amount",
+    "paymentUrlMissing": "Payment URL not received",
+    "paymentFailed": "Failed to create payment. Please try again."
+  }
+}
