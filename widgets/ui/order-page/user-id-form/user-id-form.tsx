@@ -12,6 +12,7 @@ import { useValidateSmileUser } from "@/entities/smile/hooks/use-validate-smile"
 
 interface UserIdFormProps {
   apiGame?: string;
+  productType?: string;
   requiresServer: boolean;
   userId: string;
   serverId: string;
@@ -21,6 +22,7 @@ interface UserIdFormProps {
 
 export function UserIdForm({
   apiGame,
+  productType,
   requiresServer,
   userId,
   serverId,
@@ -29,6 +31,8 @@ export function UserIdForm({
 }: UserIdFormProps) {
   const t = useTranslations("orderBlock.user");
   const isPubgMobile = apiGame === "pubgmobile";
+  const isDonatBank = productType === "DonatBank";
+  const needsEmail = isPubgMobile || isDonatBank;
   const locale = useLocale();
 
   const { validateUser: validateBigoUser, isValidating: isBigoValidating } =
@@ -215,7 +219,7 @@ export function UserIdForm({
     <div className="px-4 mb-6">
       <div className="flex items-center mb-4">
         <h2 className="text-dark font-roboto font-medium">
-          {isPubgMobile
+          {needsEmail
             ? requiresServer
               ? "Enter your Email and Server ID"
               : "Enter your Email"
@@ -246,24 +250,20 @@ export function UserIdForm({
       <div className="space-y-3">
         {!requiresServer && (
           <div className="relative">
-            {!isPubgMobile && (
+            {!needsEmail && (
               <div className="absolute left-3 font-roboto font-black text-black text-[13px] top-1/2 transform -translate-y-1/2 text-sm">
                 {t("idPrefix")}
               </div>
             )}
             <input
-              type={isPubgMobile ? "email" : "text"}
+              type={needsEmail ? "email" : "text"}
               placeholder={
-                isPubgMobile
-                  ? t("userEmailPlaceholder")
-                  : t("userIdPlaceholder")
+                needsEmail ? t("userEmailPlaceholder") : t("userIdPlaceholder")
               }
               value={userIdInput}
               onChange={(e) => handleUserIdChange(e.target.value)}
               onBlur={handleValidateUserId}
-              className={`w-full p-3 ${
-                isPubgMobile ? "pl-3" : "pl-10"
-              } border ${
+              className={`w-full p-3 ${needsEmail ? "pl-3" : "pl-10"} border ${
                 validationError
                   ? "border-red-500"
                   : userInfo
@@ -309,11 +309,9 @@ export function UserIdForm({
         {requiresServer ? (
           <>
             <input
-              type={isPubgMobile ? "email" : "text"}
+              type={needsEmail ? "email" : "text"}
               placeholder={
-                isPubgMobile
-                  ? t("userEmailPlaceholder")
-                  : t("userIdPlaceholder")
+                needsEmail ? t("userEmailPlaceholder") : t("userIdPlaceholder")
               }
               value={userIdInput}
               onChange={(e) => handleUserIdChange(e.target.value)}
