@@ -32,7 +32,7 @@ export function UserIdForm({
   const t = useTranslations("orderBlock.user");
   const isPubgMobile = apiGame === "pubgmobile";
   const isDonatBank = productType === "DonatBank";
-  const needsEmail = isPubgMobile || isDonatBank;
+  const needsEmail = isPubgMobile; // Убираем DonatBank из условия email
   const locale = useLocale();
 
   const { validateUser: validateBigoUser, isValidating: isBigoValidating } =
