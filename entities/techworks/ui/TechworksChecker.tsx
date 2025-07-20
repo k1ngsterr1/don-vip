@@ -37,20 +37,6 @@ export const TechworksChecker = ({
     }
   }, [error]);
 
-  // Show loading state while checking techworks status
-  if (isLoading && !isOnTechworksPage) {
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-2 text-center text-gray-600">
-            Checking system status...
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   // If techworks is active and we're not on the techworks page, the hook will handle the redirect
   // If techworks is not active and we're on the techworks page, we should redirect away
   // but we handle this in the hook as well
