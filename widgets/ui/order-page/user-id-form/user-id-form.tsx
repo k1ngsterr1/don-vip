@@ -136,6 +136,17 @@ export function UserIdForm({
       return;
     }
 
+    // Skip validation for DonatBank products
+    if (isDonatBank) {
+      setValidationError("");
+      setValidationErrorCode(null);
+      setUserInfo({
+        username: trimmed,
+        vipStatus: undefined,
+      });
+      return;
+    }
+
     try {
       let result;
 
