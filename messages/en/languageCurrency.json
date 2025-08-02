@@ -1,20 +1,24 @@
 {
-  "title": "Choose your language and currency",
-  "language": "Language",
-  "currency": "Currency",
-  "loadingRates": "Loading exchange rates...",
-  "errorLoadingRates": "Error loading exchange rates",
-  "exchangeRateInfo": "Exchange Rate Information",
-  "rateSource": "Exchange rates are provided by the Central Bank of Russia and updated daily.",
-  "priceConversion": "All prices will be automatically converted to your selected currency.",
-  "actualPayment": "The actual payment will still be processed in Russian Rubles (RUB).",
-  "priceExample": "Price Example",
-  "originalPrice": "Price in Rubles",
-  "convertedPrice": "Your Price",
-  "changeLanguage": "Language",
-  "changeCurrency": "Currency",
-  "saveSettings": "SAVE SETTINGS",
-  "selectLanguage": "Select Language",
-  "selectCurrency": "Select Currency",
-  "tryAgain": "Try Again"
+  "languageCurrency": {
+    "content": {
+      "title": "Choose your language and currency",
+      "language": "Language",
+      "currency": "Currency",
+      "loadingRates": "Loading exchange rates...",
+      "errorLoadingRates": "Error loading exchange rates",
+      "exchangeRateInfo": "Exchange Rate Information",
+      "rateSource": "Exchange rates are provided by the Central Bank of Russia and updated daily.",
+      "priceConversion": "All prices will be automatically converted to your selected currency.",
+      "actualPayment": "The actual payment will still be processed in Russian Rubles (RUB).",
+      "priceExample": "Price Example",
+      "originalPrice": "Price in Rubles",
+      "convertedPrice": "Your Price",
+      "changeLanguage": "Language",
+      "changeCurrency": "Currency",
+      "saveSettings": "SAVE SETTINGS",
+      "selectLanguage": "Select Language",
+      "selectCurrency": "Select Currency",
+      "tryAgain": "Try Again"
+    }
+  }
 }

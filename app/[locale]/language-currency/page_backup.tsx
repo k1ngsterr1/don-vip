@@ -18,18 +18,18 @@ interface CountryCurrency {
 // Countries with their currencies organized by regions like SEAGM
 const COUNTRIES_BY_REGION = {
   EUROPE: [
-    { country: "ALBANIA", language: "English", currency: "ALL", flag: "🇦🇱" },
+    { country: "ALBANIA", language: "English", currency: "EUR", flag: "🇦🇱" },
     { country: "ANDORRA", language: "English", currency: "EUR", flag: "🇦🇩" },
     { country: "AUSTRIA", language: "Deutsch", currency: "EUR", flag: "🇦🇹" },
-    { country: "BELARUS", language: "Русский", currency: "BYN", flag: "🇧🇾" },
+    { country: "BELARUS", language: "Русский", currency: "EUR", flag: "🇧🇾" },
     { country: "BELGIUM", language: "Nederlands", currency: "EUR", flag: "🇧🇪" },
     {
       country: "BOSNIA AND HERZEGOVINA",
       language: "English",
-      currency: "BAM",
+      currency: "EUR",
       flag: "🇧🇦",
     },
-    { country: "BULGARIA", language: "English", currency: "BGN", flag: "🇧🇬" },
+    { country: "BULGARIA", language: "English", currency: "EUR", flag: "🇧🇬" },
     { country: "CROATIA", language: "English", currency: "EUR", flag: "🇭🇷" },
     {
       country: "CZECH REPUBLIC",
@@ -42,7 +42,7 @@ const COUNTRIES_BY_REGION = {
     {
       country: "FAROE ISLANDS",
       language: "English",
-      currency: "DKK",
+      currency: "USD",
       flag: "🇫🇴",
     },
     { country: "FINLAND", language: "English", currency: "EUR", flag: "🇫🇮" },
@@ -51,12 +51,12 @@ const COUNTRIES_BY_REGION = {
     { country: "GIBRALTAR", language: "English", currency: "GBP", flag: "🇬🇮" },
     { country: "GREECE", language: "English", currency: "EUR", flag: "🇬🇷" },
     { country: "HUNGARY", language: "English", currency: "HUF", flag: "🇭🇺" },
-    { country: "ICELAND", language: "English", currency: "ISK", flag: "🇮🇸" },
+    { country: "ICELAND", language: "English", currency: "USD", flag: "🇮🇸" },
     { country: "IRELAND", language: "English", currency: "EUR", flag: "🇮🇪" },
     {
       country: "ISLE OF MAN",
       language: "English",
-      currency: "GBP",
+      currency: "USD",
       flag: "🇮🇲",
     },
     { country: "ITALY", language: "Italiano", currency: "EUR", flag: "🇮🇹" },
@@ -69,9 +69,9 @@ const COUNTRIES_BY_REGION = {
     },
     { country: "LITHUANIA", language: "English", currency: "EUR", flag: "🇱🇹" },
     { country: "LUXEMBOURG", language: "English", currency: "EUR", flag: "🇱🇺" },
-    { country: "MACEDONIA", language: "English", currency: "MKD", flag: "🇲🇰" },
+    { country: "MACEDONIA", language: "English", currency: "EUR", flag: "🇲🇰" },
     { country: "MALTA", language: "English", currency: "EUR", flag: "🇲🇹" },
-    { country: "MOLDOVA", language: "English", currency: "MDL", flag: "🇲🇩" },
+    { country: "MOLDOVA", language: "English", currency: "EUR", flag: "🇲🇩" },
     { country: "MONACO", language: "Français", currency: "EUR", flag: "🇲🇨" },
     { country: "MONTENEGRO", language: "English", currency: "EUR", flag: "🇲🇪" },
     {
@@ -86,7 +86,7 @@ const COUNTRIES_BY_REGION = {
     { country: "ROMANIA", language: "Română", currency: "RON", flag: "🇷🇴" },
     { country: "RUSSIA", language: "Русский", currency: "RUB", flag: "🇷🇺" },
     { country: "SAN MARINO", language: "English", currency: "EUR", flag: "🇸🇲" },
-    { country: "SERBIA", language: "English", currency: "RSD", flag: "🇷🇸" },
+    { country: "SERBIA", language: "English", currency: "EUR", flag: "🇷🇸" },
     { country: "SLOVAKIA", language: "English", currency: "EUR", flag: "🇸🇰" },
     { country: "SLOVENIA", language: "English", currency: "EUR", flag: "🇸🇮" },
     { country: "SPAIN", language: "Español", currency: "EUR", flag: "🇪🇸" },
@@ -97,7 +97,7 @@ const COUNTRIES_BY_REGION = {
       currency: "CHF",
       flag: "🇨🇭",
     },
-    { country: "UKRAINE", language: "English", currency: "UAH", flag: "🇺🇦" },
+    { country: "UKRAINE", language: "English", currency: "USD", flag: "🇺🇦" },
     {
       country: "UNITED KINGDOM",
       language: "English",
@@ -115,30 +115,30 @@ const COUNTRIES_BY_REGION = {
     {
       country: "AFGHANISTAN",
       language: "English",
-      currency: "AFN",
+      currency: "USD",
       flag: "🇦🇫",
     },
-    { country: "ARMENIA", language: "English", currency: "AMD", flag: "🇦🇲" },
-    { country: "AZERBAIJAN", language: "Русский", currency: "AZN", flag: "🇦🇿" },
-    { country: "BANGLADESH", language: "English", currency: "BDT", flag: "🇧🇩" },
-    { country: "BHUTAN", language: "English", currency: "BTN", flag: "🇧🇹" },
+    { country: "ARMENIA", language: "English", currency: "EUR", flag: "🇦🇲" },
+    { country: "AZERBAIJAN", language: "Русский", currency: "USD", flag: "🇦🇿" },
+    { country: "BANGLADESH", language: "English", currency: "USD", flag: "🇧🇩" },
+    { country: "BHUTAN", language: "English", currency: "USD", flag: "🇧🇹" },
     { country: "BRUNEI", language: "English", currency: "BND", flag: "🇧🇳" },
-    { country: "CAMBODIA", language: "English", currency: "KHR", flag: "🇰🇭" },
+    { country: "CAMBODIA", language: "English", currency: "USD", flag: "🇰🇭" },
     { country: "CHINA", language: "简体中文", currency: "CNY", flag: "🇨🇳" },
     { country: "CYPRUS", language: "English", currency: "EUR", flag: "🇨🇾" },
-    { country: "GEORGIA", language: "English", currency: "GEL", flag: "🇬🇪" },
+    { country: "GEORGIA", language: "English", currency: "EUR", flag: "🇬🇪" },
     { country: "HONG KONG", language: "繁體中文", currency: "HKD", flag: "🇭🇰" },
-    { country: "INDIA", language: "English", currency: "INR", flag: "🇮🇳" },
+    { country: "INDIA", language: "English", currency: "USD", flag: "🇮🇳" },
     {
       country: "INDONESIA",
       language: "Bahasa Indonesia",
       currency: "IDR",
       flag: "🇮🇩",
     },
-    { country: "JAPAN", language: "日本語", currency: "JPY", flag: "🇯🇵" },
-    { country: "KAZAKHSTAN", language: "Русский", currency: "KZT", flag: "🇰🇿" },
-    { country: "KYRGYZSTAN", language: "Русский", currency: "KGS", flag: "🇰🇬" },
-    { country: "LAOS", language: "ລາວ", currency: "LAK", flag: "🇱🇦" },
+    { country: "JAPAN", language: "English", currency: "JPY", flag: "🇯🇵" },
+    { country: "KAZAKHSTAN", language: "Русский", currency: "USD", flag: "🇰🇿" },
+    { country: "KYRGYZSTAN", language: "Русский", currency: "USD", flag: "🇰🇬" },
+    { country: "LAOS", language: "English", currency: "USD", flag: "🇱🇦" },
     { country: "MACAU", language: "繁體中文", currency: "MOP", flag: "🇲🇴" },
     {
       country: "MALAYSIA",
@@ -146,11 +146,11 @@ const COUNTRIES_BY_REGION = {
       currency: "MYR",
       flag: "🇲🇾",
     },
-    { country: "MALDIVES", language: "English", currency: "MVR", flag: "🇲🇻" },
-    { country: "MONGOLIA", language: "Монгол", currency: "MNT", flag: "🇲🇳" },
-    { country: "MYANMAR", language: "ဗမာစာ", currency: "MMK", flag: "🇲🇲" },
-    { country: "NEPAL", language: "नेपाली", currency: "NPR", flag: "🇳🇵" },
-    { country: "PAKISTAN", language: "اردو", currency: "PKR", flag: "🇵🇰" },
+    { country: "MALDIVES", language: "English", currency: "USD", flag: "🇲🇻" },
+    { country: "MONGOLIA", language: "English", currency: "MNT", flag: "🇲🇳" },
+    { country: "MYANMAR", language: "ဗမာစာ", currency: "USD", flag: "🇲🇲" },
+    { country: "NEPAL", language: "English", currency: "USD", flag: "🇳🇵" },
+    { country: "PAKISTAN", language: "English", currency: "PKR", flag: "🇵🇰" },
     {
       country: "PHILIPPINES",
       language: "Tagalog",
@@ -159,9 +159,9 @@ const COUNTRIES_BY_REGION = {
     },
     { country: "SINGAPORE", language: "English", currency: "SGD", flag: "🇸🇬" },
     { country: "SOUTH KOREA", language: "한국어", currency: "KRW", flag: "🇰🇷" },
-    { country: "SRI LANKA", language: "සිංහල", currency: "LKR", flag: "🇱🇰" },
+    { country: "SRI LANKA", language: "English", currency: "USD", flag: "🇱🇰" },
     { country: "TAIWAN", language: "繁體中文", currency: "TWD", flag: "🇹🇼" },
-    { country: "TAJIKISTAN", language: "Русский", currency: "TJS", flag: "🇹🇯" },
+    { country: "TAJIKISTAN", language: "Русский", currency: "USD", flag: "🇹🇯" },
     { country: "THAILAND", language: "ภาษาไทย", currency: "THB", flag: "🇹🇭" },
     {
       country: "TIMOR-LESTE",
@@ -336,7 +336,7 @@ const COUNTRIES_BY_REGION = {
       flag: "🇨🇩",
     },
     { country: "DJIBOUTI", language: "Français", currency: "USD", flag: "🇩🇯" },
-    { country: "EGYPT", language: "English", currency: "EGP", flag: "🇪🇬" },
+    { country: "EGYPT", language: "English", currency: "USD", flag: "🇪🇬" },
     {
       country: "EQUATORIAL GUINEA",
       language: "English",
@@ -478,16 +478,6 @@ export default function LanguageCurrencyPage() {
     const currency = currencies.find((c) => c.code === country.currency);
     if (currency) {
       setCurrency(currency);
-    } else {
-      // If currency not found in list, create a basic currency object
-      const basicCurrency = {
-        code: country.currency,
-        name: `${country.currency} Currency`,
-        symbol: country.currency,
-        flag: country.flag,
-        rate: 1, // Default rate, will be updated when API loads
-      };
-      setCurrency(basicCurrency);
     }
   };
 

@@ -16,6 +16,7 @@ import { OrderBlockSkeleton } from "./loading/skeleton-loading";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useGetMe } from "@/entities/auth/hooks/use-auth";
 import { GuestAuthPopup } from "@/entities/order/ui/guest-user-popup";
+import { useCurrency } from "@/entities/currency/hooks/use-currency";
 
 interface OrderBlockProps {
   gameSlug: number;
@@ -36,6 +37,7 @@ interface CurrencyOption {
   id: number;
   amount: number;
   price: string;
+  originalPriceRub: number;
   type: string;
   sku: string;
 }
@@ -46,6 +48,7 @@ export function OrderBlock({
 }: OrderBlockProps) {
   const t = useTranslations("orderBlock");
   const { data: product, isLoading: isProductLoading } = useProduct(gameSlug);
+  const { selectedCurrency: currentCurrency } = useCurrency();
   const [userIdDB, setUserIdDB] = useState("");
   const [game, setGame] = useState<GameData | null>(null);
   const [currencyOptions, setCurrencyOptions] = useState<CurrencyOption[]>([]);
@@ -123,16 +126,26 @@ export function OrderBlock({
       });
 
       setCurrencyOptions(
-        replenishmentArray.map((item: any, index: number) => ({
-          id: index,
-          amount: item.amount,
-          price: `${item.price.toFixed(2)} ${"RUB"}`,
-          type: item.type,
-          sku: item.sku,
-        }))
+        replenishmentArray.map((item: any, index: number) => {
+          // Convert price from RUB to selected currency
+          const priceInRub = item.price;
+          const convertedPrice =
+            currentCurrency.code === "RUB"
+              ? priceInRub
+              : priceInRub * currentCurrency.rate; // Multiply by rate (how many foreign currency units per 1 RUB)
+
+          return {
+            id: index,
+            amount: item.amount,
+            price: `${convertedPrice.toFixed(2)} ${currentCurrency.code}`,
+            originalPriceRub: priceInRub, // Keep original RUB price for order
+            type: item.type,
+            sku: item.sku,
+          };
+        })
       );
     }
-  }, [product]);
+  }, [product, currentCurrency]);
 
   if (isProductLoading || !game) {
     return <OrderBlockSkeleton />;
@@ -166,8 +179,8 @@ export function OrderBlock({
       return;
     }
 
-    const numericPrice = selectedCurrency.price.replace(/[^0-9.]/g, "");
-    const originalPrice = Number(numericPrice);
+    // Use original RUB price for order processing
+    const originalPrice = selectedCurrency.originalPriceRub;
     const discountAmount =
       couponInfo?.type === "percentage"
         ? (originalPrice * appliedDiscount) / 100

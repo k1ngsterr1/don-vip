@@ -6,6 +6,7 @@ import { Menu } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { GamesMegaMenu } from "@/features/games-mega-menu/games-mega-menu";
 import { useTranslations } from "next-intl";
+import { useCurrency } from "@/entities/currency/hooks/use-currency";
 import { Logo } from "./logo";
 import { DesktopNav } from "./desktop-nav";
 import { LanguageSwitcher } from "./language-switcher";
@@ -16,6 +17,7 @@ import { TabletNav } from "./tablet-nav";
 import { ServicesMegaMenu } from "../services-mega-menu/services-mega-menu";
 import { useRouter } from "@/i18n/routing";
 import { usePathname } from "next/navigation";
+import { Link } from "@/i18n/routing";
 
 interface IHeader {
   isSearchBar?: boolean;
@@ -25,6 +27,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
   const t = useTranslations("Header");
   const router = useRouter();
   const { isAuthenticated, logout } = useAuthStore();
+  const { selectedCurrency } = useCurrency();
   const pathname = usePathname();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -190,6 +193,16 @@ export default function Header({ isSearchBar = true }: IHeader) {
             </div>
           )}
           <div className="relative flex items-center gap-2 ml-2 sm:ml-4 lg:ml-9 group">
+            {/* Currency Display */}
+            <Link
+              href="/language-currency"
+              className="hidden md:flex items-center gap-1 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg mr-2 transition-colors duration-200 cursor-pointer"
+            >
+              <span className="text-xs font-roboto font-medium text-gray-600">
+                RUB/{selectedCurrency.code}
+              </span>
+              <span className="text-sm">{selectedCurrency.symbol}</span>
+            </Link>
             <LanguageSwitcher />
             <AuthMenu />
             <button
