@@ -22,7 +22,6 @@ export const routing = defineRouting({
     "/contact": "/contact",
     "/games": "/games",
     "/faq": "/faq",
-    "/language-currency": "/language-currency",
 
     "/services": "/services",
 

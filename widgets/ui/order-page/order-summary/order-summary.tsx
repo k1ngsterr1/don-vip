@@ -4,7 +4,6 @@ import { cn } from "@/shared/utils/cn";
 import { Check, ShieldCheck, Percent } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { useCurrency } from "@/entities/currency/hooks/use-currency";
 
 interface OrderSummaryProps {
   game: any;
@@ -35,27 +34,19 @@ export function OrderSummary({
   isLoading = false,
 }: OrderSummaryProps) {
   const t = useTranslations("orderSummary");
-  const { selectedCurrency: currentCurrency } = useCurrency();
 
   const isEmail = (value: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 
   // Calculate prices
-  const originalPriceRub = selectedCurrency?.originalPriceRub || 0;
-  const originalPriceConverted =
-    currentCurrency.code === "RUB"
-      ? originalPriceRub
-      : originalPriceRub * currentCurrency.rate; // Multiply by rate (how many foreign currency units per 1 RUB)
-
+  const originalPrice = selectedCurrency
+    ? Number(selectedCurrency.price.replace(/[^0-9.]/g, ""))
+    : 0;
   const discountAmount =
     couponInfo?.type === "percentage"
-      ? (originalPriceRub * appliedDiscount) / 100
+      ? (originalPrice * appliedDiscount) / 100
       : appliedDiscount;
-  const finalPriceRub = Math.max(0, originalPriceRub - discountAmount);
-  const finalPriceConverted =
-    currentCurrency.code === "RUB"
-      ? finalPriceRub
-      : finalPriceRub * currentCurrency.rate; // Multiply by rate (how many foreign currency units per 1 RUB)
+  const finalPrice = Math.max(0, originalPrice - discountAmount);
   const hasDiscount = appliedDiscount > 0 && couponInfo;
 
   return (
@@ -102,7 +93,7 @@ export function OrderSummary({
                     hasDiscount && "line-through text-gray-500"
                   )}
                 >
-                  {originalPriceConverted.toFixed(2)} {currentCurrency.code}
+                  {originalPrice.toFixed(2)} RUB
                 </span>
               </div>
 
@@ -120,9 +111,7 @@ export function OrderSummary({
                       -
                       {couponInfo.type === "percentage"
                         ? `${appliedDiscount}%`
-                        : `${(discountAmount * currentCurrency.rate).toFixed(
-                            2
-                          )} ${currentCurrency.code}`}
+                        : `${appliedDiscount.toFixed(2)} RUB`}
                     </span>
                   </div>
 
@@ -132,7 +121,7 @@ export function OrderSummary({
                         {t("summary.total") || "Total"}:
                       </span>
                       <span className="font-semibold text-lg text-green-600">
-                        {finalPriceConverted.toFixed(2)} {currentCurrency.code}
+                        {finalPrice.toFixed(2)} RUB
                       </span>
                     </div>
                   </div>
@@ -203,7 +192,7 @@ export function OrderSummary({
               {t("summary.buyNow")}
               {hasDiscount && (
                 <span className="ml-2 text-sm">
-                  ({finalPriceConverted.toFixed(2)} {currentCurrency.code})
+                  ({finalPrice.toFixed(2)} RUB)
                 </span>
               )}
             </span>
