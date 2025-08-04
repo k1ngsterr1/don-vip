@@ -31,7 +31,7 @@ export function GameInfoBlock({
   // Get localized game name
   const localizedGameName = getLocalizedText(gameName, gameName_en);
 
-  // Get title from backend data
+  // Get title fromgit
   const displayTitle = title ? getLocalizedText(title, title_en) : "";
 
   // Get localized description
