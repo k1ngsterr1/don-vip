@@ -203,6 +203,17 @@ export default function Header({ isSearchBar = true }: IHeader) {
               </span>
               <span className="text-sm">{selectedCurrency.symbol}</span>
             </Link>
+
+            {/* Mobile Currency Display */}
+            <Link
+              href="/language-currency"
+              className="md:hidden flex items-center gap-1 bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded text-xs transition-colors duration-200 cursor-pointer"
+            >
+              <span className="text-xs font-roboto font-medium text-gray-600">
+                RUB/{selectedCurrency.code}
+              </span>
+            </Link>
+
             <LanguageSwitcher />
             <AuthMenu />
             <button

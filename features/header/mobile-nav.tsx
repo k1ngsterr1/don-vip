@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { LogOut, X } from "lucide-react";
 import { useEffect } from "react";
 import { Link } from "@/i18n/navigation";
+import { useCurrency } from "@/entities/currency/hooks/use-currency";
 
 interface MobileNavProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ export function MobileNav({
   isTablet = false,
 }: MobileNavProps) {
   const t = useTranslations("Header");
+  const { selectedCurrency } = useCurrency();
 
   // Close mobile menu when escape key is pressed
   useEffect(() => {
@@ -97,6 +99,20 @@ export function MobileNav({
           }`}
         >
           {t("faq")}
+        </Link>
+
+        {/* Currency selector */}
+        <Link
+          href="/language-currency"
+          onClick={closeMenu}
+          className={`block text-dark font-condensed ${
+            isTablet ? "text-lg py-1" : ""
+          }`}
+        >
+          <div className="flex items-center">
+            <span className="mr-2">{selectedCurrency.flag}</span>
+            <span>RUB/{selectedCurrency.code}</span>
+          </div>
         </Link>
 
         {isAuthenticated && (
