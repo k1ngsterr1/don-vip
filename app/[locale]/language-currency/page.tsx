@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useCurrency } from "@/entities/currency/hooks/use-currency";
 import { Button } from "@/shared/ui/button/button";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, Search, X } from "lucide-react";
 import { Link } from "@/i18n/routing";
 
 interface CountryCurrency {
@@ -470,6 +470,7 @@ export default function LanguageCurrencyPage() {
 
   const [selectedCountry, setSelectedCountry] =
     useState<CountryCurrency | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleCountrySelect = (country: CountryCurrency) => {
     setSelectedCountry(country);
@@ -493,6 +494,56 @@ export default function LanguageCurrencyPage() {
 
   const handleSaveSettings = () => {
     router.back();
+  };
+
+  // Filter countries based on search query
+  const filterCountries = (countries: CountryCurrency[]) => {
+    if (!searchQuery.trim()) return countries;
+
+    const query = searchQuery.toLowerCase().trim();
+    return countries.filter(
+      (country) =>
+        country.country.toLowerCase().includes(query) ||
+        country.currency.toLowerCase().includes(query) ||
+        country.language.toLowerCase().includes(query)
+    );
+  };
+
+  // Filter regions based on search - only show regions that have matching countries
+  const getFilteredRegions = () => {
+    if (!searchQuery.trim()) return COUNTRIES_BY_REGION;
+
+    const filteredRegions: Record<string, CountryCurrency[]> = {};
+
+    Object.entries(COUNTRIES_BY_REGION).forEach(([regionName, countries]) => {
+      const filteredCountries = filterCountries(countries);
+      if (filteredCountries.length > 0) {
+        filteredRegions[regionName] = filteredCountries;
+      }
+    });
+
+    return filteredRegions;
+  };
+
+  // Highlight matching text in search results
+  const highlightText = (text: string, query: string) => {
+    if (!query.trim()) return text;
+
+    const regex = new RegExp(
+      `(${query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+      "gi"
+    );
+    const parts = text.split(regex);
+
+    return parts.map((part, index) =>
+      regex.test(part) ? (
+        <mark key={index} className="bg-yellow-200 text-dark rounded px-1">
+          {part}
+        </mark>
+      ) : (
+        part
+      )
+    );
   };
 
   return (
@@ -574,6 +625,48 @@ export default function LanguageCurrencyPage() {
           </Button>
         </div>
 
+        {/* Search Bar */}
+        <div className="mb-8">
+          <div className="relative max-w-md">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={
+                t("content.searchPlaceholder") ||
+                "Search countries, currencies..."
+              }
+              className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-dark placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue focus:border-transparent"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center hover:text-gray-700"
+              >
+                <X className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+              </button>
+            )}
+          </div>
+          {searchQuery && (
+            <div className="mt-2 text-sm text-gray-600">
+              {t("content.searchResults") || "Search results for"}: "
+              {searchQuery}"
+              {Object.values(getFilteredRegions()).flat().length > 0 && (
+                <span className="ml-2 text-blue font-medium">
+                  ({Object.values(getFilteredRegions()).flat().length}{" "}
+                  {Object.values(getFilteredRegions()).flat().length === 1
+                    ? "result"
+                    : "results"}
+                  )
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+
         {/* Countries Grid by Regions */}
         {isLoading ? (
           <div className="flex items-center justify-center py-16">
@@ -584,83 +677,81 @@ export default function LanguageCurrencyPage() {
           </div>
         ) : (
           <div className="space-y-12">
-            {Object.entries(COUNTRIES_BY_REGION).map(
-              ([regionName, countries]) => (
-                <div key={regionName}>
-                  <h2 className="text-2xl font-unbounded font-bold text-dark mb-6 uppercase">
-                    {regionName}
-                  </h2>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                    {countries.map((country) => {
-                      const isSelected =
-                        selectedCountry?.country === country.country;
-                      return (
-                        <button
-                          key={country.country}
-                          onClick={() => handleCountrySelect(country)}
-                          className={`p-4 rounded-xl border-2 transition-all duration-200 text-left hover:shadow-md ${
-                            isSelected
-                              ? "border-blue bg-blue/5"
-                              : "border-gray-200 hover:border-gray-300"
-                          }`}
-                        >
-                          <div className="flex items-center gap-3 mb-2">
-                            <span className="text-2xl">{country.flag}</span>
-                            <div className="min-w-0 flex-1">
-                              <div
-                                className={`font-roboto font-medium text-sm truncate ${
-                                  isSelected ? "text-blue" : "text-dark"
-                                }`}
-                              >
-                                {country.country}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="text-xs text-gray-500 mb-1">
-                            {country.language}
-                          </div>
-                          <div
-                            className={`text-xs font-medium ${
-                              isSelected ? "text-blue" : "text-gray-700"
+            {Object.entries(getFilteredRegions()).length === 0 ? (
+              <div className="text-center py-16">
+                <Search className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-xl font-roboto font-medium text-gray-600 mb-2">
+                  {t("content.noResults") || "No results found"}
+                </h3>
+                <p className="text-gray-500">
+                  {t("content.noResultsDesc") ||
+                    "Try searching with different keywords"}
+                </p>
+              </div>
+            ) : (
+              Object.entries(getFilteredRegions()).map(
+                ([regionName, countries]) => (
+                  <div key={regionName}>
+                    <h2 className="text-2xl font-unbounded font-bold text-dark mb-6 uppercase">
+                      {regionName}
+                      <span className="text-sm font-roboto font-normal text-gray-500 ml-3 capitalize">
+                        ({countries.length}{" "}
+                        {countries.length === 1 ? "country" : "countries"})
+                      </span>
+                    </h2>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                      {countries.map((country) => {
+                        const isSelected =
+                          selectedCountry?.country === country.country;
+                        return (
+                          <button
+                            key={country.country}
+                            onClick={() => handleCountrySelect(country)}
+                            className={`p-4 rounded-xl border-2 transition-all duration-200 text-left hover:shadow-md ${
+                              isSelected
+                                ? "border-blue bg-blue/5"
+                                : "border-gray-200 hover:border-gray-300"
                             }`}
                           >
-                            {country.currency}
-                          </div>
-                        </button>
-                      );
-                    })}
+                            <div className="flex items-center gap-3 mb-2">
+                              <span className="text-2xl">{country.flag}</span>
+                              <div className="min-w-0 flex-1">
+                                <div
+                                  className={`font-roboto font-medium text-sm truncate ${
+                                    isSelected ? "text-blue" : "text-dark"
+                                  }`}
+                                >
+                                  {searchQuery
+                                    ? highlightText(
+                                        country.country,
+                                        searchQuery
+                                      )
+                                    : country.country}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="text-xs text-gray-500 mb-1">
+                              {searchQuery
+                                ? highlightText(country.language, searchQuery)
+                                : country.language}
+                            </div>
+                            <div
+                              className={`text-xs font-medium ${
+                                isSelected ? "text-blue" : "text-gray-700"
+                              }`}
+                            >
+                              {searchQuery
+                                ? highlightText(country.currency, searchQuery)
+                                : country.currency}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
+                )
               )
             )}
-          </div>
-        )}
-
-        {/* Price Example */}
-        {selectedCurrency.code !== "RUB" && (
-          <div className="mt-12 bg-gray-50 rounded-xl p-6 border border-gray-200 max-w-2xl mx-auto">
-            <h3 className="font-roboto font-medium text-dark mb-4 text-center">
-              {t("content.priceExample")}
-            </h3>
-            <div className="grid grid-cols-2 gap-4 text-center">
-              <div className="bg-white rounded-lg p-4 border border-gray-200">
-                <div className="text-gray-500 text-sm mb-1">
-                  {t("content.originalPrice")}
-                </div>
-                <div className="font-roboto font-bold text-dark text-lg">
-                  100.00 ₽
-                </div>
-              </div>
-              <div className="bg-white rounded-lg p-4 border border-gray-200">
-                <div className="text-gray-500 text-sm mb-1">
-                  {t("content.convertedPrice")}
-                </div>
-                <div className="font-roboto font-bold text-blue text-lg">
-                  {(100 / selectedCurrency.rate).toFixed(2)}{" "}
-                  {selectedCurrency.symbol}
-                </div>
-              </div>
-            </div>
           </div>
         )}
       </div>

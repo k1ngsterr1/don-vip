@@ -18,6 +18,10 @@
       "saveSettings": "SAVE SETTINGS",
       "selectLanguage": "Select Language",
       "selectCurrency": "Select Currency",
+      "searchPlaceholder": "Search countries, currencies...",
+      "searchResults": "Search results for",
+      "noResults": "No results found",
+      "noResultsDesc": "Try searching with different keywords",
       "tryAgain": "Try Again"
     }
   }

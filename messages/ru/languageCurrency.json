@@ -18,6 +18,10 @@
       "saveSettings": "СОХРАНИТЬ НАСТРОЙКИ",
       "selectLanguage": "Выберите язык",
       "selectCurrency": "Выберите валюту",
+      "searchPlaceholder": "Поиск стран, валют...",
+      "searchResults": "Результаты поиска для",
+      "noResults": "Результаты не найдены",
+      "noResultsDesc": "Попробуйте поискать по другим ключевым словам",
       "tryAgain": "Попробовать снова"
     }
   }
