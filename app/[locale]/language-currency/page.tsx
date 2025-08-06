@@ -560,17 +560,9 @@ export default function LanguageCurrencyPage() {
               >
                 <ArrowLeft className="h-5 w-5 text-gray-600" />
               </Button>
-              <h1 className="text-2xl font-unbounded font-bold text-dark">
+              <h1 className="text-[16px] font-unbounded font-bold text-dark">
                 {t("content.title")}
               </h1>
-            </div>
-
-            {/* Currency Display */}
-            <div className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-lg cursor-default">
-              <span className="text-sm font-roboto font-medium text-gray-600">
-                RUB/{selectedCurrency.code}
-              </span>
-              <span className="text-lg">{selectedCurrency.symbol}</span>
             </div>
           </div>
         </div>

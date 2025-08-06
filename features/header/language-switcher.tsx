@@ -6,12 +6,15 @@ import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import enFlag from "@/assets/EN.webp"; // Assuming EN.webp is the UK flag
 import ruFlag from "@/assets/RU.webp";
-import { ChevronDown } from "lucide-react"; // Optional: for a dropdown icon
+import { ChevronDown, DollarSign } from "lucide-react"; // Optional: for a dropdown icon
+import { useCurrency } from "@/entities/currency/hooks/use-currency";
+import { Link } from "@/i18n/routing";
 
 export function LanguageSwitcher() {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const { selectedCurrency } = useCurrency();
 
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -132,6 +135,24 @@ export function LanguageSwitcher() {
                 <span>{item.name}</span>
               </button>
             ))}
+
+            {/* Currency Selection Button */}
+            <div className="border-t border-gray-100 pt-1 mt-1">
+              <Link href="/language-currency" onClick={() => setIsOpen(false)}>
+                <button
+                  className="w-full text-left flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 cursor-pointer"
+                  role="menuitem"
+                >
+                  <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
+                  <div className="flex flex-col">
+                    <span className="font-medium">Currency Settings</span>
+                    <span className="text-xs text-gray-500">
+                      RUB/{selectedCurrency.code}
+                    </span>
+                  </div>
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
       )}
