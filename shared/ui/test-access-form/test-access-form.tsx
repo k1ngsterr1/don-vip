@@ -40,7 +40,9 @@ export function TestAccessForm({ onAccessGranted }: TestAccessFormProps) {
     const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
     if (!hasUpperCase || !hasLowerCase || !hasNumbers || !hasSpecialChars) {
-      setError("Пароль должен содержать заглавные и строчные буквы, цифры и спецсимволы");
+      setError(
+        "Пароль должен содержать заглавные и строчные буквы, цифры и спецсимволы"
+      );
       setIsLoading(false);
       return;
     }
@@ -55,7 +57,8 @@ export function TestAccessForm({ onAccessGranted }: TestAccessFormProps) {
     // Многоуровневая проверка безопасности
     const loginExactMatch = login === correctLogin;
     const passwordExactMatch = password === correctPassword;
-    const credentialsExist = correctLogin.length > 10 && correctPassword.length > 20;
+    const credentialsExist =
+      correctLogin.length > 10 && correctPassword.length > 20;
     const timeBasedCheck = Date.now() % 1000 !== 999; // Дополнительная временная проверка
     const loginMatch = login.trim() === correctLogin;
     const passwordMatch = password === correctPassword;
@@ -75,12 +78,14 @@ export function TestAccessForm({ onAccessGranted }: TestAccessFormProps) {
         timestamp: Date.now(),
         session: Math.random().toString(36).substring(2, 15),
         userAgent: navigator.userAgent.substring(0, 50),
-        loginHash: btoa(correctLogin).substring(0, 10)
+        loginHash: btoa(correctLogin).substring(0, 10),
       };
       sessionStorage.setItem("test_access_granted", JSON.stringify(accessData));
       onAccessGranted();
     } else {
-      setError("Доступ запрещен. Проверьте правильность ввода административных учетных данных или обратитесь к системному администратору");
+      setError(
+        "Доступ запрещен. Проверьте правильность ввода административных учетных данных или обратитесь к системному администратору"
+      );
     }
 
     setIsLoading(false);

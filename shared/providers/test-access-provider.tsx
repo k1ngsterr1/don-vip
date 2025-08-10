@@ -53,12 +53,13 @@ export function TestAccessProvider({ children }: TestAccessProviderProps) {
         const sessionAge = currentTime - (parsed.timestamp || 0);
 
         // Расширенная валидация сессии (8 часов вместо 24)
-        const isValidSession = parsed.granted && 
-                              sessionAge < 8 * 60 * 60 * 1000 && 
-                              parsed.session && 
-                              parsed.loginHash &&
-                              parsed.userAgent;
-        
+        const isValidSession =
+          parsed.granted &&
+          sessionAge < 8 * 60 * 60 * 1000 &&
+          parsed.session &&
+          parsed.loginHash &&
+          parsed.userAgent;
+
         if (isValidSession) {
           setHasAccess(true);
         } else {
@@ -79,8 +80,11 @@ export function TestAccessProvider({ children }: TestAccessProviderProps) {
       granted: true,
       timestamp: Date.now(),
       session: Math.random().toString(36).substring(2, 15),
-      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent.substring(0, 50) : '',
-      loginHash: btoa('admin_session').substring(0, 10)
+      userAgent:
+        typeof navigator !== "undefined"
+          ? navigator.userAgent.substring(0, 50)
+          : "",
+      loginHash: btoa("admin_session").substring(0, 10),
     };
     sessionStorage.setItem("test_access_granted", JSON.stringify(accessData));
   };
