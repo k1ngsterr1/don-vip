@@ -12,6 +12,7 @@ interface PaymentMethodSelectorProps {
   enhanced?: boolean;
   selectedMethod?: string;
   onSelect?: (method: string) => void;
+  currentCurrency?: string; // Add currency prop
 }
 
 interface FrontendPaymentMethod {
@@ -26,6 +27,7 @@ export function PaymentMethodSelector({
   enhanced = false,
   selectedMethod = "tbank", // Default selected method ID
   onSelect = () => {},
+  currentCurrency = "RUB", // Default to RUB
 }: PaymentMethodSelectorProps) {
   const i18n = useTranslations("PaymentMethodSelector");
   const { data: activeBanksResponse, isLoading, error } = useGetActiveBanks();
@@ -57,7 +59,15 @@ export function PaymentMethodSelector({
   const activeApiBankNames =
     activeBanksResponse?.data.map((bank) => bank.name) || [];
 
-  const availablePaymentMethods = allPaymentMethods.filter((method) =>
+  // Filter out T-Bank if currency is not RUB
+  const filteredPaymentMethods = allPaymentMethods.filter((method) => {
+    if (method.id === "tbank" && currentCurrency !== "RUB") {
+      return false; // Hide T-Bank for non-RUB currencies
+    }
+    return true;
+  });
+
+  const availablePaymentMethods = filteredPaymentMethods.filter((method) =>
     activeApiBankNames.includes(method.apiName)
   );
 
@@ -90,8 +100,23 @@ export function PaymentMethodSelector({
     );
   }
 
+  // Check if T-Bank is filtered out due to currency
+  const isTBankHidden =
+    currentCurrency !== "RUB" &&
+    allPaymentMethods.some((method) => method.id === "tbank");
+
   const paymentMethodSelectorContent = (
     <div className="space-y-3">
+      {/* Show info message if T-Bank is hidden */}
+      {isTBankHidden && (
+        <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg text-sm text-blue-700">
+          <div className="flex items-center">
+            <div className="text-blue-500 mr-2">ℹ️</div>
+            <span>{i18n("tbankUnavailableInfo")}</span>
+          </div>
+        </div>
+      )}
+
       {availablePaymentMethods.map((method) => (
         <div
           key={method.id}

@@ -59,6 +59,13 @@ export function OrderBlock({
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("tbank");
   const [showGuestAuthPopup, setShowGuestAuthPopup] = useState(false);
   const [guestIdentifier, setGuestIdentifier] = useState("");
+
+  // Auto-switch payment method if T-Bank is selected but currency is not RUB
+  useEffect(() => {
+    if (selectedPaymentMethod === "tbank" && currentCurrency.code !== "RUB") {
+      setSelectedPaymentMethod("sbp"); // Switch to SBP as default alternative
+    }
+  }, [currentCurrency.code, selectedPaymentMethod]);
   const [couponCode, setCouponCode] = useState("");
   const [appliedDiscount, setAppliedDiscount] = useState<number>(0);
   const [couponInfo, setCouponInfo] = useState<any>(null);
@@ -203,7 +210,10 @@ export function OrderBlock({
 
     createOrder(orderData)
       .then((response: any) => {
-        if (selectedPaymentMethod === "tbank") {
+        if (
+          selectedPaymentMethod === "tbank" &&
+          currentCurrency.code === "RUB"
+        ) {
           const params = new URLSearchParams({
             orderId: response.id,
             amount: selectedCurrency.amount.toString(),
@@ -216,6 +226,13 @@ export function OrderBlock({
           });
 
           window.location.href = `/t-bank?${params.toString()}`;
+        } else {
+          // Handle other payment methods here
+          console.log(
+            "Order created successfully for non-RUB currency:",
+            response
+          );
+          // You can redirect to a different payment processor or show success message
         }
       })
       .catch((err) => {
@@ -294,6 +311,7 @@ export function OrderBlock({
       <PaymentMethodSelector
         onSelect={setSelectedPaymentMethod}
         selectedMethod={selectedPaymentMethod}
+        currentCurrency={currentCurrency.code}
       />
       {error && (
         <div className="px-4 mb-4">
@@ -369,6 +387,7 @@ export function OrderBlock({
                 enhanced={true}
                 onSelect={setSelectedPaymentMethod}
                 selectedMethod={selectedPaymentMethod}
+                currentCurrency={currentCurrency.code}
               />
             </div>
             {error && (

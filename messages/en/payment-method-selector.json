@@ -9,6 +9,7 @@
       "card": "Bank card",
       "sbp": "SBP"
     },
-    "noMethodsAvailable": "No payment methods available"
+    "noMethodsAvailable": "No payment methods available",
+    "tbankUnavailableInfo": "T-Bank is only available for payments in Russian Rubles (RUB)"
   }
 }

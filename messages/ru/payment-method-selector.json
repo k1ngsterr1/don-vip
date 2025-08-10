@@ -9,6 +9,7 @@
       "card": "Банковская карта",
       "sbp": "СБП"
     },
-    "noMethodsAvailable": "Нет доступных способов оплаты"
+    "noMethodsAvailable": "Нет доступных способов оплаты",
+    "tbankUnavailableInfo": "T-Bank доступен только для платежей в российских рублях (RUB)"
   }
 }
