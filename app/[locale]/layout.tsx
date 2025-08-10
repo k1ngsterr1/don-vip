@@ -5,6 +5,9 @@ import Footer from "@/features/footer/footer";
 import HeaderWrapper from "@/features/header/header-wrapper";
 import { routing } from "@/i18n/routing";
 import ClientLayout from "@/shared/ui/client-layout/client-layout";
+import { TestAccessProvider } from "@/shared/providers/test-access-provider";
+import { TestAccessGate } from "@/shared/ui/test-access-gate/test-access-gate";
+import { TestModeIndicator } from "@/shared/ui/test-mode-indicator/test-mode-indicator";
 import type { Metadata } from "next";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { Roboto, Roboto_Condensed, Unbounded } from "next/font/google";
@@ -119,13 +122,18 @@ export default async function LocaleLayout({
         `}
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <ClientLayout>
-            <HeaderWrapper />
-            <main>{children}</main>
-            <BottomTab />
-            <FooterWrapper />
-          </ClientLayout>
-          <CookieBanner />
+          <TestAccessProvider>
+            <TestAccessGate>
+              <TestModeIndicator />
+              <ClientLayout>
+                <HeaderWrapper />
+                <main>{children}</main>
+                <BottomTab />
+                <FooterWrapper />
+              </ClientLayout>
+              <CookieBanner />
+            </TestAccessGate>
+          </TestAccessProvider>
         </NextIntlClientProvider>
       </body>
     </html>

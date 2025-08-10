@@ -1,0 +1,12 @@
+{
+  "testAccess": {
+    "title": "Test Access",
+    "description": "Enter the password to access the test version of the site",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter password",
+    "invalidPassword": "Invalid password",
+    "checking": "Checking...",
+    "submit": "Enter",
+    "footer": "This is a protected test version of the site"
+  }
+}
