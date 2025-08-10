@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Button } from "@/shared/ui/button/button";
 import { Eye, EyeOff, Lock, User } from "lucide-react";
 import { EnvDebugger } from "@/shared/ui/env-debugger/env-debugger";
-import { getTestAccessCredentials } from "@/shared/config/test-access-config";
 
 interface TestAccessFormProps {
   onAccessGranted: () => void;
@@ -22,39 +21,26 @@ export function TestAccessForm({ onAccessGranted }: TestAccessFormProps) {
     setIsLoading(true);
     setError("");
 
-    // Усиленная валидация
-    if (login.length < 10) {
-      setError("Логин должен содержать минимум 10 символов");
+    // Простая валидация
+    if (!login.trim()) {
+      setError("Введите логин");
       setIsLoading(false);
       return;
     }
 
-    if (password.length < 20) {
-      setError("Пароль должен содержать минимум 20 символов");
+    if (!password.trim()) {
+      setError("Введите пароль");
       setIsLoading(false);
       return;
     }
 
-    // Проверка на сложность пароля
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumbers = /\d/.test(password);
-    const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    // Небольшая задержка
+    await new Promise((resolve) => setTimeout(resolve, 800));
 
-    if (!hasUpperCase || !hasLowerCase || !hasNumbers || !hasSpecialChars) {
-      setError(
-        "Пароль должен содержать заглавные и строчные буквы, цифры и спецсимволы"
-      );
-      setIsLoading(false);
-      return;
-    }
-
-    // Имитация серьезной криптографической проверки
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    // Получаем данные из конфигурации
-    const { login: correctLogin, password: correctPassword } =
-      getTestAccessCredentials();
+    // Хардкод учетных данных
+    const correctLogin = "Dev_Admin_2024_Secure_Access_K7n9Bx4Wq2";
+    const correctPassword =
+      "Ultra$ecure_Dev_Pa$$w0rd_2024!@#$%AdminAccess_Zx8Qm3Rp7K5vN9cB";
 
     // Дебаг информация (только в development)
     if (process.env.NODE_ENV === "development") {
@@ -63,41 +49,22 @@ export function TestAccessForm({ onAccessGranted }: TestAccessFormProps) {
         correctPassword: correctPassword?.substring(0, 10) + "...",
         inputLogin: login,
         inputPassword: password?.substring(0, 10) + "...",
+        loginMatch: login === correctLogin,
+        passwordMatch: password === correctPassword,
       });
     }
 
-    // Многоуровневая проверка безопасности
-    const loginExactMatch = login === correctLogin;
-    const passwordExactMatch = password === correctPassword;
-    const credentialsExist =
-      correctLogin.length > 10 && correctPassword.length > 20;
-    const timeBasedCheck = Date.now() % 1000 !== 999; // Дополнительная временная проверка
+    // Простая проверка учетных данных
     const loginMatch = login.trim() === correctLogin;
     const passwordMatch = password === correctPassword;
 
-    // Проверка с максимальной безопасностью
-    if (
-      loginExactMatch &&
-      passwordExactMatch &&
-      credentialsExist &&
-      timeBasedCheck &&
-      login.trim() === correctLogin &&
-      password === correctPassword
-    ) {
-      // Store access in session storage with enhanced security
-      const accessData = {
-        granted: true,
-        timestamp: Date.now(),
-        session: Math.random().toString(36).substring(2, 15),
-        userAgent: navigator.userAgent.substring(0, 50),
-        loginHash: btoa(correctLogin).substring(0, 10),
-      };
-      sessionStorage.setItem("test_access_granted", JSON.stringify(accessData));
+    // Проверка учетных данных
+    if (loginMatch && passwordMatch) {
+      // Простое сохранение доступа
+      sessionStorage.setItem("test_access_granted", "true");
       onAccessGranted();
     } else {
-      setError(
-        "Доступ запрещен. Проверьте правильность ввода административных учетных данных или обратитесь к системному администратору"
-      );
+      setError("Неверный логин или пароль");
     }
 
     setIsLoading(false);
