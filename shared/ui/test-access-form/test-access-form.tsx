@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Button } from "@/shared/ui/button/button";
 import { Eye, EyeOff, Lock, User } from "lucide-react";
+import { EnvDebugger } from "@/shared/ui/env-debugger/env-debugger";
+import { getTestAccessCredentials } from "@/shared/config/test-access-config";
 
 interface TestAccessFormProps {
   onAccessGranted: () => void;
@@ -50,9 +52,19 @@ export function TestAccessForm({ onAccessGranted }: TestAccessFormProps) {
     // Имитация серьезной криптографической проверки
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    // Получаем данные из переменных окружения
-    const correctLogin = process.env.NEXT_PUBLIC_TEST_MODE_LOGIN || "";
-    const correctPassword = process.env.NEXT_PUBLIC_TEST_MODE_PASSWORD || "";
+    // Получаем данные из конфигурации
+    const { login: correctLogin, password: correctPassword } =
+      getTestAccessCredentials();
+
+    // Дебаг информация (только в development)
+    if (process.env.NODE_ENV === "development") {
+      console.log("Credentials check:", {
+        correctLogin,
+        correctPassword: correctPassword?.substring(0, 10) + "...",
+        inputLogin: login,
+        inputPassword: password?.substring(0, 10) + "...",
+      });
+    }
 
     // Многоуровневая проверка безопасности
     const loginExactMatch = login === correctLogin;
@@ -93,6 +105,7 @@ export function TestAccessForm({ onAccessGranted }: TestAccessFormProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 flex items-center justify-center p-4">
+      <EnvDebugger />
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
