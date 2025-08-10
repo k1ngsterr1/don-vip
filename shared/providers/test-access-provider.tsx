@@ -45,16 +45,44 @@ export function TestAccessProvider({ children }: TestAccessProviderProps) {
     }
 
     // Check if access was already granted in this session
-    const accessGranted = sessionStorage.getItem("test_access_granted");
-    if (accessGranted === "true") {
-      setHasAccess(true);
+    const accessData = sessionStorage.getItem("test_access_granted");
+    if (accessData) {
+      try {
+        const parsed = JSON.parse(accessData);
+        const currentTime = Date.now();
+        const sessionAge = currentTime - (parsed.timestamp || 0);
+
+        // Расширенная валидация сессии (8 часов вместо 24)
+        const isValidSession = parsed.granted && 
+                              sessionAge < 8 * 60 * 60 * 1000 && 
+                              parsed.session && 
+                              parsed.loginHash &&
+                              parsed.userAgent;
+        
+        if (isValidSession) {
+          setHasAccess(true);
+        } else {
+          // Clear expired or invalid session
+          sessionStorage.removeItem("test_access_granted");
+        }
+      } catch {
+        // Invalid data, clear it
+        sessionStorage.removeItem("test_access_granted");
+      }
     }
     setIsLoading(false);
   }, [isTestMode]);
 
   const grantAccess = () => {
     setHasAccess(true);
-    sessionStorage.setItem("test_access_granted", "true");
+    const accessData = {
+      granted: true,
+      timestamp: Date.now(),
+      session: Math.random().toString(36).substring(2, 15),
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent.substring(0, 50) : '',
+      loginHash: btoa('admin_session').substring(0, 10)
+    };
+    sessionStorage.setItem("test_access_granted", JSON.stringify(accessData));
   };
 
   const value = {

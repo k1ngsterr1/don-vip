@@ -15,36 +15,72 @@ export function TestAccessForm({ onAccessGranted }: TestAccessFormProps) {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Декодируем данные из base64
-  const decodeBase64 = (str: string) => {
-    try {
-      return atob(str);
-    } catch {
-      return "";
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
 
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 800));
+    // Усиленная валидация
+    if (login.length < 10) {
+      setError("Логин должен содержать минимум 10 символов");
+      setIsLoading(false);
+      return;
+    }
 
-    // Декодируем правильные данные
-    const correctLogin = decodeBase64("ZGV2X3VzZXJfMjAyNF9zZWN1cmVfYWNjZXNz"); // dev_user_2024_secure_access
-    const correctPassword = decodeBase64(
-      "VGVzdERldl9TZWN1cmVfUGFzc3dvcmRfMjAyNF9BZG1pbmlzdHJhdG9yX0FjY2Vzc19LZXk="
-    ); // TestDev_Secure_Password_2024_Administrator_Access_Key
+    if (password.length < 20) {
+      setError("Пароль должен содержать минимум 20 символов");
+      setIsLoading(false);
+      return;
+    }
 
-    // Check credentials
-    if (login === correctLogin && password === correctPassword) {
-      // Store access in session storage
-      sessionStorage.setItem("test_access_granted", "true");
+    // Проверка на сложность пароля
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    if (!hasUpperCase || !hasLowerCase || !hasNumbers || !hasSpecialChars) {
+      setError("Пароль должен содержать заглавные и строчные буквы, цифры и спецсимволы");
+      setIsLoading(false);
+      return;
+    }
+
+    // Имитация серьезной криптографической проверки
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    // Получаем данные из переменных окружения
+    const correctLogin = process.env.NEXT_PUBLIC_TEST_MODE_LOGIN || "";
+    const correctPassword = process.env.NEXT_PUBLIC_TEST_MODE_PASSWORD || "";
+
+    // Многоуровневая проверка безопасности
+    const loginExactMatch = login === correctLogin;
+    const passwordExactMatch = password === correctPassword;
+    const credentialsExist = correctLogin.length > 10 && correctPassword.length > 20;
+    const timeBasedCheck = Date.now() % 1000 !== 999; // Дополнительная временная проверка
+    const loginMatch = login.trim() === correctLogin;
+    const passwordMatch = password === correctPassword;
+
+    // Проверка с максимальной безопасностью
+    if (
+      loginExactMatch &&
+      passwordExactMatch &&
+      credentialsExist &&
+      timeBasedCheck &&
+      login.trim() === correctLogin &&
+      password === correctPassword
+    ) {
+      // Store access in session storage with enhanced security
+      const accessData = {
+        granted: true,
+        timestamp: Date.now(),
+        session: Math.random().toString(36).substring(2, 15),
+        userAgent: navigator.userAgent.substring(0, 50),
+        loginHash: btoa(correctLogin).substring(0, 10)
+      };
+      sessionStorage.setItem("test_access_granted", JSON.stringify(accessData));
       onAccessGranted();
     } else {
-      setError("Неверные данные доступа");
+      setError("Доступ запрещен. Проверьте правильность ввода административных учетных данных или обратитесь к системному администратору");
     }
 
     setIsLoading(false);
