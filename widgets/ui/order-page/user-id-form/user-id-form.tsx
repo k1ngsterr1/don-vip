@@ -1,13 +1,11 @@
 "use client";
 
 import { Loader2, Check, AlertCircle, AlertTriangle } from "lucide-react";
-import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { CustomTooltip } from "@/shared/ui/tooltip/tooltip";
 import { useEffect, useState } from "react";
 import { CustomAlert } from "../alert/alert";
 import QuestionIcon from "@/shared/icons/question-icon";
-import { useValidateBigoUser } from "@/entities/bigo/hooks/use-validate-bigo";
 import { useValidateSmileUser } from "@/entities/smile/hooks/use-validate-smile";
 
 interface UserIdFormProps {
@@ -35,8 +33,6 @@ export function UserIdForm({
   const needsEmail = isPubgMobile; // Убираем DonatBank из условия email
   const locale = useLocale();
 
-  const { validateUser: validateBigoUser, isValidating: isBigoValidating } =
-    useValidateBigoUser();
   const { validateUser: validateSmileUser, isValidating: isSmileValidating } =
     useValidateSmileUser();
   const [userIdInput, setUserIdInput] = useState(userId);
@@ -92,7 +88,7 @@ export function UserIdForm({
     }
   }, [userIdInput, userId, validationError, userInfo, onUserIdChange]);
 
-  const isValidating = isBigoValidating || isSmileValidating;
+  const isValidating = isSmileValidating;
 
   const handleSpaceDetection = (
     value: string,
@@ -166,8 +162,14 @@ export function UserIdForm({
         }
         result = await validateSmileUser(trimmed, trimmedServerId, apiGame);
       } else {
-        // Use Bigo validation when no server is required
-        result = await validateBigoUser(trimmed);
+        // No validation for non-server games, just accept the input
+        setUserInfo({
+          username: trimmed,
+          vipStatus: undefined,
+        });
+        setValidationError("");
+        setValidationErrorCode(null);
+        return;
       }
 
       if (!result.isValid) {
@@ -349,40 +351,7 @@ export function UserIdForm({
               </div>
             </div>
           </>
-        ) : (
-          <>
-            {!isPubgMobile && (
-              <>
-                <div className="mt-4 mb-2">
-                  <h3 className="text-[16px] font-bold font-condensed mb-2">
-                    {t("findBigoId.title")}
-                  </h3>
-                  <ol className="text-[15px] font-condensed text-gray-600 space-y-1 list-decimal pl-5">
-                    <li className="text-black text-[17px]">
-                      {t("findBigoId.step1")}
-                    </li>
-                    <li className="text-black font-condensed text-[17px]">
-                      {t("findBigoId.step2")}
-                    </li>
-                    <li className="text-black font-condensed text-[17px]">
-                      {t("findBigoId.step3")}
-                    </li>
-                    <li className="text-black font-condensed text-[17px]">
-                      {t("findBigoId.step4")}
-                    </li>
-                  </ol>
-                </div>
-                <Image
-                  src="/check.webp"
-                  width={250}
-                  height={46}
-                  className="w-[250px] h-[46px]"
-                  alt={t("checkImageAlt")}
-                />
-              </>
-            )}
-          </>
-        )}
+        ) : null}
       </div>
 
       {/* Custom Error Alert */}
