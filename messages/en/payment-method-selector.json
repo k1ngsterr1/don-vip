@@ -7,9 +7,16 @@
     "methods": {
       "tbank": "T-Bank (SBP)",
       "card": "Bank card",
-      "sbp": "SBP"
+      "sbp": "SBP",
+      "credit_card": "Credit Card",
+      "wallet": "Digital Wallet",
+      "crypto": "Cryptocurrency",
+      "bank": "Bank Transfer",
+      "other": "Other Payment Method"
     },
     "noMethodsAvailable": "No payment methods available",
+    "loadingMethods": "Loading payment methods...",
+    "errorLoadingMethods": "Failed to load payment methods. Please try again later.",
     "tbankUnavailableInfo": "T-Bank is only available for payments in Russian Rubles (RUB)"
   }
 }

@@ -3,6 +3,7 @@ import type {
   UpdateCurrencyDto,
   UpdateCurrencyResponse,
 } from "@/entities/currency/model/api-types";
+import { CurrencyApi } from "@/entities/currency/api/currency-user-api";
 
 export function useUpdateUserCurrency() {
   const [isUpdating, setIsUpdating] = useState(false);
@@ -15,31 +16,7 @@ export function useUpdateUserCurrency() {
     setError(null);
 
     try {
-      const token =
-        localStorage.getItem("authToken") ||
-        sessionStorage.getItem("authToken");
-
-      if (!token) {
-        throw new Error("Authentication token not found");
-      }
-
-      const response = await fetch("/api/user/currency", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(currencyData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-          errorData.message || `HTTP error! status: ${response.status}`
-        );
-      }
-
-      const result: UpdateCurrencyResponse = await response.json();
+      const result = await CurrencyApi.updateUserCurrency(currencyData);
       return result;
     } catch (err) {
       const errorMessage =
@@ -52,8 +29,19 @@ export function useUpdateUserCurrency() {
     }
   };
 
+  const getUserCurrency = async () => {
+    try {
+      const result = await CurrencyApi.getUserCurrency();
+      return result;
+    } catch (err) {
+      console.error("Error getting user currency:", err);
+      return null;
+    }
+  };
+
   return {
     updateCurrency,
+    getUserCurrency,
     isUpdating,
     error,
   };

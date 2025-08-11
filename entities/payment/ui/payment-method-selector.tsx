@@ -2,17 +2,23 @@
 
 import Image, { type StaticImageData } from "next/image";
 import { useTranslations } from "next-intl";
-import tbankIcon from "@/assets/T-Bank.webp"; // Ensure these paths are correct
+import tbankIcon from "@/assets/T-Bank.webp";
 import mastercardIcon from "@/assets/mastercard.webp";
+import visaIcon from "@/assets/visa.webp";
 import sbpIcon from "@/assets/sbp.svg";
-import { useGetActiveBanks } from "@/entities/bank/hooks/use-get-active-banks"; // Adjusted path
+import paypalIcon from "@/assets/paypal.webp";
+import { useGetActiveBanks } from "@/entities/bank/hooks/use-get-active-banks";
+import { usePaymentMethods } from "@/entities/payment/hooks/use-payment-methods";
 import { Loader2 } from "lucide-react";
+import { useEffect } from "react";
 
 interface PaymentMethodSelectorProps {
   enhanced?: boolean;
   selectedMethod?: string;
   onSelect?: (method: string) => void;
   currentCurrency?: string; // Add currency prop
+  region?: string; // Add region prop
+  amount?: number; // Add amount prop for filtering
 }
 
 interface FrontendPaymentMethod {
@@ -28,9 +34,50 @@ export function PaymentMethodSelector({
   selectedMethod = "tbank", // Default selected method ID
   onSelect = () => {},
   currentCurrency = "RUB", // Default to RUB
+  region = "RU", // Default to Russia
+  amount, // Amount for filtering
 }: PaymentMethodSelectorProps) {
   const i18n = useTranslations("PaymentMethodSelector");
-  const { data: activeBanksResponse, isLoading, error } = useGetActiveBanks();
+
+  // Function to get appropriate icon for payment method
+  const getPaymentMethodIcon = (
+    methodType: string,
+    methodName: string
+  ): StaticImageData => {
+    const lowerType = methodType.toLowerCase();
+    const lowerName = methodName.toLowerCase();
+
+    if (lowerName.includes("visa")) return visaIcon;
+    if (lowerName.includes("mastercard")) return mastercardIcon;
+    if (lowerName.includes("paypal")) return paypalIcon;
+    if (lowerType === "card" || lowerType === "credit_card")
+      return mastercardIcon;
+    if (lowerType === "wallet") return paypalIcon;
+    if (lowerName.includes("tbank") || lowerName.includes("t-bank"))
+      return tbankIcon;
+    if (lowerName.includes("sbp") || lowerType === "sbp") return sbpIcon;
+
+    // Default to mastercard for unknown types
+    return mastercardIcon;
+  };
+
+  const {
+    data: activeBanksResponse,
+    isLoading: banksLoading,
+    error: banksError,
+  } = useGetActiveBanks();
+
+  // Get payment methods from API
+  const {
+    paymentMethods: apiPaymentMethods,
+    isLoading: methodsLoading,
+    error: methodsError,
+    refetch,
+  } = usePaymentMethods({
+    currency: currentCurrency,
+    region: region,
+    amount: amount,
+  });
 
   // Define frontend payment methods with a mapping to API names
   const allPaymentMethods: FrontendPaymentMethod[] = [
@@ -59,17 +106,68 @@ export function PaymentMethodSelector({
   const activeApiBankNames =
     activeBanksResponse?.data.map((bank) => bank.name) || [];
 
-  // Filter out T-Bank if currency is not RUB
-  const filteredPaymentMethods = allPaymentMethods.filter((method) => {
-    if (method.id === "tbank" && currentCurrency !== "RUB") {
-      return false; // Hide T-Bank for non-RUB currencies
-    }
-    return true;
-  });
+  // For non-RUB currencies, use payment methods from API
+  let availablePaymentMethods: FrontendPaymentMethod[] = [];
 
-  const availablePaymentMethods = filteredPaymentMethods.filter((method) =>
-    activeApiBankNames.includes(method.apiName)
-  );
+  if (currentCurrency !== "RUB") {
+    // For non-RUB currencies, map API payment methods to frontend format
+    availablePaymentMethods = apiPaymentMethods.map((apiMethod) => ({
+      id: apiMethod.id,
+      translationKey: `methods.${apiMethod.id}`, // Use ID as translation key first, fallback to type
+      apiName: apiMethod.name,
+      icon: getPaymentMethodIcon(apiMethod.type, apiMethod.name),
+    }));
+
+    // If no translation found for ID, try using type
+    availablePaymentMethods = availablePaymentMethods.map((method) => {
+      // Check if translation exists for the ID, if not, use type
+      const translationWithId = i18n.raw(`methods.${method.id}`);
+      if (!translationWithId || translationWithId === `methods.${method.id}`) {
+        const apiMethod = apiPaymentMethods.find((api) => api.id === method.id);
+        return {
+          ...method,
+          translationKey: `methods.${apiMethod?.type || "card"}`,
+        };
+      }
+      return method;
+    });
+  } else {
+    // For RUB currency, use the original logic with banks
+    const filteredPaymentMethods = allPaymentMethods.filter((method) => {
+      if (method.id === "tbank" && currentCurrency !== "RUB") {
+        return false; // Hide T-Bank for non-RUB currencies
+      }
+      return true;
+    });
+
+    availablePaymentMethods = filteredPaymentMethods.filter((method) =>
+      activeApiBankNames.includes(method.apiName)
+    );
+  }
+
+  const isLoading = banksLoading || methodsLoading;
+  const error = banksError || methodsError;
+
+  // Debug information
+  useEffect(() => {
+    console.log("PaymentMethodSelector Debug:", {
+      currentCurrency,
+      region,
+      apiPaymentMethods,
+      availablePaymentMethods,
+      activeBanksResponse: activeBanksResponse?.data,
+      isLoading,
+      error,
+    });
+  }, [
+    currentCurrency,
+    region,
+    apiPaymentMethods,
+    availablePaymentMethods,
+    activeBanksResponse,
+    isLoading,
+    error,
+  ]);
 
   if (isLoading) {
     return (
