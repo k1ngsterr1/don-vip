@@ -92,7 +92,7 @@ export function UserIdForm({
     }
   }, [userIdInput, userId, validationError, userInfo, onUserIdChange]);
 
-  const isValidating = isSmileValidating; // Убираем isBigoValidating
+  const isValidating = isBigoValidating || isSmileValidating;
 
   const handleSpaceDetection = (
     value: string,
@@ -147,34 +147,28 @@ export function UserIdForm({
       return;
     }
 
-    // ВРЕМЕННО ОТКЛЮЧАЕМ ВАЛИДАЦИЮ BIGO - просто принимаем любой ID
-    if (!requiresServer) {
-      // Для Bigo (без сервера) - просто принимаем ID без валидации
-      setValidationError("");
-      setValidationErrorCode(null);
-      setUserInfo({
-        username: trimmed,
-        vipStatus: undefined,
-      });
-      return;
-    }
-
-    // Оставляем валидацию только для игр с сервером (Smile validation)
     try {
-      const trimmedServerId = serverIdInput.trim();
-      if (!trimmedServerId) {
-        setValidationError(
-          locale === "ru"
-            ? errorMessages.ru.serverIdRequired
-            : errorMessages.en.serverIdRequired
-        );
-        setValidationErrorCode(null);
-        setShowErrorAlert(true);
-        setUserInfo(null);
-        return;
-      }
+      let result;
 
-      const result = await validateSmileUser(trimmed, trimmedServerId, apiGame);
+      if (requiresServer) {
+        // Use Smile validation when server is required
+        const trimmedServerId = serverIdInput.trim();
+        if (!trimmedServerId) {
+          setValidationError(
+            locale === "ru"
+              ? errorMessages.ru.serverIdRequired
+              : errorMessages.en.serverIdRequired
+          );
+          setValidationErrorCode(null);
+          setShowErrorAlert(true);
+          setUserInfo(null);
+          return;
+        }
+        result = await validateSmileUser(trimmed, trimmedServerId, apiGame);
+      } else {
+        // Use Bigo validation when no server is required
+        result = await validateBigoUser(trimmed);
+      }
 
       if (!result.isValid) {
         setValidationError(
@@ -189,7 +183,7 @@ export function UserIdForm({
       } else {
         setUserInfo({
           username: result.username,
-          vipStatus: undefined,
+          vipStatus: requiresServer ? undefined : (result as any).vipStatus,
         });
         setValidationError("");
         setValidationErrorCode(null);
