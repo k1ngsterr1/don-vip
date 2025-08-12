@@ -5,6 +5,7 @@ import { PaymentMethodSelector } from "@/entities/payment/ui/payment-method-sele
 import { cn } from "@/shared/utils/cn";
 import { useState, useEffect, useRef } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 import { Banner } from "./banner/banner";
 import { OrderSummary } from "./order-summary/order-summary";
 import { ProductInfo } from "./product-info/product-info";
@@ -299,6 +300,18 @@ export function OrderBlock({
         onToggle={() => setShowInfo(!showInfo)}
         description={game.description}
       />
+      
+      {/* Language & Currency Button */}
+      <div className="px-4 mb-4">
+        <Link href="/language-currency" className="block">
+          <button className="w-full py-3 px-4 bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded-lg text-gray-700 font-medium transition-colors flex items-center justify-center gap-2">
+            <span>🌍</span>
+            <span>
+              {locale === "ru" ? "Язык и валюта" : "Language & Currency"}
+            </span>
+          </button>
+        </Link>
+      </div>
       <CurrencySelector
         //@ts-ignore
         options={currencyOptions}
@@ -385,6 +398,18 @@ export function OrderBlock({
                 {game.name}
               </h1>
               <p className="text-gray-600">{game.description}</p>
+              
+              {/* Language & Currency Button */}
+              <div className="mt-4">
+                <Link href="/language-currency" className="inline-block">
+                  <button className="py-2 px-4 bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded-lg text-gray-700 font-medium transition-colors flex items-center gap-2">
+                    <span>🌍</span>
+                    <span>
+                      {locale === "ru" ? "Язык и валюта" : "Language & Currency"}
+                    </span>
+                  </button>
+                </Link>
+              </div>
             </div>
             <div className="p-6 border-b border-gray-100">
               <h2 className="text-lg font-medium text-gray-800 mb-4">
