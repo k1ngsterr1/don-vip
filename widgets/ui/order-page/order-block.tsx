@@ -60,12 +60,16 @@ export function OrderBlock({
   const [showGuestAuthPopup, setShowGuestAuthPopup] = useState(false);
   const [guestIdentifier, setGuestIdentifier] = useState("");
 
-  // Auto-switch payment method if T-Bank is selected but currency is not RUB
+  // Auto-switch payment method based on currency
   useEffect(() => {
-    if (selectedPaymentMethod === "tbank" && currentCurrency.code !== "RUB") {
-      setSelectedPaymentMethod("sbp"); // Switch to SBP as default alternative
+    if (currentCurrency.code !== "RUB") {
+      // For non-RUB currencies, use a generic payment method for Pagsmile checkout
+      setSelectedPaymentMethod("pagsmile_checkout");
+    } else if (selectedPaymentMethod === "pagsmile_checkout") {
+      // If switching back to RUB, reset to default RUB method
+      setSelectedPaymentMethod("tbank");
     }
-  }, [currentCurrency.code, selectedPaymentMethod]);
+  }, [currentCurrency.code]);
   const [couponCode, setCouponCode] = useState("");
   const [appliedDiscount, setAppliedDiscount] = useState<number>(0);
   const [couponInfo, setCouponInfo] = useState<any>(null);
@@ -81,7 +85,8 @@ export function OrderBlock({
     setError,
     isGuestUser,
     needsIdentifier,
-  } = useCreateOrder(selectedPaymentMethod);
+    shouldUsePagsmileCheckout,
+  } = useCreateOrder(selectedPaymentMethod, currentCurrency.code);
   const locale = useLocale();
 
   const { user: authUser, isGuestAuth } = useAuthStore();
@@ -308,11 +313,32 @@ export function OrderBlock({
         onServerIdChange={setServerId}
         // onAgreeChange={setAgreeToTerms} // removed
       />
-      <PaymentMethodSelector
-        onSelect={setSelectedPaymentMethod}
-        selectedMethod={selectedPaymentMethod}
-        currentCurrency={currentCurrency.code}
-      />
+      {/* Show payment method selector only for RUB currency */}
+      {currentCurrency.code === "RUB" && (
+        <PaymentMethodSelector
+          onSelect={setSelectedPaymentMethod}
+          selectedMethod={selectedPaymentMethod}
+          currentCurrency={currentCurrency.code}
+        />
+      )}
+      {/* Information about Pagsmile checkout for non-RUB currencies */}
+      {shouldUsePagsmileCheckout && (
+        <div className="px-4 mb-4">
+          <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg text-sm">
+            <div className="flex items-center">
+              <div className="text-blue-500 mr-2">💳</div>
+              <div>
+                <div className="font-medium mb-1">
+                  {t("payment.international.title")}
+                </div>
+                <div className="text-xs">
+                  {t("payment.international.description")}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {error && (
         <div className="px-4 mb-4">
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
@@ -382,14 +408,35 @@ export function OrderBlock({
                 // onAgreeChange={setAgreeToTerms} // removed
               />
             </div>
-            <div className="p-6">
-              <PaymentMethodSelector
-                enhanced={true}
-                onSelect={setSelectedPaymentMethod}
-                selectedMethod={selectedPaymentMethod}
-                currentCurrency={currentCurrency.code}
-              />
-            </div>
+            {/* Information about Pagsmile checkout for non-RUB currencies */}
+            {shouldUsePagsmileCheckout && (
+              <div className="p-6 border-b border-gray-100">
+                <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg text-sm">
+                  <div className="flex items-center">
+                    <div className="text-blue-500 mr-2">💳</div>
+                    <div>
+                      <div className="font-medium mb-1">
+                        {t("payment.international.title")}
+                      </div>
+                      <div className="text-xs">
+                        {t("payment.international.description")}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            {/* Show payment method selector only for RUB currency */}
+            {currentCurrency.code === "RUB" && (
+              <div className="p-6">
+                <PaymentMethodSelector
+                  enhanced={true}
+                  onSelect={setSelectedPaymentMethod}
+                  selectedMethod={selectedPaymentMethod}
+                  currentCurrency={currentCurrency.code}
+                />
+              </div>
+            )}
             {error && (
               <div className="px-6 pb-6">
                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">

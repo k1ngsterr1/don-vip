@@ -9,8 +9,9 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const resolvedParams = await params;
   try {
-    const gameId = parseInt(params.game, 10);
+    const gameId = parseInt(resolvedParams.game, 10);
     const gameData = await productService.findOne(gameId);
 
     return {
@@ -19,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   } catch (error) {
     return {
-      title: params.locale === "ru" ? "Игра" : "Game",
+      title: resolvedParams.locale === "ru" ? "Игра" : "Game",
     };
   }
 }

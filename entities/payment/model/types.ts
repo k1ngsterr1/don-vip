@@ -1,3 +1,23 @@
+export interface PagsmileCheckoutDto {
+  orderId: string;
+  amount: number | string;
+  currency: string;
+  region: string;
+  customer: {
+    name: string;
+    email: string;
+  };
+}
+
+export interface PagsmileCheckoutResponse {
+  success: boolean;
+  data?: {
+    checkout_url: string;
+    payment_id: string;
+  };
+  error?: string;
+}
+
 export interface PagsmileCreatePayinDto {
   order_id: string | number;
   amount: number | string;

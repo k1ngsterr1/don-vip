@@ -7,6 +7,12 @@
     "block": {
       "selectAmount": "1. Select the amount to top up"
     },
+    "payment": {
+      "international": {
+        "title": "International Payment",
+        "description": "Click 'Buy Now' to proceed to secure checkout with multiple payment options"
+      }
+    },
     "user": {
       "step": "2 ENTER YOUR ID",
       "enterIdAndServer": "AND SERVER",
