@@ -16,6 +16,9 @@ import { OrderBlockSkeleton } from "./loading/skeleton-loading";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useGetMe } from "@/entities/auth/hooks/use-auth";
 import { GuestAuthPopup } from "@/entities/order/ui/guest-user-popup";
+import { useCurrency } from "@/entities/currency/hooks/use-currency";
+import { CurrencySelectorDropdown } from "@/entities/currency/ui/currency-selector-dropdown";
+import { getCurrentCurrency } from "@/shared/utils/currency-init";
 
 interface OrderBlockProps {
   gameSlug: number;
@@ -36,6 +39,7 @@ interface CurrencyOption {
   id: number;
   amount: number;
   price: string;
+  originalPriceRub: number; // Оригинальная цена в рублях
   type: string;
   sku: string;
 }
@@ -76,6 +80,11 @@ export function OrderBlock({
 
   const { user: authUser, isGuestAuth } = useAuthStore();
   const { data: me } = useGetMe();
+  const {
+    currentCurrency,
+    formatPrice,
+    isLoading: currencyLoading,
+  } = useCurrency();
 
   useEffect(() => {
     const local_user = localStorage.getItem("userId");
@@ -126,15 +135,16 @@ export function OrderBlock({
         replenishmentArray.map((item: any, index: number) => ({
           id: index,
           amount: item.amount,
-          price: `${item.price.toFixed(2)} ${"RUB"}`,
+          price: formatPrice(item.price), // Используем выбранную валюту
+          originalPriceRub: item.price, // Сохраняем оригинальную цену в рублях
           type: item.type,
           sku: item.sku,
         }))
       );
     }
-  }, [product]);
+  }, [product, formatPrice]); // Добавляем formatPrice в зависимости
 
-  if (isProductLoading || !game) {
+  if (isProductLoading || !game || currencyLoading) {
     return <OrderBlockSkeleton />;
   }
 
@@ -166,8 +176,8 @@ export function OrderBlock({
       return;
     }
 
-    const numericPrice = selectedCurrency.price.replace(/[^0-9.]/g, "");
-    const originalPrice = Number(numericPrice);
+    // Используем оригинальную цену в рублях для расчетов
+    const originalPrice = selectedCurrency.originalPriceRub;
     const discountAmount =
       couponInfo?.type === "percentage"
         ? (originalPrice * appliedDiscount) / 100
@@ -190,7 +200,12 @@ export function OrderBlock({
 
     createOrder(orderData)
       .then((response: any) => {
-        if (selectedPaymentMethod === "tbank") {
+        const currentCurrencyCode = getCurrentCurrency();
+
+        if (
+          selectedPaymentMethod === "tbank" &&
+          currentCurrencyCode === "RUB"
+        ) {
           const params = new URLSearchParams({
             orderId: response.id,
             amount: selectedCurrency.amount.toString(),
@@ -203,6 +218,12 @@ export function OrderBlock({
           });
 
           window.location.href = `/t-bank?${params.toString()}`;
+        } else if (currentCurrencyCode !== "RUB") {
+          // Для других валют (пока что просто показываем сообщение)
+          console.log(`Payment in ${currentCurrencyCode} is not yet supported`);
+          setError(
+            `Оплата в валюте ${currentCurrencyCode} пока не поддерживается. Используются рубли.`
+          );
         }
       })
       .catch((err) => {
@@ -259,6 +280,13 @@ export function OrderBlock({
         onToggle={() => setShowInfo(!showInfo)}
         description={game.description}
       />
+
+      {/* Currency Selector */}
+      <div className="px-4 mb-6">
+        <h3 className="text-dark font-medium mb-3">Валюта оплаты</h3>
+        <CurrencySelectorDropdown />
+      </div>
+
       <CurrencySelector
         //@ts-ignore
         options={currencyOptions}
@@ -323,6 +351,15 @@ export function OrderBlock({
               </h1>
               <p className="text-gray-600">{game.description}</p>
             </div>
+            <div className="p-6 border-b border-gray-100">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-medium text-gray-800">
+                  Валюта оплаты
+                </h2>
+                <CurrencySelectorDropdown />
+              </div>
+            </div>
+
             <div className="p-6 border-b border-gray-100">
               <h2 className="text-lg font-medium text-gray-800 mb-4">
                 {t("block.selectAmount")}
