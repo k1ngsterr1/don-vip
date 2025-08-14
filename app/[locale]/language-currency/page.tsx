@@ -167,7 +167,7 @@ const COUNTRIES_BY_REGION = {
       country: "TIMOR-LESTE",
       language: "Português",
       currency: "USD",
-      flag: "��",
+      flag: "🇹🇱",
     },
     { country: "TURKEY", language: "English", currency: "TRY", flag: "🇹🇷" },
     {
@@ -180,7 +180,7 @@ const COUNTRIES_BY_REGION = {
       country: "UZBEKISTAN",
       language: "English",
       currency: "USD",
-      flag: "🇺�",
+      flag: "🇺🇿",
     },
     { country: "VIETNAM", language: "Việt", currency: "VND", flag: "🇻🇳" },
   ],
@@ -569,183 +569,198 @@ export default function LanguageCurrencyPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Settings Panel */}
-        <div className="bg-gray-900 rounded-xl p-6 mb-8 max-w-md ml-auto">
-          <h3 className="text-white font-roboto font-medium mb-4">
-            {t("content.title")}
-          </h3>
-
-          {/* Selected Country Display */}
-          {selectedCountry && (
-            <div className="mb-4 flex items-center gap-3 text-white">
-              <span className="text-2xl">{selectedCountry.flag}</span>
-              <div>
-                <div className="font-medium">{selectedCountry.country}</div>
-                <div className="text-sm text-gray-400">
-                  {selectedCountry.language}
+        <div className="flex gap-8">
+          {/* Left Column - Countries List */}
+          <div className="flex-1">
+            {/* Search Bar */}
+            <div className="mb-8">
+              <div className="relative max-w-md">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search className="h-5 w-5 text-gray-400" />
                 </div>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={
+                    t("content.searchPlaceholder") ||
+                    "Search countries, currencies..."
+                  }
+                  className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-dark placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue focus:border-transparent"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center hover:text-gray-700"
+                  >
+                    <X className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                  </button>
+                )}
               </div>
-            </div>
-          )}
-
-          {/* Language Selector */}
-          <div className="mb-4">
-            <div className="flex items-center gap-2 text-white mb-2">
-              <span className="text-xl">🌐</span>
-              <span className="font-roboto">
-                {currentLocale === "ru" ? "Русский" : "English"}
-              </span>
-            </div>
-          </div>
-
-          {/* Currency Selector */}
-          <div className="mb-6">
-            <div className="flex items-center gap-2 text-white mb-2">
-              <span className="text-xl">💵</span>
-              <span className="font-roboto">
-                {selectedCurrency.code} ({selectedCurrency.symbol})
-              </span>
-            </div>
-          </div>
-
-          {/* Save Button */}
-          <Button
-            onClick={handleSaveSettings}
-            className="w-full bg-blue hover:bg-blue/90 text-white py-3 rounded-lg font-roboto font-medium"
-          >
-            {t("content.saveSettings")}
-          </Button>
-        </div>
-
-        {/* Search Bar */}
-        <div className="mb-8">
-          <div className="relative max-w-md">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={
-                t("content.searchPlaceholder") ||
-                "Search countries, currencies..."
-              }
-              className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-dark placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue focus:border-transparent"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center hover:text-gray-700"
-              >
-                <X className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-              </button>
-            )}
-          </div>
-          {searchQuery && (
-            <div className="mt-2 text-sm text-gray-600">
-              {t("content.searchResults") || "Search results for"}: "
-              {searchQuery}"
-              {Object.values(getFilteredRegions()).flat().length > 0 && (
-                <span className="ml-2 text-blue font-medium">
-                  ({Object.values(getFilteredRegions()).flat().length}{" "}
-                  {Object.values(getFilteredRegions()).flat().length === 1
-                    ? "result"
-                    : "results"}
-                  )
-                </span>
+              {searchQuery && (
+                <div className="mt-2 text-sm text-gray-600">
+                  {t("content.searchResults") || "Search results for"}: "
+                  {searchQuery}"
+                  {Object.values(getFilteredRegions()).flat().length > 0 && (
+                    <span className="ml-2 text-blue font-medium">
+                      ({Object.values(getFilteredRegions()).flat().length}{" "}
+                      {Object.values(getFilteredRegions()).flat().length === 1
+                        ? "result"
+                        : "results"}
+                      )
+                    </span>
+                  )}
+                </div>
               )}
             </div>
-          )}
-        </div>
 
-        {/* Countries Grid by Regions */}
-        {isLoading ? (
-          <div className="flex items-center justify-center py-16">
-            <Loader2 className="h-8 w-8 animate-spin text-blue mr-3" />
-            <span className="text-dark font-roboto">
-              {t("content.loadingRates")}
-            </span>
-          </div>
-        ) : (
-          <div className="space-y-12">
-            {Object.entries(getFilteredRegions()).length === 0 ? (
-              <div className="text-center py-16">
-                <Search className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-xl font-roboto font-medium text-gray-600 mb-2">
-                  {t("content.noResults") || "No results found"}
-                </h3>
-                <p className="text-gray-500">
-                  {t("content.noResultsDesc") ||
-                    "Try searching with different keywords"}
-                </p>
+            {/* Countries Grid by Regions */}
+            {isLoading ? (
+              <div className="flex items-center justify-center py-16">
+                <Loader2 className="h-8 w-8 animate-spin text-blue mr-3" />
+                <span className="text-dark font-roboto">
+                  {t("content.loadingRates")}
+                </span>
               </div>
             ) : (
-              Object.entries(getFilteredRegions()).map(
-                ([regionName, countries]) => (
-                  <div key={regionName}>
-                    <h2 className="text-2xl font-unbounded font-bold text-dark mb-6 uppercase">
-                      {regionName}
-                      <span className="text-sm font-roboto font-normal text-gray-500 ml-3 capitalize">
-                        ({countries.length}{" "}
-                        {countries.length === 1 ? "country" : "countries"})
-                      </span>
-                    </h2>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                      {countries.map((country) => {
-                        const isSelected =
-                          selectedCountry?.country === country.country;
-                        return (
-                          <button
-                            key={country.country}
-                            onClick={() => handleCountrySelect(country)}
-                            className={`p-4 rounded-xl border-2 transition-all duration-200 text-left hover:shadow-md ${
-                              isSelected
-                                ? "border-blue bg-blue/5"
-                                : "border-gray-200 hover:border-gray-300"
-                            }`}
-                          >
-                            <div className="flex items-center gap-3 mb-2">
-                              <span className="text-2xl">{country.flag}</span>
-                              <div className="min-w-0 flex-1">
+              <div className="space-y-12">
+                {Object.entries(getFilteredRegions()).length === 0 ? (
+                  <div className="text-center py-16">
+                    <Search className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                    <h3 className="text-xl font-roboto font-medium text-gray-600 mb-2">
+                      {t("content.noResults") || "No results found"}
+                    </h3>
+                    <p className="text-gray-500">
+                      {t("content.noResultsDesc") ||
+                        "Try searching with different keywords"}
+                    </p>
+                  </div>
+                ) : (
+                  Object.entries(getFilteredRegions()).map(
+                    ([regionName, countries]) => (
+                      <div key={regionName}>
+                        <h2 className="text-2xl font-unbounded font-bold text-dark mb-6 uppercase">
+                          {regionName}
+                          <span className="text-sm font-roboto font-normal text-gray-500 ml-3 capitalize">
+                            ({countries.length}{" "}
+                            {countries.length === 1 ? "country" : "countries"})
+                          </span>
+                        </h2>
+                        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+                          {countries.map((country) => {
+                            const isSelected =
+                              selectedCountry?.country === country.country;
+                            return (
+                              <button
+                                key={country.country}
+                                onClick={() => handleCountrySelect(country)}
+                                className={`p-3 rounded-lg border-2 transition-all duration-200 text-left hover:shadow-md ${
+                                  isSelected
+                                    ? "border-blue bg-blue/5"
+                                    : "border-gray-200 hover:border-gray-300"
+                                }`}
+                              >
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="text-lg">
+                                    {country.flag}
+                                  </span>
+                                  <div className="min-w-0 flex-1">
+                                    <div
+                                      className={`font-roboto font-medium text-xs truncate ${
+                                        isSelected ? "text-blue" : "text-dark"
+                                      }`}
+                                    >
+                                      {searchQuery
+                                        ? highlightText(
+                                            country.country,
+                                            searchQuery
+                                          )
+                                        : country.country}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="text-xs text-gray-500 mb-1">
+                                  {searchQuery
+                                    ? highlightText(
+                                        country.language,
+                                        searchQuery
+                                      )
+                                    : country.language}
+                                </div>
                                 <div
-                                  className={`font-roboto font-medium text-sm truncate ${
-                                    isSelected ? "text-blue" : "text-dark"
+                                  className={`text-xs font-medium ${
+                                    isSelected ? "text-blue" : "text-gray-700"
                                   }`}
                                 >
                                   {searchQuery
                                     ? highlightText(
-                                        country.country,
+                                        country.currency,
                                         searchQuery
                                       )
-                                    : country.country}
+                                    : country.currency}
                                 </div>
-                              </div>
-                            </div>
-                            <div className="text-xs text-gray-500 mb-1">
-                              {searchQuery
-                                ? highlightText(country.language, searchQuery)
-                                : country.language}
-                            </div>
-                            <div
-                              className={`text-xs font-medium ${
-                                isSelected ? "text-blue" : "text-gray-700"
-                              }`}
-                            >
-                              {searchQuery
-                                ? highlightText(country.currency, searchQuery)
-                                : country.currency}
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )
-              )
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )
+                  )
+                )}
+              </div>
             )}
           </div>
-        )}
+
+          {/* Right Column - Settings Panel */}
+          <div className="w-80 flex-shrink-0">
+            <div className="sticky top-[128px] z-40 bg-white border border-gray-200 rounded-xl p-6 shadow-lg">
+              <h3 className="text-dark font-roboto font-medium mb-4">
+                {t("content.title")}
+              </h3>
+
+              {/* Selected Country Display */}
+              {selectedCountry && (
+                <div className="mb-4 flex items-center gap-3 text-dark">
+                  <span className="text-2xl">{selectedCountry.flag}</span>
+                  <div>
+                    <div className="font-medium">{selectedCountry.country}</div>
+                    <div className="text-sm text-gray-600">
+                      {selectedCountry.language}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Language Selector */}
+              <div className="mb-4">
+                <div className="flex items-center gap-2 text-dark mb-2">
+                  <span className="text-xl">🌐</span>
+                  <span className="font-roboto">
+                    {currentLocale === "ru" ? "Русский" : "English"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Currency Selector */}
+              <div className="mb-6">
+                <div className="flex items-center gap-2 text-dark mb-2">
+                  <span className="text-xl">💵</span>
+                  <span className="font-roboto">
+                    {selectedCurrency.code} ({selectedCurrency.symbol})
+                  </span>
+                </div>
+              </div>
+
+              {/* Save Button */}
+              <Button
+                onClick={handleSaveSettings}
+                className="w-full bg-blue hover:bg-blue/90 text-white py-3 rounded-lg font-roboto font-medium"
+              >
+                {t("content.saveSettings")}
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
