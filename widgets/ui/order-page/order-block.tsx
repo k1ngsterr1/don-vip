@@ -352,15 +352,6 @@ export function OrderBlock({
               <p className="text-gray-600">{game.description}</p>
             </div>
             <div className="p-6 border-b border-gray-100">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-medium text-gray-800">
-                  Валюта оплаты
-                </h2>
-                <CurrencySelectorDropdown />
-              </div>
-            </div>
-
-            <div className="p-6 border-b border-gray-100">
               <h2 className="text-lg font-medium text-gray-800 mb-4">
                 {t("block.selectAmount")}
               </h2>
