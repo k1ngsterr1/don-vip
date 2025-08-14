@@ -135,14 +135,14 @@ export function OrderBlock({
         replenishmentArray.map((item: any, index: number) => ({
           id: index,
           amount: item.amount,
-          price: formatPrice(item.price), // Используем выбранную валюту
+          price: formatPrice(item.price), // Теперь formatPrice мемоизирована
           originalPriceRub: item.price, // Сохраняем оригинальную цену в рублях
           type: item.type,
           sku: item.sku,
         }))
       );
     }
-  }, [product, formatPrice]); // Добавляем formatPrice в зависимости
+  }, [product, locale, formatPrice]); // Теперь formatPrice мемоизирована и безопасна для использования
 
   if (isProductLoading || !game || currencyLoading) {
     return <OrderBlockSkeleton />;

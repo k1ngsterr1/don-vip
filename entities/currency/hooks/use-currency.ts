@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export interface Currency {
   code: string;
@@ -84,34 +84,34 @@ export function useCurrency() {
   }, []);
 
   // Функция для смены валюты
-  const setCurrency = (currency: Currency) => {
+  const setCurrency = useCallback((currency: Currency) => {
     try {
       setCurrentCurrency(currency);
       localStorage.setItem(CURRENCY_STORAGE_KEY, currency.code);
     } catch (error) {
       console.error("Error saving currency to localStorage:", error);
     }
-  };
+  }, []);
 
   // Функция для конвертации цены
-  const convertPrice = (
-    priceInRub: number,
-    targetCurrency?: Currency
-  ): number => {
-    const target = targetCurrency || currentCurrency;
-    return priceInRub * target.exchangeRate;
-  };
+  const convertPrice = useCallback(
+    (priceInRub: number, targetCurrency?: Currency): number => {
+      const target = targetCurrency || currentCurrency;
+      return priceInRub * target.exchangeRate;
+    },
+    [currentCurrency]
+  );
 
   // Функция для форматирования цены
-  const formatPrice = (
-    priceInRub: number,
-    targetCurrency?: Currency
-  ): string => {
-    const target = targetCurrency || currentCurrency;
-    const convertedPrice = convertPrice(priceInRub, target);
+  const formatPrice = useCallback(
+    (priceInRub: number, targetCurrency?: Currency): string => {
+      const target = targetCurrency || currentCurrency;
+      const convertedPrice = priceInRub * target.exchangeRate;
 
-    return `${convertedPrice.toFixed(2)} ${target.symbol}`;
-  };
+      return `${convertedPrice.toFixed(2)} ${target.symbol}`;
+    },
+    [currentCurrency]
+  );
 
   return {
     currentCurrency,
