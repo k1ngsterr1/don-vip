@@ -178,7 +178,7 @@ export function useCreateOrder(
       const identifier =
         orderData.identifier || getUserIdentifier() || "customer";
       const checkoutData: PagsmileCheckoutDto = {
-        orderId: orderId,
+        order_id: orderId,
         amount:
           typeof orderData.price === "string"
             ? orderData.price

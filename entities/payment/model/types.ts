@@ -1,5 +1,5 @@
 export interface PagsmileCheckoutDto {
-  orderId: string;
+  order_id: string;
   amount: number | string;
   currency: string;
   region: string;
