@@ -1,5 +1,5 @@
 export interface PagsmileCheckoutDto {
-  orderId: string;
+  order_id: string;
   amount: number | string;
   currency: string;
   region: string;
@@ -19,28 +19,12 @@ export interface PagsmileCheckoutResponse {
 }
 
 export interface PagsmileCreatePayinDto {
-  order_id: string | number;
-  amount: number | string;
-  currency: string;
-  country: string;
-  payment_method: string;
-  user_id?: number; // Will be set by the server from JWT token
-  notification_url?: string;
-  return_url?: string;
-  customer?: {
-    name?: string;
-    email?: string;
-    phone?: string;
-  };
-  billing_address?: {
-    street?: string;
-    city?: string;
-    state?: string;
-    zipcode?: string;
-    country?: string;
-  };
-  description?: string;
-  metadata?: Record<string, any>;
+  amount: string;
+  order_id: number;
+  user_id?: number;
+  name?: string;
+  currency?: string;
+  region?: string;
 }
 
 export interface PagsmilePayinResponse {

@@ -9,6 +9,7 @@ import type { CreateOrderDto } from "../model/types";
 import type {
   PagsmileCreatePayinDto,
   PagsmileCheckoutDto,
+  PagsmileCheckoutResponse,
 } from "@/entities/payment/model/types";
 import { paymentApi } from "@/entities/payment/api/payment.api";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
@@ -148,7 +149,7 @@ export function useCreateOrder(
       return paymentApi.createPagsmileCheckout(checkoutData);
     },
 
-    onSuccess: (checkoutData) => {
+    onSuccess: (checkoutData: PagsmileCheckoutResponse) => {
       setIsProcessingPayment(false);
 
       if (checkoutData.success && checkoutData.data?.checkout_url) {
@@ -177,7 +178,7 @@ export function useCreateOrder(
       const identifier =
         orderData.identifier || getUserIdentifier() || "customer";
       const checkoutData: PagsmileCheckoutDto = {
-        orderId: orderId,
+        order_id: orderId,
         amount:
           typeof orderData.price === "string"
             ? orderData.price
