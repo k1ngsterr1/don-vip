@@ -40,12 +40,9 @@ export const bigoService = {
    */
   async validateUserId(userId: string): Promise<ValidateBigoUserResponse> {
     try {
-      const response = await apiClient.post<BigoApiResponse>(
-        "/product/bigo/validate",
-        {
-          user_id: userId,
-        }
-      );
+      const response = await apiClient.post<BigoApiResponse>("/bigo/validate", {
+        user_id: userId,
+      });
 
       const data = response.data;
 

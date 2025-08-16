@@ -1,11 +1,12 @@
 "use client";
 
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, CheckCircle, Loader } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { CustomTooltip } from "@/shared/ui/tooltip/tooltip";
 import { useEffect, useState } from "react";
 import { CustomAlert } from "../alert/alert";
 import QuestionIcon from "@/shared/icons/question-icon";
+import { useValidateBigoUser } from "@/entities/bigo/hooks/use-validate-bigo";
 
 interface UserIdFormProps {
   apiGame?: string;
@@ -29,6 +30,7 @@ export function UserIdForm({
   const t = useTranslations("orderBlock.user");
   const isPubgMobile = apiGame === "pubgmobile";
   const isDonatBank = productType === "DonatBank";
+  const isBigo = productType === "Bigo";
   const needsEmail = isPubgMobile; // Убираем DonatBank из условия email
   const locale = useLocale();
   const [userIdInput, setUserIdInput] = useState(userId);
@@ -37,6 +39,20 @@ export function UserIdForm({
   const [spaceWarningField, setSpaceWarningField] = useState<
     "userId" | "serverId"
   >("userId");
+
+  // Bigo validation
+  const {
+    validateUser,
+    isValidating,
+    error: validationError,
+  } = useValidateBigoUser();
+  const [validationResult, setValidationResult] = useState<{
+    isValid: boolean;
+    username?: string;
+    vipStatus?: string;
+    errorMessage?: string;
+  } | null>(null);
+  const [hasValidated, setHasValidated] = useState(false);
 
   const errorMessages = {
     en: {
@@ -70,6 +86,12 @@ export function UserIdForm({
   const handleUserIdChange = (value: string) => {
     const cleanValue = handleSpaceDetection(value, "userId");
     setUserIdInput(cleanValue);
+
+    // Reset validation when ID changes
+    if (isBigo && hasValidated) {
+      setHasValidated(false);
+      setValidationResult(null);
+    }
   };
 
   const handleServerIdChange = (value: string) => {
@@ -79,7 +101,17 @@ export function UserIdForm({
   };
 
   const handleValidateUserId = async () => {
-    // No validation, just a placeholder
+    if (!isBigo || !userIdInput.trim()) {
+      return;
+    }
+
+    try {
+      const result = await validateUser(userIdInput);
+      setValidationResult(result);
+      setHasValidated(true);
+    } catch (error) {
+      console.error("Validation error:", error);
+    }
   };
 
   // Get space warning message based on locale
@@ -138,24 +170,77 @@ export function UserIdForm({
               value={userIdInput}
               onChange={(e) => handleUserIdChange(e.target.value)}
               onBlur={handleValidateUserId}
-              className={`w-full p-3 ${
-                needsEmail ? "pl-3" : "pl-10"
-              } border border-gray-200 rounded-lg`}
+              className={`w-full p-3 ${needsEmail ? "pl-3" : "pl-10"} ${
+                isBigo ? "pr-10" : ""
+              } border rounded-lg ${
+                hasValidated && validationResult
+                  ? validationResult.isValid
+                    ? "border-green-500 bg-green-50"
+                    : "border-red-500 bg-red-50"
+                  : "border-gray-200"
+              }`}
             />
+            {/* Bigo validation indicators */}
+            {isBigo && (
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                {isValidating && (
+                  <Loader className="w-5 h-5 animate-spin text-blue-500" />
+                )}
+                {hasValidated && validationResult && !isValidating && (
+                  <>
+                    {validationResult.isValid ? (
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                    ) : (
+                      <AlertTriangle className="w-5 h-5 text-red-500" />
+                    )}
+                  </>
+                )}
+              </div>
+            )}
           </div>
         )}
 
         {requiresServer ? (
           <>
-            <input
-              type={needsEmail ? "email" : "text"}
-              placeholder={
-                needsEmail ? t("userEmailPlaceholder") : t("userIdPlaceholder")
-              }
-              value={userIdInput}
-              onChange={(e) => handleUserIdChange(e.target.value)}
-              className="w-full p-3 border border-gray-200 rounded-lg"
-            />
+            <div className="relative">
+              <input
+                type={needsEmail ? "email" : "text"}
+                placeholder={
+                  needsEmail
+                    ? t("userEmailPlaceholder")
+                    : t("userIdPlaceholder")
+                }
+                value={userIdInput}
+                onChange={(e) => handleUserIdChange(e.target.value)}
+                onBlur={handleValidateUserId}
+                className={`w-full p-3 ${
+                  isBigo ? "pr-10" : ""
+                } border rounded-lg ${
+                  hasValidated && validationResult
+                    ? validationResult.isValid
+                      ? "border-green-500 bg-green-50"
+                      : "border-red-500 bg-red-50"
+                    : "border-gray-200"
+                }`}
+              />
+              {/* Bigo validation indicators */}
+              {isBigo && (
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  {isValidating && (
+                    <Loader className="w-5 h-5 animate-spin text-blue-500" />
+                  )}
+                  {hasValidated && validationResult && !isValidating && (
+                    <>
+                      {validationResult.isValid ? (
+                        <CheckCircle className="w-5 h-5 text-green-500" />
+                      ) : (
+                        <AlertTriangle className="w-5 h-5 text-red-500" />
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
             <div className="relative">
               <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                 (
@@ -174,6 +259,54 @@ export function UserIdForm({
           </>
         ) : null}
       </div>
+
+      {/* Bigo Validation Result */}
+      {isBigo && hasValidated && validationResult && (
+        <div
+          className={`mt-3 p-3 rounded-lg border ${
+            validationResult.isValid
+              ? "bg-green-50 border-green-200"
+              : "bg-red-50 border-red-200"
+          }`}
+        >
+          <div
+            className={`flex items-center ${
+              validationResult.isValid ? "text-green-700" : "text-red-700"
+            }`}
+          >
+            {validationResult.isValid ? (
+              <CheckCircle size={16} className="mr-2" />
+            ) : (
+              <AlertTriangle size={16} className="mr-2" />
+            )}
+            <span className="font-medium">
+              {validationResult.isValid
+                ? locale === "ru"
+                  ? "ID действителен"
+                  : "ID is valid"
+                : locale === "ru"
+                ? "ID не найден"
+                : "ID not found"}
+            </span>
+          </div>
+          {validationResult.isValid && validationResult.username && (
+            <div className="mt-1 text-sm text-green-600">
+              {locale === "ru" ? "Пользователь" : "Username"}:{" "}
+              {validationResult.username}
+              {validationResult.vipStatus && (
+                <span className="ml-2 px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">
+                  {validationResult.vipStatus}
+                </span>
+              )}
+            </div>
+          )}
+          {!validationResult.isValid && validationResult.errorMessage && (
+            <div className="mt-1 text-sm text-red-600">
+              {validationResult.errorMessage}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Space Warning Alert */}
       <CustomAlert
