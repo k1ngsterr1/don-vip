@@ -66,6 +66,8 @@ export function UserIdForm({
       validationError: "Failed to validate ID.",
       spaceWarning:
         "Spaces are not allowed and have been automatically removed.",
+      emailNotAllowed:
+        "Email addresses are not allowed. Please enter a valid user ID.",
     },
     ru: {
       accountNotFound:
@@ -79,6 +81,8 @@ export function UserIdForm({
       idNotExists: "ID не существует.",
       validationError: "Не удалось проверить ID.",
       spaceWarning: "Пробелы не допускаются и были автоматически удалены.",
+      emailNotAllowed:
+        "Email адреса не допускаются. Пожалуйста, введите корректный ID пользователя.",
     },
   };
 
@@ -107,6 +111,20 @@ export function UserIdForm({
 
   const handleUserIdChange = (value: string) => {
     const cleanValue = handleSpaceDetection(value, "userId");
+
+    // Check if the input is an email and block it
+    if (isEmail(cleanValue)) {
+      setValidationError(
+        locale === "ru"
+          ? errorMessages.ru.emailNotAllowed
+          : errorMessages.en.emailNotAllowed
+      );
+      setValidationErrorCode(null);
+      setShowErrorAlert(true);
+      setUserInfo(null);
+      return;
+    }
+
     setUserIdInput(cleanValue);
     setUserInfo(null);
     setValidationError("");
@@ -124,14 +142,16 @@ export function UserIdForm({
 
     if (!trimmed) return;
 
-    // Skip validation for email
+    // Block email input entirely
     if (isEmail(trimmed)) {
-      setValidationError("");
+      setValidationError(
+        locale === "ru"
+          ? errorMessages.ru.emailNotAllowed
+          : errorMessages.en.emailNotAllowed
+      );
       setValidationErrorCode(null);
-      setUserInfo({
-        username: trimmed,
-        vipStatus: undefined,
-      });
+      setShowErrorAlert(true);
+      setUserInfo(null);
       return;
     }
 
@@ -211,6 +231,11 @@ export function UserIdForm({
   // Format error message based on error code and locale
   const getFormattedErrorMessage = () => {
     const messages = locale === "ru" ? errorMessages.ru : errorMessages.en;
+
+    // Check if it's an email blocking error first
+    if (validationError === messages.emailNotAllowed) {
+      return messages.emailNotAllowed;
+    }
 
     switch (validationErrorCode) {
       case -32024:

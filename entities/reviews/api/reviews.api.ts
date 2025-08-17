@@ -116,7 +116,19 @@ export const feedbackService = {
         `/feedback/list/accepted?page=${page}&limit=${limit}`
       );
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      // Handle specific 401 unauthorized errors
+      if (error?.response?.status === 401) {
+        console.warn(
+          "Unauthorized access to accepted feedbacks, returning empty data"
+        );
+        return {
+          data: [],
+          total: 0,
+          page: page,
+          lastPage: 1,
+        };
+      }
       throw new Error(extractErrorMessage(error));
     }
   },

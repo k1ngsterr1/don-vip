@@ -55,9 +55,17 @@ export const userApi = {
   /**
    * Get the current authenticated user's profile
    */
-  getCurrentUser: async (): Promise<User> => {
-    const response = await apiClient.get<User>("/user/me");
-    return response.data;
+  getCurrentUser: async (): Promise<User | null> => {
+    try {
+      const response = await apiClient.get<User>("/user/me");
+      return response.data;
+    } catch (error: any) {
+      if (error?.response?.status === 401) {
+        console.warn("User not authenticated");
+        return null;
+      }
+      throw error;
+    }
   },
 
   /**

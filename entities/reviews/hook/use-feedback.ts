@@ -82,6 +82,14 @@ export function useAcceptedFeedbacks(page = 1, limit = 10) {
   return useQuery<PaginatedFeedbackResponse, Error>({
     queryKey: [...feedbackKeys.lists(), "accepted", { page, limit }],
     queryFn: () => feedbackService.getAccepted(page, limit),
+    retry: (failureCount, error) => {
+      // Don't retry on 401/403 errors (authorization issues)
+      if (error.message.includes("401") || error.message.includes("403")) {
+        return false;
+      }
+      return failureCount < 3;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
 

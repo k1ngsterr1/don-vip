@@ -22,28 +22,51 @@ export function ReviewsBlock() {
 
   useEffect(() => {
     async function fetchUser() {
-      const userData = await userApi.getCurrentUser();
-      setUser(userData as any);
+      try {
+        if (isAuthenticated) {
+          const userData = await userApi.getCurrentUser();
+          setUser(userData as any);
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        setUser(null);
+      }
     }
     fetchUser();
-  }, []);
+  }, [isAuthenticated]);
 
   const reviews: any[] = data?.data
     ? data.data.map((feedback: any) => {
         const isAnonymous =
           !feedback.user?.first_name && !feedback.user?.avatar;
 
+        // Better date handling
+        let formattedDate;
+        try {
+          const date = new Date(
+            feedback.createdAt || feedback.created_at || Date.now()
+          );
+          formattedDate = date.toLocaleDateString("ru-RU", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          });
+        } catch (error) {
+          console.error("Error formatting date:", error);
+          formattedDate = new Date().toLocaleDateString("ru-RU", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          });
+        }
+
         const review = {
           id: feedback.id.toString(),
           author:
             isAnonymous || !feedback.user?.first_name
-              ? t("user") || t("user")
+              ? t("user") || "Anonymous User"
               : feedback.user.first_name,
-          date: new Date().toLocaleDateString("ru-RU", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          }),
+          date: formattedDate,
           product: feedback.product,
           text: feedback.text,
           liked: feedback.reaction === true,
@@ -70,7 +93,10 @@ export function ReviewsBlock() {
         <ReviewsSkeleton />
       ) : error ? (
         <div className="w-full text-center py-4 text-red-500">
-          Error loading reviews: {error.message}
+          <p>Error loading reviews</p>
+          {process.env.NODE_ENV === "development" && (
+            <p className="text-sm mt-2 text-gray-500">{error.message}</p>
+          )}
         </div>
       ) : reviews.length > 0 ? (
         <ReviewList reviews={reviews} />
