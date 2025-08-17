@@ -59,8 +59,11 @@ export function OrderBlock({
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("tbank");
   const [showGuestAuthPopup, setShowGuestAuthPopup] = useState(false);
   const [guestIdentifier, setGuestIdentifier] = useState("");
+  const [isUserIdValid, setIsUserIdValid] = useState(true); // Добавляем состояние для валидности User ID
 
-  // Auto-switch payment method based on currency
+  const handleValidationChange = (isValid: boolean) => {
+    setIsUserIdValid(isValid);
+  };
   useEffect(() => {
     if (currentCurrency.code !== "RUB") {
       // For non-RUB currencies, use a generic payment method for Pagsmile checkout
@@ -169,7 +172,8 @@ export function OrderBlock({
   const isFormValid =
     selectedCurrency !== null &&
     userId.trim() !== "" &&
-    (!game.requiresServer || serverId.trim() !== "");
+    (!game.requiresServer || serverId.trim() !== "") &&
+    isUserIdValid; // Добавляем проверку валидности User ID
 
   // Get user identifier from various sources
   const getUserIdentifier = (): string | null => {
@@ -311,6 +315,7 @@ export function OrderBlock({
         // agreeToTerms={agreeToTerms} // removed
         onUserIdChange={setUserId}
         onServerIdChange={setServerId}
+        onValidationChange={handleValidationChange}
         // onAgreeChange={setAgreeToTerms} // removed
       />
       {/* Show payment method selector only for RUB currency */}
@@ -405,6 +410,7 @@ export function OrderBlock({
                 // agreeToTerms={agreeToTerms} // removed
                 onUserIdChange={setUserId}
                 onServerIdChange={setServerId}
+                onValidationChange={handleValidationChange}
                 // onAgreeChange={setAgreeToTerms} // removed
               />
             </div>

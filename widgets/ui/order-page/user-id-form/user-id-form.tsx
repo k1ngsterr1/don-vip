@@ -16,6 +16,7 @@ interface UserIdFormProps {
   serverId: string;
   onUserIdChange: (value: string) => void;
   onServerIdChange: (value: string) => void;
+  onValidationChange?: (isValid: boolean) => void; // Добавляем колбэк для информирования о валидности
 }
 
 export function UserIdForm({
@@ -26,6 +27,7 @@ export function UserIdForm({
   serverId,
   onUserIdChange,
   onServerIdChange,
+  onValidationChange,
 }: UserIdFormProps) {
   const t = useTranslations("orderBlock.user");
   const isPubgMobile = apiGame === "pubgmobile";
@@ -69,7 +71,26 @@ export function UserIdForm({
 
   useEffect(() => {
     onUserIdChange(userIdInput);
-  }, [userIdInput, onUserIdChange]);
+
+    // Проверяем изначальную валидность при монтировании или изменении userIdInput
+    if (isBigo) {
+      if (userIdInput.trim().length >= 4 && hasValidated && validationResult) {
+        onValidationChange?.(validationResult.isValid);
+      } else {
+        onValidationChange?.(false);
+      }
+    } else {
+      // Для всех продуктов кроме Bigo - всегда валидно
+      onValidationChange?.(true);
+    }
+  }, [
+    userIdInput,
+    onUserIdChange,
+    isBigo,
+    hasValidated,
+    validationResult,
+    onValidationChange,
+  ]);
 
   const handleSpaceDetection = (
     value: string,
@@ -91,6 +112,7 @@ export function UserIdForm({
     if (isBigo && hasValidated) {
       setHasValidated(false);
       setValidationResult(null);
+      onValidationChange?.(false); // Сообщаем, что валидность сброшена
     }
 
     // Auto-validate for Bigo if ID looks complete (e.g., more than 3 characters)
@@ -101,6 +123,12 @@ export function UserIdForm({
           handleValidateUserId();
         }
       }, 1000);
+    } else if (isBigo && cleanValue.trim().length < 4) {
+      // If ID is too short for Bigo, mark as invalid
+      onValidationChange?.(false);
+    } else if (!isBigo) {
+      // For non-Bigo products, always valid
+      onValidationChange?.(true);
     }
   };
 
@@ -119,16 +147,23 @@ export function UserIdForm({
       const result = await validateUser(userIdInput);
       setValidationResult(result);
       setHasValidated(true);
+
+      // Информируем родительский компонент о результате валидации
+      onValidationChange?.(result.isValid);
     } catch (error) {
       console.error("Validation error:", error);
       // Set error state if validation fails
-      setValidationResult({
+      const errorResult = {
         isValid: false,
         errorMessage:
           validationError ||
           (locale === "ru" ? "Ошибка валидации" : "Validation error"),
-      });
+      };
+      setValidationResult(errorResult);
       setHasValidated(true);
+
+      // Информируем родительский компонент о неудачной валидации
+      onValidationChange?.(false);
     }
   };
 
@@ -187,7 +222,6 @@ export function UserIdForm({
               }
               value={userIdInput}
               onChange={(e) => handleUserIdChange(e.target.value)}
-              onBlur={handleValidateUserId}
               className={`w-full p-3 ${needsEmail ? "pl-3" : "pl-10"} ${
                 isBigo ? "pr-10" : ""
               } border rounded-lg ${
@@ -201,14 +235,6 @@ export function UserIdForm({
             {/* Bigo validation indicators */}
             {isBigo && (
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
-                {userIdInput.trim() && !hasValidated && !isValidating && (
-                  <button
-                    onClick={handleValidateUserId}
-                    className="text-blue-500 hover:text-blue-700 text-xs font-medium px-2 py-1 rounded-md border border-blue-200 hover:border-blue-300 bg-white hover:bg-blue-50 transition-colors"
-                  >
-                    {locale === "ru" ? "Проверить" : "Validate"}
-                  </button>
-                )}
                 {isValidating && (
                   <Loader className="w-5 h-5 animate-spin text-blue-500" />
                 )}
@@ -238,7 +264,6 @@ export function UserIdForm({
                 }
                 value={userIdInput}
                 onChange={(e) => handleUserIdChange(e.target.value)}
-                onBlur={handleValidateUserId}
                 className={`w-full p-3 ${
                   isBigo ? "pr-10" : ""
                 } border rounded-lg ${
@@ -252,14 +277,6 @@ export function UserIdForm({
               {/* Bigo validation indicators */}
               {isBigo && (
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
-                  {userIdInput.trim() && !hasValidated && !isValidating && (
-                    <button
-                      onClick={handleValidateUserId}
-                      className="text-blue-500 hover:text-blue-700 text-xs font-medium px-2 py-1 rounded-md border border-blue-200 hover:border-blue-300 bg-white hover:bg-blue-50 transition-colors"
-                    >
-                      {locale === "ru" ? "Проверить" : "Validate"}
-                    </button>
-                  )}
                   {isValidating && (
                     <Loader className="w-5 h-5 animate-spin text-blue-500" />
                   )}
