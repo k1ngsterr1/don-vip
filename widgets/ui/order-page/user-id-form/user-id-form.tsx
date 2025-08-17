@@ -35,6 +35,8 @@ export function UserIdForm({
   const isBigo = productType === "Bigo";
   const needsEmail = isPubgMobile; // Убираем DonatBank из условия email
   const locale = useLocale();
+
+  console.log("UserIdForm initialized:", { productType, isBigo }); // Для отладки
   const [userIdInput, setUserIdInput] = useState(userId);
   const [serverIdInput, setServerIdInput] = useState(serverId);
   const [showSpaceWarning, setShowSpaceWarning] = useState(false);
@@ -105,6 +107,8 @@ export function UserIdForm({
   };
 
   const handleUserIdChange = (value: string) => {
+    console.log("handleUserIdChange called with:", value, "isBigo:", isBigo); // Для отладки
+
     const cleanValue = handleSpaceDetection(value, "userId");
     setUserIdInput(cleanValue);
 
@@ -119,8 +123,11 @@ export function UserIdForm({
     if (isBigo && cleanValue.trim().length >= 4) {
       // Debounce the validation to avoid too many API calls
       setTimeout(() => {
-        if (userIdInput === cleanValue && cleanValue.trim().length >= 4) {
-          handleValidateUserId();
+        // Проверяем текущее значение в поле, а не старое
+        const currentValue = cleanValue.trim();
+        if (currentValue.length >= 4) {
+          console.log("Starting validation for:", currentValue); // Для отладки
+          handleValidateUserId(currentValue);
         }
       }, 1000);
     } else if (isBigo && cleanValue.trim().length < 4) {
@@ -138,15 +145,21 @@ export function UserIdForm({
     onServerIdChange(cleanValue);
   };
 
-  const handleValidateUserId = async () => {
-    if (!isBigo || !userIdInput.trim()) {
+  const handleValidateUserId = async (valueToValidate?: string) => {
+    const targetValue = valueToValidate || userIdInput.trim();
+
+    if (!isBigo || !targetValue) {
       return;
     }
 
+    console.log("Validating Bigo ID:", targetValue); // Для отладки
+
     try {
-      const result = await validateUser(userIdInput);
+      const result = await validateUser(targetValue);
       setValidationResult(result);
       setHasValidated(true);
+
+      console.log("Validation result:", result); // Для отладки
 
       // Информируем родительский компонент о результате валидации
       onValidationChange?.(result.isValid);

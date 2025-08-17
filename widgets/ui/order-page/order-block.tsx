@@ -62,6 +62,7 @@ export function OrderBlock({
   const [isUserIdValid, setIsUserIdValid] = useState(true); // Добавляем состояние для валидности User ID
 
   const handleValidationChange = (isValid: boolean) => {
+    console.log("Validation changed:", isValid); // Для отладки
     setIsUserIdValid(isValid);
   };
   useEffect(() => {
