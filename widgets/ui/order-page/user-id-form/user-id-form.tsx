@@ -92,6 +92,16 @@ export function UserIdForm({
       setHasValidated(false);
       setValidationResult(null);
     }
+
+    // Auto-validate for Bigo if ID looks complete (e.g., more than 3 characters)
+    if (isBigo && cleanValue.trim().length >= 4) {
+      // Debounce the validation to avoid too many API calls
+      setTimeout(() => {
+        if (userIdInput === cleanValue && cleanValue.trim().length >= 4) {
+          handleValidateUserId();
+        }
+      }, 1000);
+    }
   };
 
   const handleServerIdChange = (value: string) => {
@@ -111,6 +121,14 @@ export function UserIdForm({
       setHasValidated(true);
     } catch (error) {
       console.error("Validation error:", error);
+      // Set error state if validation fails
+      setValidationResult({
+        isValid: false,
+        errorMessage:
+          validationError ||
+          (locale === "ru" ? "Ошибка валидации" : "Validation error"),
+      });
+      setHasValidated(true);
     }
   };
 
@@ -182,7 +200,15 @@ export function UserIdForm({
             />
             {/* Bigo validation indicators */}
             {isBigo && (
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                {userIdInput.trim() && !hasValidated && !isValidating && (
+                  <button
+                    onClick={handleValidateUserId}
+                    className="text-blue-500 hover:text-blue-700 text-xs font-medium px-2 py-1 rounded-md border border-blue-200 hover:border-blue-300 bg-white hover:bg-blue-50 transition-colors"
+                  >
+                    {locale === "ru" ? "Проверить" : "Validate"}
+                  </button>
+                )}
                 {isValidating && (
                   <Loader className="w-5 h-5 animate-spin text-blue-500" />
                 )}
@@ -225,7 +251,15 @@ export function UserIdForm({
               />
               {/* Bigo validation indicators */}
               {isBigo && (
-                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                  {userIdInput.trim() && !hasValidated && !isValidating && (
+                    <button
+                      onClick={handleValidateUserId}
+                      className="text-blue-500 hover:text-blue-700 text-xs font-medium px-2 py-1 rounded-md border border-blue-200 hover:border-blue-300 bg-white hover:bg-blue-50 transition-colors"
+                    >
+                      {locale === "ru" ? "Проверить" : "Validate"}
+                    </button>
+                  )}
                   {isValidating && (
                     <Loader className="w-5 h-5 animate-spin text-blue-500" />
                   )}
