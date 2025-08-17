@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { CustomAlert } from "../alert/alert";
 import QuestionIcon from "@/shared/icons/question-icon";
 import { useValidateSmileUser } from "@/entities/smile/hooks/use-validate-smile";
-import { useValidateBigoUser } from "@/entities/bigo/hooks/use-validate-bigo";
 
 interface UserIdFormProps {
   apiGame?: string;
@@ -36,8 +35,6 @@ export function UserIdForm({
 
   const { validateUser: validateSmileUser, isValidating: isSmileValidating } =
     useValidateSmileUser();
-  const { validateUser: validateBigoUser, isValidating: isBigoValidating } =
-    useValidateBigoUser();
   const [userIdInput, setUserIdInput] = useState(userId);
   const [serverIdInput, setServerIdInput] = useState(serverId);
   const [userInfo, setUserInfo] = useState<{
@@ -95,7 +92,7 @@ export function UserIdForm({
     }
   }, [userIdInput, userId, validationError, userInfo, onUserIdChange]);
 
-  const isValidating = isSmileValidating || isBigoValidating;
+  const isValidating = isSmileValidating;
 
   const handleSpaceDetection = (
     value: string,
@@ -184,11 +181,8 @@ export function UserIdForm({
           return;
         }
         result = await validateSmileUser(trimmed, trimmedServerId, apiGame);
-      } else if (productType === "Bigo") {
-        // Use Bigo validation for Bigo products
-        result = await validateBigoUser(trimmed);
       } else {
-        // No validation for other non-server games, just set user info
+        // No validation for other games, just set user info
         setUserInfo({
           username: trimmed,
           vipStatus: undefined,
