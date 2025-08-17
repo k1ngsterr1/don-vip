@@ -300,7 +300,7 @@ export function OrderBlock({
         onToggle={() => setShowInfo(!showInfo)}
         description={game.description}
       />
-      
+
       {/* Language & Currency Button */}
       <div className="px-4 mb-4">
         <Link href="/language-currency" className="block">
@@ -398,14 +398,16 @@ export function OrderBlock({
                 {game.name}
               </h1>
               <p className="text-gray-600">{game.description}</p>
-              
+
               {/* Language & Currency Button */}
               <div className="mt-4">
                 <Link href="/language-currency" className="inline-block">
                   <button className="py-2 px-4 bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded-lg text-gray-700 font-medium transition-colors flex items-center gap-2">
                     <span>🌍</span>
                     <span>
-                      {locale === "ru" ? "Язык и валюта" : "Language & Currency"}
+                      {locale === "ru"
+                        ? "Язык и валюта"
+                        : "Language & Currency"}
                     </span>
                   </button>
                 </Link>
