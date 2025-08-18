@@ -15,7 +15,7 @@ export function CurrencyDropdown({
 }: CurrencyDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { selectedCurrency, currencies, setCurrency, isLoading } =
+  const { selectedCurrency, availableCurrencies, updateCurrency, isLoading } =
     useCurrency();
 
   useEffect(() => {
@@ -67,11 +67,11 @@ export function CurrencyDropdown({
 
       {isOpen && (
         <div className="absolute top-full left-0 mt-1 w-64 bg-white rounded-lg border border-gray-200 shadow-lg z-50 max-h-64 overflow-y-auto">
-          {currencies.map((currency) => (
+          {availableCurrencies.map((currency) => (
             <button
               key={currency.code}
               onClick={() => {
-                setCurrency(currency);
+                updateCurrency(currency);
                 setIsOpen(false);
               }}
               className={`

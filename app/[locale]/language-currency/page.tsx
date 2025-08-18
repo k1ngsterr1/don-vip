@@ -465,8 +465,13 @@ export default function LanguageCurrencyPage() {
   const currentLocale = useLocale();
   const t = useTranslations("languageCurrency");
 
-  const { selectedCurrency, currencies, isLoading, error, setCurrency } =
-    useCurrency();
+  const {
+    selectedCurrency,
+    availableCurrencies,
+    isLoading,
+    error,
+    updateCurrency,
+  } = useCurrency();
 
   const [selectedCountry, setSelectedCountry] =
     useState<CountryCurrency | null>(null);
@@ -476,9 +481,11 @@ export default function LanguageCurrencyPage() {
     setSelectedCountry(country);
 
     // Find the currency in our currencies list and set it
-    const currency = currencies.find((c) => c.code === country.currency);
+    const currency = availableCurrencies.find(
+      (c) => c.code === country.currency
+    );
     if (currency) {
-      setCurrency(currency);
+      updateCurrency(currency);
     } else {
       // If currency not found in list, create a basic currency object
       const basicCurrency = {
@@ -488,7 +495,7 @@ export default function LanguageCurrencyPage() {
         flag: country.flag,
         rate: 1, // Default rate, will be updated when API loads
       };
-      setCurrency(basicCurrency);
+      updateCurrency(basicCurrency);
     }
   };
 
