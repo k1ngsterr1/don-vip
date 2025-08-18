@@ -28,9 +28,6 @@ function isSafariBrowser(): boolean {
   return isSafari || isIOS;
 }
 
-/**
- * Hook to create a new order and process payment
- */
 export function useCreateOrder(
   paymentMethod: string,
   currency: string = "RUB"
@@ -42,11 +39,8 @@ export function useCreateOrder(
 
   const { user: authUser, isGuestAuth } = useAuthStore();
   const { data: me } = useGetMe();
-
-  // Determine if we should use Pagsmile checkout (for non-RUB currencies)
   const shouldUsePagsmileCheckout = currency !== "RUB";
 
-  // 🔐 Resolve user ID from any source
   const resolveUserId = (): string | null => {
     if (authUser?.id) return authUser.id.toString();
     if (me?.id) return me.id.toString();
