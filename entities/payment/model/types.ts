@@ -10,12 +10,9 @@ export interface PagsmileCheckoutDto {
 }
 
 export interface PagsmileCheckoutResponse {
-  success: boolean;
-  data?: {
-    checkout_url: string;
-    payment_id: string;
-  };
-  error?: string;
+  prepayId: string;
+  webUrl: string;
+  outTradeNo: string;
 }
 
 export interface PagsmileCreatePayinDto {

@@ -152,10 +152,10 @@ export function useCreateOrder(
     onSuccess: (checkoutData: PagsmileCheckoutResponse) => {
       setIsProcessingPayment(false);
 
-      if (checkoutData.success && checkoutData.data?.checkout_url) {
-        window.location.href = checkoutData.data.checkout_url;
+      if (checkoutData.webUrl) {
+        window.location.href = checkoutData.webUrl;
       } else {
-        setError(checkoutData.error || "Failed to create checkout session");
+        setError("Failed to get checkout URL");
       }
     },
 
