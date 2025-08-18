@@ -171,7 +171,6 @@ export function useCreateOrder(
 
   // ⏳ Trigger payment after successful order
   const processPayment = (orderId: string, orderData: CreateOrderDto) => {
-    console.log("processPayment called with orderId:", orderId); // Отладка
     setIsProcessingPayment(true);
 
     if (shouldUsePagsmileCheckout) {
@@ -179,7 +178,7 @@ export function useCreateOrder(
       const identifier =
         orderData.identifier || getUserIdentifier() || "customer";
       const checkoutData: PagsmileCheckoutDto = {
-        order_id: orderId,
+        orderId: orderId,
         amount:
           typeof orderData.price === "string"
             ? orderData.price
@@ -196,12 +195,11 @@ export function useCreateOrder(
         },
       };
 
-      console.log("Sending Pagsmile checkout data:", checkoutData); // Отладка
       checkoutMutation.mutate(checkoutData);
     } else {
       // Use regular payment for RUB currency
       const paymentData: any = {
-        order_id: orderId,
+        orderId: orderId,
         amount:
           typeof orderData.price === "string"
             ? orderData.price
@@ -209,7 +207,6 @@ export function useCreateOrder(
         name: orderData.payment_method === "sbp" ? "SBP" : "Card",
       };
 
-      console.log("Sending regular payment data:", paymentData); // Отладка
       paymentMutation.mutate(paymentData);
     }
   };
