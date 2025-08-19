@@ -6,7 +6,7 @@ import { Check, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
-import { useUpdateUserCurrency } from "@/entities/currency/hooks/use-update-user-currency";
+import { useCurrency } from "@/entities/currency/hooks/use-currency";
 import { useState } from "react";
 
 interface CurrencySelectorProps {
@@ -32,8 +32,11 @@ export function CurrencySelector({
 }: CurrencySelectorProps) {
   const i18n = useTranslations("CurrencySelector");
   const locale = useLocale();
-  const { updateCurrency, isUpdating, error } = useUpdateUserCurrency();
+  const { updateCurrency, availableCurrencies, isLoading, error } =
+    useCurrency();
   const [updatingId, setUpdatingId] = useState<number | null>(null);
+
+  const isUpdating = updatingId !== null;
 
   const handleSelect = async (id: number) => {
     // Обычная логика выбора
@@ -43,13 +46,13 @@ export function CurrencySelector({
     if (enableUserUpdate) {
       setUpdatingId(id);
       try {
-        const result = await updateCurrency({
-          preferred_currency: currencyCode,
-          country_code: locale.toUpperCase(),
-        });
-
-        if (result) {
-          console.log("Currency updated successfully:", result);
+        // Найдем валюту по коду
+        const selectedCurrency = availableCurrencies.find(
+          (c) => c.code === currencyCode
+        );
+        if (selectedCurrency) {
+          await updateCurrency(selectedCurrency);
+          console.log("Currency updated successfully");
         }
       } catch (err) {
         console.error("Failed to update user currency:", err);

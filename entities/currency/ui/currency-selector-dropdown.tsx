@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
-import { useCurrency, type Currency } from "../hooks/use-currency";
+import { useCurrency } from "../hooks/use-currency";
+import type { Currency } from "../model/currency-types";
 
 interface CurrencySelectorDropdownProps {
   className?: string;
@@ -11,7 +12,7 @@ interface CurrencySelectorDropdownProps {
 export function CurrencySelectorDropdown({
   className = "",
 }: CurrencySelectorDropdownProps) {
-  const { currentCurrency, setCurrency, availableCurrencies, isLoading } =
+  const { selectedCurrency, updateCurrency, availableCurrencies, isLoading } =
     useCurrency();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -31,7 +32,7 @@ export function CurrencySelectorDropdown({
   }, []);
 
   const handleCurrencySelect = (currency: Currency) => {
-    setCurrency(currency);
+    updateCurrency(currency);
     setIsOpen(false);
   };
 
@@ -54,8 +55,8 @@ export function CurrencySelectorDropdown({
         aria-haspopup="true"
         aria-expanded={isOpen}
       >
-        <span className="text-lg">{currentCurrency.flag}</span>
-        <span className="font-medium text-sm">{currentCurrency.code}</span>
+        <span className="text-lg">{selectedCurrency.flag}</span>
+        <span className="font-medium text-sm">{selectedCurrency.code}</span>
         <ChevronDown
           className={`w-4 h-4 text-gray-500 transition-transform ${
             isOpen ? "rotate-180" : ""
@@ -71,7 +72,7 @@ export function CurrencySelectorDropdown({
                 key={currency.code}
                 onClick={() => handleCurrencySelect(currency)}
                 className={`w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-50 transition-colors ${
-                  currentCurrency.code === currency.code
+                  selectedCurrency.code === currency.code
                     ? "bg-blue-50 text-blue-700 font-medium"
                     : "text-gray-700"
                 }`}

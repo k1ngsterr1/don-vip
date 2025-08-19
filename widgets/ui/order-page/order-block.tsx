@@ -81,7 +81,7 @@ export function OrderBlock({
   const { user: authUser, isGuestAuth } = useAuthStore();
   const { data: me } = useGetMe();
   const {
-    currentCurrency,
+    selectedCurrency: currentCurrency,
     formatPrice,
     isLoading: currencyLoading,
   } = useCurrency();
