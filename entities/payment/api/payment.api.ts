@@ -2,6 +2,8 @@ import { apiClient } from "@/shared/config/apiClient";
 import {
   PagsmileCreatePayinDto,
   PagsmilePayinResponse,
+  PagsmileCheckoutDto,
+  PagsmileCheckoutResponse,
   DonatBankBalanceDto,
   DonatBankBalanceResponse,
 } from "../model/types";
@@ -18,6 +20,19 @@ export const paymentApi = {
   ): Promise<PagsmilePayinResponse> => {
     const response = await apiClient.post<PagsmilePayinResponse>(
       "/payment/pagsmile/payin",
+      data
+    );
+    return response.data;
+  },
+
+  /**
+   * Create a new checkout via Pagsmile
+   */
+  createPagsmileCheckout: async (
+    data: PagsmileCheckoutDto
+  ): Promise<PagsmileCheckoutResponse> => {
+    const response = await apiClient.post<PagsmileCheckoutResponse>(
+      "/payment/pagsmile/checkout",
       data
     );
     return response.data;

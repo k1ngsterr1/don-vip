@@ -1,26 +1,27 @@
-export interface PagsmileCreatePayinDto {
-  order_id: string | number;
+export interface PagsmileCheckoutDto {
+  orderId: string;
   amount: number | string;
   currency: string;
-  country: string;
-  payment_method: string;
-  user_id?: number; // Will be set by the server from JWT token
-  notification_url?: string;
-  return_url?: string;
-  customer?: {
-    name?: string;
-    email?: string;
-    phone?: string;
+  region: string;
+  customer: {
+    name: string;
+    email: string;
   };
-  billing_address?: {
-    street?: string;
-    city?: string;
-    state?: string;
-    zipcode?: string;
-    country?: string;
-  };
-  description?: string;
-  metadata?: Record<string, any>;
+}
+
+export interface PagsmileCheckoutResponse {
+  prepayId: string;
+  webUrl: string;
+  outTradeNo: string;
+}
+
+export interface PagsmileCreatePayinDto {
+  amount: string;
+  order_id: number;
+  user_id?: number;
+  name?: string;
+  currency?: string;
+  region?: string;
 }
 
 export interface PagsmilePayinResponse {

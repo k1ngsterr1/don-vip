@@ -6,7 +6,11 @@ import { useRouter } from "next/navigation";
 import { orderApi } from "../api/order.api";
 import { queryKeys } from "@/shared/config/queryKeys";
 import type { CreateOrderDto } from "../model/types";
-import type { PagsmileCreatePayinDto } from "@/entities/payment/model/types";
+import type {
+  PagsmileCreatePayinDto,
+  PagsmileCheckoutDto,
+  PagsmileCheckoutResponse,
+} from "@/entities/payment/model/types";
 import { paymentApi } from "@/entities/payment/api/payment.api";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useGetMe } from "@/entities/auth/hooks/use-auth";
@@ -24,10 +28,10 @@ function isSafariBrowser(): boolean {
   return isSafari || isIOS;
 }
 
-/**
- * Hook to create a new order and process payment
- */
-export function useCreateOrder(paymentMethod: string) {
+export function useCreateOrder(
+  paymentMethod: string,
+  currency: string = "RUB"
+) {
   const queryClient = useQueryClient();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -35,8 +39,8 @@ export function useCreateOrder(paymentMethod: string) {
 
   const { user: authUser, isGuestAuth } = useAuthStore();
   const { data: me } = useGetMe();
+  const shouldUsePagsmileCheckout = currency !== "RUB";
 
-  // 🔐 Resolve user ID from any source
   const resolveUserId = (): string | null => {
     if (authUser?.id) return authUser.id.toString();
     if (me?.id) return me.id.toString();
@@ -85,8 +89,8 @@ export function useCreateOrder(paymentMethod: string) {
 
     onSuccess: (orderData, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.orders.all });
-      if (paymentMethod === "tbank") {
-        return;
+      if (paymentMethod === "tbank" && currency === "RUB") {
+        return; // T-Bank handles its own redirect
       } else {
         processPayment(orderData.id.toString(), variables);
       }
@@ -102,7 +106,7 @@ export function useCreateOrder(paymentMethod: string) {
     },
   });
 
-  // 💰 Payment mutation
+  // 💰 Payment mutation (for RUB currency)
   const paymentMutation = useMutation({
     mutationFn: (paymentData: PagsmileCreatePayinDto) => {
       const userId = resolveUserId();
@@ -133,28 +137,99 @@ export function useCreateOrder(paymentMethod: string) {
     },
   });
 
+  // 💰 Pagsmile Checkout mutation (for non-RUB currencies)
+  const checkoutMutation = useMutation({
+    mutationFn: (checkoutData: PagsmileCheckoutDto) => {
+      return paymentApi.createPagsmileCheckout(checkoutData);
+    },
+
+    onSuccess: (checkoutData: PagsmileCheckoutResponse) => {
+      setIsProcessingPayment(false);
+
+      if (checkoutData.webUrl) {
+        window.location.href = checkoutData.webUrl;
+      } else {
+        setError("Failed to get checkout URL");
+      }
+    },
+
+    onError: (err: any) => {
+      setIsProcessingPayment(false);
+      setError(
+        err?.response?.data?.message ||
+          err?.message ||
+          "Checkout processing failed. Please try again."
+      );
+    },
+  });
+
   // ⏳ Trigger payment after successful order
   const processPayment = (orderId: string, orderData: CreateOrderDto) => {
     setIsProcessingPayment(true);
 
-    const paymentData: any = {
-      order_id: orderId,
-      amount:
-        typeof orderData.price === "string"
-          ? orderData.price
-          : orderData.price.toFixed(2),
-      name: orderData.payment_method === "sbp" ? "SBP" : "Card",
-    };
+    if (shouldUsePagsmileCheckout) {
+      // Use Pagsmile checkout for non-RUB currencies
+      const identifier =
+        orderData.identifier || getUserIdentifier() || "customer";
+      const checkoutData: PagsmileCheckoutDto = {
+        orderId: orderId,
+        amount:
+          typeof orderData.price === "string"
+            ? orderData.price
+            : orderData.price.toFixed(2),
+        currency: currency,
+        region: getRegionFromCurrency(currency),
+        customer: {
+          name: identifier.includes("@")
+            ? identifier.split("@")[0]
+            : "Customer",
+          email: identifier.includes("@")
+            ? identifier
+            : `${identifier}@example.com`,
+        },
+      };
 
-    paymentMutation.mutate(paymentData);
+      checkoutMutation.mutate(checkoutData);
+    } else {
+      // Use regular payment for RUB currency
+      const paymentData: any = {
+        orderId: orderId,
+        amount:
+          typeof orderData.price === "string"
+            ? orderData.price
+            : orderData.price.toFixed(2),
+        name: orderData.payment_method === "sbp" ? "SBP" : "Card",
+      };
+
+      paymentMutation.mutate(paymentData);
+    }
+  };
+
+  // Helper function to get region from currency
+  const getRegionFromCurrency = (currency: string): string => {
+    const currencyToRegion: Record<string, string> = {
+      USD: "North America",
+      EUR: "Europe",
+      BRL: "Brazil",
+      // Add more currency mappings as needed
+    };
+    return currencyToRegion[currency] || "North America";
   };
 
   return {
     createOrder: orderMutation.mutateAsync,
     isLoading: orderMutation.isPending || isProcessingPayment,
     isProcessingPayment,
-    isSuccess: orderMutation.isSuccess && paymentMutation.isSuccess,
-    isError: orderMutation.isError || paymentMutation.isError,
+    isSuccess:
+      orderMutation.isSuccess &&
+      (shouldUsePagsmileCheckout
+        ? checkoutMutation.isSuccess
+        : paymentMutation.isSuccess),
+    isError:
+      orderMutation.isError ||
+      (shouldUsePagsmileCheckout
+        ? checkoutMutation.isError
+        : paymentMutation.isError),
     error,
     setError,
     isGuestUser:
@@ -163,5 +238,6 @@ export function useCreateOrder(paymentMethod: string) {
         typeof window !== "undefined" &&
         !!localStorage.getItem("userId")),
     needsIdentifier: !getUserIdentifier(),
+    shouldUsePagsmileCheckout,
   };
 }
