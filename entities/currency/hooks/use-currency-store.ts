@@ -1,75 +1,62 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { useCurrencyStore } from "../store/currency.store";
-import { currencyApi } from "../api/currency-api";
-import { CurrencyApi } from "../api/currency-user-api";
+import { useCallback, useEffect } from "react";
+import {
+  useCurrencyStore,
+  convertPrice,
+  formatPrice,
+} from "../store/currency.store";
 import type { Currency } from "../model/currency-types";
 
 export const useCurrency = () => {
-  const loadedRef = useRef(false);
   const {
     selectedCurrency,
     availableCurrencies,
     isLoading,
     error,
+    isInitialized,
     setCurrency,
-    setAvailableCurrencies,
-    setLoading,
-    setError,
-    convertPrice,
-    formatPrice,
+    loadCurrencies,
   } = useCurrencyStore();
 
-  // Load currencies from API on mount (only once)
+  // Initialize currencies on first mount - loadCurrencies is stable from Zustand
   useEffect(() => {
-    const loadCurrencies = async () => {
-      if (loadedRef.current) return; // Prevent multiple loads
-
-      try {
-        loadedRef.current = true; // Set early to prevent race conditions
-        setLoading(true);
-        const currencies = await currencyApi.getCBRRates();
-        if (currencies && currencies.length > 0) {
-          setAvailableCurrencies(currencies);
-        }
-      } catch (error) {
-        console.error("Failed to load currencies:", error);
-        setError("Failed to load currencies");
-        loadedRef.current = false; // Reset on error to allow retry
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadCurrencies();
-  }, []); // Empty dependency array - run only once on mount
+  }, []); // Empty dependency - loadCurrencies from Zustand is stable
 
   const updateCurrency = async (currency: Currency) => {
     try {
       setCurrency(currency);
-
-      // Optionally update on backend if user is authenticated
-      // This is fire-and-forget, no need to wait
-      CurrencyApi.updateUserCurrency({
-        preferred_currency: currency.code,
-      }).catch((err: any) => {
-        console.warn("Failed to update user currency on backend:", err);
-      });
+      // Currency preference is automatically persisted through Zustand persistence
     } catch (error) {
       console.error("Failed to update currency:", error);
-      setError("Failed to update currency");
     }
   };
+
+  // Create stable functions that use current selectedCurrency
+  const convertPriceWithCurrent = useCallback(
+    (price: number, fromCurrency?: Currency) => {
+      return convertPrice(price, fromCurrency, selectedCurrency);
+    },
+    [selectedCurrency]
+  );
+
+  const formatPriceWithCurrent = useCallback(
+    (price: number, fromCurrency?: Currency) => {
+      return formatPrice(price, fromCurrency, selectedCurrency);
+    },
+    [selectedCurrency]
+  );
 
   return {
     selectedCurrency,
     availableCurrencies,
     isLoading,
     error,
+    isInitialized,
     updateCurrency,
-    convertPrice,
-    formatPrice,
+    convertPrice: convertPriceWithCurrent,
+    formatPrice: formatPriceWithCurrent,
     // Alias for backward compatibility
     setCurrency: updateCurrency,
   };
