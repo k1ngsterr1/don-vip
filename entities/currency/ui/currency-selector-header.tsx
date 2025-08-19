@@ -2,10 +2,13 @@
 
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useCurrency } from "@/entities/currency/hooks/use-currency";
+import { Link } from "@/i18n/routing";
 import type { Currency } from "@/entities/currency/model/currency-types";
 
 export function CurrencySelector() {
+  const t = useTranslations("header");
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { selectedCurrency, availableCurrencies, updateCurrency, isLoading } =
@@ -119,6 +122,15 @@ export function CurrencySelector() {
                 )}
               </button>
             ))}
+            <div className="border-t border-gray-100 pt-2 mt-2">
+              <Link
+                href="/language-currency"
+                className="block w-full px-4 py-3 text-sm text-blue-600 hover:bg-blue-50 text-center font-medium"
+                onClick={() => setIsOpen(false)}
+              >
+                {t("viewAllCurrencies")}
+              </Link>
+            </div>
           </div>
         </div>
       )}

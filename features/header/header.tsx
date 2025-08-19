@@ -11,6 +11,7 @@ import { DesktopNav } from "./desktop-nav";
 import { LanguageSwitcher } from "./language-switcher";
 import { AuthMenu } from "./auth-menu";
 import { MobileNav } from "./mobile-nav";
+import { CurrencySelector } from "@/entities/currency/ui/currency-selector-header";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { TabletNav } from "./tablet-nav";
 import { ServicesMegaMenu } from "../services-mega-menu/services-mega-menu";
@@ -190,6 +191,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
             </div>
           )}
           <div className="relative flex items-center gap-2 ml-2 sm:ml-4 lg:ml-9 group">
+            <CurrencySelector />
             <LanguageSwitcher />
             <AuthMenu />
             <button

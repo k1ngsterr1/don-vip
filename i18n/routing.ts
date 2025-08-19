@@ -43,6 +43,7 @@ export const routing = defineRouting({
     "/send-review": "/send-review",
     "/t-bank": "/t-bank",
     "/user-agreement": "/user-agreement",
+    "/language-currency": "/language-currency",
   },
 });
 
