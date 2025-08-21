@@ -16,7 +16,8 @@ export function GuestAuthPopup({
   onClose,
   onSubmit,
   isLoading = false,
-}: GuestAuthPopupProps) {
+}: // isForNonRubCurrency = false,/
+GuestAuthPopupProps) {
   const i18n = useTranslations("popup");
   const [identifier, setIdentifier] = useState("");
   const [error, setError] = useState("");
