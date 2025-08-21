@@ -4,6 +4,8 @@ import { useTranslations } from "next-intl";
 import type React from "react";
 import { useState } from "react";
 
+//
+
 interface GuestAuthPopupProps {
   isOpen: boolean;
   onClose: () => void;
