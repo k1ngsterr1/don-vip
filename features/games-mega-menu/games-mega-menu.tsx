@@ -36,8 +36,8 @@ export function GamesMegaMenu() {
           id: product.id,
           name: product.name,
           image: product.image || "/game-card.webp",
-          learnLink: `/games/${product.id}`,
-          orderLink: `/products/${product.id}`,
+          learnLink: `/product/${product.id}`,
+          orderLink: `/product/${product.id}`,
         }));
 
       setNonBigoGames(filteredGames);

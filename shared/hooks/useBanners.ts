@@ -25,7 +25,6 @@ export function useBanners() {
           desktop: item.image,
           mobile: item.mobileImage,
         },
-        link: item.buttonLink,
       }));
     },
     // Добавляем fallback для пустого массива

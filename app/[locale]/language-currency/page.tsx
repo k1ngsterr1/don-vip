@@ -333,9 +333,13 @@ export default function LanguageCurrencyPage() {
               {/* Selected Country Display */}
               {selectedCountry && (
                 <div className="mb-4 flex items-center gap-2 md:gap-3 text-dark">
-                  <span className="text-xl md:text-2xl">{selectedCountry.flag}</span>
+                  <span className="text-xl md:text-2xl">
+                    {selectedCountry.flag}
+                  </span>
                   <div>
-                    <div className="font-medium text-sm md:text-base">{selectedCountry.country}</div>
+                    <div className="font-medium text-sm md:text-base">
+                      {selectedCountry.country}
+                    </div>
                     <div className="text-xs md:text-sm text-gray-600">
                       {selectedCountry.language}
                     </div>

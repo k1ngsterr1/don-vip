@@ -1,10 +1,8 @@
 "use client";
 
-import { Link } from "@/i18n/routing";
 import { useMediaQuery } from "@/shared/hooks/use-media-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLast, ChevronLeft, ChevronRight } from "lucide-react";
-import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -14,7 +12,6 @@ interface Slide {
     desktop: string;
     mobile: string;
   };
-  link: string;
   title?: string | null;
 }
 
@@ -32,7 +29,6 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
   const [direction, setDirection] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const isMobile = useMediaQuery("(max-width: 640px)");
-  const t = useTranslations("buyNow");
 
   // Auto-advance slides
   useEffect(() => {
@@ -156,13 +152,6 @@ export default function HeroBanner({ slides }: HeroBannerProps) {
       >
         {slides[currentSlide]?.title}
       </div>
-      <Link
-        // @ts-ignore
-        href={`${slides[currentSlide]?.link || "#"}`}
-        className="absolute bottom-[32px] flex items-center justify-center left-5 w-[140px] border-[0.3px] font-unbounded h-[40px] bg-white text-blue rounded-full text-[11px] font-medium z-10 transition-colors hover:bg-blue hover:text-white hover:border-blue shadow-sm"
-      >
-        {t("title")}
-      </Link>
       <div className="hidden sm:block">
         <button
           onClick={handlePrev}

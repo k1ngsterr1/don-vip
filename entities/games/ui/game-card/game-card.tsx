@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 interface GameCardProps {
   title?: string;
@@ -18,7 +17,7 @@ export default function GameCard({
   href = "#",
 }: GameCardProps) {
   return (
-    <Link href={href} className="block">
+    <div className="block cursor-pointer">
       <div className="relative shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden rounded-[12px] aspect-square group">
         <Image
           src={image || "/placeholder.svg"}
@@ -49,6 +48,6 @@ export default function GameCard({
         {/* Subtle glow effect on hover */}
         <div className="absolute inset-0 bg-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
       </div>
-    </Link>
+    </div>
   );
 }
