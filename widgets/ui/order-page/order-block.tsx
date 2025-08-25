@@ -63,6 +63,7 @@ export function OrderBlock({
   const [couponCode, setCouponCode] = useState("");
   const [appliedDiscount, setAppliedDiscount] = useState<number>(0);
   const [couponInfo, setCouponInfo] = useState<any>(null);
+  const [isUserIdValid, setIsUserIdValid] = useState(true); // Для отслеживания валидности ID
 
   // Flag to prevent popup from showing twice
   const identifierCollected = useRef(false);
@@ -154,7 +155,8 @@ export function OrderBlock({
   const isFormValid =
     selectedCurrency !== null &&
     userId.trim() !== "" &&
-    (!game.requiresServer || serverId.trim() !== "");
+    (!game.requiresServer || serverId.trim() !== "") &&
+    isUserIdValid; // Добавляем проверку валидности ID
 
   // Get user identifier from various sources
   const getUserIdentifier = (): string | null => {
@@ -301,10 +303,9 @@ export function OrderBlock({
         requiresServer={game.requiresServer}
         userId={userId}
         serverId={serverId}
-        // agreeToTerms={agreeToTerms} // removed
         onUserIdChange={setUserId}
         onServerIdChange={setServerId}
-        // onAgreeChange={setAgreeToTerms} // removed
+        onValidationChange={setIsUserIdValid} // Добавляем колбэк для валидации
       />
       <PaymentMethodSelector
         onSelect={setSelectedPaymentMethod}
@@ -373,10 +374,9 @@ export function OrderBlock({
                 requiresServer={game.requiresServer}
                 userId={userId}
                 serverId={serverId}
-                // agreeToTerms={agreeToTerms} // removed
                 onUserIdChange={setUserId}
                 onServerIdChange={setServerId}
-                // onAgreeChange={setAgreeToTerms} // removed
+                onValidationChange={setIsUserIdValid} // Добавляем колбэк для валидации
               />
             </div>
             <div className="p-6">
