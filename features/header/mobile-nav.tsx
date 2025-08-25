@@ -63,15 +63,6 @@ export function MobileNav({
 
       <nav className={`space-y-${isTablet ? "4" : "3"}`}>
         <Link
-          href="/games"
-          onClick={closeMenu}
-          className={`block text-dark font-condensed ${
-            isTablet ? "text-lg py-1" : ""
-          }`}
-        >
-          {t("games")}
-        </Link>
-        <Link
           href="/services"
           onClick={closeMenu}
           className={`block text-dark font-condensed ${

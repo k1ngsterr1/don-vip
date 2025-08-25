@@ -164,17 +164,17 @@ export default function LanguageCurrencyPage() {
     <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="max-w-7xl mx-auto px-4 py-4 md:py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <Button
                 variant="secondary"
                 onClick={() => router.back()}
-                className="p-3 mr-4 bg-gray-100 hover:bg-gray-200 border-gray-300"
+                className="p-2 md:p-3 mr-3 md:mr-4 bg-gray-100 hover:bg-gray-200 border-gray-300"
               >
-                <ArrowLeft className="h-5 w-5 text-gray-600" />
+                <ArrowLeft className="h-4 w-4 md:h-5 md:w-5 text-gray-600" />
               </Button>
-              <h1 className="text-[16px] font-unbounded font-bold text-dark">
+              <h1 className="text-sm md:text-[16px] font-unbounded font-bold text-dark">
                 {translations.title}
               </h1>
             </div>
@@ -182,13 +182,13 @@ export default function LanguageCurrencyPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex gap-8">
-          {/* Left Column - Countries List */}
-          <div className="flex-1">
+      <div className="max-w-7xl mx-auto px-4 py-4 md:py-8">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
+          {/* Countries List */}
+          <div className="flex-1 order-2 lg:order-1">
             {/* Search Bar */}
-            <div className="mb-8">
-              <div className="relative max-w-md">
+            <div className="mb-4 md:mb-8">
+              <div className="relative max-w-full md:max-w-md">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Search className="h-5 w-5 text-gray-400" />
                 </div>
@@ -197,7 +197,7 @@ export default function LanguageCurrencyPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={translations.searchPlaceholder}
-                  className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-dark placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue focus:border-transparent"
+                  className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-dark placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue focus:border-transparent text-sm md:text-base"
                 />
                 {searchQuery && (
                   <button
@@ -248,9 +248,9 @@ export default function LanguageCurrencyPage() {
                   Object.entries(getFilteredRegions()).map(
                     ([regionName, countries]) => (
                       <div key={regionName}>
-                        <h2 className="text-2xl font-unbounded font-bold text-dark mb-6 uppercase">
+                        <h2 className="text-lg md:text-2xl font-unbounded font-bold text-dark mb-4 md:mb-6 uppercase">
                           {regionName}
-                          <span className="text-sm font-roboto font-normal text-gray-500 ml-3 capitalize">
+                          <span className="text-xs md:text-sm font-roboto font-normal text-gray-500 ml-2 md:ml-3 capitalize">
                             ({countries.length}{" "}
                             {countries.length === 1
                               ? translations.country
@@ -258,7 +258,7 @@ export default function LanguageCurrencyPage() {
                             )
                           </span>
                         </h2>
-                        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 md:gap-3">
                           {countries.map((country) => {
                             const isSelected =
                               selectedCountry?.country === country.country;
@@ -266,19 +266,19 @@ export default function LanguageCurrencyPage() {
                               <button
                                 key={country.country}
                                 onClick={() => handleCountrySelect(country)}
-                                className={`p-3 rounded-lg border-2 transition-all duration-200 text-left hover:shadow-md ${
+                                className={`p-2 md:p-3 rounded-lg border-2 transition-all duration-200 text-left hover:shadow-md ${
                                   isSelected
                                     ? "border-blue bg-blue/5"
                                     : "border-gray-200 hover:border-gray-300"
                                 }`}
                               >
-                                <div className="flex items-center gap-2 mb-1">
-                                  <span className="text-lg">
+                                <div className="flex items-center gap-1 md:gap-2 mb-1">
+                                  <span className="text-sm md:text-lg">
                                     {country.flag}
                                   </span>
                                   <div className="min-w-0 flex-1">
                                     <div
-                                      className={`font-roboto font-medium text-xs truncate ${
+                                      className={`font-roboto font-medium text-[10px] md:text-xs truncate ${
                                         isSelected ? "text-blue" : "text-dark"
                                       }`}
                                     >
@@ -291,7 +291,7 @@ export default function LanguageCurrencyPage() {
                                     </div>
                                   </div>
                                 </div>
-                                <div className="text-xs text-gray-500 mb-1">
+                                <div className="text-[9px] md:text-xs text-gray-500 mb-1">
                                   {searchQuery
                                     ? highlightText(
                                         country.language,
@@ -300,7 +300,7 @@ export default function LanguageCurrencyPage() {
                                     : country.language}
                                 </div>
                                 <div
-                                  className={`text-xs font-medium ${
+                                  className={`text-[9px] md:text-xs font-medium ${
                                     isSelected ? "text-blue" : "text-gray-700"
                                   }`}
                                 >
@@ -323,20 +323,20 @@ export default function LanguageCurrencyPage() {
             )}
           </div>
 
-          {/* Right Column - Settings Panel */}
-          <div className="w-80 flex-shrink-0">
-            <div className="sticky top-[128px] z-40 bg-white border border-gray-200 rounded-xl p-6 shadow-lg">
-              <h3 className="text-dark font-roboto font-medium mb-4">
+          {/* Settings Panel */}
+          <div className="w-full lg:w-80 flex-shrink-0 order-1 lg:order-2">
+            <div className="lg:sticky lg:top-[128px] z-40 bg-white border border-gray-200 rounded-xl p-4 md:p-6 shadow-lg">
+              <h3 className="text-dark font-roboto font-medium mb-4 text-sm md:text-base">
                 {translations.title}
               </h3>
 
               {/* Selected Country Display */}
               {selectedCountry && (
-                <div className="mb-4 flex items-center gap-3 text-dark">
-                  <span className="text-2xl">{selectedCountry.flag}</span>
+                <div className="mb-4 flex items-center gap-2 md:gap-3 text-dark">
+                  <span className="text-xl md:text-2xl">{selectedCountry.flag}</span>
                   <div>
-                    <div className="font-medium">{selectedCountry.country}</div>
-                    <div className="text-sm text-gray-600">
+                    <div className="font-medium text-sm md:text-base">{selectedCountry.country}</div>
+                    <div className="text-xs md:text-sm text-gray-600">
                       {selectedCountry.language}
                     </div>
                   </div>
@@ -346,18 +346,18 @@ export default function LanguageCurrencyPage() {
               {/* Language Selector */}
               <div className="mb-4">
                 <div className="flex items-center gap-2 text-dark mb-2">
-                  <span className="text-xl">🌐</span>
-                  <span className="font-roboto">
+                  <span className="text-lg md:text-xl">🌐</span>
+                  <span className="font-roboto text-sm md:text-base">
                     {currentLocale === "ru" ? "Русский" : "English"}
                   </span>
                 </div>
               </div>
 
               {/* Currency Selector */}
-              <div className="mb-6">
+              <div className="mb-4 md:mb-6">
                 <div className="flex items-center gap-2 text-dark mb-2">
-                  <span className="text-xl">💵</span>
-                  <span className="font-roboto">
+                  <span className="text-lg md:text-xl">💵</span>
+                  <span className="font-roboto text-sm md:text-base">
                     {selectedCurrency.code} ({selectedCurrency.symbol})
                   </span>
                 </div>
@@ -366,7 +366,7 @@ export default function LanguageCurrencyPage() {
               {/* Save Button */}
               <Button
                 onClick={handleSaveSettings}
-                className="w-full bg-blue hover:bg-blue/90 text-white py-3 rounded-lg font-roboto font-medium"
+                className="w-full bg-blue hover:bg-blue/90 text-white py-2 md:py-3 rounded-lg font-roboto font-medium text-sm md:text-base"
               >
                 {translations.saveSettings}
               </Button>

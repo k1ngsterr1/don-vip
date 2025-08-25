@@ -15,24 +15,6 @@ export function TabletNav({ activeMenu, onMenuToggle }: TabletNavProps) {
     <nav className="flex items-center space-x-4">
       <button
         className={`flex items-center text-sm font-medium transition-colors ${
-          activeMenu === "games"
-            ? "text-blue-600"
-            : "text-gray-700 hover:text-gray-900"
-        }`}
-        onClick={() => onMenuToggle("games")}
-        aria-expanded={activeMenu === "games"}
-      >
-        {t("games")}
-        <ChevronDown
-          size={16}
-          className={`ml-1 transition-transform ${
-            activeMenu === "games" ? "rotate-180" : ""
-          }`}
-        />
-      </button>
-
-      <button
-        className={`flex items-center text-sm font-medium transition-colors ${
           activeMenu === "services"
             ? "text-blue-600"
             : "text-gray-700 hover:text-gray-900"

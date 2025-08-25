@@ -21,15 +21,6 @@ export function DesktopNav({
   return (
     <div className="hidden md:flex md:items-center md:space-x-6">
       <NavItem
-        label={t("games")}
-        hasSubmenu
-        isActive={activeMenu === "games"}
-        onClick={() => onMenuToggle("games")}
-        onMouseEnter={() => onMenuMouseEnter("games")}
-        onMouseLeave={onMenuMouseLeave}
-      />
-
-      <NavItem
         label={t("services")}
         hasSubmenu
         isActive={activeMenu === "services"}
