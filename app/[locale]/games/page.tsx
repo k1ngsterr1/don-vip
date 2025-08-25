@@ -4,9 +4,7 @@ import { MobileGamesBlock } from "@/widgets/ui/main-page/mobile-games/mobile-gam
 export default function GamesPage() {
   return (
     <ContentWrapper>
-      <div className="mt-6 sm:mt-10">
-        <MobileGamesBlock />
-      </div>
+      <div className="mt-6 sm:mt-10">{/* <MobileGamesBlock /> */}</div>
     </ContentWrapper>
   );
 }
