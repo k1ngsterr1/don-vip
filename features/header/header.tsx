@@ -4,7 +4,7 @@ import SearchBar from "@/entities/search-bar/search-bar";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { GamesMegaMenu } from "@/features/games-mega-menu/games-mega-menu";
+// import { GamesMegaMenu } from "@/features/games-mega-menu/games-mega-menu";
 import { useTranslations } from "next-intl";
 import { Logo } from "./logo";
 import { DesktopNav } from "./desktop-nav";
@@ -213,7 +213,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
             </button>
           </div>
         </div>
-        <div
+        {/* <div
           onMouseEnter={() => {
             if (menuTimeoutRef.current) {
               clearTimeout(menuTimeoutRef.current);
@@ -232,7 +232,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
               <ServicesMegaMenu key="services-menu" />
             )}
           </AnimatePresence>
-        </div>
+        </div> */}
         {isSearchBar && (
           <div
             ref={mobileSearchRef}

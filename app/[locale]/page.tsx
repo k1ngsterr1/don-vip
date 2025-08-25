@@ -39,9 +39,9 @@ export default function Home() {
           <div className="mt-6 sm:mt-8">
             <ServicesBlock />
           </div>
-          <div className="mt-6 sm:mt-10">
+          {/* <div className="mt-6 sm:mt-10">
             <MobileGamesBlock />
-          </div>
+          </div> */}
         </div>
       </ContentWrapper>
     </div>
