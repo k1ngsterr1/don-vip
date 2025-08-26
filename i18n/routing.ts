@@ -20,7 +20,6 @@ export const routing = defineRouting({
     "/reset-password": "/reset-password",
 
     "/contact": "/contact",
-    "/games": "/games",
     "/faq": "/faq",
 
     "/services": "/services",

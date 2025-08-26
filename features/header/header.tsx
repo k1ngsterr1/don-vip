@@ -30,7 +30,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeMenu, setActiveMenu] = useState<"games" | "services" | null>(
+  const [activeMenu, setActiveMenu] = useState<"services" | null>(
     null
   );
   const [isScrolled, setIsScrolled] = useState(false);
@@ -48,11 +48,11 @@ export default function Header({ isSearchBar = true }: IHeader) {
     setSearchQuery(value);
   };
 
-  const handleMenuToggle = (menu: "games" | "services") => {
+  const handleMenuToggle = (menu: "services") => {
     setActiveMenu(activeMenu === menu ? null : menu);
   };
 
-  const handleMenuMouseEnter = (menu: "games" | "services") => {
+  const handleMenuMouseEnter = (menu: "services") => {
     if (menuTimeoutRef.current) {
       clearTimeout(menuTimeoutRef.current);
     }
@@ -227,7 +227,6 @@ export default function Header({ isSearchBar = true }: IHeader) {
           className="hidden lg:block"
         >
           <AnimatePresence>
-            {activeMenu === "games" && <GamesMegaMenu key="games-menu" />}
             {activeMenu === "services" && (
               <ServicesMegaMenu key="services-menu" />
             )}

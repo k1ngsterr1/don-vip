@@ -4,9 +4,9 @@ import { useTranslations } from "next-intl";
 import { NavItem } from "./nav-item";
 
 interface DesktopNavProps {
-  activeMenu: "games" | "services" | null;
-  onMenuToggle: (menu: "games" | "services") => void;
-  onMenuMouseEnter: (menu: "games" | "services") => void;
+  activeMenu: "services" | null;
+  onMenuToggle: (menu: "services") => void;
+  onMenuMouseEnter: (menu: "services") => void;
   onMenuMouseLeave: () => void;
 }
 

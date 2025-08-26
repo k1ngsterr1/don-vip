@@ -6,7 +6,6 @@ import { useTranslations } from "next-intl";
 interface TabletNavProps {
   activeMenu: "services" | null;
   onMenuToggle: (menu: "services") => void;
-  t: (key: string) => string;
 }
 
 export function TabletNav({ activeMenu, onMenuToggle }: TabletNavProps) {
