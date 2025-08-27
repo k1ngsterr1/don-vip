@@ -12,6 +12,7 @@ interface PaymentMethodSelectorProps {
   enhanced?: boolean;
   selectedMethod?: string;
   onSelect?: (method: string) => void;
+  currencyCode?: string; // Добавляем пропс для валюты
 }
 
 interface FrontendPaymentMethod {
@@ -26,6 +27,7 @@ export function PaymentMethodSelector({
   enhanced = false,
   selectedMethod = "tbank", // Default selected method ID
   onSelect = () => {},
+  currencyCode = "RUB", // По умолчанию RUB
 }: PaymentMethodSelectorProps) {
   const i18n = useTranslations("PaymentMethodSelector");
   const { data: activeBanksResponse, isLoading, error } = useGetActiveBanks();
@@ -57,9 +59,16 @@ export function PaymentMethodSelector({
   const activeApiBankNames =
     activeBanksResponse?.data.map((bank) => bank.name) || [];
 
-  const availablePaymentMethods = allPaymentMethods.filter((method) =>
-    activeApiBankNames.includes(method.apiName)
-  );
+  // Фильтруем методы оплаты на основе валюты
+  const availablePaymentMethods = allPaymentMethods.filter((method) => {
+    // T-Bank доступен только для RUB
+    if (method.id === "tbank" && currencyCode !== "RUB") {
+      return false;
+    }
+
+    // Проверяем доступность через API банков
+    return activeApiBankNames.includes(method.apiName);
+  });
 
   if (isLoading) {
     return (

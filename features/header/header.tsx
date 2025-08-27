@@ -30,9 +30,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeMenu, setActiveMenu] = useState<"services" | null>(
-    null
-  );
+  const [activeMenu, setActiveMenu] = useState<"services" | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   // FIXED: Added client-side only state for tablet detection
   const [isTablet, setIsTablet] = useState(false);

@@ -57,7 +57,11 @@ export function OrderBlock({
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [userId, setUserId] = useState("");
   const [serverId, setServerId] = useState("");
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("tbank");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(() => {
+    // По умолчанию T-Bank только для RUB, иначе card
+    const initialCurrency = getCurrentCurrency();
+    return initialCurrency === "RUB" ? "tbank" : "card";
+  });
   const [showGuestAuthPopup, setShowGuestAuthPopup] = useState(false);
   const [guestIdentifier, setGuestIdentifier] = useState("");
   const [couponCode, setCouponCode] = useState("");
@@ -144,6 +148,14 @@ export function OrderBlock({
       );
     }
   }, [product, locale, currentCurrency]); // Используем currentCurrency вместо formatPrice
+
+  // Автоматически переключаем метод оплаты при изменении валюты
+  useEffect(() => {
+    if (selectedPaymentMethod === "tbank" && currentCurrency?.code !== "RUB") {
+      // Если выбран T-Bank, но валюта не RUB, переключаем на card
+      setSelectedPaymentMethod("card");
+    }
+  }, [currentCurrency?.code, selectedPaymentMethod]);
 
   if (isProductLoading || !game || currencyLoading) {
     return <OrderBlockSkeleton />;
@@ -310,6 +322,7 @@ export function OrderBlock({
       <PaymentMethodSelector
         onSelect={setSelectedPaymentMethod}
         selectedMethod={selectedPaymentMethod}
+        currencyCode={currentCurrency?.code}
       />
       {error && (
         <div className="px-4 mb-4">
@@ -384,6 +397,7 @@ export function OrderBlock({
                 enhanced={true}
                 onSelect={setSelectedPaymentMethod}
                 selectedMethod={selectedPaymentMethod}
+                currencyCode={currentCurrency?.code}
               />
             </div>
             {error && (
