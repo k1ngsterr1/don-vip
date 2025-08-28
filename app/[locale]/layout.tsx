@@ -119,18 +119,13 @@ export default async function LocaleLayout({
         `}
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <TestAccessProvider>
-            <TestAccessGate>
-              <TestModeIndicator />
-              <ClientLayout>
-                <HeaderWrapper />
-                <main>{children}</main>
-                <BottomTab />
-                <FooterWrapper />
-              </ClientLayout>
-              <CookieBanner />
-            </TestAccessGate>
-          </TestAccessProvider>
+          <ClientLayout>
+            <HeaderWrapper />
+            <main>{children}</main>
+            <BottomTab />
+            <FooterWrapper />
+          </ClientLayout>
+          <CookieBanner />
         </NextIntlClientProvider>
       </body>
     </html>
