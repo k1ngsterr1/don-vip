@@ -5,6 +5,7 @@ import { PaymentMethodSelector } from "@/entities/payment/ui/payment-method-sele
 import { cn } from "@/shared/utils/cn";
 import { useState, useEffect, useRef } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 import { Banner } from "./banner/banner";
 import { OrderSummary } from "./order-summary/order-summary";
 import { ProductInfo } from "./product-info/product-info";
@@ -294,13 +295,14 @@ export function OrderBlock({
         onToggle={() => setShowInfo(!showInfo)}
         description={game.description}
       />
-
-      {/* Currency Selector */}
-      <div className="px-4 mb-6">
-        <h3 className="text-dark font-medium mb-3">Валюта оплаты</h3>
-        <CurrencySelectorDropdown />
+      <div className="px-4 mb-4">
+        <Link href="/language-currency" className="block">
+          <button className="w-full py-3 px-4 bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded-lg text-gray-700 font-medium transition-colors flex items-center justify-center gap-2">
+            <span>💱</span>
+            <span>Валюта оплаты</span>
+          </button>
+        </Link>
       </div>
-
       <CurrencySelector
         //@ts-ignore
         options={currencyOptions}
@@ -324,6 +326,9 @@ export function OrderBlock({
         selectedMethod={selectedPaymentMethod}
         currencyCode={currentCurrency?.code}
       />
+
+      {/* Currency Payment Button */}
+
       {error && (
         <div className="px-4 mb-4">
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
@@ -399,6 +404,16 @@ export function OrderBlock({
                 selectedMethod={selectedPaymentMethod}
                 currencyCode={currentCurrency?.code}
               />
+
+              {/* Currency Payment Button */}
+              <div className="mt-4">
+                <Link href="/language-currency" className="block">
+                  <button className="w-full py-3 px-4 bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded-lg text-gray-700 font-medium transition-colors flex items-center justify-center gap-2">
+                    <span>💱</span>
+                    <span>Валюта оплаты</span>
+                  </button>
+                </Link>
+              </div>
             </div>
             {error && (
               <div className="px-6 pb-6">
