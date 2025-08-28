@@ -45,7 +45,7 @@ interface CurrencyOption {
 
 export function OrderBlock({
   gameSlug,
-  initialExpandInfo = false,
+  initialExpandInfo = false, // Used to initialize showInfo state
 }: OrderBlockProps) {
   const t = useTranslations("orderBlock");
   const { data: product, isLoading: isProductLoading } = useProduct(gameSlug);
@@ -197,14 +197,28 @@ export function OrderBlock({
       return;
     }
 
-    // Use original RUB price for order processing
-    const originalPrice = selectedCurrency.originalPriceRub;
-    const discountAmount =
+    // Calculate prices for both RUB and converted currency
+    const originalPriceRub = selectedCurrency.originalPriceRub;
+    const originalPriceConverted =
+      currentCurrency.code === "RUB"
+        ? originalPriceRub
+        : originalPriceRub * currentCurrency.rate;
+
+    // Calculate discount in RUB
+    const discountAmountRub =
       couponInfo?.type === "percentage"
-        ? (originalPrice * appliedDiscount) / 100
+        ? (originalPriceRub * appliedDiscount) / 100
         : appliedDiscount;
-    const finalPrice = Math.max(0, originalPrice - discountAmount);
-    const formattedPrice = finalPrice.toFixed(2);
+
+    // Calculate final prices
+    const finalPriceRub = Math.max(0, originalPriceRub - discountAmountRub);
+    const finalPriceConverted =
+      currentCurrency.code === "RUB"
+        ? finalPriceRub
+        : finalPriceRub * currentCurrency.rate;
+
+    // Use converted price for the order (what the user actually pays)
+    const formattedPrice = finalPriceConverted.toFixed(2);
 
     const orderData: CreateOrderDto = {
       identifier: identifier,
