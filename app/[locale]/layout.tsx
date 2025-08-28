@@ -5,9 +5,6 @@ import Footer from "@/features/footer/footer";
 import HeaderWrapper from "@/features/header/header-wrapper";
 import { routing } from "@/i18n/routing";
 import ClientLayout from "@/shared/ui/client-layout/client-layout";
-import { TestAccessProvider } from "@/shared/providers/test-access-provider";
-import { TestAccessGate } from "@/shared/ui/test-access-gate/test-access-gate";
-import { TestModeIndicator } from "@/shared/ui/test-mode-indicator/test-mode-indicator";
 import type { Metadata } from "next";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { Roboto, Roboto_Condensed, Unbounded } from "next/font/google";
@@ -38,11 +35,10 @@ const unbounded = Unbounded({
 });
 
 export async function generateMetadata({
-  params,
+  params: { locale },
 }: {
-  params: Promise<{ locale: string }>;
+  params: { locale: string };
 }): Promise<Metadata> {
-  const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Metadata" });
 
   return {
@@ -59,9 +55,9 @@ export default async function LocaleLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+  params: { locale: string };
 }) {
-  const { locale } = await params;
+  const { locale } = params;
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
