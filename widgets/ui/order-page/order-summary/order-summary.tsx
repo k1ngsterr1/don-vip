@@ -41,7 +41,7 @@ export function OrderSummary({
   onSubmit,
   isLoading = false,
 }: OrderSummaryProps) {
-  const t = useTranslations("orderSummary");
+  const t = useTranslations("orderSummary.summary");
 
   const isEmail = (value: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
@@ -61,7 +61,7 @@ export function OrderSummary({
     <div className="bg-white rounded-lg shadow-sm border border-gray-100 sticky top-8">
       <div className="p-6 border-b border-gray-100">
         <h2 className="text-lg font-medium text-gray-800 mb-4">
-          {t("summary.title")}
+          {t("title")}
         </h2>
         <div className="flex items-center mb-4">
           <div className="w-16 h-16 flex items-center justify-center rounded-lg overflow-hidden mr-4 bg-gray-100 flex-shrink-0">
@@ -84,7 +84,7 @@ export function OrderSummary({
         {selectedCurrency && (
           <div className="bg-gray-50 rounded-lg p-4 mb-4">
             <div className="flex justify-between mb-2">
-              <span className="text-gray-600">{t("summary.quantity")}:</span>
+              <span className="text-gray-600">{t("quantity")}:</span>
               <span className="font-medium">{selectedCurrency.amount}</span>
             </div>
 
