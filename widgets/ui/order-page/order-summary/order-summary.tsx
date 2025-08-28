@@ -8,6 +8,13 @@ import { useTranslations } from "next-intl";
 interface OrderSummaryProps {
   game: any;
   selectedCurrency: any;
+  currentCurrency?: {
+    code: string;
+    name: string;
+    symbol: string;
+    flag: string;
+    rate: number;
+  };
   appliedDiscount?: number;
   couponInfo?: {
     code: string;
@@ -25,6 +32,7 @@ interface OrderSummaryProps {
 export function OrderSummary({
   game,
   selectedCurrency,
+  currentCurrency,
   appliedDiscount = 0,
   couponInfo,
   isFormValid,
@@ -55,7 +63,6 @@ export function OrderSummary({
         <h2 className="text-lg font-medium text-gray-800 mb-4">
           {t("summary.title")}
         </h2>
-
         <div className="flex items-center mb-4">
           <div className="w-16 h-16 flex items-center justify-center rounded-lg overflow-hidden mr-4 bg-gray-100 flex-shrink-0">
             {game.currencyImage && (
@@ -84,7 +91,7 @@ export function OrderSummary({
             {/* Price breakdown */}
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-gray-600">
+                <span className="text-gray-600 flex items-center gap-1">
                   {t("summary.subtotal") || "Subtotal"}:
                 </span>
                 <span
@@ -93,7 +100,7 @@ export function OrderSummary({
                     hasDiscount && "line-through text-gray-500"
                   )}
                 >
-                  {originalPrice.toFixed(2)} RUB
+                  {originalPrice.toFixed(2)}
                 </span>
               </div>
 
@@ -121,7 +128,7 @@ export function OrderSummary({
                         {t("summary.total") || "Total"}:
                       </span>
                       <span className="font-semibold text-lg text-green-600">
-                        {finalPrice.toFixed(2)} RUB
+                        {finalPrice.toFixed(2)}
                       </span>
                     </div>
                   </div>
@@ -142,7 +149,7 @@ export function OrderSummary({
                 <div className="flex items-center justify-center">
                   <span className="text-sm font-medium text-green-700">
                     🎉 {t("summary.youSave") || "You save"}:{" "}
-                    {discountAmount.toFixed(2)} RUB
+                    {discountAmount.toFixed(2)}
                   </span>
                 </div>
               </div>

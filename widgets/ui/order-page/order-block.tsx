@@ -428,6 +428,7 @@ export function OrderBlock({
           <OrderSummary
             game={game}
             selectedCurrency={selectedCurrency}
+            currentCurrency={currentCurrency}
             appliedDiscount={appliedDiscount}
             couponInfo={couponInfo}
             isFormValid={isFormValid}
