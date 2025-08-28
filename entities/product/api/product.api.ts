@@ -60,7 +60,7 @@ export const productService = {
   ): Promise<PaginatedResponse<Product>> => {
     try {
       const response = await apiClient.get<PaginatedResponse<Product>>(
-        "/product/all",
+        "/product/active",
         {
           params: { search, limit, page },
         }
