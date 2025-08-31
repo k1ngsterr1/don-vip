@@ -15,6 +15,22 @@ interface CountryCurrency {
   flag: string;
 }
 
+// Region names localization
+const REGION_TRANSLATIONS = {
+  EUROPE: {
+    ru: "ЕВРОПА",
+    en: "EUROPE",
+  },
+  ASIA: {
+    ru: "АЗИЯ",
+    en: "ASIA",
+  },
+  "SOUTH AMERICA": {
+    ru: "ЮЖНАЯ АМЕРИКА",
+    en: "SOUTH AMERICA",
+  },
+};
+
 // Countries with their currencies organized by regions like SEAGM
 const COUNTRIES_BY_REGION = {
   EUROPE: [
@@ -80,6 +96,15 @@ export default function LanguageCurrencyPage() {
 
   const handleSaveSettings = () => {
     router.back();
+  };
+
+  // Get localized region name
+  const getLocalizedRegionName = (regionKey: string) => {
+    return (
+      REGION_TRANSLATIONS[regionKey as keyof typeof REGION_TRANSLATIONS]?.[
+        currentLocale as "ru" | "en"
+      ] || regionKey
+    );
   };
 
   // Filter countries based on search query
@@ -226,7 +251,7 @@ export default function LanguageCurrencyPage() {
                     ([regionName, countries]) => (
                       <div key={regionName}>
                         <h2 className="text-lg md:text-2xl font-unbounded font-bold text-dark mb-4 md:mb-6 uppercase">
-                          {regionName}
+                          {getLocalizedRegionName(regionName)}
                           <span className="text-xs md:text-sm font-roboto font-normal text-gray-500 ml-2 md:ml-3 capitalize">
                             ({countries.length}{" "}
                             {countries.length === 1 ? "country" : "countries"})
