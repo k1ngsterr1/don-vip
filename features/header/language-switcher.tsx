@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
@@ -12,6 +12,7 @@ import { Link } from "@/i18n/routing";
 
 export function LanguageSwitcher() {
   const locale = useLocale();
+  const t = useTranslations("header");
   const router = useRouter();
   const pathname = usePathname();
   const { selectedCurrency } = useCurrency();
@@ -145,7 +146,9 @@ export function LanguageSwitcher() {
                 >
                   <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
                   <div className="flex flex-col">
-                    <span className="font-medium">Currency Settings</span>
+                    <span className="font-medium">
+                      {t("currencySettings") || "Currency Settings"}
+                    </span>
                     <span className="text-xs text-gray-500">
                       RUB/{selectedCurrency.code}
                     </span>

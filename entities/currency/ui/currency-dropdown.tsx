@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { useCurrency } from "../hooks/use-currency";
 import { ChevronDown } from "lucide-react";
 
@@ -15,6 +16,7 @@ export function CurrencyDropdown({
 }: CurrencyDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const t = useTranslations("header");
   const { selectedCurrency, currencies, setCurrency, isLoading } =
     useCurrency();
 
@@ -111,7 +113,7 @@ export function CurrencyDropdown({
               onClick={() => setIsOpen(false)}
             >
               <span>⚙️</span>
-              <span>Currency Settings</span>
+              <span>{t("currencySettings") || "Currency Settings"}</span>
             </a>
           </div>
         </div>
