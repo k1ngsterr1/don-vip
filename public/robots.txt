@@ -1,0 +1,27 @@
+User-agent: *
+Allow: /
+
+# Block indexing of pages with tracking parameters
+Disallow: /*?utm_source=*
+Disallow: /*?utm_medium=*
+Disallow: /*?utm_campaign=*
+Disallow: /*?utm_content=*
+Disallow: /*?utm_term=*
+Disallow: /*?fbclid=*
+Disallow: /*?gclid=*
+Disallow: /*?ref=*
+Disallow: /*?source=*
+
+# Block auth pages
+Disallow: /*/auth/
+Disallow: /auth/
+
+# Block admin/internal pages
+Disallow: /*/admin/
+Disallow: /admin/
+
+# Block search result pages
+Disallow: /*/search?*
+Disallow: /search?*
+
+Sitemap: https://don-vip.com/sitemap.xml

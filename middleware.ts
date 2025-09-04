@@ -9,6 +9,30 @@ export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const url = request.nextUrl.clone();
 
+  // List of tracking parameters to remove
+  const trackingParams = [
+    "utm_source",
+    "utm_medium",
+    "utm_campaign",
+    "utm_content",
+    "utm_term",
+    "fbclid",
+    "gclid",
+    "ref",
+    "source",
+    "_ga",
+    "_gid",
+  ];
+
+  // Check if URL has tracking parameters
+  let hasTrackingParams = false;
+  trackingParams.forEach((param) => {
+    if (url.searchParams.has(param)) {
+      hasTrackingParams = true;
+      url.searchParams.delete(param);
+    }
+  });
+
   // Handle external Google auth callback
   if (path.startsWith("/en/google")) {
     const accessToken = url.searchParams.get("access");
@@ -42,6 +66,11 @@ export function middleware(request: NextRequest) {
     if (accessToken && refreshToken) {
       return NextResponse.next();
     }
+  }
+
+  // Redirect if tracking parameters were removed (for SEO)
+  if (hasTrackingParams && !path.startsWith("/auth/")) {
+    return NextResponse.redirect(url, 301);
   }
 
   // Apply next-intl middleware for all other paths
