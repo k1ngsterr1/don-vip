@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useCurrency } from "@/entities/currency/hooks/use-currency";
+import { useLanguageStore } from "@/shared/stores";
 import { Button } from "@/shared/ui/button/button";
 import { ArrowLeft, Loader2, Search, X } from "lucide-react";
 import { Link } from "@/i18n/routing";
@@ -70,9 +71,22 @@ export default function LanguageCurrencyPage() {
   const { selectedCurrency, currencies, isLoading, error, setCurrency } =
     useCurrency();
 
-  const [selectedCountry, setSelectedCountry] =
-    useState<CountryCurrency | null>(null);
+  // Zustand store for language settings
+  const {
+    selectedLocale,
+    selectedCountry,
+    setSelectedLocale,
+    setSelectedCountry,
+  } = useLanguageStore();
+
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Initialize store with current locale on mount
+  useEffect(() => {
+    if (!selectedLocale || selectedLocale !== currentLocale) {
+      setSelectedLocale(currentLocale);
+    }
+  }, [currentLocale, selectedLocale, setSelectedLocale]);
 
   const handleCountrySelect = (country: CountryCurrency) => {
     setSelectedCountry(country);
@@ -94,8 +108,29 @@ export default function LanguageCurrencyPage() {
     }
   };
 
+  const handleLanguageChange = (newLocale: string) => {
+    setSelectedLocale(newLocale);
+  };
+
   const handleSaveSettings = () => {
-    router.back();
+    if (selectedCurrency) {
+      localStorage.setItem(
+        "selectedCurrency",
+        JSON.stringify(selectedCurrency)
+      );
+    }
+
+    // Language and country are already persisted in Zustand store
+
+    // Check if language was changed and redirect with new locale
+    if (selectedLocale !== currentLocale) {
+      // Redirect to home page with new locale and reload
+      const newPath = `/${selectedLocale}`;
+      window.location.href = newPath;
+    } else {
+      // Force page reload to apply settings and go back
+      window.location.reload();
+    }
   };
 
   // Get localized region name
