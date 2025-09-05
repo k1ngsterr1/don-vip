@@ -135,6 +135,21 @@ const BASIC_CURRENCIES: Currency[] = [
     flag: "🇩🇰",
     rate: 0.075, // 1 RUB = 0.075 DKK
   },
+  // Additional European currencies
+  {
+    code: "HRK",
+    name: "Croatian Kuna",
+    symbol: "kn",
+    flag: "🇭🇷",
+    rate: 0.072, // 1 RUB = 0.072 HRK
+  },
+  {
+    code: "CHF",
+    name: "Swiss Franc",
+    symbol: "Fr",
+    flag: "🇨🇭",
+    rate: 0.01, // 1 RUB = 0.01 CHF
+  },
 ];
 
 export function useCurrency() {

@@ -44,6 +44,28 @@ const CURRENCY_MAP: Record<string, { flag: string; symbol: string }> = {
   RON: { flag: "🇷🇴", symbol: "lei" },
   RSD: { flag: "🇷🇸", symbol: "din" },
   UAH: { flag: "🇺🇦", symbol: "₴" },
+  // Additional European currencies (Eurozone and others)
+  CYP: { flag: "🇨🇾", symbol: "€" }, // Cyprus (Euro)
+  EEK: { flag: "🇪🇪", symbol: "€" }, // Estonia (Euro)
+  ESP: { flag: "🇪🇸", symbol: "€" }, // Spain (Euro)
+  FIM: { flag: "🇫🇮", symbol: "€" }, // Finland (Euro)
+  FRF: { flag: "🇫🇷", symbol: "€" }, // France (Euro)
+  GRD: { flag: "🇬🇷", symbol: "€" }, // Greece (Euro)
+  IEP: { flag: "🇮🇪", symbol: "€" }, // Ireland (Euro)
+  ITL: { flag: "🇮🇹", symbol: "€" }, // Italy (Euro)
+  LTL: { flag: "🇱🇹", symbol: "€" }, // Lithuania (Euro)
+  LUF: { flag: "🇱🇺", symbol: "€" }, // Luxembourg (Euro)
+  LVL: { flag: "🇱🇻", symbol: "€" }, // Latvia (Euro)
+  MTL: { flag: "🇲🇹", symbol: "€" }, // Malta (Euro)
+  NLG: { flag: "🇳🇱", symbol: "€" }, // Netherlands (Euro)
+  ATS: { flag: "🇦🇹", symbol: "€" }, // Austria (Euro)
+  BEF: { flag: "🇧🇪", symbol: "€" }, // Belgium (Euro)
+  DEM: { flag: "🇩🇪", symbol: "€" }, // Germany (Euro)
+  PTE: { flag: "🇵🇹", symbol: "€" }, // Portugal (Euro)
+  SKK: { flag: "🇸🇰", symbol: "€" }, // Slovakia (Euro)
+  SIT: { flag: "🇸🇮", symbol: "€" }, // Slovenia (Euro)
+  // Other European currencies
+  HRK: { flag: "🇭🇷", symbol: "kn" }, // Croatia
   // Additional Asian currencies
   AFN: { flag: "🇦🇫", symbol: "؋" },
   AMD: { flag: "🇦🇲", symbol: "֏" },
@@ -138,6 +160,27 @@ function getCurrencyName(code: string): string {
     RON: "Romanian Leu",
     RSD: "Serbian Dinar",
     UAH: "Ukrainian Hryvnia",
+    // European countries (Eurozone)
+    CYP: "Cyprus Euro",
+    EEK: "Estonia Euro",
+    ESP: "Spain Euro",
+    FIM: "Finland Euro",
+    FRF: "France Euro",
+    GRD: "Greece Euro",
+    IEP: "Ireland Euro",
+    ITL: "Italy Euro",
+    LTL: "Lithuania Euro",
+    LUF: "Luxembourg Euro",
+    LVL: "Latvia Euro",
+    MTL: "Malta Euro",
+    NLG: "Netherlands Euro",
+    ATS: "Austria Euro",
+    BEF: "Belgium Euro",
+    DEM: "Germany Euro",
+    PTE: "Portugal Euro",
+    SKK: "Slovakia Euro",
+    SIT: "Slovenia Euro",
+    HRK: "Croatian Kuna",
   };
   return names[code] || code;
 }
@@ -308,6 +351,20 @@ class CurrencyApi {
           symbol: "kr",
           flag: "🇩🇰",
           rate: 0.075,
+        },
+        {
+          code: "HRK",
+          name: "Croatian Kuna",
+          symbol: "kn",
+          flag: "🇭🇷",
+          rate: 0.072,
+        },
+        {
+          code: "CHF",
+          name: "Swiss Franc",
+          symbol: "Fr",
+          flag: "🇨🇭",
+          rate: 0.01,
         },
       ];
     }

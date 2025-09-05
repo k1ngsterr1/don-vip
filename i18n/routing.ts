@@ -34,6 +34,7 @@ export const routing = defineRouting({
     "/payment/failed": "/payment/failed",
 
     "/product": "/product",
+    "/product/[id]": "/product/[id]",
     "/product/[game]": "/product/[game]",
     "/product/success": "/product/success",
 
