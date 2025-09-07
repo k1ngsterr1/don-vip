@@ -4,6 +4,7 @@ import {
   type PaymentMethod,
   type PaymentMethodsParams,
   type PaymentMethodsResponse,
+  type UserPaymentMethodsResponse,
 } from "@/entities/payment/api/payment-methods-api";
 
 export function usePaymentMethods(params: PaymentMethodsParams = {}) {
@@ -102,5 +103,46 @@ export function usePaymentMethodAvailability() {
     checkAvailability,
     isChecking,
     error,
+  };
+}
+
+export function useUserPaymentMethods() {
+  const [userMethods, setUserMethods] =
+    useState<UserPaymentMethodsResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchUserMethods = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await PaymentMethodsApi.getPaymentMethodsForUser();
+      setUserMethods(response);
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Failed to load user payment methods";
+      setError(errorMessage);
+      console.error("Error fetching user payment methods:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchUserMethods();
+  }, [fetchUserMethods]);
+
+  const refetch = useCallback(() => {
+    fetchUserMethods();
+  }, [fetchUserMethods]);
+
+  return {
+    userMethods,
+    isLoading,
+    error,
+    refetch,
   };
 }

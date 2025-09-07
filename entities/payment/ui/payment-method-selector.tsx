@@ -8,7 +8,10 @@ import visaIcon from "@/assets/visa.webp";
 import sbpIcon from "@/assets/sbp.svg";
 import paypalIcon from "@/assets/paypal.webp";
 import { useGetActiveBanks } from "@/entities/bank/hooks/use-get-active-banks";
-import { usePaymentMethods } from "@/entities/payment/hooks/use-payment-methods";
+import {
+  usePaymentMethods,
+  useUserPaymentMethods,
+} from "@/entities/payment/hooks/use-payment-methods";
 import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 
@@ -19,6 +22,7 @@ interface PaymentMethodSelectorProps {
   currentCurrency?: string; // Add currency prop
   region?: string; // Add region prop
   amount?: number; // Add amount prop for filtering
+  useUserMethods?: boolean; // New prop to enable user-specific methods
 }
 
 interface FrontendPaymentMethod {
@@ -36,6 +40,7 @@ export function PaymentMethodSelector({
   currentCurrency = "RUB", // Default to RUB
   region = "RU", // Default to Russia
   amount, // Amount for filtering
+  useUserMethods = false, // Default to false for backward compatibility
 }: PaymentMethodSelectorProps) {
   const i18n = useTranslations("PaymentMethodSelector");
 
@@ -79,6 +84,14 @@ export function PaymentMethodSelector({
     amount: amount,
   });
 
+  // Get user-specific payment methods (requires authentication)
+  const {
+    userMethods,
+    isLoading: userMethodsLoading,
+    error: userMethodsError,
+    refetch: refetchUserMethods,
+  } = useUserPaymentMethods();
+
   // Define frontend payment methods with a mapping to API names
   const allPaymentMethods: FrontendPaymentMethod[] = [
     {
@@ -109,7 +122,29 @@ export function PaymentMethodSelector({
   // For non-RUB currencies, use payment methods from API
   let availablePaymentMethods: FrontendPaymentMethod[] = [];
 
-  if (currentCurrency !== "RUB") {
+  if (useUserMethods && userMethods) {
+    // Use user-specific payment methods when enabled
+    availablePaymentMethods = userMethods.methods.map((methodName) => {
+      // Try to find matching frontend method first
+      const frontendMethod = allPaymentMethods.find(
+        (fm) =>
+          fm.apiName === methodName ||
+          fm.translationKey.includes(methodName.toLowerCase())
+      );
+
+      if (frontendMethod) {
+        return frontendMethod;
+      }
+
+      // Create a dynamic method if not found in predefined list
+      return {
+        id: methodName.toLowerCase().replace(/[^a-z0-9]/g, ""),
+        translationKey: `methods.${methodName.toLowerCase()}`,
+        apiName: methodName,
+        icon: getPaymentMethodIcon("card", methodName), // Default to card icon
+      };
+    });
+  } else if (currentCurrency !== "RUB") {
     // For non-RUB currencies, map API payment methods to frontend format
     availablePaymentMethods = apiPaymentMethods.map((apiMethod) => ({
       id: apiMethod.id,
@@ -145,14 +180,18 @@ export function PaymentMethodSelector({
     );
   }
 
-  const isLoading = banksLoading || methodsLoading;
-  const error = banksError || methodsError;
+  const isLoading =
+    banksLoading || methodsLoading || (useUserMethods && userMethodsLoading);
+  const error =
+    banksError || methodsError || (useUserMethods && userMethodsError);
 
   // Debug information
   useEffect(() => {
     console.log("PaymentMethodSelector Debug:", {
       currentCurrency,
       region,
+      useUserMethods,
+      userMethods,
       apiPaymentMethods,
       availablePaymentMethods,
       activeBanksResponse: activeBanksResponse?.data,
@@ -162,6 +201,8 @@ export function PaymentMethodSelector({
   }, [
     currentCurrency,
     region,
+    useUserMethods,
+    userMethods,
     apiPaymentMethods,
     availablePaymentMethods,
     activeBanksResponse,

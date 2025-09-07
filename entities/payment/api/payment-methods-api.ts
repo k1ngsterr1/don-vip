@@ -37,6 +37,14 @@ export interface PaymentMethodsParams {
   product_type?: string;
 }
 
+export interface UserPaymentMethodsResponse {
+  currency: string;
+  country: string;
+  region: string;
+  methods: string[];
+  supported_currencies: string[];
+}
+
 export class PaymentMethodsApi {
   /**
    * Получить доступные методы платежа для региона/валюты
@@ -86,6 +94,22 @@ export class PaymentMethodsApi {
         available: boolean;
         reason?: string;
       }>(`/payment/methods/${id}/availability`, { params });
+      return response.data;
+    } catch (error) {
+      throw new Error(extractErrorMessage(error));
+    }
+  }
+
+  /**
+   * Получить доступные методы платежа для текущего пользователя на основе его валюты
+   * GET /api/payment/methods-for-user
+   * Requires authentication
+   */
+  static async getPaymentMethodsForUser(): Promise<UserPaymentMethodsResponse> {
+    try {
+      const response = await apiClient.get<UserPaymentMethodsResponse>(
+        "/payment/methods-for-user"
+      );
       return response.data;
     } catch (error) {
       throw new Error(extractErrorMessage(error));
