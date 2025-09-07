@@ -82,17 +82,17 @@ export function PaymentMethodSelector({
   // Define frontend payment methods with a mapping to API names
   const allPaymentMethods: FrontendPaymentMethod[] = [
     {
+      id: "sbp",
+      translationKey: "methods.sbp",
+      apiName: "SBP",
+      icon: sbpIcon,
+    },
+    {
       id: "tbank",
       translationKey: "methods.tbank",
       apiName: "T-Bank", // Example: This should match the 'name' field from your Bank API for T-Bank
       icon: tbankIcon,
       descriptionKey: "tbankDescription",
-    },
-    {
-      id: "sbp",
-      translationKey: "methods.sbp",
-      apiName: "SBP",
-      icon: sbpIcon,
     },
     {
       id: "card",
