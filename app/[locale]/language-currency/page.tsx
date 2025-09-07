@@ -43,19 +43,9 @@ const REGION_TRANSLATIONS = {
 // Countries with their currencies organized by regions like SEAGM
 const COUNTRIES_BY_REGION = {
   EUROPE: [
-    { country: "RUSSIA", language: "Русский", currency: "RUB", flag: "🇷🇺" },
     { country: "AUSTRIA", language: "Deutsch", currency: "EUR", flag: "🇦🇹" },
     { country: "BELGIUM", language: "Français", currency: "EUR", flag: "🇧🇪" },
-    { country: "BULGARIA", language: "Български", currency: "BGN", flag: "🇧🇬" },
-    { country: "CROATIA", language: "Hrvatski", currency: "HRK", flag: "🇭🇷" },
     { country: "CYPRUS", language: "Ελληνικά", currency: "EUR", flag: "🇨🇾" },
-    {
-      country: "CZECH REPUBLIC",
-      language: "Čeština",
-      currency: "CZK",
-      flag: "🇨🇿",
-    },
-    { country: "DENMARK", language: "Dansk", currency: "DKK", flag: "🇩🇰" },
     { country: "ESTONIA", language: "Eesti", currency: "EUR", flag: "🇪🇪" },
     { country: "FINLAND", language: "Suomi", currency: "EUR", flag: "🇫🇮" },
     { country: "FRANCE", language: "Français", currency: "EUR", flag: "🇫🇷" },
@@ -79,10 +69,7 @@ const COUNTRIES_BY_REGION = {
       currency: "EUR",
       flag: "🇳🇱",
     },
-    { country: "NORWAY", language: "Norsk", currency: "NOK", flag: "🇳🇴" },
-    { country: "POLAND", language: "Polski", currency: "PLN", flag: "🇵🇱" },
     { country: "PORTUGAL", language: "Português", currency: "EUR", flag: "🇵🇹" },
-    { country: "ROMANIA", language: "Română", currency: "RON", flag: "🇷🇴" },
     {
       country: "SLOVAKIA",
       language: "Slovenčina",
@@ -96,75 +83,10 @@ const COUNTRIES_BY_REGION = {
       flag: "🇸🇮",
     },
     { country: "SPAIN", language: "Español", currency: "EUR", flag: "🇪🇸" },
-    { country: "SWEDEN", language: "Svenska", currency: "SEK", flag: "🇸🇪" },
-    {
-      country: "SWITZERLAND",
-      language: "Deutsch",
-      currency: "CHF",
-      flag: "🇨🇭",
-    },
-    { country: "UKRAINE", language: "Українська", currency: "UAH", flag: "🇺🇦" },
-    {
-      country: "UNITED KINGDOM",
-      language: "English",
-      currency: "GBP",
-      flag: "🇬🇧",
-    },
   ],
   ASIA: [
-    { country: "KAZAKHSTAN", language: "Русский", currency: "KZT", flag: "🇰🇿" },
-    { country: "CHINA", language: "中文", currency: "CNY", flag: "🇨🇳" },
-    { country: "JAPAN", language: "日本語", currency: "JPY", flag: "🇯🇵" },
-    { country: "SOUTH KOREA", language: "한국어", currency: "KRW", flag: "🇰🇷" },
-    { country: "SINGAPORE", language: "English", currency: "SGD", flag: "🇸🇬" },
-    { country: "THAILAND", language: "ไทย", currency: "THB", flag: "🇹🇭" },
-    {
-      country: "MALAYSIA",
-      language: "Bahasa Malaysia",
-      currency: "MYR",
-      flag: "🇲🇾",
-    },
-    { country: "INDIA", language: "हिन्दी", currency: "INR", flag: "🇮🇳" },
-    { country: "HONG KONG", language: "English", currency: "HKD", flag: "🇭🇰" },
-    { country: "TAIWAN", language: "中文", currency: "TWD", flag: "🇹🇼" },
-    { country: "VIETNAM", language: "Tiếng Việt", currency: "VND", flag: "🇻🇳" },
-    {
-      country: "INDONESIA",
-      language: "Bahasa Indonesia",
-      currency: "IDR",
-      flag: "🇮🇩",
-    },
-  ],
-
-  "NORTH AMERICA": [
-    {
-      country: "UNITED STATES",
-      language: "English",
-      currency: "USD",
-      flag: "🇺🇸",
-    },
-    { country: "CANADA", language: "English", currency: "CAD", flag: "🇨🇦" },
-    { country: "MEXICO", language: "Español", currency: "MXN", flag: "🇲🇽" },
-  ],
-
-  "SOUTH AMERICA": [
-    { country: "BRAZIL", language: "Português", currency: "BRL", flag: "🇧🇷" },
-    { country: "ARGENTINA", language: "Español", currency: "ARS", flag: "��" },
-    { country: "CHILE", language: "Español", currency: "USD", flag: "🇨�" },
-    { country: "COLOMBIA", language: "Español", currency: "USD", flag: "��" },
-    { country: "PERU", language: "Español", currency: "USD", flag: "🇵🇪" },
-    { country: "URUGUAY", language: "Español", currency: "USD", flag: "🇺🇾" },
-    { country: "VENEZUELA", language: "Español", currency: "USD", flag: "🇻🇪" },
-  ],
-
-  OCEANIA: [
-    { country: "AUSTRALIA", language: "English", currency: "AUD", flag: "🇦🇺" },
-    {
-      country: "NEW ZEALAND",
-      language: "English",
-      currency: "NZD",
-      flag: "🇳🇿",
-    },
+    { country: "RUSSIA", language: "Русский", currency: "RUB", flag: "🇷🇺" },
+    { country: "KAZAKHSTAN", language: "Қазақша", currency: "KZT", flag: "🇰🇿" },
   ],
 };
 
@@ -233,8 +155,14 @@ export default function LanguageCurrencyPage() {
       const newPath = `/${selectedLocale}`;
       window.location.href = newPath;
     } else {
-      // Force page reload to apply settings and go back
-      window.location.reload();
+      // Redirect to home page first, then reload after timeout
+      const homePath = `/${currentLocale}`;
+      router.push(homePath);
+
+      // Reload the page after a short timeout to apply settings
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     }
   };
 

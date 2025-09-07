@@ -2,48 +2,9 @@ import type { Currency, CurrencyApiResponse } from "../model/currency-types";
 
 // Currency mapping with flags and symbols
 const CURRENCY_MAP: Record<string, { flag: string; symbol: string }> = {
-  USD: { flag: "🇺🇸", symbol: "$" },
   EUR: { flag: "🇪🇺", symbol: "€" },
-  GBP: { flag: "🇬🇧", symbol: "£" },
-  CNY: { flag: "🇨🇳", symbol: "¥" },
-  JPY: { flag: "🇯🇵", symbol: "¥" },
-  KRW: { flag: "🇰🇷", symbol: "₩" },
-  CHF: { flag: "🇨🇭", symbol: "Fr" },
-  CAD: { flag: "🇨🇦", symbol: "C$" },
-  AUD: { flag: "🇦🇺", symbol: "A$" },
-  SGD: { flag: "🇸🇬", symbol: "S$" },
-  HKD: { flag: "🇭🇰", symbol: "HK$" },
-  TWD: { flag: "🇹🇼", symbol: "NT$" },
-  THB: { flag: "🇹🇭", symbol: "฿" },
-  MYR: { flag: "🇲🇾", symbol: "RM" },
-  INR: { flag: "🇮🇳", symbol: "₹" },
-  IDR: { flag: "🇮🇩", symbol: "Rp" },
-  VND: { flag: "🇻🇳", symbol: "₫" },
-  SEK: { flag: "🇸🇪", symbol: "kr" },
-  NOK: { flag: "🇳🇴", symbol: "kr" },
-  DKK: { flag: "🇩🇰", symbol: "kr" },
-  PLN: { flag: "🇵🇱", symbol: "zł" },
-  CZK: { flag: "🇨🇿", symbol: "Kč" },
-  NZD: { flag: "🇳🇿", symbol: "NZ$" },
-  BRL: { flag: "🇧🇷", symbol: "R$" },
-  MXN: { flag: "🇲🇽", symbol: "$" },
-  ARS: { flag: "🇦🇷", symbol: "$" },
-  ZAR: { flag: "🇿🇦", symbol: "R" },
-  TRY: { flag: "🇹🇷", symbol: "₺" },
-  EGP: { flag: "🇪🇬", symbol: "£" },
   RUB: { flag: "🇷🇺", symbol: "₽" },
-  // Additional European currencies
-  ALL: { flag: "🇦🇱", symbol: "L" },
-  BAM: { flag: "🇧🇦", symbol: "КМ" },
-  BGN: { flag: "🇧🇬", symbol: "лв" },
-  BYN: { flag: "🇧🇾", symbol: "Br" },
-  HUF: { flag: "🇭🇺", symbol: "Ft" },
-  ISK: { flag: "🇮🇸", symbol: "kr" },
-  MKD: { flag: "🇲🇰", symbol: "ден" },
-  MDL: { flag: "🇲🇩", symbol: "L" },
-  RON: { flag: "🇷🇴", symbol: "lei" },
-  RSD: { flag: "🇷🇸", symbol: "din" },
-  UAH: { flag: "🇺🇦", symbol: "₴" },
+
   // Additional European currencies (Eurozone and others)
   CYP: { flag: "🇨🇾", symbol: "€" }, // Cyprus (Euro)
   EEK: { flag: "🇪🇪", symbol: "€" }, // Estonia (Euro)
@@ -64,47 +25,8 @@ const CURRENCY_MAP: Record<string, { flag: string; symbol: string }> = {
   PTE: { flag: "🇵🇹", symbol: "€" }, // Portugal (Euro)
   SKK: { flag: "🇸🇰", symbol: "€" }, // Slovakia (Euro)
   SIT: { flag: "🇸🇮", symbol: "€" }, // Slovenia (Euro)
-  // Other European currencies
-  HRK: { flag: "🇭🇷", symbol: "kn" }, // Croatia
-  // Additional Asian currencies
-  AFN: { flag: "🇦🇫", symbol: "؋" },
-  AMD: { flag: "🇦🇲", symbol: "֏" },
-  AZN: { flag: "🇦🇿", symbol: "₼" },
-  BDT: { flag: "🇧🇩", symbol: "৳" },
-  BTN: { flag: "🇧🇹", symbol: "Nu." },
-  BND: { flag: "🇧🇳", symbol: "B$" },
-  KHR: { flag: "🇰🇭", symbol: "៛" },
-  GEL: { flag: "🇬🇪", symbol: "₾" },
-  IRR: { flag: "🇮🇷", symbol: "﷼" },
-  IQD: { flag: "🇮🇶", symbol: "ع.د" },
-  ILS: { flag: "🇮🇱", symbol: "₪" },
-  JOD: { flag: "🇯🇴", symbol: "د.ا" },
+
   KZT: { flag: "🇰🇿", symbol: "₸" },
-  KWD: { flag: "🇰🇼", symbol: "د.ك" },
-  KGS: { flag: "🇰🇬", symbol: "с" },
-  LAK: { flag: "🇱🇦", symbol: "₭" },
-  LBP: { flag: "🇱🇧", symbol: "ل.ل" },
-  MOP: { flag: "🇲🇴", symbol: "MOP$" },
-  MVR: { flag: "🇲🇻", symbol: "Rf" },
-  MNT: { flag: "🇲🇳", symbol: "₮" },
-  MMK: { flag: "🇲🇲", symbol: "Ks" },
-  NPR: { flag: "🇳🇵", symbol: "Rs" },
-  KPW: { flag: "🇰🇵", symbol: "₩" },
-  OMR: { flag: "🇴🇲", symbol: "ر.ع." },
-  PKR: { flag: "🇵🇰", symbol: "Rs" },
-  PHP: { flag: "🇵🇭", symbol: "₱" },
-  QAR: { flag: "🇶🇦", symbol: "ر.ق" },
-  SAR: { flag: "🇸🇦", symbol: "ر.س" },
-  LKR: { flag: "🇱🇰", symbol: "Rs" },
-  SYP: { flag: "🇸🇾", symbol: "ل.س" },
-  TJS: { flag: "🇹🇯", symbol: "ЅМ" },
-  TMT: { flag: "🇹🇲", symbol: "m" },
-  AED: { flag: "🇦🇪", symbol: "د.إ" },
-  UZS: { flag: "🇺🇿", symbol: "сўм" },
-  YER: { flag: "🇾🇪", symbol: "﷼" },
-  // African currencies
-  GHS: { flag: "🇬🇭", symbol: "₵" },
-  // More currencies will be added as needed
 };
 
 // Base RUB currency
