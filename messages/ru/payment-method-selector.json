@@ -5,9 +5,10 @@
     "defaultMethod": "T-Bank (SBP)",
     "tbankDescription": "Быстрый и безопасный способ оплаты",
     "methods": {
-      "tbank": "T-Bank (SBP)",
+      "tbank": "T-Bank (СБП)",
       "card": "Банковская карта",
       "sbp": "СБП",
+      "test": "ТЕСТОВЫЙ способ оплаты",
       "credit_card": "Кредитная карта",
       "wallet": "Электронный кошелек",
       "crypto": "Криптовалюта",

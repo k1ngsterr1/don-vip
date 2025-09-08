@@ -438,17 +438,14 @@ export function OrderBlock({
               />
             </div>
             {/* PaymentMethodSelector is now shown for all currencies in enhanced mode */}
-            {/* Show payment method selector only for RUB currency */}
-            {currentCurrency.code === "RUB" && (
-              <div className="p-6">
-                <PaymentMethodSelector
-                  enhanced={true}
-                  onSelect={setSelectedPaymentMethod}
-                  selectedMethod={selectedPaymentMethod}
-                  currentCurrency={currentCurrency.code}
-                />
-              </div>
-            )}
+            <div className="p-6">
+              <PaymentMethodSelector
+                enhanced={true}
+                onSelect={setSelectedPaymentMethod}
+                selectedMethod={selectedPaymentMethod}
+                currentCurrency={currentCurrency.code}
+              />
+            </div>
             {error && (
               <div className="px-6 pb-6">
                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">

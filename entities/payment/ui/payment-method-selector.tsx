@@ -124,13 +124,15 @@ export function PaymentMethodSelector({
     refetch: refetchUserMethods,
   } = useUserPaymentMethods();
 
-  // Get currency-specific payment methods for all currencies
+    // Get currency-specific payment methods only for non-RUB currencies
   const {
     methodsByCurrency,
     isLoading: currencyMethodsLoading,
     error: currencyMethodsError,
     refetch: refetchCurrencyMethods,
-  } = usePaymentMethodsByCurrency(activeCurrency); // Always pass the currency
+  } = usePaymentMethodsByCurrency(
+    isClient && activeCurrency !== "RUB" ? activeCurrency : undefined
+  );
 
   // Define frontend payment methods with a mapping to API names
   const allPaymentMethods: FrontendPaymentMethod[] = [
@@ -159,11 +161,18 @@ export function PaymentMethodSelector({
   const activeApiBankNames =
     activeBanksResponse?.data.map((bank) => bank.name) || [];
 
-  // Determine available payment methods with simplified logic
+  // Determine available payment methods with currency-specific logic
   let availablePaymentMethods: FrontendPaymentMethod[] = [];
 
-  // Priority 1: Use currency-specific methods from API (for all currencies)
-  if (methodsByCurrency && methodsByCurrency.methods.length > 0) {
+  // For RUB currency: Use local methods (SBP, T-Bank) with bank filtering
+  if (activeCurrency === "RUB") {
+    const filteredPaymentMethods = allPaymentMethods.filter((method) =>
+      activeApiBankNames.includes(method.apiName)
+    );
+    availablePaymentMethods = filteredPaymentMethods;
+  }
+  // For non-RUB currencies: Use API methods
+  else if (methodsByCurrency && methodsByCurrency.methods.length > 0) {
     availablePaymentMethods = methodsByCurrency.methods.map((method) => ({
       id: method.methodCode,
       translationKey: `methods.${method.methodCode}`,
@@ -190,7 +199,7 @@ export function PaymentMethodSelector({
       );
     });
   }
-  // Priority 3: Use general API methods
+  // Priority 3: Use general API methods as fallback
   else if (apiPaymentMethods.length > 0) {
     availablePaymentMethods = apiPaymentMethods.map((apiMethod) => ({
       id: apiMethod.id,
@@ -211,17 +220,17 @@ export function PaymentMethodSelector({
     banksLoading ||
     methodsLoading ||
     (useUserMethods && userMethodsLoading) ||
-    currencyMethodsLoading;
+    (activeCurrency !== "RUB" && currencyMethodsLoading);
   const error =
     banksError ||
     methodsError ||
     (useUserMethods && userMethodsError) ||
-    currencyMethodsError;
+    (activeCurrency !== "RUB" && currencyMethodsError);
 
-  // Refetch methods when currency changes
+  // Refetch methods when currency changes (only for non-RUB currencies)
   useEffect(() => {
-    if (activeCurrency) {
-      console.log("Refetching methods for currency:", activeCurrency);
+    if (activeCurrency && activeCurrency !== "RUB") {
+      console.log("Refetching methods for non-RUB currency:", activeCurrency);
       refetchCurrencyMethods(activeCurrency);
     }
   }, [activeCurrency, refetchCurrencyMethods]);

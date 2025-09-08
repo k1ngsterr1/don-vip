@@ -8,6 +8,7 @@
       "tbank": "T-Bank (SBP)",
       "card": "Bank card",
       "sbp": "SBP",
+      "test": "TEST Payment Method",
       "credit_card": "Credit Card",
       "wallet": "Digital Wallet",
       "crypto": "Cryptocurrency",
