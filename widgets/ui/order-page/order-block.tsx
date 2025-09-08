@@ -347,31 +347,12 @@ export function OrderBlock({
         // onAgreeChange={setAgreeToTerms} // removed
       />
       {/* Show payment method selector only for RUB currency */}
-      {currentCurrency.code === "RUB" && (
-        <PaymentMethodSelector
-          onSelect={setSelectedPaymentMethod}
-          selectedMethod={selectedPaymentMethod}
-          currentCurrency={currentCurrency.code}
-        />
-      )}
-      {/* Information about Pagsmile checkout for non-RUB currencies */}
-      {shouldUsePagsmileCheckout && (
-        <div className="px-4 mb-4">
-          <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg text-sm">
-            <div className="flex items-center">
-              <div className="text-blue-500 mr-2">💳</div>
-              <div>
-                <div className="font-medium mb-1">
-                  {t("payment.international.title")}
-                </div>
-                <div className="text-xs">
-                  {t("payment.international.description")}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <PaymentMethodSelector
+        onSelect={setSelectedPaymentMethod}
+        selectedMethod={selectedPaymentMethod}
+        currentCurrency={currentCurrency.code}
+      />
+      {/* PaymentMethodSelector is now shown for all currencies */}
       {error && (
         <div className="px-4 mb-4">
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
@@ -456,24 +437,7 @@ export function OrderBlock({
                 // onAgreeChange={setAgreeToTerms} // removed
               />
             </div>
-            {/* Information about Pagsmile checkout for non-RUB currencies */}
-            {shouldUsePagsmileCheckout && (
-              <div className="p-6 border-b border-gray-100">
-                <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg text-sm">
-                  <div className="flex items-center">
-                    <div className="text-blue-500 mr-2">💳</div>
-                    <div>
-                      <div className="font-medium mb-1">
-                        {t("payment.international.title")}
-                      </div>
-                      <div className="text-xs">
-                        {t("payment.international.description")}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+            {/* PaymentMethodSelector is now shown for all currencies in enhanced mode */}
             {/* Show payment method selector only for RUB currency */}
             {currentCurrency.code === "RUB" && (
               <div className="p-6">

@@ -208,16 +208,10 @@ export function usePaymentMethodsByCurrency(currency?: string) {
         "usePaymentMethodsByCurrency: Currency is valid, calling fetchMethodsByCurrency"
       );
       fetchMethodsByCurrency();
-    } else {
-      console.log(
-        "usePaymentMethodsByCurrency: Currency is undefined/null, skipping fetch"
-      );
-      // Reset state when currency is undefined
-      setMethodsByCurrency(null);
-      setError(null);
-      setIsLoading(false);
     }
-  }, [currency]); // Removed fetchMethodsByCurrency from dependencies to avoid infinite loops
+    // Remove the else block that resets state when currency is undefined
+    // This allows the hook to work properly during SSR/hydration
+  }, [fetchMethodsByCurrency]);
 
   const refetch = useCallback(
     (newCurrency?: string) => {

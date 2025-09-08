@@ -130,7 +130,7 @@ export function PaymentMethodSelector({
     isLoading: currencyMethodsLoading,
     error: currencyMethodsError,
     refetch: refetchCurrencyMethods,
-  } = usePaymentMethodsByCurrency(isClient ? activeCurrency : undefined);
+  } = usePaymentMethodsByCurrency(activeCurrency); // Always pass the currency
 
   // Define frontend payment methods with a mapping to API names
   const allPaymentMethods: FrontendPaymentMethod[] = [
@@ -220,10 +220,11 @@ export function PaymentMethodSelector({
 
   // Refetch methods when currency changes
   useEffect(() => {
-    if (isClient && activeCurrency) {
+    if (activeCurrency) {
+      console.log("Refetching methods for currency:", activeCurrency);
       refetchCurrencyMethods(activeCurrency);
     }
-  }, [isClient, activeCurrency, refetchCurrencyMethods]);
+  }, [activeCurrency, refetchCurrencyMethods]);
 
   // Debug information
   useEffect(() => {
