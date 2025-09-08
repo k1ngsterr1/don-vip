@@ -169,6 +169,22 @@ export function useCreateOrder(
     },
   });
 
+  // Map our payment methods to Pagsmile method codes
+  const mapPaymentMethodToPagsmile = (method: string): string | undefined => {
+    const mapping: Record<string, string> = {
+      test: "TEST", // наш тестовый метод для EUR
+      card: "DebitCard",
+      credit_card: "CreditCard",
+      wallet: "Wallet",
+      crypto: "Crypto",
+      bank: "BankTransfer",
+      pix: "PIX", // для бразильских методов
+      // Добавьте другие маппинги по необходимости
+    };
+
+    return mapping[method];
+  };
+
   // ⏳ Trigger payment after successful order
   const processPayment = (orderId: string, orderData: CreateOrderDto) => {
     setIsProcessingPayment(true);
@@ -177,6 +193,10 @@ export function useCreateOrder(
       // Use Pagsmile checkout for non-RUB currencies
       const identifier =
         orderData.identifier || getUserIdentifier() || "customer";
+
+      // Map the selected payment method to Pagsmile method
+      const pagsmileMethod = mapPaymentMethodToPagsmile(paymentMethod);
+
       const checkoutData: PagsmileCheckoutDto = {
         orderId: orderId,
         amount:
@@ -185,6 +205,7 @@ export function useCreateOrder(
             : orderData.price.toFixed(2),
         currency: currency,
         region: getRegionFromCurrency(currency),
+        method: pagsmileMethod, // Добавляем выбранный метод оплаты
         customer: {
           name: identifier.includes("@")
             ? identifier.split("@")[0]

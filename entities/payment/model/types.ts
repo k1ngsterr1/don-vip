@@ -3,6 +3,7 @@ export interface PagsmileCheckoutDto {
   amount: number | string;
   currency: string;
   region: string;
+  method?: string; // Optional payment method to show only specific method
   customer: {
     name: string;
     email: string;
