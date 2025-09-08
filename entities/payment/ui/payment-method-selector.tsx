@@ -175,7 +175,7 @@ export function PaymentMethodSelector({
   else if (methodsByCurrency && methodsByCurrency.methods.length > 0) {
     availablePaymentMethods = methodsByCurrency.methods.map((method) => ({
       id: method.methodCode,
-      translationKey: `methods.${method.methodCode}`,
+      translationKey: method.name, // Используем название из API напрямую, без переводов
       apiName: method.name,
       icon: method.icon || getPaymentMethodIcon("card", method.name),
     }));
@@ -318,12 +318,18 @@ export function PaymentMethodSelector({
               src={method.icon || "/placeholder.svg"}
               width={24}
               height={24}
-              alt={i18n(method.translationKey)}
+              alt={
+                method.translationKey.startsWith("methods.")
+                  ? i18n(method.translationKey)
+                  : method.translationKey
+              }
             />
           </div>
           <div className="flex-1">
             <span className="font-medium text-gray-800">
-              {i18n(method.translationKey)}
+              {method.translationKey.startsWith("methods.")
+                ? i18n(method.translationKey)
+                : method.translationKey}
             </span>
             {method.descriptionKey && (
               <p className="text-xs text-gray-500 mt-1">
