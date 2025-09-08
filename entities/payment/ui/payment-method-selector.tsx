@@ -50,8 +50,6 @@ export function PaymentMethodSelector({
   // State for actual currency being used (from localStorage or prop)
   const [activeCurrency, setActiveCurrency] = useState<string>(currentCurrency);
   const [isClient, setIsClient] = useState(false);
-  const [shouldUseCurrencyMethods, setShouldUseCurrencyMethods] =
-    useState(false);
 
   // Ensure we're on client side
   useEffect(() => {
@@ -60,46 +58,23 @@ export function PaymentMethodSelector({
 
   // Load currency from localStorage
   useEffect(() => {
-    if (!isClient) return; // Only run on client side
+    if (!isClient) return;
 
     const savedCurrency = localStorage.getItem("selectedCurrency");
     if (savedCurrency) {
       try {
         const parsed = JSON.parse(savedCurrency);
-        console.log(
-          "PaymentMethodSelector: Loaded currency from localStorage:",
-          parsed
-        );
-        // Use the currency code from localStorage
         if (parsed.code) {
           setActiveCurrency(parsed.code);
         }
       } catch (e) {
-        console.error(
-          "PaymentMethodSelector: Error parsing saved currency:",
-          e
-        );
-        // Keep using the prop value if localStorage is invalid
+        console.error("Error parsing saved currency:", e);
         setActiveCurrency(currentCurrency);
       }
     } else {
-      // Use prop value if no localStorage
       setActiveCurrency(currentCurrency);
     }
   }, [isClient, currentCurrency]);
-
-  // Determine if we should use currency methods automatically
-  useEffect(() => {
-    // Always use currency methods for all currencies, or when explicitly enabled
-    const shouldUse = true; // Always true now since we want to load methods for all currencies
-    console.log(
-      "PaymentMethodSelector: shouldUseCurrencyMethods =",
-      shouldUse,
-      "activeCurrency =",
-      activeCurrency
-    );
-    setShouldUseCurrencyMethods(shouldUse);
-  }, [useCurrencyMethods, activeCurrency]);
 
   // Function to get appropriate icon for payment method
   const getPaymentMethodIcon = (
@@ -149,24 +124,13 @@ export function PaymentMethodSelector({
     refetch: refetchUserMethods,
   } = useUserPaymentMethods();
 
-  // Get currency-specific payment methods - pass currency for ALL currencies
-  const currencyToPass = isClient ? activeCurrency : undefined;
-  console.log(
-    "PaymentMethodSelector: Calling usePaymentMethodsByCurrency with:",
-    {
-      shouldUseCurrencyMethods,
-      isClient,
-      activeCurrency,
-      currencyToPass,
-    }
-  );
-
+  // Get currency-specific payment methods for all currencies
   const {
     methodsByCurrency,
     isLoading: currencyMethodsLoading,
     error: currencyMethodsError,
     refetch: refetchCurrencyMethods,
-  } = usePaymentMethodsByCurrency(currencyToPass);
+  } = usePaymentMethodsByCurrency(isClient ? activeCurrency : undefined);
 
   // Define frontend payment methods with a mapping to API names
   const allPaymentMethods: FrontendPaymentMethod[] = [
@@ -195,75 +159,52 @@ export function PaymentMethodSelector({
   const activeApiBankNames =
     activeBanksResponse?.data.map((bank) => bank.name) || [];
 
-  // Always use payment methods from currency API when available
+  // Determine available payment methods with simplified logic
   let availablePaymentMethods: FrontendPaymentMethod[] = [];
 
+  // Priority 1: Use currency-specific methods from API (for all currencies)
   if (methodsByCurrency && methodsByCurrency.methods.length > 0) {
-    // Use currency-specific payment methods for ALL currencies
     availablePaymentMethods = methodsByCurrency.methods.map((method) => ({
       id: method.methodCode,
       translationKey: `methods.${method.methodCode}`,
       apiName: method.name,
-      icon: method.icon
-        ? method.icon
-        : getPaymentMethodIcon("card", method.name),
+      icon: method.icon || getPaymentMethodIcon("card", method.name),
     }));
-  } else if (useUserMethods && userMethods) {
-    // Use user-specific payment methods when enabled
+  }
+  // Priority 2: Use user-specific methods if enabled
+  else if (useUserMethods && userMethods) {
     availablePaymentMethods = userMethods.methods.map((methodName) => {
-      // Try to find matching frontend method first
       const frontendMethod = allPaymentMethods.find(
         (fm) =>
           fm.apiName === methodName ||
           fm.translationKey.includes(methodName.toLowerCase())
       );
 
-      if (frontendMethod) {
-        return frontendMethod;
-      }
-
-      // Create a dynamic method if not found in predefined list
-      return {
-        id: methodName.toLowerCase().replace(/[^a-z0-9]/g, ""),
-        translationKey: `methods.${methodName.toLowerCase()}`,
-        apiName: methodName,
-        icon: getPaymentMethodIcon("card", methodName), // Default to card icon
-      };
+      return (
+        frontendMethod || {
+          id: methodName.toLowerCase().replace(/[^a-z0-9]/g, ""),
+          translationKey: `methods.${methodName.toLowerCase()}`,
+          apiName: methodName,
+          icon: getPaymentMethodIcon("card", methodName),
+        }
+      );
     });
-  } else if (activeCurrency !== "RUB") {
-    // For non-RUB currencies, map API payment methods to frontend format
+  }
+  // Priority 3: Use general API methods
+  else if (apiPaymentMethods.length > 0) {
     availablePaymentMethods = apiPaymentMethods.map((apiMethod) => ({
       id: apiMethod.id,
-      translationKey: `methods.${apiMethod.id}`, // Use ID as translation key first, fallback to type
+      translationKey: `methods.${apiMethod.id}`,
       apiName: apiMethod.name,
       icon: getPaymentMethodIcon(apiMethod.type, apiMethod.name),
     }));
-
-    // If no translation found for ID, try using type
-    availablePaymentMethods = availablePaymentMethods.map((method) => {
-      // Check if translation exists for the ID, if not, use type
-      const translationWithId = i18n.raw(`methods.${method.id}`);
-      if (!translationWithId || translationWithId === `methods.${method.id}`) {
-        const apiMethod = apiPaymentMethods.find((api) => api.id === method.id);
-        return {
-          ...method,
-          translationKey: `methods.${apiMethod?.type || "card"}`,
-        };
-      }
-      return method;
-    });
-  } else {
-    // For RUB currency, use the original logic with banks
-    const filteredPaymentMethods = allPaymentMethods.filter((method) => {
-      if (method.id === "tbank" && activeCurrency !== "RUB") {
-        return false; // Hide T-Bank for non-RUB currencies
-      }
-      return true;
-    });
-
-    availablePaymentMethods = filteredPaymentMethods.filter((method) =>
+  }
+  // Priority 4: Fallback to predefined methods with bank filtering (legacy for RUB)
+  else {
+    const filteredPaymentMethods = allPaymentMethods.filter((method) =>
       activeApiBankNames.includes(method.apiName)
     );
+    availablePaymentMethods = filteredPaymentMethods;
   }
 
   const isLoading =
@@ -277,13 +218,9 @@ export function PaymentMethodSelector({
     (useUserMethods && userMethodsError) ||
     currencyMethodsError;
 
-  // Force refetch when currency changes for all currencies
+  // Refetch methods when currency changes
   useEffect(() => {
     if (isClient && activeCurrency) {
-      console.log(
-        "PaymentMethodSelector: Forcing refetch for currency:",
-        activeCurrency
-      );
       refetchCurrencyMethods(activeCurrency);
     }
   }, [isClient, activeCurrency, refetchCurrencyMethods]);
@@ -291,9 +228,8 @@ export function PaymentMethodSelector({
   // Debug information
   useEffect(() => {
     console.log("PaymentMethodSelector Debug:", {
-      currentCurrency: currentCurrency, // Original prop
-      activeCurrency: activeCurrency, // Currency being used (from localStorage or prop)
-      shouldUseCurrencyMethods, // Auto-determined flag
+      currentCurrency,
+      activeCurrency,
       region,
       useUserMethods,
       useCurrencyMethods,
@@ -308,7 +244,6 @@ export function PaymentMethodSelector({
   }, [
     currentCurrency,
     activeCurrency,
-    shouldUseCurrencyMethods,
     region,
     useUserMethods,
     useCurrencyMethods,
@@ -350,23 +285,8 @@ export function PaymentMethodSelector({
     );
   }
 
-  // Check if T-Bank is filtered out due to currency
-  const isTBankHidden =
-    activeCurrency !== "RUB" &&
-    allPaymentMethods.some((method) => method.id === "tbank");
-
   const paymentMethodSelectorContent = (
     <div className="space-y-3">
-      {/* Show info message if T-Bank is hidden */}
-      {isTBankHidden && (
-        <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg text-sm text-blue-700">
-          <div className="flex items-center">
-            <div className="text-blue-500 mr-2">ℹ️</div>
-            <span>{i18n("tbankUnavailableInfo")}</span>
-          </div>
-        </div>
-      )}
-
       {availablePaymentMethods.map((method) => (
         <div
           key={method.id}
