@@ -158,7 +158,15 @@ export function usePaymentMethodsByCurrency(currency?: string) {
     async (targetCurrency?: string) => {
       const currencyToFetch = targetCurrency || currency;
 
+      console.log(
+        "usePaymentMethodsByCurrency: Starting fetch with currency:",
+        currencyToFetch
+      );
+
       if (!currencyToFetch) {
+        console.log(
+          "usePaymentMethodsByCurrency: No currency provided, skipping fetch"
+        );
         setError("Currency is required");
         return;
       }
@@ -167,9 +175,14 @@ export function usePaymentMethodsByCurrency(currency?: string) {
       setError(null);
 
       try {
+        console.log(
+          "usePaymentMethodsByCurrency: Making API call to /payment/methods/by-currency/" +
+            currencyToFetch
+        );
         const response = await PaymentMethodsApi.getPaymentMethodsByCurrency(
           currencyToFetch
         );
+        console.log("usePaymentMethodsByCurrency: API response:", response);
         setMethodsByCurrency(response);
       } catch (err) {
         const errorMessage =
@@ -186,6 +199,10 @@ export function usePaymentMethodsByCurrency(currency?: string) {
   );
 
   useEffect(() => {
+    console.log(
+      "usePaymentMethodsByCurrency: useEffect triggered with currency:",
+      currency
+    );
     if (currency) {
       fetchMethodsByCurrency();
     }

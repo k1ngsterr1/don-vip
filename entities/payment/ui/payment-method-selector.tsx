@@ -50,6 +50,8 @@ export function PaymentMethodSelector({
   // State for actual currency being used (from localStorage or prop)
   const [activeCurrency, setActiveCurrency] = useState<string>(currentCurrency);
   const [isClient, setIsClient] = useState(false);
+  const [shouldUseCurrencyMethods, setShouldUseCurrencyMethods] =
+    useState(false);
 
   // Ensure we're on client side
   useEffect(() => {
@@ -87,8 +89,16 @@ export function PaymentMethodSelector({
   }, [isClient, currentCurrency]);
 
   // Determine if we should use currency methods automatically
-  const shouldUseCurrencyMethods =
-    useCurrencyMethods || activeCurrency !== "RUB";
+  useEffect(() => {
+    const shouldUse = useCurrencyMethods || activeCurrency !== "RUB";
+    console.log(
+      "PaymentMethodSelector: shouldUseCurrencyMethods =",
+      shouldUse,
+      "activeCurrency =",
+      activeCurrency
+    );
+    setShouldUseCurrencyMethods(shouldUse);
+  }, [useCurrencyMethods, activeCurrency]);
 
   // Function to get appropriate icon for payment method
   const getPaymentMethodIcon = (
@@ -145,7 +155,7 @@ export function PaymentMethodSelector({
     error: currencyMethodsError,
     refetch: refetchCurrencyMethods,
   } = usePaymentMethodsByCurrency(
-    shouldUseCurrencyMethods ? activeCurrency : undefined
+    shouldUseCurrencyMethods && isClient ? activeCurrency : undefined
   );
 
   // Define frontend payment methods with a mapping to API names
