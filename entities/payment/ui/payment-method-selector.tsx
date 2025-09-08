@@ -46,7 +46,7 @@ export function PaymentMethodSelector({
   useCurrencyMethods = false, // Default to false for backward compatibility
 }: PaymentMethodSelectorProps) {
   const i18n = useTranslations("PaymentMethodSelector");
-  
+
   // State for actual currency being used (from localStorage or prop)
   const [activeCurrency, setActiveCurrency] = useState<string>(currentCurrency);
   const [isClient, setIsClient] = useState(false);
@@ -64,13 +64,19 @@ export function PaymentMethodSelector({
     if (savedCurrency) {
       try {
         const parsed = JSON.parse(savedCurrency);
-        console.log("PaymentMethodSelector: Loaded currency from localStorage:", parsed);
+        console.log(
+          "PaymentMethodSelector: Loaded currency from localStorage:",
+          parsed
+        );
         // Use the currency code from localStorage
         if (parsed.code) {
           setActiveCurrency(parsed.code);
         }
       } catch (e) {
-        console.error("PaymentMethodSelector: Error parsing saved currency:", e);
+        console.error(
+          "PaymentMethodSelector: Error parsing saved currency:",
+          e
+        );
         // Keep using the prop value if localStorage is invalid
         setActiveCurrency(currentCurrency);
       }
