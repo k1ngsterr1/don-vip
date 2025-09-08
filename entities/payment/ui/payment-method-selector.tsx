@@ -14,7 +14,7 @@ import {
   usePaymentMethodsByCurrency,
 } from "@/entities/payment/hooks/use-payment-methods";
 import { Loader2 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface PaymentMethodSelectorProps {
   enhanced?: boolean;
@@ -39,13 +39,46 @@ export function PaymentMethodSelector({
   enhanced = false,
   selectedMethod = "tbank", // Default selected method ID
   onSelect = () => {},
-  currentCurrency = "RUB", // Default to RUB
+  currentCurrency = "RUB", // Default to RUB (fallback if localStorage is empty)
   region = "RU", // Default to Russia
   amount, // Amount for filtering
   useUserMethods = false, // Default to false for backward compatibility
   useCurrencyMethods = false, // Default to false for backward compatibility
 }: PaymentMethodSelectorProps) {
   const i18n = useTranslations("PaymentMethodSelector");
+  
+  // State for actual currency being used (from localStorage or prop)
+  const [activeCurrency, setActiveCurrency] = useState<string>(currentCurrency);
+  const [isClient, setIsClient] = useState(false);
+
+  // Ensure we're on client side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Load currency from localStorage
+  useEffect(() => {
+    if (!isClient) return; // Only run on client side
+
+    const savedCurrency = localStorage.getItem("selectedCurrency");
+    if (savedCurrency) {
+      try {
+        const parsed = JSON.parse(savedCurrency);
+        console.log("PaymentMethodSelector: Loaded currency from localStorage:", parsed);
+        // Use the currency code from localStorage
+        if (parsed.code) {
+          setActiveCurrency(parsed.code);
+        }
+      } catch (e) {
+        console.error("PaymentMethodSelector: Error parsing saved currency:", e);
+        // Keep using the prop value if localStorage is invalid
+        setActiveCurrency(currentCurrency);
+      }
+    } else {
+      // Use prop value if no localStorage
+      setActiveCurrency(currentCurrency);
+    }
+  }, [isClient, currentCurrency]);
 
   // Function to get appropriate icon for payment method
   const getPaymentMethodIcon = (
@@ -82,7 +115,7 @@ export function PaymentMethodSelector({
     error: methodsError,
     refetch,
   } = usePaymentMethods({
-    currency: currentCurrency,
+    currency: activeCurrency,
     region: region,
     amount: amount,
   });
@@ -102,7 +135,7 @@ export function PaymentMethodSelector({
     error: currencyMethodsError,
     refetch: refetchCurrencyMethods,
   } = usePaymentMethodsByCurrency(
-    useCurrencyMethods ? currentCurrency : undefined
+    useCurrencyMethods ? activeCurrency : undefined
   );
 
   // Define frontend payment methods with a mapping to API names
@@ -167,7 +200,7 @@ export function PaymentMethodSelector({
         icon: getPaymentMethodIcon("card", methodName), // Default to card icon
       };
     });
-  } else if (currentCurrency !== "RUB") {
+  } else if (activeCurrency !== "RUB") {
     // For non-RUB currencies, map API payment methods to frontend format
     availablePaymentMethods = apiPaymentMethods.map((apiMethod) => ({
       id: apiMethod.id,
@@ -192,7 +225,7 @@ export function PaymentMethodSelector({
   } else {
     // For RUB currency, use the original logic with banks
     const filteredPaymentMethods = allPaymentMethods.filter((method) => {
-      if (method.id === "tbank" && currentCurrency !== "RUB") {
+      if (method.id === "tbank" && activeCurrency !== "RUB") {
         return false; // Hide T-Bank for non-RUB currencies
       }
       return true;
@@ -217,7 +250,8 @@ export function PaymentMethodSelector({
   // Debug information
   useEffect(() => {
     console.log("PaymentMethodSelector Debug:", {
-      currentCurrency,
+      currentCurrency: currentCurrency, // Original prop
+      activeCurrency: activeCurrency, // Currency being used (from localStorage or prop)
       region,
       useUserMethods,
       useCurrencyMethods,
@@ -231,6 +265,7 @@ export function PaymentMethodSelector({
     });
   }, [
     currentCurrency,
+    activeCurrency,
     region,
     useUserMethods,
     useCurrencyMethods,
@@ -274,7 +309,7 @@ export function PaymentMethodSelector({
 
   // Check if T-Bank is filtered out due to currency
   const isTBankHidden =
-    currentCurrency !== "RUB" &&
+    activeCurrency !== "RUB" &&
     allPaymentMethods.some((method) => method.id === "tbank");
 
   const paymentMethodSelectorContent = (
