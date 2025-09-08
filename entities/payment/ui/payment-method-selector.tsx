@@ -149,14 +149,18 @@ export function PaymentMethodSelector({
   } = useUserPaymentMethods();
 
   // Get currency-specific payment methods
-  const currencyToPass = shouldUseCurrencyMethods && isClient ? activeCurrency : undefined;
-  console.log("PaymentMethodSelector: Calling usePaymentMethodsByCurrency with:", {
-    shouldUseCurrencyMethods,
-    isClient,
-    activeCurrency,
-    currencyToPass
-  });
-  
+  const currencyToPass =
+    shouldUseCurrencyMethods && isClient ? activeCurrency : undefined;
+  console.log(
+    "PaymentMethodSelector: Calling usePaymentMethodsByCurrency with:",
+    {
+      shouldUseCurrencyMethods,
+      isClient,
+      activeCurrency,
+      currencyToPass,
+    }
+  );
+
   const {
     methodsByCurrency,
     isLoading: currencyMethodsLoading,
@@ -275,11 +279,24 @@ export function PaymentMethodSelector({
 
   // Force refetch when currency changes and we should use currency methods
   useEffect(() => {
-    if (shouldUseCurrencyMethods && isClient && activeCurrency && activeCurrency !== "RUB") {
-      console.log("PaymentMethodSelector: Forcing refetch for currency:", activeCurrency);
+    if (
+      shouldUseCurrencyMethods &&
+      isClient &&
+      activeCurrency &&
+      activeCurrency !== "RUB"
+    ) {
+      console.log(
+        "PaymentMethodSelector: Forcing refetch for currency:",
+        activeCurrency
+      );
       refetchCurrencyMethods(activeCurrency);
     }
-  }, [shouldUseCurrencyMethods, isClient, activeCurrency, refetchCurrencyMethods]);
+  }, [
+    shouldUseCurrencyMethods,
+    isClient,
+    activeCurrency,
+    refetchCurrencyMethods,
+  ]);
 
   // Debug information
   useEffect(() => {
