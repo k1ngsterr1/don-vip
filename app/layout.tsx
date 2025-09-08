@@ -87,8 +87,12 @@ export default async function LocaleLayout({
     // Ждём загрузки API Jivo
     (function waitForJivo() {
       if (typeof window.jivo_api !== 'undefined') {
-        // Пример: смещаем виджет вверх на 100px
-        window.jivo_api.setWidgetPosition({ bottom: '300px', right: '30px' });
+        // Проверяем наличие метода setWidgetPosition
+        if (typeof window.jivo_api.setWidgetPosition === 'function') {
+          window.jivo_api.setWidgetPosition({ bottom: '300px', right: '30px' });
+        } else {
+          console.log('Jivo setWidgetPosition method not available');
+        }
       } else {
         setTimeout(waitForJivo, 500);
       }

@@ -90,7 +90,8 @@ export function PaymentMethodSelector({
 
   // Determine if we should use currency methods automatically
   useEffect(() => {
-    const shouldUse = useCurrencyMethods || activeCurrency !== "RUB";
+    // Always use currency methods for all currencies, or when explicitly enabled
+    const shouldUse = true; // Always true now since we want to load methods for all currencies
     console.log(
       "PaymentMethodSelector: shouldUseCurrencyMethods =",
       shouldUse,
@@ -148,9 +149,8 @@ export function PaymentMethodSelector({
     refetch: refetchUserMethods,
   } = useUserPaymentMethods();
 
-  // Get currency-specific payment methods
-  const currencyToPass =
-    shouldUseCurrencyMethods && isClient ? activeCurrency : undefined;
+  // Get currency-specific payment methods - pass currency for ALL currencies
+  const currencyToPass = isClient ? activeCurrency : undefined;
   console.log(
     "PaymentMethodSelector: Calling usePaymentMethodsByCurrency with:",
     {
@@ -195,11 +195,11 @@ export function PaymentMethodSelector({
   const activeApiBankNames =
     activeBanksResponse?.data.map((bank) => bank.name) || [];
 
-  // For non-RUB currencies, use payment methods from API
+  // Always use payment methods from currency API when available
   let availablePaymentMethods: FrontendPaymentMethod[] = [];
 
-  if (shouldUseCurrencyMethods && methodsByCurrency) {
-    // Use currency-specific payment methods when enabled
+  if (methodsByCurrency && methodsByCurrency.methods.length > 0) {
+    // Use currency-specific payment methods for ALL currencies
     availablePaymentMethods = methodsByCurrency.methods.map((method) => ({
       id: method.methodCode,
       translationKey: `methods.${method.methodCode}`,
@@ -270,33 +270,23 @@ export function PaymentMethodSelector({
     banksLoading ||
     methodsLoading ||
     (useUserMethods && userMethodsLoading) ||
-    (shouldUseCurrencyMethods && currencyMethodsLoading);
+    currencyMethodsLoading;
   const error =
     banksError ||
     methodsError ||
     (useUserMethods && userMethodsError) ||
-    (shouldUseCurrencyMethods && currencyMethodsError);
+    currencyMethodsError;
 
-  // Force refetch when currency changes and we should use currency methods
+  // Force refetch when currency changes for all currencies
   useEffect(() => {
-    if (
-      shouldUseCurrencyMethods &&
-      isClient &&
-      activeCurrency &&
-      activeCurrency !== "RUB"
-    ) {
+    if (isClient && activeCurrency) {
       console.log(
         "PaymentMethodSelector: Forcing refetch for currency:",
         activeCurrency
       );
       refetchCurrencyMethods(activeCurrency);
     }
-  }, [
-    shouldUseCurrencyMethods,
-    isClient,
-    activeCurrency,
-    refetchCurrencyMethods,
-  ]);
+  }, [isClient, activeCurrency, refetchCurrencyMethods]);
 
   // Debug information
   useEffect(() => {
