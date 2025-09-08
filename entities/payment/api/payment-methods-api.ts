@@ -45,6 +45,23 @@ export interface UserPaymentMethodsResponse {
   supported_currencies: string[];
 }
 
+export interface PaymentMethodByCurrency {
+  id: number;
+  name: string;
+  methodCode: string;
+  country: string;
+  currency: string;
+  icon: string;
+  isActive: boolean;
+  sortOrder: number;
+}
+
+export interface PaymentMethodsByCurrencyResponse {
+  currency: string;
+  totalMethods: number;
+  methods: PaymentMethodByCurrency[];
+}
+
 export class PaymentMethodsApi {
   /**
    * Получить доступные методы платежа для региона/валюты
@@ -109,6 +126,23 @@ export class PaymentMethodsApi {
     try {
       const response = await apiClient.get<UserPaymentMethodsResponse>(
         "/payment/methods-for-user"
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error(extractErrorMessage(error));
+    }
+  }
+
+  /**
+   * Получить методы платежа по валюте
+   * GET /api/payment/methods/by-currency/:currency
+   */
+  static async getPaymentMethodsByCurrency(
+    currency: string
+  ): Promise<PaymentMethodsByCurrencyResponse> {
+    try {
+      const response = await apiClient.get<PaymentMethodsByCurrencyResponse>(
+        `/payment/methods/by-currency/${currency}`
       );
       return response.data;
     } catch (error) {

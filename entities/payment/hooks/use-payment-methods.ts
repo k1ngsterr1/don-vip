@@ -5,6 +5,7 @@ import {
   type PaymentMethodsParams,
   type PaymentMethodsResponse,
   type UserPaymentMethodsResponse,
+  type PaymentMethodsByCurrencyResponse,
 } from "@/entities/payment/api/payment-methods-api";
 
 export function usePaymentMethods(params: PaymentMethodsParams = {}) {
@@ -141,6 +142,64 @@ export function useUserPaymentMethods() {
 
   return {
     userMethods,
+    isLoading,
+    error,
+    refetch,
+  };
+}
+
+export function usePaymentMethodsByCurrency(currency?: string) {
+  const [methodsByCurrency, setMethodsByCurrency] =
+    useState<PaymentMethodsByCurrencyResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchMethodsByCurrency = useCallback(
+    async (targetCurrency?: string) => {
+      const currencyToFetch = targetCurrency || currency;
+
+      if (!currencyToFetch) {
+        setError("Currency is required");
+        return;
+      }
+
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await PaymentMethodsApi.getPaymentMethodsByCurrency(
+          currencyToFetch
+        );
+        setMethodsByCurrency(response);
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error
+            ? err.message
+            : "Failed to load payment methods by currency";
+        setError(errorMessage);
+        console.error("Error fetching payment methods by currency:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [currency]
+  );
+
+  useEffect(() => {
+    if (currency) {
+      fetchMethodsByCurrency();
+    }
+  }, [fetchMethodsByCurrency, currency]);
+
+  const refetch = useCallback(
+    (newCurrency?: string) => {
+      fetchMethodsByCurrency(newCurrency);
+    },
+    [fetchMethodsByCurrency]
+  );
+
+  return {
+    methodsByCurrency,
     isLoading,
     error,
     refetch,
