@@ -86,6 +86,10 @@ export function PaymentMethodSelector({
     }
   }, [isClient, currentCurrency]);
 
+  // Determine if we should use currency methods automatically
+  const shouldUseCurrencyMethods =
+    useCurrencyMethods || activeCurrency !== "RUB";
+
   // Function to get appropriate icon for payment method
   const getPaymentMethodIcon = (
     methodType: string,
@@ -141,7 +145,7 @@ export function PaymentMethodSelector({
     error: currencyMethodsError,
     refetch: refetchCurrencyMethods,
   } = usePaymentMethodsByCurrency(
-    useCurrencyMethods ? activeCurrency : undefined
+    shouldUseCurrencyMethods ? activeCurrency : undefined
   );
 
   // Define frontend payment methods with a mapping to API names
@@ -174,7 +178,7 @@ export function PaymentMethodSelector({
   // For non-RUB currencies, use payment methods from API
   let availablePaymentMethods: FrontendPaymentMethod[] = [];
 
-  if (useCurrencyMethods && methodsByCurrency) {
+  if (shouldUseCurrencyMethods && methodsByCurrency) {
     // Use currency-specific payment methods when enabled
     availablePaymentMethods = methodsByCurrency.methods.map((method) => ({
       id: method.methodCode,
@@ -246,18 +250,19 @@ export function PaymentMethodSelector({
     banksLoading ||
     methodsLoading ||
     (useUserMethods && userMethodsLoading) ||
-    (useCurrencyMethods && currencyMethodsLoading);
+    (shouldUseCurrencyMethods && currencyMethodsLoading);
   const error =
     banksError ||
     methodsError ||
     (useUserMethods && userMethodsError) ||
-    (useCurrencyMethods && currencyMethodsError);
+    (shouldUseCurrencyMethods && currencyMethodsError);
 
   // Debug information
   useEffect(() => {
     console.log("PaymentMethodSelector Debug:", {
       currentCurrency: currentCurrency, // Original prop
       activeCurrency: activeCurrency, // Currency being used (from localStorage or prop)
+      shouldUseCurrencyMethods, // Auto-determined flag
       region,
       useUserMethods,
       useCurrencyMethods,
@@ -272,6 +277,7 @@ export function PaymentMethodSelector({
   }, [
     currentCurrency,
     activeCurrency,
+    shouldUseCurrencyMethods,
     region,
     useUserMethods,
     useCurrencyMethods,
