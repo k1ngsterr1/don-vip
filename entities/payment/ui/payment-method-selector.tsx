@@ -124,7 +124,7 @@ export function PaymentMethodSelector({
     refetch: refetchUserMethods,
   } = useUserPaymentMethods();
 
-    // Get currency-specific payment methods only for non-RUB currencies
+  // Get currency-specific payment methods only for non-RUB currencies
   const {
     methodsByCurrency,
     isLoading: currencyMethodsLoading,
