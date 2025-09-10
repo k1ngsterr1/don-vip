@@ -29,7 +29,6 @@ import { GameDescription } from "./game-description/game-description";
 import { GameInfoBlock } from "./game-info-block/game-info-block";
 import { PromoBlock } from "./promo-block/promo-block";
 import { InfoBlock } from "./info-block/info-block";
-import { BottomNavigation } from "./bottom-navigation/bottom-navigation";
 
 interface OrderBlockProps {
   gameSlug: number;
@@ -333,18 +332,12 @@ export function OrderBlock({
   const mobileVersion = (
     <div className="md:hidden min-h-screen bg-white">
       <Banner backgroundImage={game.image || "/banner.png"} height="112px" />
-
-      {/* Product Info with Description */}
       <ProductInfo
         isExpanded={showInfo}
         onToggle={() => setShowInfo(!showInfo)}
         description={game.description}
       />
-
-      {/* Promo Block with Coupon */}
       <PromoBlock onLoginClick={() => console.log("Login clicked")} />
-
-      {/* Diamond Packages */}
       <DiamondPackages
         packages={currencyOptions}
         onSelect={setSelectedAmount}
@@ -352,8 +345,6 @@ export function OrderBlock({
         currencyName={game.currencyName}
         currencyImage={game.currencyImage}
       />
-
-      {/* User ID Form */}
       <UserIdForm
         apiGame={product?.smile_api_game}
         productType={product?.type}
@@ -439,8 +430,7 @@ export function OrderBlock({
               <h1 className="text-2xl font-medium text-gray-800 mb-2">
                 {game.name}
               </h1>
-              <p className="text-gray-600">{game.description}</p>
-
+              <p className="text-gray-600">{game.description}</p>{" "}
               {/* Language & Currency Button */}
               <div className="mt-4">
                 <Link href="/language-currency" className="inline-block">

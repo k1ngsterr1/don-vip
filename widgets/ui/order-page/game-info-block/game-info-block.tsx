@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Zap, Tag } from "lucide-react";
 
 interface GameInfoBlockProps {
@@ -40,7 +41,13 @@ export function GameInfoBlock({ gameName = "Bigo Live" }: GameInfoBlockProps) {
         {/* Diamonds Feature */}
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0 w-[34px] h-[27px] bg-[#eeeff3] rounded-[4px] flex items-center justify-center">
-            <div className="w-5 h-[15px] bg-[url('/donvip-bigo.png')] bg-no-repeat bg-center bg-contain"></div>
+            <Image
+              src="/diamond.webp"
+              alt="Diamond icon"
+              width={20}
+              height={15}
+              className="object-contain"
+            />
           </div>
           <div className="flex-1">
             <p className="text-[#4d4d4d] text-[11px] font-light leading-[15px] capitalize">
