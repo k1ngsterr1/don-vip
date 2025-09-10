@@ -444,6 +444,7 @@ export function OrderBlock({
                 </Link>
               </div>
             </div>
+
             <div className="p-6 border-b border-gray-100">
               <h2 className="text-lg font-medium text-gray-800 mb-4">
                 {t("block.selectAmount")}
@@ -457,6 +458,17 @@ export function OrderBlock({
                 selectedId={selectedAmount}
                 enhanced={true}
               />
+
+              {/* Diamond Packages for desktop */}
+              <div className="mt-6">
+                <DiamondPackages
+                  packages={currencyOptions}
+                  onSelect={setSelectedAmount}
+                  selectedId={selectedAmount}
+                  currencyName={game.currencyName}
+                  currencyImage={game.currencyImage}
+                />
+              </div>
             </div>
 
             <div className="p-6 border-b border-gray-100">
@@ -489,6 +501,43 @@ export function OrderBlock({
                 </div>
               </div>
             )}
+          </div>
+
+          {/* Additional components for desktop */}
+          <div className="mt-6 space-y-6">
+            {/* Game Info Block */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+              <GameInfoBlock gameName={game.name} />
+            </div>
+
+            {/* Info Block */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+              <InfoBlock />
+            </div>
+
+            {/* Promo Block */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+              <PromoBlock />
+            </div>
+
+            {/* Instruction Tabs and Content */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+              <InstructionTabs
+                onTabChange={setActiveTab}
+                defaultTab={activeTab}
+              />
+              {activeTab === "instruction" && (
+                <InstructionContent gameName={game.name} />
+              )}
+              {activeTab === "description" && (
+                <GameDescription
+                  gameName={game.name}
+                  description={game.description}
+                />
+              )}
+              {activeTab === "faq" && <FAQSection />}
+              {activeTab === "reviews" && <ReviewsSection />}
+            </div>
           </div>
         </div>
         <div className="lg:w-1/3">
