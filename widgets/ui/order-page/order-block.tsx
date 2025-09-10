@@ -28,7 +28,6 @@ import {
 import { GameDescription } from "./game-description/game-description";
 import { PromoBlock } from "./promo-block/promo-block";
 import { InfoBlock } from "./info-block/info-block";
-import { OrderFooter } from "./order-footer/order-footer";
 import { BottomNavigation } from "./bottom-navigation/bottom-navigation";
 
 interface OrderBlockProps {
@@ -392,11 +391,6 @@ export function OrderBlock({
       )}
       {activeTab === "faq" && <FAQSection />}
       {activeTab === "reviews" && <ReviewsSection />}
-
-      {/* Footer */}
-      <OrderFooter />
-
-      {/* Error Display */}
       {error && (
         <div className="px-4 mb-4">
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">

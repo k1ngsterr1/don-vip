@@ -1,9 +1,11 @@
 "use client";
 
+import { Check, Globe, Flag, DollarSign, Zap, Handshake } from "lucide-react";
+
 interface InfoFeature {
-  icon: string;
+  icon: React.ComponentType<{ className?: string }>;
   title: string;
-  emoji: string;
+  emoji: React.ComponentType<{ className?: string }>;
 }
 
 interface InfoBlockProps {
@@ -12,29 +14,29 @@ interface InfoBlockProps {
 
 const defaultFeatures: InfoFeature[] = [
   {
-    icon: "✅",
+    icon: Check,
     title: "Для всех регионов",
-    emoji: "🌎",
+    emoji: Globe,
   },
   {
-    icon: "✅",
+    icon: Check,
     title: "Для России",
-    emoji: "🇷🇺",
+    emoji: Flag,
   },
   {
-    icon: "✅",
+    icon: Check,
     title: "Низкие цены",
-    emoji: "💸",
+    emoji: DollarSign,
   },
   {
-    icon: "✅",
+    icon: Check,
     title: "Мгновенная доставка",
-    emoji: "⚡️",
+    emoji: Zap,
   },
   {
-    icon: "✅",
+    icon: Check,
     title: "Официальный партнер",
-    emoji: "🤝",
+    emoji: Handshake,
   },
 ];
 
@@ -44,11 +46,11 @@ export function InfoBlock({ features = defaultFeatures }: InfoBlockProps) {
       <div className="space-y-3">
         {features.map((feature, index) => (
           <div key={index} className="flex items-center gap-3">
-            <span className="text-green-500 text-sm">{feature.icon}</span>
+            <feature.icon className="w-4 h-4 text-green-500" />
             <span className="text-gray-800 text-sm">
               <span className="uppercase">{feature.title.charAt(0)}</span>
               <span className="lowercase">{feature.title.slice(1)}</span>{" "}
-              <span>{feature.emoji}</span>
+              <feature.emoji className="w-4 h-4 inline" />
             </span>
           </div>
         ))}

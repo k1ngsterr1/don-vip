@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { Star } from "lucide-react";
 
 interface Review {
   id: number;
@@ -77,9 +78,7 @@ export function ReviewsSection({
 
         <div className="flex items-center gap-1">
           {[1, 2, 3, 4, 5].map((star) => (
-            <span key={star} className="text-yellow-400 text-xs">
-              ⭐️
-            </span>
+            <Star key={star} className="w-3 h-3 text-yellow-400 fill-current" />
           ))}
         </div>
       </div>
