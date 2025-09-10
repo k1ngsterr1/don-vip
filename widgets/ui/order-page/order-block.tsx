@@ -337,6 +337,8 @@ export function OrderBlock({
         onToggle={() => setShowInfo(!showInfo)}
         description={game.description}
       />
+      {/* Game Info Block */}
+      <GameInfoBlock gameName={game.name} />
       <PromoBlock onLoginClick={() => console.log("Login clicked")} />
       <DiamondPackages
         packages={currencyOptions}
@@ -355,9 +357,6 @@ export function OrderBlock({
         onServerIdChange={setServerId}
         onValidationChange={handleValidationChange}
       />
-
-      {/* Game Info Block */}
-      <GameInfoBlock gameName={game.name} />
 
       {/* Info Block with Features */}
       <InfoBlock />
