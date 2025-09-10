@@ -1,0 +1,145 @@
+/* Order Page Styles */
+
+/* Diamond packages */
+.diamond-package {
+  @apply bg-[#eeeff3] rounded-xl p-4 cursor-pointer transition-all duration-200;
+}
+
+.diamond-package:hover {
+  @apply shadow-md;
+}
+
+.diamond-package.selected {
+  @apply ring-2 ring-blue-500 bg-white;
+}
+
+/* Reviews */
+.review-card {
+  @apply bg-[#f3f4f7] rounded-lg p-3 transition-colors duration-200;
+}
+
+.review-card:hover {
+  @apply bg-gray-100;
+}
+
+/* FAQ */
+.faq-item {
+  @apply border border-blue-500 rounded-xl overflow-hidden transition-all duration-200;
+}
+
+.faq-item.expanded {
+  @apply bg-white shadow-sm;
+}
+
+.faq-button {
+  @apply w-full p-3 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200;
+}
+
+/* Instruction tabs */
+.instruction-tabs {
+  @apply flex items-center gap-6 px-4 py-4;
+}
+
+.instruction-tab {
+  @apply flex items-center gap-2 text-sm transition-colors duration-200;
+}
+
+.instruction-tab.active {
+  @apply text-gray-800 font-medium;
+}
+
+.instruction-tab:not(.active) {
+  @apply text-gray-600;
+}
+
+.instruction-tab:not(.active):hover {
+  @apply text-gray-800;
+}
+
+/* Info blocks */
+.info-feature {
+  @apply flex items-center gap-3 py-2;
+}
+
+.info-feature-icon {
+  @apply text-green-500 text-sm;
+}
+
+.info-feature-text {
+  @apply text-gray-800 text-sm;
+}
+
+/* Promo block */
+.promo-block {
+  @apply bg-[#eeeff3] rounded-xl p-4;
+}
+
+.promo-login-btn {
+  @apply bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200;
+}
+
+.promo-login-btn:hover {
+  @apply bg-blue-700;
+}
+
+/* Footer */
+.order-footer {
+  @apply bg-gray-50 border-t border-gray-200 px-4 py-6;
+}
+
+.footer-link {
+  @apply text-gray-600 text-sm transition-colors duration-200;
+}
+
+.footer-link:hover {
+  @apply text-gray-800;
+}
+
+/* Bottom menu */
+.bottom-menu {
+  @apply fixed bottom-0 left-0 right-0 bg-[#f3f4f7] border-t border-gray-200 px-16 py-4;
+}
+
+.bottom-menu-tab {
+  @apply flex flex-col items-center gap-1 text-xs transition-colors duration-200;
+}
+
+.bottom-menu-tab.active {
+  @apply text-blue-600;
+}
+
+.bottom-menu-tab:not(.active) {
+  @apply text-gray-600;
+}
+
+.bottom-menu-tab:not(.active):hover {
+  @apply text-gray-800;
+}
+
+/* Buy button */
+.buy-button {
+  @apply fixed bottom-20 left-1/2 transform -translate-x-1/2 px-4 py-2;
+}
+
+.buy-button button {
+  @apply w-[140px] py-3 px-3 rounded-full text-white font-medium transition-colors duration-200;
+}
+
+.buy-button button.enabled {
+  @apply bg-blue-600;
+}
+
+.buy-button button.enabled:hover {
+  @apply bg-blue-700;
+}
+
+.buy-button button.disabled {
+  @apply bg-gray-400 cursor-not-allowed;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .order-page-mobile {
+    @apply min-h-screen bg-gray-50 pb-20;
+  }
+}

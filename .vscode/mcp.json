@@ -1,0 +1,16 @@
+{
+  "servers": {
+    "don-vip-mcp": {
+      "url": "http://127.0.0.1:3845/mcp",
+      "type": "http"
+    }
+  },
+  "inputs": [
+    {
+      "name": "Don-Vip-Page",
+      "fileId": "EbYTO2rGJ6K27cvTl0GyOA",
+      "nodeId": "0:236",
+      "server": "local-mcp-server"
+    }
+  ]
+}

@@ -18,6 +18,18 @@ import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useGetMe } from "@/entities/auth/hooks/use-auth";
 import { GuestAuthPopup } from "@/entities/order/ui/guest-user-popup";
 import { useCurrency } from "@/entities/currency/hooks/use-currency";
+import { DiamondPackages } from "./diamond-packages/diamond-packages";
+import { ReviewsSection } from "./reviews-section/reviews-section";
+import { FAQSection } from "./faq-section/faq-section";
+import {
+  InstructionTabs,
+  InstructionContent,
+} from "./instruction-section/instruction-section";
+import { GameDescription } from "./game-description/game-description";
+import { PromoBlock } from "./promo-block/promo-block";
+import { InfoBlock } from "./info-block/info-block";
+import { OrderFooter } from "./order-footer/order-footer";
+import { BottomNavigation } from "./bottom-navigation/bottom-navigation";
 
 interface OrderBlockProps {
   gameSlug: number;
@@ -41,6 +53,8 @@ interface CurrencyOption {
   originalPriceRub: number;
   type: string;
   sku: string;
+  discount?: number;
+  isPopular?: boolean;
 }
 
 export function OrderBlock({
@@ -61,6 +75,9 @@ export function OrderBlock({
   const [showGuestAuthPopup, setShowGuestAuthPopup] = useState(false);
   const [guestIdentifier, setGuestIdentifier] = useState("");
   const [isUserIdValid, setIsUserIdValid] = useState(true); // Добавляем состояние для валидности User ID
+  const [activeTab, setActiveTab] = useState<
+    "instruction" | "reviews" | "description" | "faq"
+  >("instruction");
 
   const handleValidationChange = (isValid: boolean) => {
     console.log("Validation changed:", isValid); // Для отладки
@@ -151,6 +168,11 @@ export function OrderBlock({
               ? priceInRub
               : priceInRub * currentCurrency.rate; // Multiply by rate (how many foreign currency units per 1 RUB)
 
+          // Add sample discount and popularity for demo
+          const isPopular = index === 0; // First item is popular
+          const discount =
+            index === 0 ? 21 : index === 1 ? 20 : index === 2 ? 11 : 0;
+
           return {
             id: index,
             amount: item.amount,
@@ -158,6 +180,8 @@ export function OrderBlock({
             originalPriceRub: priceInRub, // Keep original RUB price for order
             type: item.type,
             sku: item.sku,
+            discount,
+            isPopular,
           };
         })
       );
@@ -307,52 +331,72 @@ export function OrderBlock({
   };
 
   const mobileVersion = (
-    <div className="md:hidden">
+    <div className="md:hidden min-h-screen bg-white">
       <Banner backgroundImage={game.image || "/banner.png"} height="112px" />
+
+      {/* Product Info with Description */}
       <ProductInfo
         isExpanded={showInfo}
         onToggle={() => setShowInfo(!showInfo)}
         description={game.description}
       />
 
-      {/* Language & Currency Button */}
-      <div className="px-4 mb-4">
-        <Link href="/language-currency" className="block">
-          <button className="w-full py-3 px-4 bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded-lg text-gray-700 font-medium transition-colors flex items-center justify-center gap-2">
-            <span>🌍</span>
-            <span>
-              {locale === "ru" ? "Язык и валюта" : "Language & Currency"}
-            </span>
-          </button>
-        </Link>
-      </div>
-      <CurrencySelector
-        //@ts-ignore
-        options={currencyOptions}
-        currencyName={game.currencyName}
-        currencyImage={game.currencyImage}
+      {/* Promo Block with Coupon */}
+      <PromoBlock onLoginClick={() => console.log("Login clicked")} />
+
+      {/* Diamond Packages */}
+      <DiamondPackages
+        packages={currencyOptions}
         onSelect={setSelectedAmount}
         selectedId={selectedAmount}
+        currencyName={game.currencyName}
+        currencyImage={game.currencyImage}
       />
+
+      {/* User ID Form */}
       <UserIdForm
         apiGame={product?.smile_api_game}
         productType={product?.type}
         requiresServer={game.requiresServer}
         userId={userId}
         serverId={serverId}
-        // agreeToTerms={agreeToTerms} // removed
         onUserIdChange={setUserId}
         onServerIdChange={setServerId}
         onValidationChange={handleValidationChange}
-        // onAgreeChange={setAgreeToTerms} // removed
       />
-      {/* Show payment method selector only for RUB currency */}
-      <PaymentMethodSelector
-        onSelect={setSelectedPaymentMethod}
-        selectedMethod={selectedPaymentMethod}
-        currentCurrency={currentCurrency.code}
-      />
-      {/* PaymentMethodSelector is now shown for all currencies */}
+
+      {/* Info Block with Features */}
+      <InfoBlock />
+
+      {/* Payment Method Selector */}
+      <div className="px-4 py-6">
+        <h3 className="text-base font-medium text-gray-800 mb-3">
+          3 ВЫБЕРИТЕ СПОСОБ ОПЛАТЫ
+        </h3>
+        <PaymentMethodSelector
+          onSelect={setSelectedPaymentMethod}
+          selectedMethod={selectedPaymentMethod}
+          currentCurrency={currentCurrency.code}
+        />
+      </div>
+
+      {/* Instruction Tabs */}
+      <InstructionTabs onTabChange={setActiveTab} defaultTab={activeTab} />
+
+      {/* Tab Content */}
+      {activeTab === "instruction" && (
+        <InstructionContent gameName={game.name} />
+      )}
+      {activeTab === "description" && (
+        <GameDescription gameName={game.name} description={game.description} />
+      )}
+      {activeTab === "faq" && <FAQSection />}
+      {activeTab === "reviews" && <ReviewsSection />}
+
+      {/* Footer */}
+      <OrderFooter />
+
+      {/* Error Display */}
       {error && (
         <div className="px-4 mb-4">
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
@@ -360,11 +404,13 @@ export function OrderBlock({
           </div>
         </div>
       )}
-      <div className="fixed bottom-20 left-1/2 -translate-x-1/2 px-4 py-2 flex flex-col gap-2">
+
+      {/* Fixed Buy Button */}
+      <div className="fixed bottom-16 right-4 z-10">
         <button
           className={cn(
-            "w-[140px] py-3 px-[12px] rounded-full text-white font-medium transition-colors",
-            isFormValid ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-400"
+            "w-[120px] py-3 px-3 rounded-full text-white font-medium transition-colors shadow-lg",
+            isFormValid ? "bg-[#aaaaab] hover:bg-gray-600" : "bg-gray-400"
           )}
           disabled={!isFormValid || isLoading}
           onClick={handleSubmitOrder}
@@ -373,9 +419,15 @@ export function OrderBlock({
             ? isProcessingPayment
               ? t("summary.redirecting")
               : "Loading..."
-            : t("summary.buyNow")}
+            : "Купить сейчас"}
         </button>
       </div>
+
+      {/* Bottom Menu */}
+      <BottomNavigation />
+
+      {/* Add padding bottom to account for bottom menu */}
+      <div className="h-20" />
     </div>
   );
 
