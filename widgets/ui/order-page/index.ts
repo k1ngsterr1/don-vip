@@ -18,6 +18,7 @@ export {
 export { GameDescription } from "./game-description/game-description";
 export { PromoBlock } from "./promo-block/promo-block";
 export { InfoBlock } from "./info-block/info-block";
+export { GameInfoBlock } from "./game-info-block/game-info-block";
 export { OrderFooter } from "./order-footer/order-footer";
 export { BottomNavigation } from "./bottom-navigation/bottom-navigation";
 

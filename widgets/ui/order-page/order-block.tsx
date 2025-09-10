@@ -26,6 +26,7 @@ import {
   InstructionContent,
 } from "./instruction-section/instruction-section";
 import { GameDescription } from "./game-description/game-description";
+import { GameInfoBlock } from "./game-info-block/game-info-block";
 import { PromoBlock } from "./promo-block/promo-block";
 import { InfoBlock } from "./info-block/info-block";
 import { BottomNavigation } from "./bottom-navigation/bottom-navigation";
@@ -364,6 +365,9 @@ export function OrderBlock({
         onValidationChange={handleValidationChange}
       />
 
+      {/* Game Info Block */}
+      <GameInfoBlock gameName={game.name} />
+
       {/* Info Block with Features */}
       <InfoBlock />
 
@@ -416,9 +420,6 @@ export function OrderBlock({
             : "Купить сейчас"}
         </button>
       </div>
-
-      {/* Bottom Menu */}
-      <BottomNavigation />
 
       {/* Add padding bottom to account for bottom menu */}
       <div className="h-20" />
