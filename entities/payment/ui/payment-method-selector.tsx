@@ -37,7 +37,7 @@ interface FrontendPaymentMethod {
 
 export function PaymentMethodSelector({
   enhanced = false,
-  selectedMethod = "tbank", // Default selected method ID
+  selectedMethod = "sbp", // Default selected method ID - changed to SBP
   onSelect = () => {},
   currentCurrency = "RUB", // Default to RUB (fallback if localStorage is empty)
   region = "RU", // Default to Russia

@@ -70,7 +70,7 @@ export function OrderBlock({
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [userId, setUserId] = useState("");
   const [serverId, setServerId] = useState("");
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("tbank");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("sbp"); // Changed default to SBP
   const [showGuestAuthPopup, setShowGuestAuthPopup] = useState(false);
   const [guestIdentifier, setGuestIdentifier] = useState("");
   const [isUserIdValid, setIsUserIdValid] = useState(true); // Добавляем состояние для валидности User ID
@@ -87,8 +87,8 @@ export function OrderBlock({
       // For non-RUB currencies, use a generic payment method for Pagsmile checkout
       setSelectedPaymentMethod("pagsmile_checkout");
     } else if (selectedPaymentMethod === "pagsmile_checkout") {
-      // If switching back to RUB, reset to default RUB method
-      setSelectedPaymentMethod("tbank");
+      // If switching back to RUB, reset to default RUB method (SBP)
+      setSelectedPaymentMethod("sbp");
     }
   }, [currentCurrency.code]);
   const [couponCode, setCouponCode] = useState("");
