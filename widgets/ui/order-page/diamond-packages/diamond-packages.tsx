@@ -38,7 +38,7 @@ export function DiamondPackages({
         Выберите пакет {currencyName}
       </h2>
 
-      <div className="space-y-3">
+      <div className="space-y-3 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-3 md:space-y-0">
         {packages.map((pkg) => {
           const isSelected = selectedId === pkg.id;
           const hasDiscount = pkg.discount && pkg.discount > 0;

@@ -444,7 +444,6 @@ export function OrderBlock({
                 </Link>
               </div>
             </div>
-
             <div className="p-6 border-b border-gray-100">
               <h2 className="text-lg font-medium text-gray-800 mb-4">
                 {t("block.selectAmount")}
