@@ -81,7 +81,7 @@ export function DiamondPackages({
                             parseFloat(pkg.price.split(" ")[0]) /
                             (1 - pkg.discount! / 100)
                           ).toFixed(2)}{" "}
-                          руб
+                          {pkg.price.split(" ")[1]}
                         </span>
                       </div>
                     )}
