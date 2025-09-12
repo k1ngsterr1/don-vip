@@ -13,6 +13,7 @@ interface Package {
   sku: string;
   discount?: number;
   isPopular?: boolean;
+  bonus?: number;
 }
 
 interface DiamondPackagesProps {
