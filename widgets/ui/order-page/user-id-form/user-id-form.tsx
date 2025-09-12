@@ -75,36 +75,31 @@ export function UserIdForm({
   const isEmail = (value: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 
-  // Временно закомментировано - эффект для валидации
-  // useEffect(() => {
-  //   if (isBigo && debouncedUserId.trim().length >= 4) {
-  //     console.log("Starting debounced validation for:", debouncedUserId); // Для отладки
-  //     handleValidateUserId(debouncedUserId.trim());
-  //   } else if (isBigo && debouncedUserId.trim().length < 4) {
-  //     // Reset validation state for short IDs
-  //     setHasValidated(false);
-  //     setValidationResult(null);
-  //     onValidationChange?.(false);
-  //   }
-  // }, [debouncedUserId, isBigo]);
+  useEffect(() => {
+    if (isBigo && debouncedUserId.trim().length >= 4) {
+      console.log("Starting debounced validation for:", debouncedUserId); // Для отладки
+      handleValidateUserId(debouncedUserId.trim());
+    } else if (isBigo && debouncedUserId.trim().length < 4) {
+      // Reset validation state for short IDs
+      setHasValidated(false);
+      setValidationResult(null);
+      onValidationChange?.(false);
+    }
+  }, [debouncedUserId, isBigo]);
 
   useEffect(() => {
     onUserIdChange(userIdInput);
 
-    // Временно закомментировано - проверка валидности
-    // if (isBigo) {
-    //   if (userIdInput.trim().length >= 4 && hasValidated && validationResult) {
-    //     onValidationChange?.(validationResult.isValid);
-    //   } else {
-    //     onValidationChange?.(false);
-    //   }
-    // } else {
-    //   // Для всех продуктов кроме Bigo - всегда валидно
-    //   onValidationChange?.(true);
-    // }
-
-    // Временно всегда валидно
-    onValidationChange?.(true);
+    if (isBigo) {
+      if (userIdInput.trim().length >= 4 && hasValidated && validationResult) {
+        onValidationChange?.(validationResult.isValid);
+      } else {
+        onValidationChange?.(false);
+      }
+    } else {
+      // Для всех продуктов кроме Bigo - всегда валидно
+      onValidationChange?.(true);
+    }
   }, [
     userIdInput,
     onUserIdChange,
@@ -151,41 +146,40 @@ export function UserIdForm({
     onServerIdChange(cleanValue);
   };
 
-  // Временно закомментировано - функция валидации ID
-  // const handleValidateUserId = async (valueToValidate?: string) => {
-  //   const targetValue = valueToValidate || userIdInput.trim();
+  const handleValidateUserId = async (valueToValidate?: string) => {
+    const targetValue = valueToValidate || userIdInput.trim();
 
-  //   if (!isBigo || !targetValue) {
-  //     return;
-  //   }
+    if (!isBigo || !targetValue) {
+      return;
+    }
 
-  //   console.log("Validating Bigo ID:", targetValue); // Для отладки
+    console.log("Validating Bigo ID:", targetValue); // Для отладки
 
-  //   try {
-  //     const result = await validateUser(targetValue);
-  //     setValidationResult(result);
-  //     setHasValidated(true);
+    try {
+      const result = await validateUser(targetValue);
+      setValidationResult(result);
+      setHasValidated(true);
 
-  //     console.log("Validation result:", result); // Для отладки
+      console.log("Validation result:", result); // Для отладки
 
-  //     // Информируем родительский компонент о результате валидации
-  //     onValidationChange?.(result.isValid);
-  //   } catch (error) {
-  //     console.error("Validation error:", error);
-  //     // Set error state if validation fails
-  //     const errorResult = {
-  //       isValid: false,
-  //       errorMessage:
-  //         validationError ||
-  //         (locale === "ru" ? "Ошибка валидации" : "Validation error"),
-  //     };
-  //     setValidationResult(errorResult);
-  //     setHasValidated(true);
+      // Информируем родительский компонент о результате валидации
+      onValidationChange?.(result.isValid);
+    } catch (error) {
+      console.error("Validation error:", error);
+      // Set error state if validation fails
+      const errorResult = {
+        isValid: false,
+        errorMessage:
+          validationError ||
+          (locale === "ru" ? "Ошибка валидации" : "Validation error"),
+      };
+      setValidationResult(errorResult);
+      setHasValidated(true);
 
-  //     // Информируем родительский компонент о неудачной валидации
-  //     onValidationChange?.(false);
-  //   }
-  // };
+      // Информируем родительский компонент о неудачной валидации
+      onValidationChange?.(false);
+    }
+  };
 
   // Get space warning message based on locale
   const getSpaceWarningMessage = () => {
@@ -244,20 +238,15 @@ export function UserIdForm({
               onChange={(e) => handleUserIdChange(e.target.value)}
               className={`w-full p-3 ${needsEmail ? "pl-3" : "pl-10"} ${
                 isBigo ? "pr-10" : ""
-              } border rounded-lg border-gray-200`}
-              // Временно закомментировано - стили валидации
-              // className={`w-full p-3 ${needsEmail ? "pl-3" : "pl-10"} ${
-              //   isBigo ? "pr-10" : ""
-              // } border rounded-lg ${
-              //   hasValidated && validationResult
-              //     ? validationResult.isValid
-              //       ? "border-green-500 bg-green-50"
-              //       : "border-red-500 bg-red-50"
-              //     : "border-gray-200"
-              // }`}
+              } border rounded-lg ${
+                hasValidated && validationResult
+                  ? validationResult.isValid
+                    ? "border-green-500 bg-green-50"
+                    : "border-red-500 bg-red-50"
+                  : "border-gray-200"
+              }`}
             />
-            {/* Временно закомментировано - индикаторы валидации Bigo */}
-            {/* {isBigo && (
+            {isBigo && (
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
                 {isValidating && (
                   <div className="flex items-center">
@@ -277,7 +266,7 @@ export function UserIdForm({
                   </>
                 )}
               </div>
-            )} */}
+            )}
           </div>
         )}
 
@@ -295,20 +284,15 @@ export function UserIdForm({
                 onChange={(e) => handleUserIdChange(e.target.value)}
                 className={`w-full p-3 ${
                   isBigo ? "pr-10" : ""
-                } border rounded-lg border-gray-200`}
-                // Временно закомментировано - стили валидации
-                // className={`w-full p-3 ${
-                //   isBigo ? "pr-10" : ""
-                // } border rounded-lg ${
-                //   hasValidated && validationResult
-                //     ? validationResult.isValid
-                //       ? "border-green-500 bg-green-50"
-                //       : "border-red-500 bg-red-50"
-                //     : "border-gray-200"
-                // }`}
+                } border rounded-lg ${
+                  hasValidated && validationResult
+                    ? validationResult.isValid
+                      ? "border-green-500 bg-green-50"
+                      : "border-red-500 bg-red-50"
+                    : "border-gray-200"
+                }`}
               />
-              {/* Временно закомментировано - индикаторы валидации Bigo */}
-              {/* {isBigo && (
+              {isBigo && (
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
                   {isValidating && (
                     <div className="flex items-center">
@@ -328,7 +312,7 @@ export function UserIdForm({
                     </>
                   )}
                 </div>
-              )} */}
+              )}
             </div>
             <div className="relative">
               <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
@@ -378,8 +362,7 @@ export function UserIdForm({
                 : "ID not found"}
             </span>
           </div>
-          {/* Временно закомментировано - сообщения валидации */}
-          {/* {validationResult.isValid && validationResult.username && (
+          {validationResult.isValid && validationResult.username && (
             <div className="mt-1 text-sm text-green-600">
               {locale === "ru" ? "Пользователь" : "Username"}:{" "}
               {validationResult.username}
@@ -394,7 +377,7 @@ export function UserIdForm({
             <div className="mt-1 text-sm text-red-600">
               {locale === "ru" ? "Пользователь не найден" : "User not found"}
             </div>
-          )} */}
+          )}
         </div>
       )}
 
