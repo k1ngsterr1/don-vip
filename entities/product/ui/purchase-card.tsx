@@ -1,10 +1,11 @@
 "use client";
 
-import { Check, Clock, X } from "lucide-react";
+import { Check, Clock, X, RotateCcw } from "lucide-react";
 import Image from "next/image";
 import type React from "react";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useRepeatOrder } from "@/entities/order/hooks/use-repeat-order";
 
 export interface PurchaseCardProps {
   id: number | string;
@@ -32,6 +33,12 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
 }) => {
   const t = useTranslations("purchases");
   const [isExpanded, setIsExpanded] = useState(false);
+  const { mutate: repeatOrder, isPending: isRepeating } = useRepeatOrder();
+
+  const handleRepeatOrder = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card expansion
+    repeatOrder(id);
+  };
 
   const getStatusIcon = (stepStatus: "completed" | "pending" | "cancelled") => {
     switch (stepStatus) {
@@ -273,9 +280,22 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
               </div>
             </div>
 
-            {/* Price */}
-            <div className="flex justify-end mt-4 pt-4 border-t border-gray-100">
+            {/* Price and Repeat Order Button */}
+            <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
               <div className="text-2xl font-bold text-gray-900">{price}</div>
+              {status === "Paid" && (
+                <button
+                  onClick={handleRepeatOrder}
+                  disabled={isRepeating}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg transition-colors text-sm font-medium"
+                >
+                  <RotateCcw
+                    size={16}
+                    className={isRepeating ? "animate-spin" : ""}
+                  />
+                  {isRepeating ? t("repeating") : t("repeatOrder")}
+                </button>
+              )}
             </div>
           </div>
         )}

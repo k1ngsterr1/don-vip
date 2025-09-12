@@ -53,4 +53,12 @@ export const orderApi = {
   deleteOrder: async (orderId: string | number): Promise<void> => {
     await apiClient.delete(`/order/${orderId}`);
   },
+
+  /**
+   * Repeat/reorder an existing order
+   */
+  repeatOrder: async (orderId: string | number): Promise<Order> => {
+    const response = await apiClient.post<Order>(`/order/${orderId}/repeat`);
+    return response.data;
+  },
 };
