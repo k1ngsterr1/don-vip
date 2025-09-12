@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Zap, Tag } from "lucide-react";
+import { Zap } from "lucide-react";
 
 interface GameInfoBlockProps {
   gameName?: string;
@@ -61,28 +61,6 @@ export function GameInfoBlock({ gameName = "Bigo Live" }: GameInfoBlockProps) {
                 атьте их на подарки и реакции, поддерживая лучших творцов.
               </span>
             </p>
-          </div>
-        </div>
-
-        {/* Telegram Discount Feature */}
-        <div className="bg-[#eeeff3] rounded-[12px] p-[15px] overflow-hidden">
-          <div className="flex items-center gap-3">
-            <div className="flex-shrink-0 w-5 h-5 bg-[#1c34ff] rounded-[4px] flex items-center justify-center">
-              <Tag className="w-3 h-3 text-white" />
-            </div>
-            <div className="flex-1">
-              <p className="text-[#212529] text-[14px] font-light leading-[18px]">
-                <span className="uppercase">В</span>
-                <span className="lowercase">
-                  ойдите и получите купон на скидку 5% за подписку на наш
-                </span>{" "}
-                <span className="uppercase">t</span>
-                <span className="lowercase">elegram канал</span>
-              </p>
-            </div>
-            <button className="bg-[#1c34ff] text-white px-4 py-2 rounded-[24px] text-[16px] font-medium capitalize transition-colors hover:bg-[#1629d9]">
-              войти
-            </button>
           </div>
         </div>
       </div>
