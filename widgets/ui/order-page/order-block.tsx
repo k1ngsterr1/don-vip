@@ -179,7 +179,7 @@ export function OrderBlock({
             originalPriceRub: priceInRub, // Keep original RUB price for order
             type: item.type,
             sku: item.sku,
-            discount,
+            ...(discount > 0 && { discount }), // Only include discount if > 0
             isPopular,
           };
         })
