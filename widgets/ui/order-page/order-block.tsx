@@ -340,13 +340,16 @@ export function OrderBlock({
       {/* Game Info Block */}
       <GameInfoBlock gameName={game.name} />
       <PromoBlock onLoginClick={() => console.log("Login clicked")} />
-      <DiamondPackages
-        packages={currencyOptions}
-        onSelect={setSelectedAmount}
-        selectedId={selectedAmount}
-        currencyName={game.currencyName}
-        currencyImage={game.currencyImage}
-      />
+      {/* Diamond Packages for mobile only */}
+      <div className="block md:hidden">
+        <DiamondPackages
+          packages={currencyOptions}
+          onSelect={setSelectedAmount}
+          selectedId={selectedAmount}
+          currencyName={game.currencyName}
+          currencyImage={game.currencyImage}
+        />
+      </div>
       <UserIdForm
         apiGame={product?.smile_api_game}
         productType={product?.type}
