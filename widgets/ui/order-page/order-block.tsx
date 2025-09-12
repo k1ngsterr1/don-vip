@@ -340,20 +340,18 @@ export function OrderBlock({
       {/* Game Info Block */}
       <GameInfoBlock gameName={game.name} />
       <PromoBlock onLoginClick={() => console.log("Login clicked")} />
-      {/* Diamond Packages for mobile only */}
-      <div className="block md:hidden">
-        <DiamondPackages
-          packages={currencyOptions}
-          onSelect={setSelectedAmount}
-          selectedId={selectedAmount}
-          currencyName={currentCurrency.code}
-          currencyImage={
-            currentCurrency.code === "RUB"
-              ? game.currencyImage
-              : "/assets/EN.webp"
-          }
-        />
-      </div>
+      {/* Diamond Packages for mobile */}
+      <DiamondPackages
+        packages={currencyOptions}
+        onSelect={setSelectedAmount}
+        selectedId={selectedAmount}
+        currencyName={currentCurrency.code}
+        currencyImage={
+          currentCurrency.code === "RUB"
+            ? game.currencyImage
+            : "/assets/EN.webp"
+        }
+      />
       <UserIdForm
         apiGame={product?.smile_api_game}
         productType={product?.type}
@@ -380,18 +378,6 @@ export function OrderBlock({
         />
       </div>
 
-      {/* Instruction Tabs */}
-      <InstructionTabs onTabChange={setActiveTab} defaultTab={activeTab} />
-
-      {/* Tab Content */}
-      {activeTab === "instruction" && (
-        <InstructionContent gameName={game.name} />
-      )}
-      {activeTab === "description" && (
-        <GameDescription gameName={game.name} description={game.description} />
-      )}
-      {activeTab === "faq" && <FAQSection />}
-      {activeTab === "reviews" && <ReviewsSection />}
       {error && (
         <div className="px-4 mb-4">
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
