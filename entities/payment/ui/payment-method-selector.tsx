@@ -81,8 +81,12 @@ export function PaymentMethodSelector({
     methodType: string,
     methodName: string
   ): StaticImageData => {
-    const lowerType = methodType.toLowerCase();
-    const lowerName = methodName.toLowerCase();
+    // Добавляем проверки на undefined/null
+    const safeMethodType = methodType || "";
+    const safeMethodName = methodName || "";
+
+    const lowerType = safeMethodType.toLowerCase();
+    const lowerName = safeMethodName.toLowerCase();
 
     if (lowerName.includes("visa")) return visaIcon;
     if (lowerName.includes("mastercard")) return mastercardIcon;
@@ -183,18 +187,21 @@ export function PaymentMethodSelector({
   // Priority 2: Use user-specific methods if enabled
   else if (useUserMethods && userMethods) {
     availablePaymentMethods = userMethods.methods.map((methodName) => {
+      // Добавляем проверку на undefined/null
+      const safeMethodName = methodName || "";
+
       const frontendMethod = allPaymentMethods.find(
         (fm) =>
-          fm.apiName === methodName ||
-          fm.translationKey.includes(methodName.toLowerCase())
+          fm.apiName === safeMethodName ||
+          fm.translationKey.includes(safeMethodName.toLowerCase())
       );
 
       return (
         frontendMethod || {
-          id: methodName.toLowerCase().replace(/[^a-z0-9]/g, ""),
-          translationKey: `methods.${methodName.toLowerCase()}`,
-          apiName: methodName,
-          icon: getPaymentMethodIcon("card", methodName),
+          id: safeMethodName.toLowerCase().replace(/[^a-z0-9]/g, ""),
+          translationKey: `methods.${safeMethodName.toLowerCase()}`,
+          apiName: safeMethodName,
+          icon: getPaymentMethodIcon("card", safeMethodName),
         }
       );
     });
