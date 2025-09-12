@@ -73,23 +73,7 @@ export function DiamondPackages({
                     <span className="text-red-600 font-bold text-sm md:text-lg">
                       {pkg.price}
                     </span>
-                    {hasDiscount &&
-                      pkg.discount &&
-                      pkg.discount > 0 &&
-                      (() => {
-                        const oldPrice = (
-                          parseFloat(pkg.price.split(" ")[0]) /
-                          (1 - pkg.discount! / 100)
-                        ).toFixed(2);
-                        return oldPrice !== "0.00" &&
-                          parseFloat(oldPrice) > 0 ? (
-                          <div className="bg-red-50 px-2 py-1 rounded-md border border-red-100">
-                            <span className="text-red-500 text-xs line-through font-medium">
-                              {oldPrice} {pkg.price.split(" ")[1]}
-                            </span>
-                          </div>
-                        ) : null;
-                      })()}
+
                     {/* Hide bonus if it's 0 */}
                     {pkg.bonus && pkg.bonus > 0 && (
                       <div className="text-green-600 text-xs font-medium">
