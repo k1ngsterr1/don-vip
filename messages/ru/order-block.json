@@ -60,6 +60,10 @@
       "invalidCoupon": "Неверный формат промокода",
       "networkError": "Ошибка сети",
       "validationFailed": "Ошибка проверки"
+    },
+    "packages": {
+      "showAll": "Показать все",
+      "hide": "Скрыть"
     }
   }
 }

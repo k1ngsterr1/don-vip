@@ -3,6 +3,7 @@
 import { cn } from "@/shared/utils/cn";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 
 interface Package {
   id: number;
@@ -32,13 +33,19 @@ export function DiamondPackages({
   currencyImage,
 }: DiamondPackagesProps) {
   const t = useTranslations("orderBlock");
+  const [showAll, setShowAll] = useState(false);
+  
+  // На мобильных показываем только первые 4 пакета, если не нажали "Показать все"
+  const MOBILE_VISIBLE_COUNT = 4;
+  const displayedPackages = showAll ? packages : packages.slice(0, MOBILE_VISIBLE_COUNT);
+  const hasMorePackages = packages.length > MOBILE_VISIBLE_COUNT;
 
   return (
     <div className="px-4 py-6">
       <h2 className="text-lg font-medium text-gray-800 mb-6">Выберите пакет</h2>
 
       <div className="space-y-3 md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-4 md:space-y-0">
-        {packages.map((pkg) => {
+        {displayedPackages.map((pkg) => {
           const isSelected = selectedId === pkg.id;
           const hasDiscount = pkg.discount && pkg.discount > 0;
 
@@ -147,12 +154,17 @@ export function DiamondPackages({
         })}
       </div>
 
-      {/* Show all button */}
-      <div className="mt-6 text-center">
-        <button className="text-gray-800 font-medium text-sm">
-          Показать Все
-        </button>
-      </div>
+      {/* Show all button - только для мобильных устройств и если есть скрытые пакеты */}
+      {hasMorePackages && (
+        <div className="mt-6 text-center md:hidden">
+          <button 
+            onClick={() => setShowAll(!showAll)}
+            className="text-blue-600 hover:text-blue-700 font-medium text-sm underline"
+          >
+            {showAll ? "Скрыть" : "Показать все"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
