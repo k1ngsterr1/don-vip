@@ -212,7 +212,7 @@ export function InstructionContent({
       </div>
 
       {/* Desktop Layout */}
-      <div className="hidden md:block md:p-6">
+      <div className="hidden md:block p-6">
         <div className="grid md:grid-cols-2 md:gap-6">
           {/* Steps Column */}
           <div className="space-y-4">
@@ -266,7 +266,7 @@ export function InstructionContent({
       </div>
 
       {/* Mobile Layout */}
-      <div className="block md:hidden">
+      <div className="md:hidden">
         {/* Steps */}
         <div className="p-3 pt-0">
           <div className="text-gray-800 text-sm font-normal leading-relaxed space-y-2">
