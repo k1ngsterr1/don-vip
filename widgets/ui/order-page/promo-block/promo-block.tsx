@@ -26,8 +26,15 @@ export function PromoBlock({ onLoginClick }: PromoBlockProps) {
               <span className="lowercase">
                 ойдите и получите купон на скидку 5% за подписку на наш
               </span>{" "}
-              <span className="uppercase">T</span>
-              <span className="lowercase">elegram канал</span>
+              <a
+                href="https://t.me/DON_VIPCOM"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+              >
+                <span className="uppercase">T</span>
+                <span className="lowercase">elegram канал</span>
+              </a>
             </p>
           </div>
 
