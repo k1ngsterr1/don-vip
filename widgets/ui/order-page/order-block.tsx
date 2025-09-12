@@ -28,6 +28,7 @@ import {
 import { GameDescription } from "./game-description/game-description";
 import { GameInfoBlock } from "./game-info-block/game-info-block";
 import { PromoBlock } from "./promo-block/promo-block";
+import { useGameContent } from "@/entities/games/hooks/use-game-content";
 import { InfoBlock } from "./info-block/info-block";
 
 interface OrderBlockProps {
@@ -62,6 +63,9 @@ export function OrderBlock({
 }: OrderBlockProps) {
   const t = useTranslations("orderBlock");
   const { data: product, isLoading: isProductLoading } = useProduct(gameSlug);
+  const { data: gameContent, isLoading: isGameContentLoading } = useGameContent(
+    gameSlug.toString()
+  );
   const { selectedCurrency: currentCurrency } = useCurrency();
   const [userIdDB, setUserIdDB] = useState("");
   const [game, setGame] = useState<GameData | null>(null);
@@ -187,7 +191,7 @@ export function OrderBlock({
     }
   }, [product, currentCurrency]);
 
-  if (isProductLoading || !game) {
+  if (isProductLoading || isGameContentLoading || !game) {
     return <OrderBlockSkeleton />;
   }
 
@@ -507,7 +511,10 @@ export function OrderBlock({
                 defaultTab={activeTab}
               />
               {activeTab === "instruction" && (
-                <InstructionContent gameName={game.name} />
+                <InstructionContent
+                  gameName={game.name}
+                  gameContent={gameContent}
+                />
               )}
               {activeTab === "description" && (
                 <GameDescription

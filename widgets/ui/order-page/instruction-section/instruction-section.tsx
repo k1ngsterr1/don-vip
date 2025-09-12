@@ -10,42 +10,14 @@ import {
   HelpCircle,
   ArrowRight,
 } from "lucide-react";
+import type {
+  GameContent,
+  InstructionStep,
+  InstructionImage,
+  GameInstruction,
+} from "@/entities/games/api/games.api";
 
 type TabType = "instruction" | "reviews" | "description" | "faq";
-
-interface InstructionStep {
-  id: string;
-  text: string;
-  highlight?: string;
-}
-
-interface InstructionImage {
-  id: string;
-  src: string;
-  alt: string;
-  width?: number;
-  height?: number;
-}
-
-interface GameInstruction {
-  steps: InstructionStep[];
-  images: InstructionImage[];
-  headerText?: string;
-}
-
-interface GameContent {
-  gameId: string;
-  gameName: string;
-  instruction: GameInstruction;
-  description: string;
-  reviews: any[];
-  faq: any[];
-  metadata: {
-    totalReviews: number;
-    averageRating: number;
-    lastUpdated: string;
-  };
-}
 
 interface InstructionTabsProps {
   onTabChange?: (tab: TabType) => void;
@@ -102,6 +74,11 @@ export function InstructionContent({
   gameContent,
   gameName = "Bigo Live",
 }: InstructionContentProps) {
+  // Debug: Log gameContent
+  useEffect(() => {
+    console.log("🎮 InstructionContent received gameContent:", gameContent);
+  }, [gameContent]);
+
   // Use API data if available, otherwise fallback to hardcoded content
   const instruction = gameContent?.instruction || {
     steps: [

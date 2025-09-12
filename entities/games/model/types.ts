@@ -8,3 +8,11 @@ export interface Game {
   currencyImage: string;
   requiresServer: boolean;
 }
+
+// Re-export types from API for convenience
+export type {
+  GameContent,
+  GameInstruction,
+  InstructionStep,
+  InstructionImage,
+} from "../api/games.api";
