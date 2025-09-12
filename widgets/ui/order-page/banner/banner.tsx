@@ -21,12 +21,7 @@ export function Banner({ backgroundImage, height }: BannerProps) {
         height,
         backgroundImage: `url(${backgroundImage || "/placeholder.svg"})`,
       }}
-    >
-      <div className="absolute bottom-4 right-4 bg-blue/60 text-white text-xs py-1 px-2 rounded-[4px] font-unbounded gap-2 flex items-center">
-        <LightningIcon />
-        {t("instantDelivery")}
-      </div>
-    </div>
+    ></div>
   );
 
   const desktopBanner = (
