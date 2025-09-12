@@ -50,38 +50,13 @@ interface GameContent {
 interface InstructionTabsProps {
   onTabChange?: (tab: TabType) => void;
   defaultTab?: TabType;
-  gameId?: string;
 }
 
 export function InstructionTabs({
   onTabChange,
   defaultTab = "instruction",
-  gameId = "bigo-live",
 }: InstructionTabsProps) {
   const [activeTab, setActiveTab] = useState<TabType>(defaultTab);
-  const [gameContent, setGameContent] = useState<GameContent | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchGameContent = async () => {
-      if (!gameId) return;
-
-      setLoading(true);
-      try {
-        const response = await fetch(`/api/game-content/${gameId}`);
-        if (response.ok) {
-          const content = await response.json();
-          setGameContent(content);
-        }
-      } catch (error) {
-        console.error("Failed to fetch game content:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchGameContent();
-  }, [gameId]);
 
   const handleTabClick = (tab: TabType) => {
     setActiveTab(tab);
@@ -113,34 +88,6 @@ export function InstructionTabs({
             <span>{tab.label}</span>
           </button>
         ))}
-      </div>
-
-      {/* Content based on active tab */}
-      <div className="mt-6">
-        {loading ? (
-          <ContentSkeleton activeTab={activeTab} />
-        ) : (
-          <>
-            {activeTab === "instruction" && (
-              <InstructionContent
-                gameContent={gameContent}
-                gameName={gameContent?.gameName || "Bigo Live"}
-              />
-            )}
-            {activeTab === "reviews" && gameContent && (
-              <ReviewsContent
-                reviews={gameContent.reviews}
-                metadata={gameContent.metadata}
-              />
-            )}
-            {activeTab === "description" && gameContent && (
-              <DescriptionContent description={gameContent.description} />
-            )}
-            {activeTab === "faq" && gameContent && (
-              <FAQContent faq={gameContent.faq} />
-            )}
-          </>
-        )}
       </div>
     </div>
   );
