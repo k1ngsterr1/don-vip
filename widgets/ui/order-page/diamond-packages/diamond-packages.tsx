@@ -88,7 +88,7 @@ export function DiamondPackages({
 
                 {/* Mobile badges */}
                 <div className="flex items-center gap-2 md:hidden">
-                  {hasDiscount && (
+                  {hasDiscount && pkg.discount! > 0 && (
                     <div className="bg-green-500 text-white px-2 py-1 rounded text-xs font-medium transform rotate-12">
                       ОК
                     </div>
@@ -100,7 +100,7 @@ export function DiamondPackages({
               {/* Desktop badges - only show if there's actually something to show */}
               {(hasDiscount || pkg.isPopular) && (
                 <div className="hidden md:flex md:items-center md:justify-center md:gap-2 md:mt-3">
-                  {hasDiscount && (
+                  {hasDiscount && pkg.discount! > 0 && (
                     <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-md">
                       СКИДКА {pkg.discount}%
                     </div>
