@@ -346,8 +346,12 @@ export function OrderBlock({
           packages={currencyOptions}
           onSelect={setSelectedAmount}
           selectedId={selectedAmount}
-          currencyName={game.currencyName}
-          currencyImage={game.currencyImage}
+          currencyName={currentCurrency.code}
+          currencyImage={
+            currentCurrency.code === "RUB"
+              ? game.currencyImage
+              : "/assets/EN.webp"
+          }
         />
       </div>
       <UserIdForm
@@ -457,8 +461,12 @@ export function OrderBlock({
                 packages={currencyOptions}
                 onSelect={setSelectedAmount}
                 selectedId={selectedAmount}
-                currencyName={game.currencyName}
-                currencyImage={game.currencyImage}
+                currencyName={currentCurrency.code}
+                currencyImage={
+                  currentCurrency.code === "RUB"
+                    ? game.currencyImage
+                    : "/assets/EN.webp"
+                }
               />
             </div>
 

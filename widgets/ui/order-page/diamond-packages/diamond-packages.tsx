@@ -34,9 +34,7 @@ export function DiamondPackages({
 
   return (
     <div className="px-4 py-6">
-      <h2 className="text-lg font-medium text-gray-800 mb-6">
-        Выберите пакет {currencyName}
-      </h2>
+      <h2 className="text-lg font-medium text-gray-800 mb-6">Выберите пакет</h2>
 
       <div className="space-y-3 md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-4 md:space-y-0">
         {packages.map((pkg) => {
@@ -67,7 +65,7 @@ export function DiamondPackages({
                 {/* Package info */}
                 <div className="flex-1 md:flex-none md:space-y-2">
                   <div className="text-gray-800 font-semibold text-base md:text-xl md:font-bold">
-                    {pkg.amount.toLocaleString()} {currencyName}
+                    {pkg.amount.toLocaleString()}
                   </div>
 
                   <div className="flex items-center gap-2 mb-1 md:justify-center md:flex-col md:gap-1 md:mb-0">
