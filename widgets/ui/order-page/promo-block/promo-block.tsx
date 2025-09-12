@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/shared/utils/cn";
+import { useLocale } from "next-intl";
 
 interface PromoBlockProps {
   onLoginClick?: () => void;
@@ -9,6 +10,24 @@ interface PromoBlockProps {
 
 export function PromoBlock({ onLoginClick }: PromoBlockProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const locale = useLocale();
+
+  // Хардкодные переводы
+  const translations = {
+    ru: {
+      loginText:
+        "войдите и получите купон на скидку 5% за подписку на наш Telegram канал",
+      loginButton: "войти",
+    },
+    en: {
+      loginText:
+        "login and get a 5% discount coupon for subscribing to our Telegram channel",
+      loginButton: "login",
+    },
+  };
+
+  const t =
+    translations[locale as keyof typeof translations] || translations.ru;
 
   return (
     <div className="px-4 py-4">
@@ -22,29 +41,19 @@ export function PromoBlock({ onLoginClick }: PromoBlockProps) {
           {/* Text */}
           <div className="flex-1">
             <p className="text-gray-800 text-sm leading-relaxed">
-              <span className="uppercase">В</span>
-              <span className="lowercase">
-                ойдите и получите купон на скидку 5% за подписку на наш
-              </span>{" "}
-              <a
-                href="https://t.me/DON_VIPCOM"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-800 hover:underline transition-colors"
-              >
-                <span className="uppercase">T</span>
-                <span className="lowercase">elegram канал</span>
-              </a>
+              <span className="capitalize">{t.loginText}</span>
             </p>
           </div>
 
-          {/* Login Button */}
-          <button
-            onClick={onLoginClick}
+          {/* Login Button - теперь ведет на Telegram */}
+          <a
+            href="https://t.me/DON_VIPCOM"
+            target="_blank"
+            rel="noopener noreferrer"
             className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors"
           >
-            войти
-          </button>
+            {t.loginButton}
+          </a>
         </div>
       </div>
     </div>
