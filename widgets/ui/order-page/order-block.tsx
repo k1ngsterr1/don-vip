@@ -331,7 +331,7 @@ export function OrderBlock({
 
   const mobileVersion = (
     <div className="md:hidden min-h-screen bg-white">
-      <Banner backgroundImage={game.image || "/banner.png"} height="112px" />
+      <Banner backgroundImage={game.image || "/banner.png"} height="312px" />
       {/* Game Info Block */}
       <GameInfoBlock gameName={game.name} />
       <PromoBlock onLoginClick={() => console.log("Login clicked")} />
