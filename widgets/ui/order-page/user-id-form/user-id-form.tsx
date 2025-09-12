@@ -375,17 +375,11 @@ export function UserIdForm({
                   {validationResult.vipStatus}
                 </span>
               )}
-              {/* Show validation source indicator */}
-              {isDonatBank && (
-                <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
-                  {locale === "ru" ? "DonatBank" : "DonatBank"}
-                </span>
-              )}
             </div>
           )}
           {!validationResult.isValid && validationResult.errorMessage && (
             <div className="mt-1 text-sm text-red-600">
-              {validationResult.errorMessage}
+              {locale === "ru" ? "Пользователь не найден" : "User not found"}
             </div>
           )}
         </div>
