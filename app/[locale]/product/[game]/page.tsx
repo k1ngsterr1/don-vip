@@ -27,10 +27,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function OrderPageRoute({ params }: Props) {
   const { game } = await params;
+  const gameId = parseInt(game, 10);
 
   return (
     <Suspense fallback={<OrderPageSkeleton />}>
-      <OrderBlock gameSlug={game} />
+      <OrderBlock gameSlug={gameId} />
     </Suspense>
   );
 }
