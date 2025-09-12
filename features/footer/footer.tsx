@@ -4,11 +4,48 @@ import logo from "@/assets/Logo.webp";
 import tbank from "@/assets/T-Bank.webp";
 import sbp from "@/assets/sbp.png";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
 export default function Footer() {
   const i18n = useTranslations("Footer");
+  const locale = useLocale();
+
+  // Legal information translations
+  const legalTranslations = {
+    ru: {
+      legalInfo: "Юридическая информация",
+      organization: "Организация",
+      address: "Адрес",
+      officialContacts: "Официальные контакты",
+      director: "Директор:",
+      company: "Компания:",
+      country: "Страна:",
+      street: "Улица:",
+      city: "Город:",
+      postalCode: "Почтовый индекс:",
+      phone: "Телефон:",
+      email: "Email:",
+    },
+    en: {
+      legalInfo: "Legal Information",
+      organization: "Organization",
+      address: "Address",
+      officialContacts: "Official Contacts",
+      director: "Director:",
+      company: "Company:",
+      country: "Country:",
+      street: "Street:",
+      city: "City:",
+      postalCode: "Postal Code:",
+      phone: "Phone:",
+      email: "Email:",
+    },
+  };
+
+  const legal =
+    legalTranslations[locale as keyof typeof legalTranslations] ||
+    legalTranslations.ru;
 
   const footerLinks = [
     { id: "terms", href: "/user-agreement" },
@@ -103,6 +140,82 @@ export default function Footer() {
               alt="PayPal"
               className="h-6 w-auto"
             />
+          </div>
+        </div>
+
+        {/* Legal Information Section */}
+        <div className="mt-8 pt-6 border-t border-gray-200">
+          <h2 className="text-[14px] font-bold mb-4 text-gray-800">
+            {legal.legalInfo}
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-xs md:text-sm">
+            {/* Company Information */}
+            <div className="space-y-2">
+              <h3 className="text-[12px] font-semibold text-gray-700">
+                {legal.organization}
+              </h3>
+              <div className="space-y-1 text-gray-600">
+                <p>
+                  <span className="font-medium">{legal.director}</span> Davit
+                  Aslanyan
+                </p>
+                <p>
+                  <span className="font-medium">{legal.company}</span> DMME HK
+                  LIMITED
+                </p>
+                <p>
+                  <span className="font-medium">{legal.country}</span> HK
+                </p>
+              </div>
+            </div>
+
+            {/* Address Information */}
+            <div className="space-y-2">
+              <h3 className="text-[12px] font-semibold text-gray-700">
+                {legal.address}
+              </h3>
+              <div className="space-y-1 text-gray-600">
+                <p>
+                  <span className="font-medium">{legal.street}</span> 000000,
+                  Hong Kong, 8/F., China Hong Kong Tower, 8-12 Hennessy Road,
+                  Wan Chai, Hong Kong
+                </p>
+                <p>
+                  <span className="font-medium">{legal.city}</span> Hong Kong
+                </p>
+                <p>
+                  <span className="font-medium">{legal.postalCode}</span> 000000
+                </p>
+              </div>
+            </div>
+
+            {/* Contact Information */}
+            <div className="space-y-2">
+              <h3 className="text-[12px] font-semibold text-gray-700">
+                {legal.officialContacts}
+              </h3>
+              <div className="space-y-1 text-gray-600">
+                <p>
+                  <span className="font-medium">{legal.phone}</span>{" "}
+                  <a
+                    href="tel:+37443090070"
+                    className="text-blue-600 hover:underline"
+                  >
+                    +374.43090070
+                  </a>
+                </p>
+                <p>
+                  <span className="font-medium">{legal.email}</span>{" "}
+                  <a
+                    href="mailto:info@don-vip.com"
+                    className="text-blue-600 hover:underline"
+                  >
+                    info@don-vip.com
+                  </a>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
