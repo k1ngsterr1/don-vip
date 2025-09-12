@@ -82,10 +82,11 @@ export function OrderBlock({
     "instruction" | "reviews" | "description" | "faq"
   >("instruction");
 
-  const handleValidationChange = (isValid: boolean) => {
-    console.log("Validation changed:", isValid); // Для отладки
-    setIsUserIdValid(isValid);
-  };
+  // Временно закомментировано
+  // const handleValidationChange = (isValid: boolean) => {
+  //   console.log("Validation changed:", isValid); // Для отладки
+  //   setIsUserIdValid(isValid);
+  // };
   useEffect(() => {
     if (currentCurrency.code !== "RUB") {
       // For non-RUB currencies, use a generic payment method for Pagsmile checkout
@@ -201,8 +202,8 @@ export function OrderBlock({
   const isFormValid =
     selectedCurrency !== null &&
     userId.trim() !== "" &&
-    (!game.requiresServer || serverId.trim() !== "") &&
-    isUserIdValid; // Добавляем проверку валидности User ID
+    (!game.requiresServer || serverId.trim() !== "");
+  // isUserIdValid; // Временно закомментировано
 
   // Get user identifier from various sources
   const getUserIdentifier = (): string | null => {
@@ -360,7 +361,7 @@ export function OrderBlock({
           serverId={serverId}
           onUserIdChange={setUserId}
           onServerIdChange={setServerId}
-          onValidationChange={handleValidationChange}
+          // onValidationChange={handleValidationChange} // Временно закомментировано
         />
       </div>
 
@@ -467,7 +468,7 @@ export function OrderBlock({
                 // agreeToTerms={agreeToTerms} // removed
                 onUserIdChange={setUserId}
                 onServerIdChange={setServerId}
-                onValidationChange={handleValidationChange}
+                // onValidationChange={handleValidationChange} // Временно закомментировано
                 // onAgreeChange={setAgreeToTerms} // removed
               />
             </div>
