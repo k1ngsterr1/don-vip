@@ -451,26 +451,15 @@ export function OrderBlock({
               <h2 className="text-lg font-medium text-gray-800 mb-4">
                 {t("block.selectAmount")}
               </h2>
-              <CurrencySelector
-                //@ts-ignore
-                options={currencyOptions}
-                currencyName={game.currencyName}
-                currencyImage={game.currencyImage}
-                onSelect={setSelectedAmount}
-                selectedId={selectedAmount}
-                enhanced={true}
-              />
 
               {/* Diamond Packages for desktop */}
-              <div className="mt-6 hidden md:block">
-                <DiamondPackages
-                  packages={currencyOptions}
-                  onSelect={setSelectedAmount}
-                  selectedId={selectedAmount}
-                  currencyName={game.currencyName}
-                  currencyImage={game.currencyImage}
-                />
-              </div>
+              <DiamondPackages
+                packages={currencyOptions}
+                onSelect={setSelectedAmount}
+                selectedId={selectedAmount}
+                currencyName={game.currencyName}
+                currencyImage={game.currencyImage}
+              />
             </div>
 
             <div className="p-6 border-b border-gray-100">
