@@ -3,10 +3,11 @@
 import { AlertTriangle, CheckCircle, Loader } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { CustomTooltip } from "@/shared/ui/tooltip/tooltip";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { CustomAlert } from "../alert/alert";
 import QuestionIcon from "@/shared/icons/question-icon";
 import { useValidateBigoUser } from "@/entities/bigo/hooks/use-validate-bigo";
+import { useDebounce } from "@/shared/hooks/use-debounce";
 
 interface UserIdFormProps {
   apiGame?: string;
@@ -58,6 +59,9 @@ export function UserIdForm({
   } | null>(null);
   const [hasValidated, setHasValidated] = useState(false);
 
+  // Debounced user ID for validation
+  const debouncedUserId = useDebounce(userIdInput, 1000);
+
   const errorMessages = {
     en: {
       spaceWarning:
@@ -70,6 +74,19 @@ export function UserIdForm({
 
   const isEmail = (value: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+
+  // Effect for handling debounced validation
+  useEffect(() => {
+    if (isBigo && debouncedUserId.trim().length >= 4) {
+      console.log("Starting debounced validation for:", debouncedUserId); // Для отладки
+      handleValidateUserId(debouncedUserId.trim());
+    } else if (isBigo && debouncedUserId.trim().length < 4) {
+      // Reset validation state for short IDs
+      setHasValidated(false);
+      setValidationResult(null);
+      onValidationChange?.(false);
+    }
+  }, [debouncedUserId, isBigo]);
 
   useEffect(() => {
     onUserIdChange(userIdInput);
@@ -119,22 +136,8 @@ export function UserIdForm({
       onValidationChange?.(false); // Сообщаем, что валидность сброшена
     }
 
-    // Auto-validate for Bigo if ID looks complete (e.g., more than 3 characters)
-    if (isBigo && cleanValue.trim().length >= 4) {
-      // Debounce the validation to avoid too many API calls
-      setTimeout(() => {
-        // Проверяем текущее значение в поле, а не старое
-        const currentValue = cleanValue.trim();
-        if (currentValue.length >= 4) {
-          console.log("Starting validation for:", currentValue); // Для отладки
-          handleValidateUserId(currentValue);
-        }
-      }, 1000);
-    } else if (isBigo && cleanValue.trim().length < 4) {
-      // If ID is too short for Bigo, mark as invalid
-      onValidationChange?.(false);
-    } else if (!isBigo) {
-      // For non-Bigo products, always valid
+    // For non-Bigo products, always valid
+    if (!isBigo) {
       onValidationChange?.(true);
     }
   };
@@ -249,7 +252,12 @@ export function UserIdForm({
             {isBigo && (
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
                 {isValidating && (
-                  <Loader className="w-5 h-5 animate-spin text-blue-500" />
+                  <div className="flex items-center">
+                    <Loader className="w-5 h-5 animate-spin text-blue-500" />
+                    <span className="ml-1 text-xs text-blue-500">
+                      {locale === "ru" ? "Проверка..." : "Validating..."}
+                    </span>
+                  </div>
                 )}
                 {hasValidated && validationResult && !isValidating && (
                   <>
@@ -291,7 +299,12 @@ export function UserIdForm({
               {isBigo && (
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
                   {isValidating && (
-                    <Loader className="w-5 h-5 animate-spin text-blue-500" />
+                    <div className="flex items-center">
+                      <Loader className="w-5 h-5 animate-spin text-blue-500" />
+                      <span className="ml-1 text-xs text-blue-500">
+                        {locale === "ru" ? "Проверка..." : "Validating..."}
+                      </span>
+                    </div>
                   )}
                   {hasValidated && validationResult && !isValidating && (
                     <>
@@ -360,6 +373,12 @@ export function UserIdForm({
               {validationResult.vipStatus && (
                 <span className="ml-2 px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">
                   {validationResult.vipStatus}
+                </span>
+              )}
+              {/* Show validation source indicator */}
+              {isDonatBank && (
+                <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
+                  {locale === "ru" ? "DonatBank" : "DonatBank"}
                 </span>
               )}
             </div>

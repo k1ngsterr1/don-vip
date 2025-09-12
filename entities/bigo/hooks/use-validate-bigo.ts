@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { bigoService } from "../api/bigo.api";
+import { productService } from "@/entities/product/api/product.api";
 
 interface ValidationResult {
   isValid: boolean;
@@ -29,27 +29,45 @@ export function useValidateBigoUser(): UseValidateBigoUserResult {
     setErrorCode(null);
 
     try {
-      const response = await bigoService.validateUserId(userId);
+      const response = await productService.validateBigoUser(userId);
 
-      if (!response.success) {
-        const errorMessage = response.error || "ID не существвует";
-        setError(errorMessage);
-        setErrorCode(response.errorCode || null);
-
+      // Handle DonatBank response format
+      if (response.status === 'success' && response.nickname) {
         return {
-          isValid: false,
-          errorMessage,
-          errorCode: response.errorCode,
+          isValid: true,
+          username: response.nickname,
         };
       }
 
+      // Handle Smile service response format  
+      if (response.success) {
+        return {
+          isValid: true,
+          username: response.data?.username,
+          vipStatus: response.data?.userInfo?.vipStatus,
+        };
+      }
+
+      // Handle fallback success cases (when validation is disabled)
+      if (response.message === 'success' || response.status === 'success') {
+        return {
+          isValid: true,
+          username: response.nickname || response.data?.username || 'Unknown User',
+        };
+      }
+
+      // Handle error cases
+      const errorMessage = response.error || response.message || "ID не существвует";
+      setError(errorMessage);
+      setErrorCode(response.errorCode || null);
+
       return {
-        isValid: true,
-        username: response.data?.username,
-        vipStatus: response.data?.userInfo?.vipStatus,
+        isValid: false,
+        errorMessage,
+        errorCode: response.errorCode,
       };
-    } catch (err) {
-      const errorMessage = "Failed to validate user ID";
+    } catch (err: any) {
+      const errorMessage = err.message || "Failed to validate user ID";
       setError(errorMessage);
 
       return {

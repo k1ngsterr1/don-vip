@@ -138,4 +138,15 @@ export const productService = {
       throw new Error(extractErrorMessage(error));
     }
   },
+
+  validateBigoUser: async (userId: string): Promise<any> => {
+    try {
+      const response = await apiClient.post(`/product/bigo/validate`, {
+        user_id: userId,
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(extractErrorMessage(error));
+    }
+  },
 };
