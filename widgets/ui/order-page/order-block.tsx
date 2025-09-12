@@ -459,7 +459,7 @@ export function OrderBlock({
               />
 
               {/* Diamond Packages for desktop */}
-              <div className="mt-6">
+              <div className="mt-6 hidden md:block">
                 <DiamondPackages
                   packages={currencyOptions}
                   onSelect={setSelectedAmount}
