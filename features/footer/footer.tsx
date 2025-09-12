@@ -46,7 +46,13 @@ export default function Footer() {
           </nav>
         </div>
         <div className="mt-6  md:mt-8 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-          <div className="text-sm text-gray-400">{i18n("copyright")}</div>
+          <div className="flex flex-col gap-2">
+            <div className="text-sm text-gray-400">{i18n("copyright")}</div>
+            <div className="text-xs text-gray-500">
+              000000, Hong Kong, 8/F., China Hong Kong Tower, 8-12 Hennessy
+              Road, Wan Chai, Hong Kong
+            </div>
+          </div>
           <div className="flex flex-wrap items-center gap-2 md:gap-3">
             <Image
               src={require("@/assets/mir.webp")}
