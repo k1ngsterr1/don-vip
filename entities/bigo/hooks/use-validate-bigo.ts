@@ -32,14 +32,14 @@ export function useValidateBigoUser(): UseValidateBigoUserResult {
       const response = await productService.validateBigoUser(userId);
 
       // Handle DonatBank response format
-      if (response.status === 'success' && response.nickname) {
+      if (response.status === "success" && response.nickname) {
         return {
           isValid: true,
           username: response.nickname,
         };
       }
 
-      // Handle Smile service response format  
+      // Handle Smile service response format
       if (response.success) {
         return {
           isValid: true,
@@ -49,15 +49,17 @@ export function useValidateBigoUser(): UseValidateBigoUserResult {
       }
 
       // Handle fallback success cases (when validation is disabled)
-      if (response.message === 'success' || response.status === 'success') {
+      if (response.message === "success" || response.status === "success") {
         return {
           isValid: true,
-          username: response.nickname || response.data?.username || 'Unknown User',
+          username:
+            response.nickname || response.data?.username || "Unknown User",
         };
       }
 
       // Handle error cases
-      const errorMessage = response.error || response.message || "ID не существвует";
+      const errorMessage =
+        response.error || response.message || "ID не существвует";
       setError(errorMessage);
       setErrorCode(response.errorCode || null);
 
