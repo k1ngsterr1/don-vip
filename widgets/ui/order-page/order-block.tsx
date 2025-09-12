@@ -382,7 +382,7 @@ export function OrderBlock({
       )}
 
       {/* Fixed Buy Button */}
-      <div className="fixed bottom-16 right-4 z-10">
+      <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-10">
         <button
           className={cn(
             "w-[120px] py-3 px-3 rounded-full text-white font-medium transition-colors shadow-lg",
@@ -395,7 +395,7 @@ export function OrderBlock({
             ? isProcessingPayment
               ? t("summary.redirecting")
               : "Loading..."
-            : "Купить сейчас"}
+            : "КУПИТЬ СЕЙЧАС"}
         </button>
       </div>
 
