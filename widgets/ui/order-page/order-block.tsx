@@ -385,7 +385,7 @@ export function OrderBlock({
       <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-10">
         <button
           className={cn(
-            "w-[120px] py-3 px-3 rounded-full text-white font-medium transition-colors shadow-lg",
+            "w-[180px] py-3 px-3 rounded-full text-white font-medium transition-colors shadow-lg",
             isFormValid ? "bg-[#aaaaab] hover:bg-gray-600" : "bg-gray-400"
           )}
           disabled={!isFormValid || isLoading}
