@@ -68,6 +68,10 @@
       "invalidCoupon": "Invalid coupon code format",
       "networkError": "Network error occurred",
       "validationFailed": "Validation failed"
+    },
+    "packages": {
+      "showAll": "Show All",
+      "hide": "Hide"
     }
   }
 }

@@ -34,10 +34,12 @@ export function DiamondPackages({
 }: DiamondPackagesProps) {
   const t = useTranslations("orderBlock");
   const [showAll, setShowAll] = useState(false);
-  
+
   // На мобильных показываем только первые 4 пакета, если не нажали "Показать все"
   const MOBILE_VISIBLE_COUNT = 4;
-  const displayedPackages = showAll ? packages : packages.slice(0, MOBILE_VISIBLE_COUNT);
+  const displayedPackages = showAll
+    ? packages
+    : packages.slice(0, MOBILE_VISIBLE_COUNT);
   const hasMorePackages = packages.length > MOBILE_VISIBLE_COUNT;
 
   return (
@@ -157,11 +159,11 @@ export function DiamondPackages({
       {/* Show all button - только для мобильных устройств и если есть скрытые пакеты */}
       {hasMorePackages && (
         <div className="mt-6 text-center md:hidden">
-          <button 
+          <button
             onClick={() => setShowAll(!showAll)}
-            className="text-blue-600 hover:text-blue-700 font-medium text-sm underline"
+            className="text-blue-600 hover:text-blue-700 font-medium text-sm underline transition-colors"
           >
-            {showAll ? "Скрыть" : "Показать все"}
+            {showAll ? t("packages.hide") : t("packages.showAll")}
           </button>
         </div>
       )}
