@@ -57,9 +57,12 @@ export function DiamondPackages({
               <div className="flex items-center gap-3 md:flex-col md:gap-3 md:text-center md:h-full md:justify-center">
                 {/* Currency icon */}
                 <div className="w-12 h-9 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg flex items-center justify-center shadow-sm md:w-12 md:h-10 md:mx-auto">
-                  <div
-                    className="w-5 h-5 bg-cover bg-center md:w-6 md:h-6"
-                    style={{ backgroundImage: `url('${currencyImage}')` }}
+                  <Image
+                    src="/diamond.webp"
+                    alt="Diamond"
+                    width={24}
+                    height={24}
+                    className="w-5 h-5 md:w-6 md:h-6 object-contain"
                   />
                 </div>
 
@@ -73,7 +76,23 @@ export function DiamondPackages({
                     <span className="text-red-600 font-bold text-sm md:text-lg">
                       {pkg.price}
                     </span>
-
+                    {hasDiscount &&
+                      pkg.discount &&
+                      pkg.discount > 0 &&
+                      (() => {
+                        const oldPrice = (
+                          parseFloat(pkg.price.split(" ")[0]) /
+                          (1 - pkg.discount! / 100)
+                        ).toFixed(2);
+                        return oldPrice !== "0.00" &&
+                          parseFloat(oldPrice) > 0 ? (
+                          <div className="bg-red-50 px-2 py-1 rounded-md border border-red-100">
+                            <span className="text-red-500 text-xs line-through font-medium">
+                              {oldPrice} {pkg.price.split(" ")[1]}
+                            </span>
+                          </div>
+                        ) : null;
+                      })()}
                     {/* Hide bonus if it's 0 */}
                     {pkg.bonus && pkg.bonus > 0 && (
                       <div className="text-green-600 text-xs font-medium">
