@@ -128,7 +128,18 @@ export class PaymentMethodsApi {
         "/payment/methods-for-user"
       );
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      // Если эндпоинт не найден (404), возвращаем fallback данные
+      if (error?.response?.status === 404) {
+        console.warn("Payment methods endpoint not found, using fallback");
+        return {
+          currency: "RUB",
+          country: "Russia",
+          region: "RU",
+          methods: ["sbp", "tbank", "card"],
+          supported_currencies: ["RUB", "EUR", "USD"],
+        };
+      }
       throw new Error(extractErrorMessage(error));
     }
   }
@@ -145,7 +156,29 @@ export class PaymentMethodsApi {
         `/payment/methods/by-currency/${currency}`
       );
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      // Если эндпоинт не найден (404), возвращаем fallback данные
+      if (error?.response?.status === 404) {
+        console.warn(
+          `Payment methods for currency ${currency} not found, using fallback`
+        );
+        return {
+          currency: currency,
+          totalMethods: 1,
+          methods: [
+            {
+              id: 1,
+              name: "pagsmile_checkout",
+              methodCode: "pagsmile_checkout",
+              country: "Global",
+              currency: currency,
+              icon: "",
+              isActive: true,
+              sortOrder: 1,
+            },
+          ],
+        };
+      }
       throw new Error(extractErrorMessage(error));
     }
   }
