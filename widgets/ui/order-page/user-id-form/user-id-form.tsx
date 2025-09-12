@@ -102,7 +102,7 @@ export function UserIdForm({
     //   // Для всех продуктов кроме Bigo - всегда валидно
     //   onValidationChange?.(true);
     // }
-    
+
     // Временно всегда валидно
     onValidationChange?.(true);
   }, [
