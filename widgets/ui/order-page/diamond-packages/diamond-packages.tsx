@@ -42,6 +42,45 @@ export function DiamondPackages({
     : packages.slice(0, MOBILE_VISIBLE_COUNT);
   const hasMorePackages = packages.length > MOBILE_VISIBLE_COUNT;
 
+  const handlePackageSelect = (id: number) => {
+    onSelect(id);
+
+    // Автоматическая прокрутка к следующему шагу через небольшую задержку
+    setTimeout(() => {
+      // Сначала ищем поле ввода User ID
+      const userIdSection = document.querySelector('[data-step="user-id"]');
+
+      if (userIdSection) {
+        userIdSection.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+
+        // Ищем input поле в секции и фокусируемся на нем
+        const inputField = userIdSection.querySelector("input");
+        if (inputField) {
+          setTimeout(() => {
+            inputField.focus();
+          }, 500);
+        }
+
+        // Через 2.5 секунды прокручиваем к методам оплаты
+        setTimeout(() => {
+          const paymentSection = document.querySelector(
+            '[data-step="payment"]'
+          );
+
+          if (paymentSection) {
+            paymentSection.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+          }
+        }, 2500);
+      }
+    }, 500);
+  };
+
   return (
     <div className="px-4 py-6">
       <h2 className="text-lg font-medium text-gray-800 mb-6">Выберите пакет</h2>
@@ -54,7 +93,7 @@ export function DiamondPackages({
           return (
             <div
               key={pkg.id}
-              onClick={() => onSelect(pkg.id)}
+              onClick={() => handlePackageSelect(pkg.id)}
               className={cn(
                 "relative bg-white rounded-xl p-4 cursor-pointer transition-all hover:shadow-lg border-2 border-transparent md:min-h-[140px] md:flex md:flex-col md:justify-between md:bg-gradient-to-br md:from-white md:to-gray-50",
                 isSelected

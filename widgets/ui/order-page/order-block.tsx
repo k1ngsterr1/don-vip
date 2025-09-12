@@ -351,22 +351,24 @@ export function OrderBlock({
             : "/assets/EN.webp"
         }
       />
-      <UserIdForm
-        apiGame={product?.smile_api_game}
-        productType={product?.type}
-        requiresServer={game.requiresServer}
-        userId={userId}
-        serverId={serverId}
-        onUserIdChange={setUserId}
-        onServerIdChange={setServerId}
-        onValidationChange={handleValidationChange}
-      />
+      <div data-step="user-id">
+        <UserIdForm
+          apiGame={product?.smile_api_game}
+          productType={product?.type}
+          requiresServer={game.requiresServer}
+          userId={userId}
+          serverId={serverId}
+          onUserIdChange={setUserId}
+          onServerIdChange={setServerId}
+          onValidationChange={handleValidationChange}
+        />
+      </div>
 
       {/* Info Block with Features */}
       <InfoBlock />
 
       {/* Payment Method Selector */}
-      <div className="px-4 py-6">
+      <div className="px-4 py-6" data-step="payment">
         <h3 className="text-base font-medium text-gray-800 mb-3">
           3 ВЫБЕРИТЕ СПОСОБ ОПЛАТЫ
         </h3>
@@ -455,7 +457,7 @@ export function OrderBlock({
               />
             </div>
 
-            <div className="p-6 border-b border-gray-100">
+            <div className="p-6 border-b border-gray-100" data-step="user-id">
               <UserIdForm
                 apiGame={product?.smile_api_game}
                 productType={product?.type}
@@ -470,7 +472,7 @@ export function OrderBlock({
               />
             </div>
             {/* PaymentMethodSelector is now shown for all currencies in enhanced mode */}
-            <div className="p-6">
+            <div className="p-6" data-step="payment">
               <PaymentMethodSelector
                 enhanced={true}
                 onSelect={setSelectedPaymentMethod}
