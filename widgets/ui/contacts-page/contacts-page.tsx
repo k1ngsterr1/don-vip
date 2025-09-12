@@ -118,8 +118,9 @@ export const ContactsPageBlock = () => {
               </h3>
               <div className="space-y-1">
                 <p>
-                  <span className="font-bold">{legal.street}:</span> 8/F., China
-                  Hong Kong Tower, 8-12 Hennessy Road, Wan Chai, Hong Kong
+                  <span className="font-bold">{legal.street}:</span> 000000,
+                  Hong Kong, 8/F., China Hong Kong Tower, 8-12 Hennessy Road,
+                  Wan Chai, Hong Kong
                 </p>
                 <p>
                   <span className="font-bold">{legal.city}:</span> Hong Kong
