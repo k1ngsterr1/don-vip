@@ -2,7 +2,7 @@
 
 import { cn } from "@/shared/utils/cn";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { useState } from "react";
 
 interface Package {
@@ -32,8 +32,31 @@ export function DiamondPackages({
   currencyName,
   currencyImage,
 }: DiamondPackagesProps) {
-  const t = useTranslations("orderBlock");
+  const locale = useLocale();
   const [showAll, setShowAll] = useState(false);
+
+  // Хардкодные переводы
+  const translations = {
+    ru: {
+      selectPackage: "Выберите пакет",
+      showAll: "Показать все",
+      hide: "Скрыть",
+      bonus: "бонус",
+      discount: "СКИДКА",
+      popular: "Популярный",
+    },
+    en: {
+      selectPackage: "Select Package",
+      showAll: "Show All",
+      hide: "Hide",
+      bonus: "bonus",
+      discount: "DISCOUNT",
+      popular: "Popular",
+    },
+  };
+
+  const t =
+    translations[locale as keyof typeof translations] || translations.ru;
 
   // На мобильных показываем только первые 4 пакета, если не нажали "Показать все"
   const MOBILE_VISIBLE_COUNT = 4;
@@ -83,7 +106,9 @@ export function DiamondPackages({
 
   return (
     <div className="px-4 py-6">
-      <h2 className="text-lg font-medium text-gray-800 mb-6">Выберите пакет</h2>
+      <h2 className="text-lg font-medium text-gray-800 mb-6">
+        {t.selectPackage}
+      </h2>
 
       <div className="space-y-3 md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-4 md:space-y-0">
         {displayedPackages.map((pkg) => {
@@ -144,7 +169,7 @@ export function DiamondPackages({
                     {/* Hide bonus if it's 0 */}
                     {pkg.bonus && pkg.bonus > 0 && (
                       <div className="text-green-600 text-xs font-medium">
-                        +{pkg.bonus} бонус
+                        +{pkg.bonus} {t.bonus}
                       </div>
                     )}
                   </div>
@@ -166,7 +191,7 @@ export function DiamondPackages({
                 <div className="hidden md:flex md:items-center md:justify-center md:gap-2 md:mt-3">
                   {hasDiscount && pkg.discount! > 0 && (
                     <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-md">
-                      СКИДКА {pkg.discount}%
+                      {t.discount} {pkg.discount}%
                     </div>
                   )}
                 </div>
@@ -182,7 +207,7 @@ export function DiamondPackages({
               {/* Popular badge */}
               {pkg.isPopular && (
                 <div className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg transform rotate-12 md:rotate-3 md:-top-2 md:-right-2 md:px-4 md:py-1.5">
-                  Популярный
+                  {t.popular}
                 </div>
               )}
 
@@ -202,7 +227,7 @@ export function DiamondPackages({
             onClick={() => setShowAll(!showAll)}
             className="text-blue-600 hover:text-blue-700 font-medium text-sm underline transition-colors"
           >
-            {showAll ? t("packages.hide") : t("packages.showAll")}
+            {showAll ? t.hide : t.showAll}
           </button>
         </div>
       )}
