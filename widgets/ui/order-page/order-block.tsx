@@ -332,11 +332,6 @@ export function OrderBlock({
   const mobileVersion = (
     <div className="md:hidden min-h-screen bg-white">
       <Banner backgroundImage={game.image || "/banner.png"} height="112px" />
-      <ProductInfo
-        isExpanded={showInfo}
-        onToggle={() => setShowInfo(!showInfo)}
-        description={game.description}
-      />
       {/* Game Info Block */}
       <GameInfoBlock gameName={game.name} />
       <PromoBlock onLoginClick={() => console.log("Login clicked")} />
