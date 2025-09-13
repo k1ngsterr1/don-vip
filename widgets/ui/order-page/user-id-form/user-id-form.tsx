@@ -97,8 +97,9 @@ export function UserIdForm({
         onValidationChange?.(false);
       }
     } else {
-      // Для всех продуктов кроме Bigo - всегда валидно
-      onValidationChange?.(true);
+      // Для всех продуктов кроме Bigo - валидируем по длине
+      const isValidLength = userIdInput.trim().length >= 4;
+      onValidationChange?.(isValidLength);
     }
   }, [
     userIdInput,
@@ -134,9 +135,10 @@ export function UserIdForm({
       onValidationChange?.(false); // Сообщаем, что валидность сброшена
     }
 
-    // For non-Bigo products, always valid
+    // For non-Bigo products, consider valid if ID has reasonable length
     if (!isBigo) {
-      onValidationChange?.(true);
+      const isValidLength = cleanValue.trim().length >= 4;
+      onValidationChange?.(isValidLength);
     }
   };
 

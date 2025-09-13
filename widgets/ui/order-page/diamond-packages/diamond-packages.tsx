@@ -84,24 +84,10 @@ export function DiamondPackages({
         if (inputField) {
           setTimeout(() => {
             inputField.focus();
-          }, 500);
+          }, 800);
         }
-
-        // Через 2.5 секунды прокручиваем к методам оплаты
-        setTimeout(() => {
-          const paymentSection = document.querySelector(
-            '[data-step="payment"]'
-          );
-
-          if (paymentSection) {
-            paymentSection.scrollIntoView({
-              behavior: "smooth",
-              block: "center",
-            });
-          }
-        }, 2500);
       }
-    }, 500);
+    }, 300);
   };
 
   return (

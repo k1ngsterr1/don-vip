@@ -82,11 +82,62 @@ export function OrderBlock({
     "instruction" | "reviews" | "description" | "faq"
   >("instruction");
 
-  // Временно закомментировано
-  // const handleValidationChange = (isValid: boolean) => {
-  //   console.log("Validation changed:", isValid); // Для отладки
-  //   setIsUserIdValid(isValid);
-  // };
+  // Функция для автоматического перехода к методам оплаты
+  const scrollToPaymentSection = () => {
+    setTimeout(() => {
+      const paymentSection = document.querySelector('[data-step="payment"]');
+      if (paymentSection) {
+        paymentSection.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+    }, 500);
+  };
+
+  // Обработчик для валидного ввода User ID
+  const handleUserIdValidation = (isValid: boolean) => {
+    setIsUserIdValid(isValid);
+
+    // Если ID валиден и выбран пакет, автоматически переходим к оплате
+    if (isValid && selectedAmount !== null && userId.trim() !== "") {
+      // Для игр требующих сервер, проверяем что сервер ID тоже введен
+      if (game?.requiresServer && serverId.trim() === "") {
+        return; // Не переходим если сервер ID не введен
+      }
+
+      scrollToPaymentSection();
+    }
+  };
+
+  // Обработчик изменения User ID
+  const handleUserIdChange = (value: string) => {
+    setUserId(value);
+
+    // Если ID достаточно длинный и выбран пакет, автоматически переходим к оплате
+    if (value.trim().length >= 4 && selectedAmount !== null) {
+      // Для игр требующих сервер, проверяем что сервер ID тоже введен
+      if (game?.requiresServer && serverId.trim() === "") {
+        return; // Не переходим если сервер ID не введен
+      }
+
+      scrollToPaymentSection();
+    }
+  };
+
+  // Обработчик изменения Server ID
+  const handleServerIdChange = (value: string) => {
+    setServerId(value);
+
+    // Если все поля заполнены и выбран пакет, автоматически переходим к оплате
+    if (
+      value.trim().length >= 1 &&
+      userId.trim().length >= 4 &&
+      selectedAmount !== null
+    ) {
+      scrollToPaymentSection();
+    }
+  };
 
   // Убираем автоматическое переключение на pagsmile_checkout
   // чтобы пользователь мог выбирать конкретные методы оплаты
@@ -206,8 +257,8 @@ export function OrderBlock({
   const isFormValid =
     selectedCurrency !== null &&
     userId.trim() !== "" &&
-    (!game.requiresServer || serverId.trim() !== "");
-  // isUserIdValid; // Временно закомментировано
+    (!game.requiresServer || serverId.trim() !== "") &&
+    isUserIdValid;
 
   // Get user identifier from various sources
   const getUserIdentifier = (): string | null => {
@@ -363,9 +414,9 @@ export function OrderBlock({
           requiresServer={game.requiresServer}
           userId={userId}
           serverId={serverId}
-          onUserIdChange={setUserId}
-          onServerIdChange={setServerId}
-          // onValidationChange={handleValidationChange} // Временно закомментировано
+          onUserIdChange={handleUserIdChange}
+          onServerIdChange={handleServerIdChange}
+          onValidationChange={handleUserIdValidation}
         />
       </div>
 
@@ -469,11 +520,9 @@ export function OrderBlock({
                 requiresServer={game.requiresServer}
                 userId={userId}
                 serverId={serverId}
-                // agreeToTerms={agreeToTerms} // removed
-                onUserIdChange={setUserId}
-                onServerIdChange={setServerId}
-                // onValidationChange={handleValidationChange} // Временно закомментировано
-                // onAgreeChange={setAgreeToTerms} // removed
+                onUserIdChange={handleUserIdChange}
+                onServerIdChange={handleServerIdChange}
+                onValidationChange={handleUserIdValidation}
               />
             </div>
             {/* PaymentMethodSelector is now shown for all currencies in enhanced mode */}
