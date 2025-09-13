@@ -27,12 +27,13 @@ export const getIconUrl = (iconPath: string | null): string | null => {
     return iconPath;
   }
 
-  // Get base URL without /api suffix since file paths start with /uploads
-  const apiBaseUrl =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.don-vip.com/api";
-  const baseUrl = apiBaseUrl.replace(/\/api$/, ""); // Remove trailing /api
+  // If path starts with /uploads, add base URL
+  if (iconPath.startsWith("/uploads/")) {
+    return `https://api.don-vip.com${iconPath}`;
+  }
 
-  return `${baseUrl}${iconPath}`;
+  // For any other relative path, add base URL
+  return `https://api.don-vip.com/${iconPath.replace(/^\//, "")}`;
 };
 
 /**
@@ -318,14 +319,23 @@ export function PaymentMethodSelector({
       const firstMethodId = availablePaymentMethods[0].id;
 
       // Автоматически выбираем первый метод если:
-      // 1. Нет выбранного метода (пустая строка)
+      // 1. Нет выбранного метода (пустая строка, null, undefined)
       // 2. Выбранный метод не найден среди доступных
       const isSelectedMethodAvailable = availablePaymentMethods.some(
         (method) => method.id === selectedMethod
       );
 
-      if (!selectedMethod || !isSelectedMethodAvailable) {
-        console.log("Auto-selecting first payment method:", firstMethodId);
+      const shouldAutoSelect =
+        !selectedMethod || selectedMethod === "" || !isSelectedMethodAvailable;
+
+      if (shouldAutoSelect) {
+        console.log("Auto-selecting payment method:", {
+          firstMethodId,
+          selectedMethod,
+          availableMethodsCount: availablePaymentMethods.length,
+          isSelectedMethodAvailable,
+          shouldAutoSelect,
+        });
         onSelect(firstMethodId);
       }
     }
