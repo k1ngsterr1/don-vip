@@ -74,7 +74,7 @@ export function OrderBlock({
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [userId, setUserId] = useState("");
   const [serverId, setServerId] = useState("");
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("tbank");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
   const [showGuestAuthPopup, setShowGuestAuthPopup] = useState(false);
   const [guestIdentifier, setGuestIdentifier] = useState("");
   const [isUserIdValid, setIsUserIdValid] = useState(true); // Добавляем состояние для валидности User ID
@@ -391,8 +391,6 @@ export function OrderBlock({
 
   const mobileVersion = (
     <div className="md:hidden min-h-screen bg-white">
-      <Banner backgroundImage={game.image || "/banner.png"} height="312px" />
-      {/* Game Info Block */}
       <GameInfoBlock gameName={game.name} />
       <PromoBlock onLoginClick={() => console.log("Login clicked")} />
       {/* Diamond Packages for mobile */}
@@ -479,7 +477,10 @@ export function OrderBlock({
               <h1 className="text-2xl font-medium text-gray-800 mb-2">
                 {game.name}
               </h1>
-              <p className="text-gray-600">{game.description}</p>{" "}
+              <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+                <GameInfoBlock gameName={game.name} />
+              </div>
+
               {/* Language & Currency Button */}
               <div className="mt-4">
                 <Link href="/language-currency" className="inline-block">
@@ -546,9 +547,6 @@ export function OrderBlock({
           {/* Additional components for desktop */}
           <div className="mt-6 space-y-6">
             {/* Game Info Block */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100">
-              <GameInfoBlock gameName={game.name} />
-            </div>
 
             {/* Info Block */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-100">

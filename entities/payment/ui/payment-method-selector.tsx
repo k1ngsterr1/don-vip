@@ -37,7 +37,7 @@ interface FrontendPaymentMethod {
 
 export function PaymentMethodSelector({
   enhanced = false,
-  selectedMethod = "tbank", // Default selected method ID
+  selectedMethod = "", // Change default to empty string
   onSelect = () => {},
   currentCurrency = "RUB", // Default to RUB (fallback if localStorage is empty)
   region = "RU", // Default to Russia
@@ -273,6 +273,25 @@ export function PaymentMethodSelector({
     error,
   ]);
 
+  // Автоматический выбор первого доступного метода оплаты
+  useEffect(() => {
+    if (!isLoading && availablePaymentMethods.length > 0) {
+      const firstMethodId = availablePaymentMethods[0].id;
+
+      // Автоматически выбираем первый метод если:
+      // 1. Нет выбранного метода (пустая строка)
+      // 2. Выбранный метод не найден среди доступных
+      const isSelectedMethodAvailable = availablePaymentMethods.some(
+        (method) => method.id === selectedMethod
+      );
+
+      if (!selectedMethod || !isSelectedMethodAvailable) {
+        console.log("Auto-selecting first payment method:", firstMethodId);
+        onSelect(firstMethodId);
+      }
+    }
+  }, [availablePaymentMethods, isLoading, selectedMethod, onSelect]);
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-4">
@@ -357,10 +376,6 @@ export function PaymentMethodSelector({
   return (
     <>
       <div className={`${enhanced ? "hidden" : "block"} px-4 mb-6 md:hidden`}>
-        <h2 className="text-gray-900 font-medium mb-4">
-          {/* Original: text-dark. Changed to text-gray-900 for consistency or use your custom 'text-dark' */}
-          {i18n("titleMobile")}
-        </h2>
         {paymentMethodSelectorContent}
       </div>
       <div className={`${enhanced ? "block" : "hidden md:block"}`}>
