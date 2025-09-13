@@ -27,14 +27,13 @@ export const getIconUrl = (iconPath: string | null): string | null => {
     return iconPath;
   }
 
-  // If path starts with /uploads, convert to /api/uploads and add base URL
+  // If path starts with /uploads, add base URL directly
   if (iconPath.startsWith("/uploads/")) {
-    const apiPath = iconPath.replace("/uploads/", "/api/uploads/");
-    return `https://api.don-vip.com${apiPath}`;
+    return `https://api.don-vip.com${iconPath}`;
   }
 
   // For any other relative path, add base URL
-  return `https://api.don-vip.com/api/${iconPath.replace(/^\//, "")}`;
+  return `https://api.don-vip.com/uploads/${iconPath.replace(/^\//, "")}`;
 };
 
 /**
@@ -217,13 +216,16 @@ export function PaymentMethodSelector({
   }
   // For non-RUB currencies: Use API methods
   else if (methodsByCurrency && methodsByCurrency.methods.length > 0) {
-    availablePaymentMethods = methodsByCurrency.methods.map((method) => ({
-      id: method.methodCode,
-      translationKey: method.name, // Используем название из API напрямую, без переводов
-      apiName: method.name,
-      icon:
-        getIconUrl(method.icon) || getPaymentMethodIconSrc("card", method.name),
-    }));
+    availablePaymentMethods = methodsByCurrency.methods.map(
+      (method, index) => ({
+        id: method.methodCode || method.name || `method-${index}`,
+        translationKey: method.name, // Используем название из API напрямую, без переводов
+        apiName: method.name,
+        icon:
+          getIconUrl(method.icon) ||
+          getPaymentMethodIconSrc("card", method.name),
+      })
+    );
   }
   // Priority 2: Use user-specific methods if enabled
   else if (useUserMethods && userMethods) {
