@@ -66,39 +66,97 @@ export function DiamondPackages({
   const hasMorePackages = packages.length > MOBILE_VISIBLE_COUNT;
 
   const handlePackageSelect = (id: number) => {
-    console.log("Package selected:", id); // Добавляем логирование
+    console.log("Package selected:", id);
     onSelect(id);
 
-    // Автоматическая прокрутка к следующему шагу через небольшую задержку
+    // Автоматическая прокрутка к следующему шагу
     setTimeout(() => {
-      console.log("Attempting to scroll to user-id section"); // Добавляем логирование
+      console.log("=== Starting scroll search ===");
 
-      // Проверяем, находимся ли мы на десктопе или мобильном
-      const isDesktop = window.innerWidth >= 768; // md breakpoint
+      const isDesktop = window.innerWidth >= 768;
+      console.log("Is desktop:", isDesktop);
 
-      // Сначала ищем поле ввода User ID
-      const userIdSection = document.querySelector('[data-step="user-id"]');
-      console.log("Found userIdSection:", userIdSection); // Добавляем логирование
-      console.log("Is desktop:", isDesktop); // Добавляем логирование
+      let targetElement = null;
+      let targetInput = null;
 
-      if (userIdSection) {
-        userIdSection.scrollIntoView({
+      if (isDesktop) {
+        // Для десктопа ищем по специальному ID
+        targetElement = document.getElementById("desktop-user-id-section");
+        console.log("Desktop: found section by ID:", targetElement);
+
+        if (targetElement) {
+          targetInput = targetElement.querySelector(
+            "input"
+          ) as HTMLInputElement;
+          console.log("Desktop: found input in section:", targetInput);
+        }
+      }
+
+      // Если не нашли через десктопный ID, ищем обычным способом
+      if (!targetElement) {
+        targetElement = document.querySelector('[data-step="user-id"]');
+        console.log("Fallback: found by data-step:", targetElement);
+
+        if (targetElement) {
+          targetInput = targetElement.querySelector(
+            "input"
+          ) as HTMLInputElement;
+        }
+      }
+
+      // Если всё ещё не нашли input, ищем по placeholder напрямую
+      if (!targetInput) {
+        targetInput = document.querySelector(
+          'input[placeholder*="USER ID"]'
+        ) as HTMLInputElement;
+        if (!targetInput) {
+          targetInput = document.querySelector(
+            'input[placeholder*="ID"]'
+          ) as HTMLInputElement;
+        }
+        console.log("Direct search: found input:", targetInput);
+      }
+
+      console.log("Final target element:", targetElement);
+      console.log("Final target input:", targetInput);
+
+      if (targetElement && targetInput) {
+        // Прокручиваем к секции
+        targetElement.scrollIntoView({
           behavior: "smooth",
-          block: isDesktop ? "start" : "center", // Для десктопа используем "start"
+          block: isDesktop ? "center" : "center",
+          inline: "nearest",
         });
 
-        // Ищем input поле в секции и фокусируемся на нем
-        const inputField = userIdSection.querySelector("input");
-        console.log("Found inputField:", inputField); // Добавляем логирование
+        console.log("Scrolled to section");
 
-        if (inputField) {
-          setTimeout(() => {
-            inputField.focus();
-            console.log("Focused on input field"); // Добавляем логирование
-          }, 800);
-        }
+        // Фокусируемся на input через задержку
+        setTimeout(() => {
+          targetInput.focus();
+          console.log("Focused on input");
+        }, 600);
+      } else if (targetInput) {
+        // Если есть только input, прокручиваем к нему
+        targetInput.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+
+        setTimeout(() => {
+          targetInput.focus();
+          console.log("Focused on direct input");
+        }, 600);
       } else {
-        console.log("userIdSection not found!"); // Добавляем логирование
+        console.log("ERROR: No target found!");
+        console.log(
+          "Available elements with data-step:",
+          document.querySelectorAll("[data-step]")
+        );
+        console.log("Available inputs:", document.querySelectorAll("input"));
+        console.log(
+          "Desktop section:",
+          document.getElementById("desktop-user-id-section")
+        );
       }
     }, 300);
   };

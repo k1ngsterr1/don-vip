@@ -514,7 +514,11 @@ export function OrderBlock({
               />
             </div>
 
-            <div className="p-6 border-b border-gray-100" data-step="user-id">
+            <div
+              className="p-6 border-b border-gray-100"
+              data-step="user-id"
+              id="desktop-user-id-section"
+            >
               <UserIdForm
                 apiGame={product?.smile_api_game}
                 productType={product?.type}
