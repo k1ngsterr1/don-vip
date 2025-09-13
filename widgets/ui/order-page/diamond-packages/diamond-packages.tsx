@@ -73,14 +73,18 @@ export function DiamondPackages({
     setTimeout(() => {
       console.log("Attempting to scroll to user-id section"); // Добавляем логирование
 
+      // Проверяем, находимся ли мы на десктопе или мобильном
+      const isDesktop = window.innerWidth >= 768; // md breakpoint
+
       // Сначала ищем поле ввода User ID
       const userIdSection = document.querySelector('[data-step="user-id"]');
       console.log("Found userIdSection:", userIdSection); // Добавляем логирование
+      console.log("Is desktop:", isDesktop); // Добавляем логирование
 
       if (userIdSection) {
         userIdSection.scrollIntoView({
           behavior: "smooth",
-          block: "center",
+          block: isDesktop ? "start" : "center", // Для десктопа используем "start"
         });
 
         // Ищем input поле в секции и фокусируемся на нем
