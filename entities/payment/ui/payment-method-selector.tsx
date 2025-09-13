@@ -20,20 +20,33 @@ import { useEffect, useState } from "react";
  * Helper function to get full icon URL
  */
 export const getIconUrl = (iconPath: string | null): string | null => {
-  if (!iconPath) return null;
+  console.log("getIconUrl input:", iconPath);
+
+  if (!iconPath) {
+    console.log("getIconUrl output: null (empty input)");
+    return null;
+  }
+
+  let result: string;
 
   // If iconPath already contains a full URL, return as is
   if (iconPath.startsWith("http://") || iconPath.startsWith("https://")) {
-    return iconPath;
+    result = iconPath;
+    console.log("getIconUrl output (full URL):", result);
+    return result;
   }
 
   // If path starts with /uploads, add base URL directly
   if (iconPath.startsWith("/uploads/")) {
-    return `https://api.don-vip.com${iconPath}`;
+    result = `https://api.don-vip.com${iconPath}`;
+    console.log("getIconUrl output (/uploads path):", result);
+    return result;
   }
 
   // For any other relative path, add base URL
-  return `https://api.don-vip.com/uploads/${iconPath.replace(/^\//, "")}`;
+  result = `https://api.don-vip.com/uploads/${iconPath.replace(/^\//, "")}`;
+  console.log("getIconUrl output (relative path):", result);
+  return result;
 };
 
 /**
@@ -216,16 +229,21 @@ export function PaymentMethodSelector({
   }
   // For non-RUB currencies: Use API methods
   else if (methodsByCurrency && methodsByCurrency.methods.length > 0) {
-    availablePaymentMethods = methodsByCurrency.methods.map(
-      (method, index) => ({
+    console.log("Processing methodsByCurrency:", methodsByCurrency.methods);
+    availablePaymentMethods = methodsByCurrency.methods.map((method, index) => {
+      console.log(`Processing method ${index}:`, method);
+      const iconUrl = getIconUrl(method.icon);
+      const fallbackIcon = getPaymentMethodIconSrc("card", method.name);
+      const finalIcon = iconUrl || fallbackIcon;
+      console.log(`Final icon for ${method.name}:`, finalIcon);
+
+      return {
         id: method.methodCode || method.name || `method-${index}`,
         translationKey: method.name, // Используем название из API напрямую, без переводов
         apiName: method.name,
-        icon:
-          getIconUrl(method.icon) ||
-          getPaymentMethodIconSrc("card", method.name),
-      })
-    );
+        icon: finalIcon,
+      };
+    });
   }
   // Priority 2: Use user-specific methods if enabled
   else if (useUserMethods && userMethods) {
