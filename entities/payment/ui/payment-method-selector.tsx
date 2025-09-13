@@ -16,6 +16,35 @@ import {
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
+/**
+ * Helper function to get full icon URL
+ */
+export const getIconUrl = (iconPath: string | null): string | null => {
+  if (!iconPath) return null;
+
+  // If iconPath already contains a full URL, return as is
+  if (iconPath.startsWith("http://") || iconPath.startsWith("https://")) {
+    return iconPath;
+  }
+
+  // Get base URL without /api suffix since file paths start with /uploads
+  const apiBaseUrl =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.don-vip.com/api";
+  const baseUrl = apiBaseUrl.replace(/\/api$/, ""); // Remove trailing /api
+
+  return `${baseUrl}${iconPath}`;
+};
+
+/**
+ * Helper function to get icon src for Image component
+ */
+const getIconSrc = (icon: StaticImageData | string): string => {
+  if (typeof icon === "string") {
+    return icon;
+  }
+  return icon.src || "/placeholder.svg";
+};
+
 interface PaymentMethodSelectorProps {
   enhanced?: boolean;
   selectedMethod?: string;
@@ -102,6 +131,15 @@ export function PaymentMethodSelector({
     return mastercardIcon;
   };
 
+  // Function to get icon src as string for API methods
+  const getPaymentMethodIconSrc = (
+    methodType: string,
+    methodName: string
+  ): string => {
+    const icon = getPaymentMethodIcon(methodType, methodName);
+    return getIconSrc(icon);
+  };
+
   const {
     data: activeBanksResponse,
     isLoading: banksLoading,
@@ -181,7 +219,8 @@ export function PaymentMethodSelector({
       id: method.methodCode,
       translationKey: method.name, // Используем название из API напрямую, без переводов
       apiName: method.name,
-      icon: method.icon || getPaymentMethodIcon("card", method.name),
+      icon:
+        getIconUrl(method.icon) || getPaymentMethodIconSrc("card", method.name),
     }));
   }
   // Priority 2: Use user-specific methods if enabled
@@ -201,7 +240,7 @@ export function PaymentMethodSelector({
           id: safeMethodName.toLowerCase().replace(/[^a-z0-9]/g, ""),
           translationKey: `methods.${safeMethodName.toLowerCase()}`,
           apiName: safeMethodName,
-          icon: getPaymentMethodIcon("card", safeMethodName),
+          icon: getPaymentMethodIconSrc("card", safeMethodName),
         }
       );
     });
@@ -212,7 +251,7 @@ export function PaymentMethodSelector({
       id: apiMethod.id,
       translationKey: `methods.${apiMethod.id}`,
       apiName: apiMethod.name,
-      icon: getPaymentMethodIcon(apiMethod.type, apiMethod.name),
+      icon: getPaymentMethodIconSrc(apiMethod.type, apiMethod.name),
     }));
   }
   // Priority 4: Fallback to predefined methods with bank filtering (legacy for RUB)
@@ -341,7 +380,7 @@ export function PaymentMethodSelector({
         >
           <div className="w-10 h-10 rounded-md flex items-center justify-center mr-4 bg-gray-100">
             <Image
-              src={method.icon || "/placeholder.svg"}
+              src={getIconSrc(method.icon) || "/placeholder.svg"}
               width={24}
               height={24}
               alt={
