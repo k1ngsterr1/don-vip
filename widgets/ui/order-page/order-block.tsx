@@ -1,6 +1,5 @@
 "use client";
 
-import { CurrencySelector } from "@/entities/currency/ui/currency-selector";
 import { PaymentMethodSelector } from "@/entities/payment/ui/payment-method-selector";
 import { cn } from "@/shared/utils/cn";
 import { useState, useEffect, useRef } from "react";
@@ -8,7 +7,6 @@ import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { Banner } from "./banner/banner";
 import { OrderSummary } from "./order-summary/order-summary";
-import { ProductInfo } from "./product-info/product-info";
 import { UserIdForm } from "./user-id-form/user-id-form";
 import { useCreateOrder } from "@/entities/order/hooks/use-create-order";
 import type { CreateOrderDto } from "@/entities/order/model/types";
