@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 
 export default function PurchaseProfileBlock() {
   const { data, isLoading, isError } = usePurchaseHistory();
-  const t = useTranslations("purchases");
+  const t = useTranslations("history.purchases");
   const router = useRouter();
 
   const hasPurchases = data?.data?.length > 0;

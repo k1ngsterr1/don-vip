@@ -6,6 +6,7 @@ import type React from "react";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRepeatOrder } from "@/entities/order/hooks/use-repeat-order";
+import { useAuthStore } from "@/entities/auth/store/auth.store";
 
 export interface PurchaseCardProps {
   id: number | string;
@@ -31,9 +32,10 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
   diamonds,
   price,
 }) => {
-  const t = useTranslations("purchases");
+  const t = useTranslations("history.purchases");
   const [isExpanded, setIsExpanded] = useState(false);
   const { mutate: repeatOrder, isPending: isRepeating } = useRepeatOrder();
+  const { user, isAuthenticated } = useAuthStore();
 
   const handleRepeatOrder = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent card expansion
@@ -283,7 +285,7 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
             {/* Price and Repeat Order Button */}
             <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
               <div className="text-2xl font-bold text-gray-900">{price}</div>
-              {status === "Paid" && (
+              {isAuthenticated && (
                 <button
                   onClick={handleRepeatOrder}
                   disabled={isRepeating}

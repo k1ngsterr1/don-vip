@@ -66,12 +66,16 @@ export function DiamondPackages({
   const hasMorePackages = packages.length > MOBILE_VISIBLE_COUNT;
 
   const handlePackageSelect = (id: number) => {
+    console.log("Package selected:", id); // Добавляем логирование
     onSelect(id);
 
     // Автоматическая прокрутка к следующему шагу через небольшую задержку
     setTimeout(() => {
+      console.log("Attempting to scroll to user-id section"); // Добавляем логирование
+
       // Сначала ищем поле ввода User ID
       const userIdSection = document.querySelector('[data-step="user-id"]');
+      console.log("Found userIdSection:", userIdSection); // Добавляем логирование
 
       if (userIdSection) {
         userIdSection.scrollIntoView({
@@ -81,11 +85,16 @@ export function DiamondPackages({
 
         // Ищем input поле в секции и фокусируемся на нем
         const inputField = userIdSection.querySelector("input");
+        console.log("Found inputField:", inputField); // Добавляем логирование
+
         if (inputField) {
           setTimeout(() => {
             inputField.focus();
+            console.log("Focused on input field"); // Добавляем логирование
           }, 800);
         }
+      } else {
+        console.log("userIdSection not found!"); // Добавляем логирование
       }
     }, 300);
   };
