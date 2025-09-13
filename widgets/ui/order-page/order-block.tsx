@@ -87,15 +87,19 @@ export function OrderBlock({
   //   console.log("Validation changed:", isValid); // Для отладки
   //   setIsUserIdValid(isValid);
   // };
-  useEffect(() => {
-    if (currentCurrency.code !== "RUB") {
-      // For non-RUB currencies, use a generic payment method for Pagsmile checkout
-      setSelectedPaymentMethod("pagsmile_checkout");
-    } else if (selectedPaymentMethod === "pagsmile_checkout") {
-      // If switching back to RUB, reset to default RUB method
-      setSelectedPaymentMethod("tbank");
-    }
-  }, [currentCurrency.code]);
+
+  // Убираем автоматическое переключение на pagsmile_checkout
+  // чтобы пользователь мог выбирать конкретные методы оплаты
+  // useEffect(() => {
+  //   if (currentCurrency.code !== "RUB") {
+  //     // For non-RUB currencies, use a generic payment method for Pagsmile checkout
+  //     setSelectedPaymentMethod("pagsmile_checkout");
+  //   } else if (selectedPaymentMethod === "pagsmile_checkout") {
+  //     // If switching back to RUB, reset to default RUB method
+  //     setSelectedPaymentMethod("tbank");
+  //   }
+  // }, [currentCurrency.code]);
+
   const [couponCode, setCouponCode] = useState("");
   const [appliedDiscount, setAppliedDiscount] = useState<number>(0);
   const [couponInfo, setCouponInfo] = useState<any>(null);
@@ -371,7 +375,7 @@ export function OrderBlock({
       {/* Payment Method Selector */}
       <div className="px-4 py-6" data-step="payment">
         <h3 className="text-base font-medium text-gray-800 mb-3">
-          3 ВЫБЕРИТЕ СПОСОБ ОПЛАТЫ
+          3 ВЫБЕРИ СПОСОБ ОПЛАТЫ
         </h3>
         <PaymentMethodSelector
           onSelect={setSelectedPaymentMethod}

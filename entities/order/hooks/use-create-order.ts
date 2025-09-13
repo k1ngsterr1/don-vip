@@ -169,20 +169,10 @@ export function useCreateOrder(
     },
   });
 
-  // Map our payment methods to Pagsmile method codes
-  const mapPaymentMethodToPagsmile = (method: string): string | undefined => {
-    const mapping: Record<string, string> = {
-      test: "TEST", // наш тестовый метод для EUR
-      card: "DebitCard",
-      credit_card: "CreditCard",
-      wallet: "Wallet",
-      crypto: "Crypto",
-      bank: "BankTransfer",
-      pix: "PIX", // для бразильских методов
-      // Добавьте другие маппинги по необходимости
-    };
-
-    return mapping[method];
+  // Return the exact payment method selected by user
+  const mapPaymentMethodToPagsmile = (method: string): string => {
+    // Возвращаем точно тот метод, который выбрал пользователь
+    return method;
   };
 
   // ⏳ Trigger payment after successful order
