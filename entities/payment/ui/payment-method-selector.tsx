@@ -53,10 +53,17 @@ export const getIconUrl = (iconPath: string | null): string | null => {
  * Helper function to get icon src for Image component
  */
 const getIconSrc = (icon: StaticImageData | string): string => {
+  console.log("getIconSrc input:", icon);
+  let result: string;
+
   if (typeof icon === "string") {
-    return icon;
+    result = icon;
+  } else {
+    result = icon.src || "/placeholder.svg";
   }
-  return icon.src || "/placeholder.svg";
+
+  console.log("getIconSrc output:", result);
+  return result;
 };
 
 interface PaymentMethodSelectorProps {
@@ -423,7 +430,11 @@ export function PaymentMethodSelector({
         >
           <div className="w-10 h-10 rounded-md flex items-center justify-center mr-4 bg-gray-100">
             <Image
-              src={getIconSrc(method.icon) || "/placeholder.svg"}
+              src={(() => {
+                const iconSrc = getIconSrc(method.icon) || "/placeholder.svg";
+                console.log(`Image src for ${method.translationKey}:`, iconSrc);
+                return iconSrc;
+              })()}
               width={24}
               height={24}
               alt={
@@ -431,6 +442,28 @@ export function PaymentMethodSelector({
                   ? i18n(method.translationKey)
                   : method.translationKey
               }
+              onLoad={() =>
+                console.log(
+                  `✅ Image loaded successfully for ${method.translationKey}`
+                )
+              }
+              onError={(e) => {
+                console.error(
+                  `❌ Image failed to load for ${method.translationKey}:`,
+                  e
+                );
+                console.error("Failed src:", getIconSrc(method.icon));
+                // Fallback test with regular img tag
+                if (typeof window !== "undefined") {
+                  const testImg = document.createElement("img");
+                  testImg.onload = () =>
+                    console.log("✅ Regular img tag loaded successfully");
+                  testImg.onerror = () =>
+                    console.error("❌ Regular img tag also failed");
+                  testImg.src = getIconSrc(method.icon);
+                }
+              }}
+              unoptimized={true}
             />
           </div>
           <div className="flex-1">
