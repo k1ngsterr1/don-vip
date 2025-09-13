@@ -27,13 +27,14 @@ export const getIconUrl = (iconPath: string | null): string | null => {
     return iconPath;
   }
 
-  // If path starts with /uploads, add base URL
+  // If path starts with /uploads, convert to /api/uploads and add base URL
   if (iconPath.startsWith("/uploads/")) {
-    return `https://api.don-vip.com${iconPath}`;
+    const apiPath = iconPath.replace("/uploads/", "/api/uploads/");
+    return `https://api.don-vip.com${apiPath}`;
   }
 
   // For any other relative path, add base URL
-  return `https://api.don-vip.com/${iconPath.replace(/^\//, "")}`;
+  return `https://api.don-vip.com/api/${iconPath.replace(/^\//, "")}`;
 };
 
 /**
@@ -336,8 +337,20 @@ export function PaymentMethodSelector({
           isSelectedMethodAvailable,
           shouldAutoSelect,
         });
-        onSelect(firstMethodId);
+        // Используем setTimeout чтобы гарантировать, что состояние обновится
+        setTimeout(() => {
+          onSelect(firstMethodId);
+        }, 0);
       }
+    }
+  }, [availablePaymentMethods, isLoading, selectedMethod, onSelect]);
+
+  // Дополнительный эффект для принудительного автовыбора
+  useEffect(() => {
+    if (!isLoading && availablePaymentMethods.length > 0 && !selectedMethod) {
+      const firstMethodId = availablePaymentMethods[0].id;
+      console.log("Force auto-selecting first payment method:", firstMethodId);
+      onSelect(firstMethodId);
     }
   }, [availablePaymentMethods, isLoading, selectedMethod, onSelect]);
 
