@@ -389,6 +389,7 @@ export function OrderBlock({
 
   const mobileVersion = (
     <div className="md:hidden min-h-screen bg-white">
+      <Banner backgroundImage={game.image || "/banner.png"} height="350px" />
       <GameInfoBlock gameName={game.name} />
       <PromoBlock onLoginClick={() => console.log("Login clicked")} />
       {/* Diamond Packages for mobile */}
@@ -466,10 +467,6 @@ export function OrderBlock({
     <div className="hidden md:block max-w-6xl mx-auto px-6 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="lg:w-2/3">
-          <Banner
-            backgroundImage={game.image || "/banner.png"}
-            height="250px"
-          />
           <div className="bg-white rounded-lg shadow-sm border border-gray-100 mt-6 overflow-hidden">
             <div className="p-6 border-b border-gray-100">
               <h1 className="text-2xl font-medium text-gray-800 mb-2">

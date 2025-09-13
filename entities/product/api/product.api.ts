@@ -141,8 +141,8 @@ export const productService = {
 
   validateBigoUser: async (userId: string): Promise<any> => {
     try {
-      const response = await apiClient.post(`/product/bigo/validate`, {
-        user_id: userId,
+      const response = await apiClient.post(`/product/donatbank/validate`, {
+        account_id: userId,
       });
       return response.data;
     } catch (error) {

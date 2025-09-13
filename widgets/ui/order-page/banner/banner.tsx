@@ -33,12 +33,6 @@ export function Banner({ backgroundImage, height }: BannerProps) {
       }}
     >
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-      <div className="absolute bottom-6 left-6">
-        <div className="bg-blue/60 text-white text-xs py-1 px-2 rounded-[4px] font-unbounded gap-2 flex items-center w-fit">
-          <LightningIcon />
-          {t("instantDelivery")}
-        </div>
-      </div>
     </div>
   );
 
