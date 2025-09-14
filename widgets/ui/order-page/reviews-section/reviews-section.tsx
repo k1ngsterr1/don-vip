@@ -65,16 +65,53 @@ const defaultReviews: Review[] = [
 ];
 
 export function ReviewsSection({
-  reviews = defaultReviews,
+  reviews = [],
   metadata,
 }: ReviewsSectionProps) {
   const t = useTranslations("orderBlock");
   const [showAll, setShowAll] = useState(false);
 
-  // Use actual reviews if available, otherwise use default
-  const actualReviews =
-    reviews && reviews.length > 0 ? reviews : defaultReviews;
-  const displayedReviews = showAll ? actualReviews : actualReviews.slice(0, 3);
+  // Если отзывов нет из API, показываем пустое состояние
+  if (!reviews || reviews.length === 0) {
+    return (
+      <div className="px-4 py-6">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="bg-[#f3f4f7] px-3 py-2 rounded-lg">
+            <span className="text-black text-xs font-light">Отзывы</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="flex">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star
+                  key={star}
+                  className="w-3 h-3 fill-gray-300 text-gray-300"
+                />
+              ))}
+            </div>
+            <span className="text-gray-500 text-xs ml-1">
+              {metadata?.totalReviews || 0}
+            </span>
+          </div>
+        </div>
+
+        {/* Empty state */}
+        <div className="text-center py-8">
+          <div className="text-gray-400 mb-2">
+            <Star className="w-12 h-12 mx-auto" />
+          </div>
+          <p className="text-gray-500 text-sm">
+            Пока нет отзывов для этой игры
+          </p>
+          <p className="text-gray-400 text-xs mt-1">
+            Станьте первым, кто оставит отзыв!
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const displayedReviews = showAll ? reviews : reviews.slice(0, 3);
 
   return (
     <div className="px-4 py-6">
@@ -83,9 +120,7 @@ export function ReviewsSection({
         <div className="bg-[#f3f4f7] px-3 py-2 rounded-lg">
           <span className="text-black text-xs font-light">
             Отзывы{" "}
-            {metadata
-              ? `(${metadata.totalReviews})`
-              : `(${actualReviews.length})`}
+            {metadata ? `(${metadata.totalReviews})` : `(${reviews.length})`}
           </span>
         </div>
 
