@@ -26,7 +26,11 @@ export interface GameContent {
   instruction: GameInstruction;
   description: string;
   reviews: any[];
-  faq: any[];
+  faq: Array<{
+    id: string;
+    question: string;
+    answer: string;
+  }>;
   metadata: {
     totalReviews: number;
     averageRating: number;
@@ -34,17 +38,32 @@ export interface GameContent {
   };
 }
 
+export interface GameContentResponse {
+  total: number;
+  games: GameContent[];
+}
+
 export const gamesApi = {
   /**
    * Get game content by game ID
-   * GET /game-content/:gameId
+   * GET /game-content
    */
   getGameContent: async (gameId: string): Promise<GameContent> => {
     try {
-      const response = await apiClient.get<GameContent>(
-        `/game-content/${gameId}`
+      const response = await apiClient.get<GameContentResponse>(
+        `/game-content`
       );
-      return response.data;
+
+      console.log("Game content response:", response.data);
+
+      // Find the game with matching gameId
+      const game = response.data.games.find((game) => game.gameId === gameId);
+
+      if (!game) {
+        throw new Error(`Game with ID "${gameId}" not found`);
+      }
+
+      return game;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
       console.error("Error fetching game content:", errorMessage);

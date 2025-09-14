@@ -6,24 +6,28 @@ import { useTranslations } from "next-intl";
 import { Star } from "lucide-react";
 
 interface Review {
-  id: number;
+  id: string;
   userName: string;
-  avatar: string;
+  avatar?: string;
   date: string;
   rating: number;
   comment: string;
-  gameName: string;
-  gameIcon: string;
-  isPositive: boolean;
+  gameName?: string;
+  gameIcon?: string;
+  isPositive?: boolean;
 }
 
 interface ReviewsSectionProps {
   reviews?: Review[];
+  metadata?: {
+    totalReviews: number;
+    averageRating: number;
+  };
 }
 
 const defaultReviews: Review[] = [
   {
-    id: 1,
+    id: "1",
     userName: "Dante Asmo",
     avatar: "/avatars/user1.jpg",
     date: "17 мар. 2025 г.",
@@ -35,7 +39,7 @@ const defaultReviews: Review[] = [
     isPositive: true,
   },
   {
-    id: 2,
+    id: "2",
     userName: "Zhora Boroda",
     avatar: "/avatars/user2.jpg",
     date: "15 мар. 2025 г.",
@@ -47,7 +51,7 @@ const defaultReviews: Review[] = [
     isPositive: false,
   },
   {
-    id: 3,
+    id: "3",
     userName: "Davo Marshal",
     avatar: "/avatars/user3.jpg",
     date: "12 мар. 2025 г.",
@@ -62,18 +66,27 @@ const defaultReviews: Review[] = [
 
 export function ReviewsSection({
   reviews = defaultReviews,
+  metadata,
 }: ReviewsSectionProps) {
   const t = useTranslations("orderBlock");
   const [showAll, setShowAll] = useState(false);
 
-  const displayedReviews = showAll ? reviews : reviews.slice(0, 3);
+  // Use actual reviews if available, otherwise use default
+  const actualReviews =
+    reviews && reviews.length > 0 ? reviews : defaultReviews;
+  const displayedReviews = showAll ? actualReviews : actualReviews.slice(0, 3);
 
   return (
     <div className="px-4 py-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="bg-[#f3f4f7] px-3 py-2 rounded-lg">
-          <span className="text-black text-xs font-light">Отзывы</span>
+          <span className="text-black text-xs font-light">
+            Отзывы{" "}
+            {metadata
+              ? `(${metadata.totalReviews})`
+              : `(${actualReviews.length})`}
+          </span>
         </div>
 
         <div className="flex items-center gap-1">

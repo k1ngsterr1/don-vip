@@ -61,8 +61,25 @@ export function OrderBlock({
 }: OrderBlockProps) {
   const t = useTranslations("orderBlock");
   const { data: product, isLoading: isProductLoading } = useProduct(gameSlug);
+
+  // Map gameSlug to gameId for game content API
+  const getGameIdFromSlug = (slug: number): string => {
+    // Add mapping based on your product data structure
+    // For now, let's use a simple mapping - you can extend this
+    switch (slug) {
+      case 1:
+        return "bigo";
+      case 2:
+        return "mlbb"; // Mobile Legends Bang Bang
+      case 3:
+        return "pubg";
+      default:
+        return "bigo"; // fallback
+    }
+  };
+
   const { data: gameContent, isLoading: isGameContentLoading } = useGameContent(
-    gameSlug.toString()
+    getGameIdFromSlug(gameSlug)
   );
   const { selectedCurrency: currentCurrency } = useCurrency();
   const [userIdDB, setUserIdDB] = useState("");
@@ -579,8 +596,13 @@ export function OrderBlock({
                   description={game.description}
                 />
               )}
-              {activeTab === "faq" && <FAQSection />}
-              {activeTab === "reviews" && <ReviewsSection />}
+              {activeTab === "faq" && <FAQSection items={gameContent?.faq} />}
+              {activeTab === "reviews" && (
+                <ReviewsSection
+                  reviews={gameContent?.reviews}
+                  metadata={gameContent?.metadata}
+                />
+              )}
             </div>
           </div>
         </div>
