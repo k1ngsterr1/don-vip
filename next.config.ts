@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "don-vip.com",
       },
+      {
+        protocol: "https",
+        hostname: "api.don-vip.com",
+      },
     ],
   },
   async redirects() {

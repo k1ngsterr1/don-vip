@@ -12,7 +12,7 @@ export function GameInfoBlock({ gameName = "Bigo Live" }: GameInfoBlockProps) {
     <div className="px-4 py-6 bg-white">
       {/* Title */}
       <div className="mb-3">
-        <h2 className="text-[#212529] text-[18px] font-medium leading-[20px]">
+        <h2 className="text-[#212529] text-[18px] font-bold leading-[20px]">
           Донаты и пополнения для {gameName} — алмазы и другие ресурсы
         </h2>
       </div>
@@ -21,13 +21,13 @@ export function GameInfoBlock({ gameName = "Bigo Live" }: GameInfoBlockProps) {
       <div className="mb-6">
         <div className="bg-[rgba(28,52,255,0.6)] text-white px-3 py-1.5 rounded-[4px] inline-flex items-center gap-2 shadow-[0px_0px_4px_0px_rgba(0,0,0,0.32)]">
           <Zap className="w-3.5 h-3.5" />
-          <span className="text-[10px] font-semibold">Мгновенная доставка</span>
+          <span className="text-[14px] font-bold">Мгновенная доставка</span>
         </div>
       </div>
 
       {/* Description */}
       <div className="mb-6">
-        <p className="text-black text-[15px] font-light leading-[20px] capitalize">
+        <p className="text-black text-[15px] font-[100] leading-[20px] capitalize">
           Завоевывай{" "}
           <span className="lowercase">
             вершины и радуй своих любимых стримеров недорогими алмазами — пусть

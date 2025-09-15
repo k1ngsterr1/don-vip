@@ -406,7 +406,7 @@ export function OrderBlock({
 
   const mobileVersion = (
     <div className="md:hidden min-h-screen bg-white">
-      <Banner backgroundImage={game.image || "/banner.png"} height="350px" />
+      <Banner backgroundImage={game.image || "/banner.png"} height="175px" />
       <GameInfoBlock gameName={game.name} />
       <PromoBlock onLoginClick={() => console.log("Login clicked")} />
       {/* Diamond Packages for mobile */}
@@ -469,7 +469,7 @@ export function OrderBlock({
         >
           {isLoading
             ? isProcessingPayment
-              ? t("summary.redirecting")
+              ? "Перенаправление..."
               : "Loading..."
             : "КУПИТЬ СЕЙЧАС"}
         </button>
@@ -490,11 +490,11 @@ export function OrderBlock({
           />
           <div className="bg-white rounded-lg shadow-sm border border-gray-100 mt-6 overflow-hidden">
             <div className="p-6 border-b border-gray-100">
-              <h1 className="text-2xl font-medium text-gray-800 mb-2">
-                {game.name}
-              </h1>
               <div className="bg-white rounded-lg shadow-sm border border-gray-100">
                 <GameInfoBlock gameName={game.name} />
+              </div>
+              <div className=" rounded-lg shadow-sm ">
+                <PromoBlock />
               </div>
 
               {/* Language & Currency Button */}
@@ -574,9 +574,6 @@ export function OrderBlock({
             </div>
 
             {/* Promo Block */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100">
-              <PromoBlock />
-            </div>
 
             {/* Instruction Tabs and Content */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-100">

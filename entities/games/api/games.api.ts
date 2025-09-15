@@ -50,9 +50,17 @@ export const gamesApi = {
    */
   getGameContent: async (gameId: string): Promise<GameContent> => {
     try {
-      const response = await apiClient.get<GameContentResponse>(
-        `/game-content`
-      );
+      // Попробуем сначала публичный эндпоинт
+      let response;
+      try {
+        response = await apiClient.get<GameContentResponse>(
+          `/public/game-content`
+        );
+      } catch (publicError) {
+        // Если публичный эндпоинт недоступен, используем обычный
+        console.log("Public endpoint not available, trying regular endpoint");
+        response = await apiClient.get<GameContentResponse>(`/game-content`);
+      }
 
       console.log("Game content response:", response.data);
 
@@ -60,14 +68,55 @@ export const gamesApi = {
       const game = response.data.games.find((game) => game.gameId === gameId);
 
       if (!game) {
-        throw new Error(`Game with ID "${gameId}" not found`);
+        // Если игра не найдена, возвращаем пустые данные вместо ошибки
+        console.warn(
+          `Game with ID "${gameId}" not found, returning empty content`
+        );
+        return {
+          gameId: gameId,
+          gameName: gameId,
+          instruction: {
+            headerText: "Инструкция",
+            steps: [],
+            images: [],
+          },
+          description: "",
+          reviews: [],
+          faq: [],
+          metadata: {
+            totalReviews: 0,
+            averageRating: 0,
+            lastUpdated: new Date().toISOString(),
+          },
+        };
       }
 
       return game;
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
-      console.error("Error fetching game content:", errorMessage);
-      throw new Error(errorMessage);
+      console.warn(
+        "Error fetching game content, returning empty content:",
+        errorMessage
+      );
+
+      // Возвращаем пустые данные вместо ошибки
+      return {
+        gameId: gameId,
+        gameName: gameId,
+        instruction: {
+          headerText: "Инструкция",
+          steps: [],
+          images: [],
+        },
+        description: "",
+        reviews: [],
+        faq: [],
+        metadata: {
+          totalReviews: 0,
+          averageRating: 0,
+          lastUpdated: new Date().toISOString(),
+        },
+      };
     }
   },
 };
