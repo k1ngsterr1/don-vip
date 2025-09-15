@@ -16,13 +16,13 @@ export function PromoBlock({ onLoginClick }: PromoBlockProps) {
   const translations = {
     ru: {
       loginText:
-        "войдите и получите купон на скидку 5% за подписку на наш Telegram канал",
-      loginButton: "войти",
+        "Войдите и получите купон на скидку 5% за подписку на наш Telegram канал",
+      loginButton: "Войти",
     },
     en: {
       loginText:
-        "login and get a 5% discount coupon for subscribing to our Telegram channel",
-      loginButton: "login",
+        "Login and get a 5% discount coupon for subscribing to our Telegram channel",
+      loginButton: "Login",
     },
   };
 
@@ -41,7 +41,7 @@ export function PromoBlock({ onLoginClick }: PromoBlockProps) {
           {/* Text */}
           <div className="flex-1">
             <p className="text-gray-800 text-sm leading-relaxed">
-              <span className="capitalize">{t.loginText}</span>
+              {t.loginText}
             </p>
           </div>
 

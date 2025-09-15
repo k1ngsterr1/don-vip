@@ -434,19 +434,21 @@ export function OrderBlock({
         />
       </div>
 
-      {/* Info Block with Features */}
-      <InfoBlock />
-
       {/* Payment Method Selector */}
       <div className="px-4 py-6" data-step="payment">
         <h3 className="text-base font-medium text-gray-800 mb-3">
-          3 ВЫБЕРИ СПОСОБ ОПЛАТЫ
+          3. Выберите способ оплаты
         </h3>
         <PaymentMethodSelector
           onSelect={setSelectedPaymentMethod}
           selectedMethod={selectedPaymentMethod}
           currentCurrency={currentCurrency.code}
         />
+
+        {/* Info Block with Features */}
+        <div className="mt-4">
+          <InfoBlock />
+        </div>
       </div>
 
       {error && (
@@ -470,8 +472,8 @@ export function OrderBlock({
           {isLoading
             ? isProcessingPayment
               ? "Перенаправление..."
-              : "Loading..."
-            : "КУПИТЬ СЕЙЧАС"}
+              : "Загрузка..."
+            : "Купить сейчас"}
         </button>
       </div>
 
@@ -490,10 +492,10 @@ export function OrderBlock({
           />
           <div className="bg-white rounded-lg shadow-sm border border-gray-100 mt-6 overflow-hidden">
             <div className="p-6 border-b border-gray-100">
-              <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+              <div className="">
                 <GameInfoBlock gameName={game.name} />
               </div>
-              <div className=" rounded-lg shadow-sm ">
+              <div className=" mt-8 ">
                 <PromoBlock />
               </div>
 
@@ -554,6 +556,11 @@ export function OrderBlock({
                 selectedMethod={selectedPaymentMethod}
                 currentCurrency={currentCurrency.code}
               />
+
+              {/* Info Block with Features */}
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <InfoBlock />
+              </div>
             </div>
             {error && (
               <div className="px-6 pb-6">
@@ -566,14 +573,10 @@ export function OrderBlock({
 
           {/* Additional components for desktop */}
           <div className="mt-6 space-y-6">
-            {/* Game Info Block */}
-
-            {/* Info Block */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100">
-              <InfoBlock />
-            </div>
-
             {/* Promo Block */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+              <PromoBlock />
+            </div>
 
             {/* Instruction Tabs and Content */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-100">
