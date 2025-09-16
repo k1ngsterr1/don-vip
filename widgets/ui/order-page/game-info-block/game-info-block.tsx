@@ -9,7 +9,7 @@ interface GameInfoBlockProps {
 
 export function GameInfoBlock({ gameName = "Bigo Live" }: GameInfoBlockProps) {
   return (
-    <div>
+    <div className="px-4 py-6 md:px-0 md:py-0">
       {/* Title */}
       <div className="mb-3">
         <h2 className="text-[#212529] text-[18px] font-bold leading-[20px]">

@@ -421,7 +421,7 @@ export function OrderBlock({
             : "/assets/EN.webp"
         }
       />
-      <div data-step="user-id">
+      <div data-step="user-id" className="px-4 md:px-0">
         <UserIdForm
           apiGame={product?.smile_api_game}
           productType={product?.type}
@@ -437,7 +437,7 @@ export function OrderBlock({
       {/* Payment Method Selector */}
       <div className="px-4 py-6" data-step="payment">
         <h3 className="text-base font-medium text-gray-800 mb-3">
-          3. Выберите способ оплаты
+          Выберите способ оплаты
         </h3>
         <PaymentMethodSelector
           onSelect={setSelectedPaymentMethod}
@@ -455,7 +455,7 @@ export function OrderBlock({
           </div>
         </div>
       )}
-      <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-10">
+      <div className="fixed bottom-[80px] left-1/2 -translate-x-1/2 z-10">
         <button
           className={cn(
             "w-[180px] py-3 px-3 rounded-full text-white font-medium transition-colors shadow-lg",
@@ -514,20 +514,6 @@ export function OrderBlock({
               <div>
                 <PromoBlock />
               </div>
-
-              {/* Language & Currency Button */}
-              <div className="mt-4">
-                <Link href="/language-currency" className="inline-block">
-                  <button className="py-2 px-4 bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded-lg text-gray-700 font-medium transition-colors flex items-center gap-2">
-                    <span>🌍</span>
-                    <span>
-                      {locale === "ru"
-                        ? "Язык и валюта"
-                        : "Language & Currency"}
-                    </span>
-                  </button>
-                </Link>
-              </div>
             </div>
             <div className="p-6 border-b border-gray-100">
               <h2 className="text-lg font-medium text-gray-800 mb-4">
@@ -549,7 +535,7 @@ export function OrderBlock({
             </div>
 
             <div
-              className="p-6 border-b border-gray-100"
+              className="p-6 border-b   border-gray-100"
               data-step="user-id"
               id="desktop-user-id-section"
             >

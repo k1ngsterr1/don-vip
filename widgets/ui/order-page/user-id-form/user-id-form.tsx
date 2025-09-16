@@ -192,7 +192,7 @@ export function UserIdForm({
   };
 
   return (
-    <div className="px-4 mb-6">
+    <div className="">
       <div className="flex items-center mb-4">
         <h2 className="text-dark font-roboto font-medium">
           {needsEmail
