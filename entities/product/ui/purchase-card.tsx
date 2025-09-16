@@ -37,6 +37,11 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
   const { mutate: repeatOrder, isPending: isRepeating } = useRepeatOrder();
   const { user, isAuthenticated } = useAuthStore();
 
+  // Функция для форматирования цены - заменяем ? на ₽
+  const formatPrice = (priceString: string) => {
+    return priceString.replace(/\?/g, "₽");
+  };
+
   const handleRepeatOrder = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent card expansion
     repeatOrder(id);
@@ -284,7 +289,9 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
 
             {/* Price and Repeat Order Button */}
             <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
-              <div className="text-2xl font-bold text-gray-900">{price}</div>
+              <div className="text-2xl font-bold text-gray-900">
+                {formatPrice(price)}
+              </div>
               {isAuthenticated && (
                 <button
                   onClick={handleRepeatOrder}
