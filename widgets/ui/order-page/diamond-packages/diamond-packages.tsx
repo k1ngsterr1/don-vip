@@ -259,7 +259,7 @@ export function DiamondPackages({
 
               {/* Popular badge */}
               {pkg.isPopular && (
-                <div className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg transform rotate-12 md:rotate-3 md:-top-2 md:-right-2 md:px-4 md:py-1.5">
+                <div className="absolute top-1 right-1 bg-gradient-to-r from-orange-500 to-red-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg md:top-2 md:right-2 md:px-3 md:py-1">
                   {t.popular}
                 </div>
               )}

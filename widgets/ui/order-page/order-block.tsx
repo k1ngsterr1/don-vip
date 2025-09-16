@@ -406,7 +406,7 @@ export function OrderBlock({
 
   const mobileVersion = (
     <div className="md:hidden min-h-screen bg-white">
-      <Banner backgroundImage={game.image || "/banner.png"} height="175px" />
+      <Banner backgroundImage={game.image || "/banner.png"} height="120px" />
       <GameInfoBlock gameName={game.name} />
       <PromoBlock onLoginClick={() => console.log("Login clicked")} />
       {/* Diamond Packages for mobile */}
