@@ -83,6 +83,7 @@ interface FrontendPaymentMethod {
   apiName: string; // Name used in the API for matching
   icon: StaticImageData | string; // Allow both StaticImageData and string URLs
   descriptionKey?: string;
+  description?: string | null; // Добавляем description из API
 }
 
 export function PaymentMethodSelector({
@@ -249,6 +250,7 @@ export function PaymentMethodSelector({
         translationKey: method.name, // Используем название из API напрямую, без переводов
         apiName: method.name,
         icon: finalIcon,
+        description: method.description, // Добавляем поле description из API
       };
     });
   }
@@ -472,7 +474,12 @@ export function PaymentMethodSelector({
                 ? i18n(method.translationKey)
                 : method.translationKey}
             </span>
-            {method.descriptionKey && (
+            {/* Показываем описание из API если есть */}
+            {method.description && (
+              <p className="text-xs text-gray-500 mt-1">{method.description}</p>
+            )}
+            {/* Показываем описание из переводов если есть и нет description из API */}
+            {!method.description && method.descriptionKey && (
               <p className="text-xs text-gray-500 mt-1">
                 {i18n(method.descriptionKey)}
               </p>

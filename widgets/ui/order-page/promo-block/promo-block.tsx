@@ -30,7 +30,7 @@ export function PromoBlock({ onLoginClick }: PromoBlockProps) {
     translations[locale as keyof typeof translations] || translations.ru;
 
   return (
-    <div className="px-4 py-4">
+    <div className="py-4">
       <div className="bg-[#eeeff3] rounded-xl p-4">
         <div className="flex items-center gap-3">
           {/* Coupon Icon */}

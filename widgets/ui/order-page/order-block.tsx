@@ -444,13 +444,10 @@ export function OrderBlock({
           selectedMethod={selectedPaymentMethod}
           currentCurrency={currentCurrency.code}
         />
-
-        {/* Info Block with Features */}
         <div className="mt-4">
           <InfoBlock />
         </div>
       </div>
-
       {error && (
         <div className="px-4 mb-4">
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
@@ -458,8 +455,6 @@ export function OrderBlock({
           </div>
         </div>
       )}
-
-      {/* Fixed Buy Button */}
       <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-10">
         <button
           className={cn(
@@ -476,9 +471,30 @@ export function OrderBlock({
             : "Купить сейчас"}
         </button>
       </div>
-
-      {/* Add padding bottom to account for bottom menu */}
-      <div className="h-20" />
+      <div className="mt-6 space-y-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+          <InstructionTabs onTabChange={setActiveTab} defaultTab={activeTab} />
+          {activeTab === "instruction" && (
+            <InstructionContent
+              gameName={game.name}
+              gameContent={gameContent}
+            />
+          )}
+          {activeTab === "description" && (
+            <GameDescription
+              gameName={game.name}
+              description={game.description}
+            />
+          )}
+          {activeTab === "faq" && <FAQSection items={gameContent?.faq} />}
+          {activeTab === "reviews" && (
+            <ReviewsSection
+              reviews={gameContent?.reviews}
+              metadata={gameContent?.metadata}
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 
@@ -495,7 +511,7 @@ export function OrderBlock({
               <div className="">
                 <GameInfoBlock gameName={game.name} />
               </div>
-              <div className=" mt-8 ">
+              <div>
                 <PromoBlock />
               </div>
 
@@ -570,15 +586,7 @@ export function OrderBlock({
               </div>
             )}
           </div>
-
-          {/* Additional components for desktop */}
           <div className="mt-6 space-y-6">
-            {/* Promo Block */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100">
-              <PromoBlock />
-            </div>
-
-            {/* Instruction Tabs and Content */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-100">
               <InstructionTabs
                 onTabChange={setActiveTab}
