@@ -66,6 +66,10 @@ export default async function LocaleLayout({
   return (
     <html lang={locale}>
       <head>
+        <meta
+          name="facebook-domain-verification"
+          content="z54020mpyq0q2i0f6cpu663i2eqmkr"
+        />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-ZYRR1HX71W"
           strategy="afterInteractive"
