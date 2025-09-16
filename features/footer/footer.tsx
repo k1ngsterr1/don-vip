@@ -202,7 +202,7 @@ export default function Footer() {
                     href="tel:+37443090070"
                     className="text-blue-600 hover:underline"
                   >
-                    +374.43090070
+                    +852 3008 0551
                   </a>
                 </p>
                 <p>
