@@ -422,6 +422,14 @@ export function OrderBlock({
       <Banner backgroundImage={game.image || "/banner.png"} height="120px" />
       <GameInfoBlock gameName={game.name} />
       {/* <PromoBlock onLoginClick={() => console.log("Login clicked")} /> */}
+
+      {/* Section title for mobile */}
+      <div className="px-4 mt-6 mb-4">
+        <h2 className="text-base font-bold text-gray-800">
+          1. {t("block.selectAmount")}
+        </h2>
+      </div>
+
       {/* Diamond Packages for mobile */}
       <DiamondPackages
         packages={currencyOptions}
