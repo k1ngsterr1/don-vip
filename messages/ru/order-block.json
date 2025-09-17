@@ -5,7 +5,7 @@
       "buyNow": "Купить сейчас"
     },
     "block": {
-      "selectAmount": "1. Выберите сумму пополнения"
+      "selectAmount": "Выберите сумму пополнения"
     },
     "payment": {
       "international": {
