@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Star } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 
 interface Review {
   id: string;
@@ -69,7 +70,27 @@ export function ReviewsSection({
   metadata,
 }: ReviewsSectionProps) {
   const t = useTranslations("orderBlock");
+  const locale = useLocale();
   const [showAll, setShowAll] = useState(false);
+
+  // Хардкодные переводы
+  const translations = {
+    ru: {
+      reviews: "Отзывы",
+      noReviews: "Пока нет отзывов для этой игры",
+      beFirst: "Станьте первым, кто оставит отзыв!",
+      showAllReviews: "Показать все отзывы",
+    },
+    en: {
+      reviews: "Reviews",
+      noReviews: "No reviews for this game yet",
+      beFirst: "Be the first to leave a review!",
+      showAllReviews: "Show all reviews",
+    },
+  };
+
+  const reviewTexts =
+    translations[locale as keyof typeof translations] || translations.ru;
 
   // Если отзывов нет из API, показываем пустое состояние
   if (!reviews || reviews.length === 0) {
@@ -78,7 +99,9 @@ export function ReviewsSection({
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="bg-[#f3f4f7] px-3 py-2 rounded-lg">
-            <span className="text-black text-xs font-light">Отзывы</span>
+            <span className="text-black text-xs font-light">
+              {reviewTexts.reviews}
+            </span>
           </div>
           <div className="flex items-center gap-1">
             <div className="flex">
@@ -100,12 +123,18 @@ export function ReviewsSection({
           <div className="text-gray-400 mb-2">
             <Star className="w-12 h-12 mx-auto" />
           </div>
-          <p className="text-gray-500 text-sm">
-            Пока нет отзывов для этой игры
-          </p>
-          <p className="text-gray-400 text-xs mt-1">
-            Станьте первым, кто оставит отзыв!
-          </p>
+          <p className="text-gray-500 text-sm">{reviewTexts.noReviews}</p>
+          <p className="text-gray-400 text-xs mt-1">{reviewTexts.beFirst}</p>
+
+          {/* Show all reviews button even when empty */}
+          <div className="mt-4">
+            <Link
+              href="/reviews"
+              className="text-blue-600 text-sm font-medium hover:text-blue-700 transition-colors"
+            >
+              {reviewTexts.showAllReviews}
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -119,7 +148,7 @@ export function ReviewsSection({
       <div className="flex items-center justify-between mb-4">
         <div className="bg-[#f3f4f7] px-3 py-2 rounded-lg">
           <span className="text-black text-xs font-light">
-            Отзывы{" "}
+            {reviewTexts.reviews}{" "}
             {metadata ? `(${metadata.totalReviews})` : `(${reviews.length})`}
           </span>
         </div>
@@ -177,12 +206,12 @@ export function ReviewsSection({
       {/* Show all button */}
       {!showAll && reviews.length > 3 && (
         <div className="mt-4 text-center">
-          <button
-            onClick={() => setShowAll(true)}
-            className="text-blue-600 text-sm font-medium"
+          <Link
+            href="/reviews"
+            className="text-blue-600 text-sm font-medium hover:text-blue-700 transition-colors"
           >
-            Показать все отзывы
-          </button>
+            {reviewTexts.showAllReviews}
+          </Link>
         </div>
       )}
     </div>

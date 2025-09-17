@@ -68,14 +68,6 @@ export function EnhancedPaymentMethodSelector({
         `}
         onClick={() => handleMethodSelect(method)}
       >
-        {/* Recommended badge */}
-        {isRecommended && (
-          <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
-            <Star className="w-3 h-3" />
-            {i18n("recommended") || "Recommended"}
-          </div>
-        )}
-
         <div className="flex items-center gap-3">
           {/* Payment method icon */}
           <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
