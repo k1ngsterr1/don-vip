@@ -26,9 +26,17 @@ export function ReviewsBlock() {
   const translations = {
     ru: {
       leaveReview: "Оставить отзыв",
+      previous: "Предыдущая",
+      next: "Следующая",
+      pageOf: "Страница",
+      of: "из",
     },
     en: {
       leaveReview: "Leave Review",
+      previous: "Previous",
+      next: "Next",
+      pageOf: "Page",
+      of: "of",
     },
   };
 
@@ -102,17 +110,17 @@ export function ReviewsBlock() {
             disabled={page === 1}
             className="px-3 py-1 rounded bg-gray-100 disabled:opacity-50"
           >
-            Previous
+            {buttonText.previous}
           </button>
           <span className="px-3 py-1">
-            Page {page} of {data.lastPage}
+            {buttonText.pageOf} {page} {buttonText.of} {data.lastPage}
           </span>
           <button
             onClick={() => setPage((prev) => Math.min(prev + 1, data.lastPage))}
             disabled={page === data.lastPage}
             className="px-3 py-1 rounded bg-gray-100 disabled:opacity-50"
           >
-            Next
+            {buttonText.next}
           </button>
         </div>
       )}

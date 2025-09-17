@@ -60,7 +60,21 @@ export function OrderBlock({
   initialExpandInfo = false, // Used to initialize showInfo state
 }: OrderBlockProps) {
   const t = useTranslations("orderBlock");
+  const locale = useLocale();
   const { data: product, isLoading: isProductLoading } = useProduct(gameSlug);
+
+  // Хардкодные переводы для заголовков
+  const translations = {
+    ru: {
+      selectPaymentMethod: "3. Выберите способ оплаты",
+    },
+    en: {
+      selectPaymentMethod: "3. Select payment method",
+    },
+  };
+
+  const orderTexts =
+    translations[locale as keyof typeof translations] || translations.ru;
 
   // Map gameSlug to gameId for game content API
   const getGameIdFromSlug = (slug: number): string => {
@@ -183,7 +197,6 @@ export function OrderBlock({
     needsIdentifier,
     shouldUsePagsmileCheckout,
   } = useCreateOrder(selectedPaymentMethod, currentCurrency.code);
-  const locale = useLocale();
 
   const { user: authUser, isGuestAuth } = useAuthStore();
   const { data: me } = useGetMe();
@@ -408,7 +421,7 @@ export function OrderBlock({
     <div className="md:hidden min-h-screen bg-white">
       <Banner backgroundImage={game.image || "/banner.png"} height="120px" />
       <GameInfoBlock gameName={game.name} />
-      <PromoBlock onLoginClick={() => console.log("Login clicked")} />
+      {/* <PromoBlock onLoginClick={() => console.log("Login clicked")} /> */}
       {/* Diamond Packages for mobile */}
       <DiamondPackages
         packages={currencyOptions}
@@ -436,8 +449,8 @@ export function OrderBlock({
 
       {/* Payment Method Selector */}
       <div className="px-4 py-6 pb-0" data-step="payment">
-        <h3 className="text-base font-medium text-gray-800 mb-3">
-          Выберите способ оплаты
+        <h3 className="text-base font-bold text-gray-800 mb-3">
+          {orderTexts.selectPaymentMethod}
         </h3>
         <PaymentMethodSelector
           onSelect={setSelectedPaymentMethod}
@@ -508,9 +521,9 @@ export function OrderBlock({
               <div className="">
                 <GameInfoBlock gameName={game.name} />
               </div>
-              <div>
+              {/* <div>
                 <PromoBlock />
-              </div>
+              </div> */}
             </div>
             <div className="p-6 border-b border-gray-100">
               <h2 className="text-lg font-bold text-gray-800 mb-4">
