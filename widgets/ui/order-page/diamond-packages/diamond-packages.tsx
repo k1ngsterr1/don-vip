@@ -261,14 +261,6 @@ export function DiamondPackages({
                   <span className="text-gray-400 text-lg">🎁</span>
                 </div>
               )}
-
-              {/* Popular badge */}
-              {pkg.isPopular && (
-                <div className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-400 to-red-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg transform -rotate-3 md:-top-3 md:-right-3 md:px-4 md:py-2 md:text-sm md:shadow-xl md:-rotate-6">
-                  {t.popular}
-                </div>
-              )}
-
               {/* Subtle glow effect for selected cards on desktop */}
               {isSelected && (
                 <div className="hidden md:block absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-xl pointer-events-none"></div>
