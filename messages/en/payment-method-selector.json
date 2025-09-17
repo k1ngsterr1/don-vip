@@ -1,7 +1,7 @@
 {
   "PaymentMethodSelector": {
     "titleMobile": "3 SELECT PAYMENT METHOD",
-    "titleDesktop": "Select payment method",
+    "titleDesktop": "3. Select payment method",
     "defaultMethod": "T-Bank (SBP)",
     "tbankDescription": "Fast and secure payment method",
     "methods": {

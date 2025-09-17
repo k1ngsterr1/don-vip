@@ -163,7 +163,7 @@ export function DiamondPackages({
 
   return (
     <div className="px-4 py-6 md:px-0">
-      <div className="space-y-3 md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-4 md:space-y-0">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-4">
         {displayedPackages.map((pkg) => {
           const isSelected = selectedId === pkg.id;
           const hasDiscount = pkg.discount && pkg.discount > 0;
@@ -173,33 +173,47 @@ export function DiamondPackages({
               key={pkg.id}
               onClick={() => handlePackageSelect(pkg.id)}
               className={cn(
-                "relative bg-white rounded-xl p-4 cursor-pointer transition-all hover:shadow-lg border-2 border-transparent md:min-h-[140px] md:flex md:flex-col md:justify-between md:bg-gradient-to-br md:from-white md:to-gray-50",
+                "relative bg-white rounded-2xl p-3 cursor-pointer transition-all hover:shadow-lg border-2 border-transparent md:min-h-[140px] md:flex md:flex-col md:justify-between md:bg-gradient-to-br md:from-white md:to-gray-50 md:p-4",
                 isSelected
-                  ? "ring-2 ring-blue-500 shadow-xl border-blue-200 md:shadow-2xl md:scale-105"
-                  : "shadow-sm hover:shadow-md md:hover:scale-102"
+                  ? "ring-2 ring-blue-500 shadow-xl border-blue-200 md:shadow-2xl md:scale-105 bg-gradient-to-br from-blue-50 to-white"
+                  : "shadow-md hover:shadow-lg md:hover:scale-102"
               )}
             >
               {/* Package content */}
-              <div className="flex items-center gap-3 md:flex-col md:gap-3 md:text-center md:h-full md:justify-center">
-                {/* Currency icon */}
-                <div className="w-12 h-9 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg flex items-center justify-center shadow-sm md:w-12 md:h-10 md:mx-auto">
-                  <Image
-                    src="/diamond.webp"
-                    alt="Diamond"
-                    width={24}
-                    height={24}
-                    className="w-5 h-5 md:w-6 md:h-6 object-contain"
-                  />
-                </div>
+              <div className="flex flex-col gap-2 md:flex-col md:gap-3 md:text-center md:h-full md:justify-center">
+                {/* Top row - Icon and amount */}
+                <div className="flex items-center justify-between">
+                  {/* Currency icon */}
+                  <div className="w-10 h-8 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center shadow-sm md:w-12 md:h-10 md:mx-auto">
+                    <Image
+                      src="/diamond.webp"
+                      alt="Diamond"
+                      width={20}
+                      height={20}
+                      className="w-4 h-4 md:w-6 md:h-6 object-contain"
+                    />
+                  </div>
 
-                {/* Package info */}
-                <div className="flex-1 md:flex-none md:space-y-2">
-                  <div className="text-gray-800 font-semibold text-base md:text-xl md:font-bold">
+                  {/* Amount */}
+                  <div className="text-gray-800 font-bold text-lg md:text-xl md:font-bold">
                     {pkg.amount.toLocaleString()}
                   </div>
 
-                  <div className="flex items-center gap-2 mb-1 md:justify-center md:flex-col md:gap-1 md:mb-0">
-                    <span className="text-red-600 font-bold text-sm md:text-lg">
+                  {/* Mobile discount indicator */}
+                  <div className="flex items-center md:hidden">
+                    {hasDiscount && pkg.discount! > 0 && (
+                      <div className="w-3 h-3 bg-green-500 rounded-full shadow-sm"></div>
+                    )}
+                    {!hasDiscount && !pkg.isPopular && (
+                      <span className="text-base">🎁</span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Price section */}
+                <div className="flex flex-col gap-1 md:justify-center md:flex-col md:gap-1 md:mb-0">
+                  <div className="flex items-center justify-between md:justify-center">
+                    <span className="text-red-600 font-bold text-base md:text-lg">
                       {pkg.price}
                     </span>
                     {hasDiscount &&
@@ -212,30 +226,21 @@ export function DiamondPackages({
                         ).toFixed(2);
                         return oldPrice !== "0.00" &&
                           parseFloat(oldPrice) > 0 ? (
-                          <div className="bg-red-50 px-2 py-1 rounded-md border border-red-100">
+                          <div className="bg-red-50 px-1.5 py-0.5 rounded border border-red-100 md:px-2 md:py-1">
                             <span className="text-red-500 text-xs line-through font-medium">
                               {oldPrice} {pkg.price.split(" ")[1]}
                             </span>
                           </div>
                         ) : null;
                       })()}
-                    {/* Hide bonus if it's 0 */}
-                    {pkg.bonus && pkg.bonus > 0 && (
-                      <div className="text-green-600 text-xs font-medium">
-                        +{pkg.bonus} {t.bonus}
-                      </div>
-                    )}
                   </div>
-                </div>
 
-                {/* Mobile badges */}
-                <div className="flex items-center gap-2 md:hidden">
-                  {hasDiscount && pkg.discount! > 0 && (
-                    <div className="bg-green-500 text-white px-2 py-1 rounded text-xs font-medium transform rotate-12">
-                      ОК
+                  {/* Bonus */}
+                  {pkg.bonus && pkg.bonus > 0 && (
+                    <div className="text-green-600 text-xs font-medium text-center md:text-center">
+                      +{pkg.bonus} {t.bonus}
                     </div>
                   )}
-                  {!hasDiscount && <span className="text-lg">🎁</span>}
                 </div>
               </div>
 
@@ -273,12 +278,12 @@ export function DiamondPackages({
         })}
       </div>
 
-      {/* Show all button - только для мобильных устройств и если есть скрытые пакеты */}
+      {/* Show all button - для всех устройств если есть скрытые пакеты */}
       {hasMorePackages && (
-        <div className="mt-6 text-center md:hidden">
+        <div className="mt-6 text-center">
           <button
             onClick={() => setShowAll(!showAll)}
-            className="text-blue-600 hover:text-blue-700 font-medium text-sm underline transition-colors"
+            className="text-blue-600 hover:text-blue-700 font-medium text-sm underline transition-colors md:bg-blue-50 md:hover:bg-blue-100 md:px-4 md:py-2 md:rounded-lg md:no-underline md:border md:border-blue-200"
           >
             {showAll ? t.hide : t.showAll}
           </button>

@@ -194,7 +194,7 @@ export function UserIdForm({
   return (
     <div className="">
       <div className="flex items-center mb-4">
-        <h2 className="text-dark font-roboto font-medium">
+        <h2 className="text-dark font-roboto font-bold">
           2.{" "}
           {needsEmail
             ? requiresServer

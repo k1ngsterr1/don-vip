@@ -501,7 +501,7 @@ export function PaymentMethodSelector({
         {paymentMethodSelectorContent}
       </div>
       <div className={`${enhanced ? "block" : "hidden md:block"}`}>
-        <h2 className="text-lg font-medium text-gray-800 mb-4">
+        <h2 className="text-lg font-bold text-gray-800 mb-4">
           {i18n("titleDesktop")}
         </h2>
         {paymentMethodSelectorContent}

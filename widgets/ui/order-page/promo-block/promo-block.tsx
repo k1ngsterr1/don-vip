@@ -40,9 +40,7 @@ export function PromoBlock({ onLoginClick }: PromoBlockProps) {
 
           {/* Text */}
           <div className="flex-1">
-            <p className="text-gray-800 text-sm leading-relaxed">
-              {t.loginText}
-            </p>
+            <p className="text-gray-800 text-sm ">{t.loginText}</p>
           </div>
 
           {/* Login Button - теперь ведет на Telegram */}

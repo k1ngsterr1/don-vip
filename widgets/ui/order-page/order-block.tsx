@@ -435,7 +435,7 @@ export function OrderBlock({
       </div>
 
       {/* Payment Method Selector */}
-      <div className="px-4 py-6" data-step="payment">
+      <div className="px-4 py-6 pb-0" data-step="payment">
         <h3 className="text-base font-medium text-gray-800 mb-3">
           Выберите способ оплаты
         </h3>
@@ -444,9 +444,6 @@ export function OrderBlock({
           selectedMethod={selectedPaymentMethod}
           currentCurrency={currentCurrency.code}
         />
-        <div className="mt-4">
-          <InfoBlock />
-        </div>
       </div>
       {error && (
         <div className="px-4 mb-4">
@@ -472,7 +469,7 @@ export function OrderBlock({
         </button>
       </div>
       <div className="mt-6 space-y-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+        <div className="">
           <InstructionTabs onTabChange={setActiveTab} defaultTab={activeTab} />
           {activeTab === "instruction" && (
             <InstructionContent
@@ -516,11 +513,9 @@ export function OrderBlock({
               </div>
             </div>
             <div className="p-6 border-b border-gray-100">
-              <h2 className="text-lg font-medium text-gray-800 mb-4">
-                {t("block.selectAmount")}
+              <h2 className="text-lg font-bold text-gray-800 mb-4">
+                1. {t("block.selectAmount")}
               </h2>
-
-              {/* Diamond Packages for desktop */}
               <DiamondPackages
                 packages={currencyOptions}
                 onSelect={setSelectedAmount}
@@ -533,7 +528,6 @@ export function OrderBlock({
                 }
               />
             </div>
-
             <div
               className="p-6 border-b   border-gray-100"
               data-step="user-id"
@@ -558,11 +552,6 @@ export function OrderBlock({
                 selectedMethod={selectedPaymentMethod}
                 currentCurrency={currentCurrency.code}
               />
-
-              {/* Info Block with Features */}
-              <div className="mt-4 pt-4 border-t border-gray-100">
-                <InfoBlock />
-              </div>
             </div>
             {error && (
               <div className="px-6 pb-6">
@@ -571,32 +560,32 @@ export function OrderBlock({
                 </div>
               </div>
             )}
-          </div>
-          <div className="space-y-6">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100">
-              <InstructionTabs
-                onTabChange={setActiveTab}
-                defaultTab={activeTab}
-              />
-              {activeTab === "instruction" && (
-                <InstructionContent
-                  gameName={game.name}
-                  gameContent={gameContent}
+            <div className="space-y-6">
+              <div className="">
+                <InstructionTabs
+                  onTabChange={setActiveTab}
+                  defaultTab={activeTab}
                 />
-              )}
-              {activeTab === "description" && (
-                <GameDescription
-                  gameName={game.name}
-                  description={game.description}
-                />
-              )}
-              {activeTab === "faq" && <FAQSection items={gameContent?.faq} />}
-              {activeTab === "reviews" && (
-                <ReviewsSection
-                  reviews={gameContent?.reviews}
-                  metadata={gameContent?.metadata}
-                />
-              )}
+                {activeTab === "instruction" && (
+                  <InstructionContent
+                    gameName={game.name}
+                    gameContent={gameContent}
+                  />
+                )}
+                {activeTab === "description" && (
+                  <GameDescription
+                    gameName={game.name}
+                    description={game.description}
+                  />
+                )}
+                {activeTab === "faq" && <FAQSection items={gameContent?.faq} />}
+                {activeTab === "reviews" && (
+                  <ReviewsSection
+                    reviews={gameContent?.reviews}
+                    metadata={gameContent?.metadata}
+                  />
+                )}
+              </div>
             </div>
           </div>
         </div>
