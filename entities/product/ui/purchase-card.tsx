@@ -33,6 +33,11 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
   const t = useTranslations("purchases");
   const [isExpanded, setIsExpanded] = useState(false);
 
+  // Функция для форматирования цены - заменяем ? на ₽
+  const formatPrice = (priceString: string) => {
+    return priceString.replace(/\?/g, "₽");
+  };
+
   const getStatusIcon = (stepStatus: "completed" | "pending" | "cancelled") => {
     switch (stepStatus) {
       case "completed":
@@ -275,7 +280,9 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
 
             {/* Price */}
             <div className="flex justify-end mt-4 pt-4 border-t border-gray-100">
-              <div className="text-2xl font-bold text-gray-900">{price}</div>
+              <div className="text-2xl font-bold text-gray-900">
+                {formatPrice(price)}
+              </div>
             </div>
           </div>
         )}
