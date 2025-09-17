@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { useAcceptedFeedbacks } from "@/entities/reviews/hook/use-feedback";
 import { ReviewList } from "@/entities/reviews/ui/review-list/review-list";
 import { FeedbackPrompt } from "@/widgets/ui/reviews-page/prompt-block/prompt-block";
@@ -13,12 +14,26 @@ import { userApi } from "@/entities/user/auth/user-api";
 
 export function ReviewsBlock() {
   const t = useTranslations("reviews");
+  const locale = useLocale();
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [isAuthPopupOpen, setIsAuthPopupOpen] = useState(false);
   const { isAuthenticated } = useAuthStore();
   const { data, isLoading, error } = useAcceptedFeedbacks(page, limit);
   const [user, setUser] = useState<any>(null);
+
+  // Хардкодные переводы для кнопки
+  const translations = {
+    ru: {
+      leaveReview: "Оставить отзыв",
+    },
+    en: {
+      leaveReview: "Leave Review",
+    },
+  };
+
+  const buttonText =
+    translations[locale as keyof typeof translations] || translations.ru;
 
   useEffect(() => {
     async function fetchUser() {
@@ -107,14 +122,14 @@ export function ReviewsBlock() {
             href="/send-review"
             className="w-[194px] fixed flex items-center justify-center bottom-[75px] h-[42px] rounded-full font-roboto font-medium text-[12px] text-white bg-blue hover:bg-blue/90 transition-colors"
           >
-            {t("page.leaveReview")}
+            {buttonText.leaveReview}
           </Link>
         ) : (
           <button
             disabled
             className="w-[194px] fixed flex items-center justify-center bottom-[75px] h-[42px] rounded-full font-roboto font-medium text-[12px] text-white bg-gray-400 cursor-not-allowed"
           >
-            {t("page.leaveReview")}
+            {buttonText.leaveReview}
           </button>
         )
       ) : (
@@ -122,7 +137,7 @@ export function ReviewsBlock() {
           onClick={handleLeaveReviewClick}
           className="w-[194px] fixed flex items-center justify-center bottom-[75px] h-[42px] rounded-full font-roboto font-medium text-[12px] text-white bg-blue hover:bg-blue/90 transition-colors"
         >
-          {t("page.leaveReview")}
+          {buttonText.leaveReview}
         </button>
       )}
       <AuthorizationPopup
