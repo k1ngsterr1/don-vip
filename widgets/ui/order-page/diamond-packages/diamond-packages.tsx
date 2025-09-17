@@ -162,7 +162,7 @@ export function DiamondPackages({
 
   return (
     <div className="px-4 py-6 md:px-0">
-      <div className="space-y-3 md:space-y-3">
+      <div className="space-y-3 md:grid md:grid-cols-2 md:gap-3 md:space-y-0">
         {displayedPackages.map((pkg) => {
           const isSelected = selectedId === pkg.id;
           const hasDiscount = pkg.discount && pkg.discount > 0;
