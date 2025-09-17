@@ -18,7 +18,6 @@ import { GuestAuthPopup } from "@/entities/order/ui/guest-user-popup";
 import { useCurrency } from "@/entities/currency/hooks/use-currency";
 import { DiamondPackages } from "./diamond-packages/diamond-packages";
 import { ReviewsSection } from "./reviews-section/reviews-section";
-import { FAQSection } from "./faq-section/faq-section";
 import {
   InstructionTabs,
   InstructionContent,
@@ -504,7 +503,25 @@ export function OrderBlock({
               description={game.description}
             />
           )}
-          {activeTab === "faq" && <FAQSection items={gameContent?.faq} />}
+          {activeTab === "faq" && (
+            <div className="p-4">
+              <Link href="/faq" className="block">
+                <div className="text-center py-8 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                  <div className="text-2xl mb-2">❓</div>
+                  <div className="text-lg font-medium text-gray-800 mb-1">
+                    {locale === "ru"
+                      ? "Часто задаваемые вопросы"
+                      : "Frequently Asked Questions"}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {locale === "ru"
+                      ? "Перейти к разделу FAQ →"
+                      : "Go to FAQ section →"}
+                  </div>
+                </div>
+              </Link>
+            </div>
+          )}
           {activeTab === "reviews" && (
             <ReviewsSection
               reviews={gameContent?.reviews}
@@ -599,7 +616,25 @@ export function OrderBlock({
                     description={game.description}
                   />
                 )}
-                {activeTab === "faq" && <FAQSection items={gameContent?.faq} />}
+                {activeTab === "faq" && (
+                  <div className="p-6">
+                    <Link href="/faq" className="block">
+                      <div className="text-center py-12 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <div className="text-3xl mb-3">❓</div>
+                        <div className="text-xl font-medium text-gray-800 mb-2">
+                          {locale === "ru"
+                            ? "Часто задаваемые вопросы"
+                            : "Frequently Asked Questions"}
+                        </div>
+                        <div className="text-gray-600">
+                          {locale === "ru"
+                            ? "Перейти к разделу FAQ →"
+                            : "Go to FAQ section →"}
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                )}
                 {activeTab === "reviews" && (
                   <ReviewsSection
                     reviews={gameContent?.reviews}

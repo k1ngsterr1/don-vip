@@ -1,7 +1,6 @@
 "use client";
 
 import { cn } from "@/shared/utils/cn";
-import Image from "next/image";
 import { useLocale } from "next-intl";
 import { useState } from "react";
 
@@ -163,7 +162,7 @@ export function DiamondPackages({
 
   return (
     <div className="px-4 py-6 md:px-0">
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-4">
+      <div className="space-y-3 md:space-y-3">
         {displayedPackages.map((pkg) => {
           const isSelected = selectedId === pkg.id;
           const hasDiscount = pkg.discount && pkg.discount > 0;
@@ -173,97 +172,38 @@ export function DiamondPackages({
               key={pkg.id}
               onClick={() => handlePackageSelect(pkg.id)}
               className={cn(
-                "relative bg-white rounded-2xl p-3 cursor-pointer transition-all hover:shadow-lg border-2 border-transparent md:min-h-[140px] md:flex md:flex-col md:justify-between md:bg-gradient-to-br md:from-white md:to-gray-50 md:p-4",
+                "h-[68px] rounded-xl px-4 cursor-pointer transition-all duration-200 border flex items-center justify-between",
                 isSelected
-                  ? "ring-2 ring-blue-500 shadow-xl border-blue-200 md:shadow-2xl md:scale-105 bg-gradient-to-br from-blue-50 to-white"
-                  : "shadow-md hover:shadow-lg md:hover:scale-102"
+                  ? "border-[#03cc60] bg-[#eeeff3]"
+                  : "border-transparent bg-[#eeeff3] hover:border-gray-300"
               )}
             >
-              {/* Package content */}
-              <div className="flex flex-col gap-2 md:flex-col md:gap-3 md:text-center md:h-full md:justify-center">
-                {/* Top row - Icon and amount */}
-                <div className="flex items-center justify-between">
-                  {/* Currency icon */}
-                  <div className="w-10 h-8 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center shadow-sm md:w-12 md:h-10 md:mx-auto">
-                    <Image
-                      src="/diamond.webp"
-                      alt="Diamond"
-                      width={20}
-                      height={20}
-                      className="w-4 h-4 md:w-6 md:h-6 object-contain"
-                    />
+              <div className="flex items-center gap-3">
+                <div className="text-2xl">💎</div>
+                <div>
+                  <div className="text-[18px] font-medium text-[#212529] leading-tight">
+                    {pkg.amount.toLocaleString()} Diamonds
                   </div>
-
-                  {/* Amount */}
-                  <div className="text-gray-800 font-bold text-lg md:text-xl md:font-bold">
-                    {pkg.amount.toLocaleString()}
+                  <div className="text-[14px] text-[#6c757d] leading-tight">
+                    {pkg.price}
                   </div>
-
-                  {/* Mobile discount indicator */}
-                  <div className="flex items-center md:hidden">
-                    {hasDiscount && pkg.discount! > 0 && (
-                      <div className="w-3 h-3 bg-green-500 rounded-full shadow-sm"></div>
-                    )}
-                    {!hasDiscount && !pkg.isPopular && (
-                      <span className="text-base">🎁</span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Price section */}
-                <div className="flex flex-col gap-1 md:justify-center md:flex-col md:gap-1 md:mb-0">
-                  <div className="flex items-center justify-between md:justify-center">
-                    <span className="text-red-600 font-bold text-base md:text-lg">
-                      {pkg.price}
-                    </span>
-                    {hasDiscount &&
-                      pkg.discount &&
-                      pkg.discount > 0 &&
-                      (() => {
-                        const oldPrice = (
-                          parseFloat(pkg.price.split(" ")[0]) /
-                          (1 - pkg.discount! / 100)
-                        ).toFixed(2);
-                        return oldPrice !== "0.00" &&
-                          parseFloat(oldPrice) > 0 ? (
-                          <div className="bg-red-50 px-1.5 py-0.5 rounded border border-red-100 md:px-2 md:py-1">
-                            <span className="text-red-500 text-xs line-through font-medium">
-                              {oldPrice} {pkg.price.split(" ")[1]}
-                            </span>
-                          </div>
-                        ) : null;
-                      })()}
-                  </div>
-
-                  {/* Bonus */}
-                  {pkg.bonus && pkg.bonus > 0 && (
-                    <div className="text-green-600 text-xs font-medium text-center md:text-center">
-                      +{pkg.bonus} {t.bonus}
-                    </div>
-                  )}
                 </div>
               </div>
-
-              {/* Desktop badges - only show if there's actually something to show */}
-              {(hasDiscount || pkg.isPopular) && (
-                <div className="hidden md:flex md:items-center md:justify-center md:gap-2 md:mt-3">
-                  {hasDiscount && pkg.discount! > 0 && (
-                    <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-md">
-                      {t.discount} {pkg.discount}%
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Show gift icon only if no discount and not popular */}
-              {!hasDiscount && !pkg.isPopular && (
-                <div className="hidden md:flex md:items-center md:justify-center md:mt-3">
-                  <span className="text-gray-400 text-lg">🎁</span>
-                </div>
-              )}
-              {/* Subtle glow effect for selected cards on desktop */}
               {isSelected && (
-                <div className="hidden md:block absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-xl pointer-events-none"></div>
+                <div className="text-[#03cc60] text-xl">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
               )}
             </div>
           );

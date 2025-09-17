@@ -255,7 +255,7 @@ export function UserIdForm({
                   <div className="flex items-center">
                     <Loader className="w-5 h-5 animate-spin text-blue-500" />
                     <span className="ml-1 text-xs text-blue-500">
-                      {locale === "ru" ? "Проверка..." : "Validating..."}
+                      {t("validating")}
                     </span>
                   </div>
                 )}
@@ -301,7 +301,7 @@ export function UserIdForm({
                     <div className="flex items-center">
                       <Loader className="w-5 h-5 animate-spin text-blue-500" />
                       <span className="ml-1 text-xs text-blue-500">
-                        {locale === "ru" ? "Проверка..." : "Validating..."}
+                        {t("validating")}
                       </span>
                     </div>
                   )}
@@ -356,19 +356,12 @@ export function UserIdForm({
               <AlertTriangle size={16} className="mr-2" />
             )}
             <span className="font-medium">
-              {validationResult.isValid
-                ? locale === "ru"
-                  ? "ID действителен"
-                  : "ID is valid"
-                : locale === "ru"
-                ? "ID не найден"
-                : "ID not found"}
+              {validationResult.isValid ? t("idValid") : t("idNotFound")}
             </span>
           </div>
           {validationResult.isValid && validationResult.username && (
             <div className="mt-1 text-sm text-green-600">
-              {locale === "ru" ? "Пользователь" : "Username"}:{" "}
-              {validationResult.username}
+              {t("username")}: {validationResult.username}
               {validationResult.vipStatus && (
                 <span className="ml-2 px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">
                   {validationResult.vipStatus}
@@ -377,9 +370,7 @@ export function UserIdForm({
             </div>
           )}
           {!validationResult.isValid && validationResult.errorMessage && (
-            <div className="mt-1 text-sm text-red-600">
-              {locale === "ru" ? "Пользователь не найден" : "User not found"}
-            </div>
+            <div className="mt-1 text-sm text-red-600">{t("userNotFound")}</div>
           )}
         </div>
       )}
