@@ -25,17 +25,6 @@ export function GameInfoBlock({ gameName = "Bigo Live" }: GameInfoBlockProps) {
         </div>
       </div>
 
-      {/* Description */}
-      <div className="mb-6">
-        <p className="text-black text-[15px] font-[100] leading-[20px] capitalize">
-          Завоевывай{" "}
-          <span className="lowercase">
-            вершины и радуй своих любимых стримеров недорогими алмазами — пусть
-            они ощущают твою поддержку и вдохновение!
-          </span>
-        </p>
-      </div>
-
       {/* Features */}
       <div className="space-y-4">
         {/* Diamonds Feature */}

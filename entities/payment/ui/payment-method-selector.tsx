@@ -497,7 +497,7 @@ export function PaymentMethodSelector({
 
   return (
     <>
-      <div className={`${enhanced ? "hidden" : "block"} px-4 mb-6 md:hidden`}>
+      <div className={`${enhanced ? "hidden" : "block"}  mb-6 md:hidden`}>
         {paymentMethodSelectorContent}
       </div>
       <div className={`${enhanced ? "block" : "hidden md:block"}`}>
