@@ -111,6 +111,60 @@ export function OrderBlock({
     "instruction" | "reviews" | "description" | "faq"
   >("instruction");
 
+  // Моковые отзывы
+  const mockReviews = [
+    {
+      id: "review-1",
+      userName: "Александр К.",
+      rating: 5,
+      comment:
+        "Отличный сервис! Алмазы пришли моментально, никаких проблем. Буду пользоваться еще!",
+      date: "2024-01-15T10:30:00Z",
+      isVerified: true,
+    },
+    {
+      id: "review-2",
+      userName: "Мария С.",
+      rating: 5,
+      comment:
+        "Быстро и надежно. Заказывала уже несколько раз - всегда все четко работает.",
+      date: "2024-01-12T14:20:00Z",
+      isVerified: true,
+    },
+    {
+      id: "review-3",
+      userName: "Дмитрий В.",
+      rating: 4,
+      comment: "Хорошие цены, быстрая доставка. Рекомендую!",
+      date: "2024-01-10T09:15:00Z",
+      isVerified: false,
+    },
+    {
+      id: "review-4",
+      userName: "Анна Л.",
+      rating: 5,
+      comment:
+        "Супер сервис! Алмазы зачислились за 2 минуты. Очень довольна покупкой.",
+      date: "2024-01-08T16:45:00Z",
+      isVerified: true,
+    },
+    {
+      id: "review-5",
+      userName: "Игорь М.",
+      rating: 5,
+      comment:
+        "Пользуюсь уже полгода, никогда не подводили. Цены адекватные, поддержка отвечает быстро.",
+      date: "2024-01-05T11:30:00Z",
+      isVerified: true,
+    },
+  ];
+
+  const mockMetadata = {
+    totalReviews: 127,
+    averageRating: 4.8,
+    lastUpdated: "2024-01-15T10:30:00Z",
+  };
+
   // Функция для автоматического перехода к методам оплаты
   const scrollToPaymentSection = () => {
     setTimeout(() => {
@@ -507,8 +561,10 @@ export function OrderBlock({
           {activeTab === "faq" && <FAQSection items={gameContent?.faq} />}
           {activeTab === "reviews" && (
             <ReviewsSection
-              reviews={gameContent?.reviews}
-              metadata={gameContent?.metadata}
+              reviews={
+                gameContent?.reviews?.length ? gameContent.reviews : mockReviews
+              }
+              metadata={gameContent?.metadata || mockMetadata}
             />
           )}
         </div>
@@ -602,8 +658,12 @@ export function OrderBlock({
                 {activeTab === "faq" && <FAQSection items={gameContent?.faq} />}
                 {activeTab === "reviews" && (
                   <ReviewsSection
-                    reviews={gameContent?.reviews}
-                    metadata={gameContent?.metadata}
+                    reviews={
+                      gameContent?.reviews?.length
+                        ? gameContent.reviews
+                        : mockReviews
+                    }
+                    metadata={gameContent?.metadata || mockMetadata}
                   />
                 )}
               </div>
