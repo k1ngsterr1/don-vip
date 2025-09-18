@@ -43,7 +43,7 @@ export const bigoService = {
       const response = await apiClient.post<BigoApiResponse>(
         "/product/bigo/validate",
         {
-          account_id: userId,
+          user_id: userId,
         }
       );
 

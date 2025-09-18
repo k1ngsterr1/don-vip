@@ -39,7 +39,8 @@ export const smileService = {
         "/product/bigo/validate",
         {
           apiGame: apiGame,
-          account_id: userId,
+          user_id: userId,
+          // account_id: userId,
           server_id: serverId,
         }
       );

@@ -142,7 +142,7 @@ export const productService = {
   validateBigoUser: async (userId: string): Promise<any> => {
     try {
       const response = await apiClient.post(`/product/bigo/validate`, {
-        account_id: userId,
+        user_id: userId,
       });
       return response.data;
     } catch (error) {
