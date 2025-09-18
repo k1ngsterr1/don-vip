@@ -178,8 +178,8 @@ export function DiamondPackages({
 
   return (
     <div className="px-4 py-6 md:px-0">
-      <div className="space-y-3 md:grid md:grid-cols-2 md:gap-3 md:space-y-0">
-        {displayedPackages.map((pkg) => {
+      <div className="space-y-3 md:space-y-0 md:flex md:flex-wrap md:gap-3">
+        {displayedPackages.map((pkg, index) => {
           const isSelected = selectedId === pkg.id;
           const hasDiscount = pkg.discount && pkg.discount > 0;
 
@@ -188,7 +188,7 @@ export function DiamondPackages({
               key={pkg.id}
               onClick={() => handlePackageSelect(pkg.id)}
               className={cn(
-                "h-[68px] rounded-xl px-4 cursor-pointer transition-all duration-200 border flex items-center justify-between",
+                "h-[68px] rounded-xl px-4 cursor-pointer transition-all duration-200 border flex items-center justify-between md:w-[calc(50%-6px)]",
                 isSelected
                   ? "border-[#03cc60] bg-[#eeeff3]"
                   : "border-transparent bg-[#eeeff3] hover:border-gray-300"
