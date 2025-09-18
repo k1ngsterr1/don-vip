@@ -2,7 +2,7 @@
 
 import { cn } from "@/shared/utils/cn";
 import { useLocale } from "next-intl";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface Package {
   id: number;
@@ -33,6 +33,22 @@ export function DiamondPackages({
 }: DiamondPackagesProps) {
   const locale = useLocale();
   const [showAll, setShowAll] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Отслеживаем размер экрана
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    // Проверяем при монтировании
+    checkScreenSize();
+
+    // Добавляем слушатель изменения размера
+    window.addEventListener("resize", checkScreenSize);
+
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
 
   // Хардкодные переводы
   const translations = {
@@ -58,11 +74,11 @@ export function DiamondPackages({
     translations[locale as keyof typeof translations] || translations.ru;
 
   // На мобильных показываем только первые 4 пакета, если не нажали "Показать все"
+  // На PC показываем все пакеты сразу
   const MOBILE_VISIBLE_COUNT = 4;
-  const displayedPackages = showAll
-    ? packages
-    : packages.slice(0, MOBILE_VISIBLE_COUNT);
-  const hasMorePackages = packages.length > MOBILE_VISIBLE_COUNT;
+  const displayedPackages =
+    isMobile && !showAll ? packages.slice(0, MOBILE_VISIBLE_COUNT) : packages;
+  const hasMorePackages = isMobile && packages.length > MOBILE_VISIBLE_COUNT;
 
   const handlePackageSelect = (id: number) => {
     console.log("Package selected:", id);
@@ -210,9 +226,9 @@ export function DiamondPackages({
         })}
       </div>
 
-      {/* Show all button - для всех устройств если есть скрытые пакеты */}
+      {/* Show all button - только для мобильных устройств если есть скрытые пакеты */}
       {hasMorePackages && (
-        <div className="mt-6 text-center">
+        <div className="mt-6 text-center md:hidden">
           <button
             onClick={() => setShowAll(!showAll)}
             className="text-blue-600 hover:text-blue-700 font-medium text-sm underline transition-colors md:bg-blue-50 md:hover:bg-blue-100 md:px-4 md:py-2 md:rounded-lg md:no-underline md:border md:border-blue-200"
