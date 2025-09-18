@@ -36,7 +36,7 @@ export const smileService = {
   ): Promise<ValidateSmileUserResponse> {
     try {
       const response = await apiClient.post<SmileApiResponse>(
-        "/product/donatbank/validate",
+        "/product/bigo/validate",
         {
           apiGame: apiGame,
           account_id: userId,
