@@ -66,9 +66,19 @@ export function UserIdForm({
     en: {
       spaceWarning:
         "Spaces are not allowed and have been automatically removed.",
+      idValid: "ID is valid",
+      idNotFound: "ID not found",
+      userNotFound: "User not found",
+      username: "Username",
+      validating: "Validating...",
     },
     ru: {
       spaceWarning: "Пробелы не допускаются и были автоматически удалены.",
+      idValid: "ID действителен",
+      idNotFound: "ID не найден",
+      userNotFound: "Пользователь не найден",
+      username: "Пользователь",
+      validating: "Проверка...",
     },
   };
 
@@ -191,6 +201,14 @@ export function UserIdForm({
     return errorMessages.en.spaceWarning;
   };
 
+  // Get translation message based on locale
+  const getTranslation = (key: keyof typeof errorMessages.en) => {
+    if (locale === "ru") {
+      return errorMessages.ru[key];
+    }
+    return errorMessages.en[key];
+  };
+
   return (
     <div className="">
       <div className="flex items-center mb-4">
@@ -255,7 +273,7 @@ export function UserIdForm({
                   <div className="flex items-center">
                     <Loader className="w-5 h-5 animate-spin text-blue-500" />
                     <span className="ml-1 text-xs text-blue-500">
-                      {t("validating")}
+                      {getTranslation("validating")}
                     </span>
                   </div>
                 )}
@@ -301,7 +319,7 @@ export function UserIdForm({
                     <div className="flex items-center">
                       <Loader className="w-5 h-5 animate-spin text-blue-500" />
                       <span className="ml-1 text-xs text-blue-500">
-                        {t("validating")}
+                        {getTranslation("validating")}
                       </span>
                     </div>
                   )}
@@ -356,12 +374,14 @@ export function UserIdForm({
               <AlertTriangle size={16} className="mr-2" />
             )}
             <span className="font-medium">
-              {validationResult.isValid ? t("idValid") : t("idNotFound")}
+              {validationResult.isValid
+                ? getTranslation("idValid")
+                : getTranslation("idNotFound")}
             </span>
           </div>
           {validationResult.isValid && validationResult.username && (
             <div className="mt-1 text-sm text-green-600">
-              {t("username")}: {validationResult.username}
+              {getTranslation("username")}: {validationResult.username}
               {validationResult.vipStatus && (
                 <span className="ml-2 px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">
                   {validationResult.vipStatus}
@@ -370,7 +390,9 @@ export function UserIdForm({
             </div>
           )}
           {!validationResult.isValid && validationResult.errorMessage && (
-            <div className="mt-1 text-sm text-red-600">{t("userNotFound")}</div>
+            <div className="mt-1 text-sm text-red-600">
+              {getTranslation("userNotFound")}
+            </div>
           )}
         </div>
       )}
