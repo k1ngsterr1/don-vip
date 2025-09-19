@@ -16,6 +16,56 @@ import {
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
+/**
+ * Helper function to get full icon URL
+ */
+export const getIconUrl = (iconPath: string | null): string | null => {
+  console.log("getIconUrl input:", iconPath);
+
+  if (!iconPath) {
+    console.log("getIconUrl output: null (empty input)");
+    return null;
+  }
+
+  let result: string;
+
+  // If iconPath already contains a full URL, return as is
+  if (iconPath.startsWith("http://") || iconPath.startsWith("https://")) {
+    result = iconPath;
+    console.log("getIconUrl output (full URL):", result);
+    return result;
+  }
+
+  // If path starts with /uploads, add base URL directly
+  if (iconPath.startsWith("/uploads/")) {
+    result = `https://api.don-vip.com${iconPath}`;
+    console.log("getIconUrl output (/uploads path):", result);
+    return result;
+  }
+
+  // For any other relative path, add base URL
+  result = `https://api.don-vip.com/uploads/${iconPath.replace(/^\//, "")}`;
+  console.log("getIconUrl output (relative path):", result);
+  return result;
+};
+
+/**
+ * Helper function to get icon src for Image component
+ */
+const getIconSrc = (icon: StaticImageData | string): string => {
+  console.log("getIconSrc input:", icon);
+  let result: string;
+
+  if (typeof icon === "string") {
+    result = icon;
+  } else {
+    result = icon.src || "/placeholder.svg";
+  }
+
+  console.log("getIconSrc output:", result);
+  return result;
+};
+
 interface PaymentMethodSelectorProps {
   enhanced?: boolean;
   selectedMethod?: string;
@@ -77,32 +127,6 @@ export function PaymentMethodSelector({
     }
   }, [isClient, currentCurrency]);
 
-  // Helper function to get full icon URL
-  const getFullIconUrl = (iconPath: string): string => {
-    if (!iconPath) return "";
-
-    // If icon is already a full URL, return as is
-    if (iconPath.startsWith("http") || iconPath.startsWith("https")) {
-      return iconPath;
-    }
-
-    // If icon starts with /, prepend API base URL
-    if (iconPath.startsWith("/")) {
-      const baseUrl =
-        process.env.NEXT_PUBLIC_API_URL || "https://api.don-vip.com";
-      const fullUrl = `${baseUrl}${iconPath}`;
-      console.log("Payment method icon full URL:", fullUrl);
-      return fullUrl;
-    }
-
-    // For relative paths, add API base and leading slash
-    const baseUrl =
-      process.env.NEXT_PUBLIC_API_URL || "https://api.don-vip.com";
-    const fullUrl = `${baseUrl}/${iconPath}`;
-    console.log("Payment method icon full URL:", fullUrl);
-    return fullUrl;
-  };
-
   // Function to get appropriate icon for payment method
   const getPaymentMethodIcon = (
     methodType: string,
@@ -127,6 +151,15 @@ export function PaymentMethodSelector({
 
     // Default to mastercard for unknown types
     return mastercardIcon;
+  };
+
+  // Function to get icon src as string for API methods
+  const getPaymentMethodIconSrc = (
+    methodType: string,
+    methodName: string
+  ): string => {
+    const icon = getPaymentMethodIcon(methodType, methodName);
+    return getIconSrc(icon);
   };
 
   const {
@@ -205,16 +238,22 @@ export function PaymentMethodSelector({
   }
   // For non-RUB currencies: Use API methods
   else if (methodsByCurrency && methodsByCurrency.methods.length > 0) {
-    availablePaymentMethods = methodsByCurrency.methods.map((method) => ({
-      id:
-        method.methodCode || method.id?.toString() || method.name.toLowerCase(),
-      translationKey: method.name, // Используем название из API напрямую, без переводов
-      apiName: method.name,
-      description: method.description, // Добавляем описание из API
-      icon: method.icon
-        ? getFullIconUrl(method.icon)
-        : getPaymentMethodIcon("card", method.name),
-    }));
+    console.log("Processing methodsByCurrency:", methodsByCurrency.methods);
+    availablePaymentMethods = methodsByCurrency.methods.map((method, index) => {
+      console.log(`Processing method ${index}:`, method);
+      const iconUrl = getIconUrl(method.icon);
+      const fallbackIcon = getPaymentMethodIconSrc("card", method.name);
+      const finalIcon = iconUrl || fallbackIcon;
+      console.log(`Final icon for ${method.name}:`, finalIcon);
+
+      return {
+        id: method.methodCode || method.name || `method-${index}`,
+        translationKey: method.name, // Используем название из API напрямую, без переводов
+        apiName: method.name,
+        icon: finalIcon,
+        description: method.description, // Добавляем поле description из API
+      };
+    });
   }
   // Priority 3: Use general API methods as fallback
   else if (apiPaymentMethods.length > 0) {
@@ -222,7 +261,7 @@ export function PaymentMethodSelector({
       id: apiMethod.id,
       translationKey: `methods.${apiMethod.id}`,
       apiName: apiMethod.name,
-      icon: getPaymentMethodIcon(apiMethod.type, apiMethod.name),
+      icon: getPaymentMethodIconSrc(apiMethod.type, apiMethod.name),
     }));
   }
   // Priority 4: Fallback to predefined methods with bank filtering (legacy for RUB)
