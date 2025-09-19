@@ -161,8 +161,10 @@ export default function Footer() {
                   Aslanyan
                 </p>
                 <p>
-                  <span className="font-medium">{legal.company}</span> DMME HK
-                  LIMITED
+                  <span className="font-medium">{legal.company}</span>
+                  <span className="font-black text-gray-900 text-sm md:text-base">
+                    DMME HK LIMITED
+                  </span>
                 </p>
                 <p>
                   <span className="font-medium">{legal.country}</span> HK
