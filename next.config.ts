@@ -15,7 +15,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "don-vip.com",
       },
+      {
+        protocol: "https",
+        hostname: "api.don-vip.com",
+      },
     ],
+    dangerouslyAllowSVG: true,
+    contentDispositionType: "attachment",
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   async redirects() {
     return [
