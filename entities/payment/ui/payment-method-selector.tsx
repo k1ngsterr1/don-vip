@@ -76,6 +76,32 @@ export function PaymentMethodSelector({
     }
   }, [isClient, currentCurrency]);
 
+  // Helper function to get full icon URL
+  const getFullIconUrl = (iconPath: string): string => {
+    if (!iconPath) return "";
+
+    // If icon is already a full URL, return as is
+    if (iconPath.startsWith("http") || iconPath.startsWith("https")) {
+      return iconPath;
+    }
+
+    // If icon starts with /, prepend API base URL
+    if (iconPath.startsWith("/")) {
+      const baseUrl =
+        process.env.NEXT_PUBLIC_API_URL || "https://api.don-vip.com";
+      const fullUrl = `${baseUrl}${iconPath}`;
+      console.log("Payment method icon full URL:", fullUrl);
+      return fullUrl;
+    }
+
+    // For relative paths, add API base and leading slash
+    const baseUrl =
+      process.env.NEXT_PUBLIC_API_URL || "https://api.don-vip.com";
+    const fullUrl = `${baseUrl}/${iconPath}`;
+    console.log("Payment method icon full URL:", fullUrl);
+    return fullUrl;
+  };
+
   // Function to get appropriate icon for payment method
   const getPaymentMethodIcon = (
     methodType: string,
@@ -179,10 +205,13 @@ export function PaymentMethodSelector({
   // For non-RUB currencies: Use API methods
   else if (methodsByCurrency && methodsByCurrency.methods.length > 0) {
     availablePaymentMethods = methodsByCurrency.methods.map((method) => ({
-      id: method.methodCode,
+      id:
+        method.methodCode || method.id?.toString() || method.name.toLowerCase(),
       translationKey: method.name, // Используем название из API напрямую, без переводов
       apiName: method.name,
-      icon: method.icon || getPaymentMethodIcon("card", method.name),
+      icon: method.icon
+        ? getFullIconUrl(method.icon)
+        : getPaymentMethodIcon("card", method.name),
     }));
   }
   // Priority 3: Use general API methods as fallback
@@ -309,6 +338,10 @@ export function PaymentMethodSelector({
                   ? i18n(method.translationKey)
                   : method.translationKey
               }
+              onError={(e) => {
+                // Fallback to placeholder or default icon if image fails to load
+                e.currentTarget.src = "/placeholder.svg";
+              }}
             />
           </div>
           <div className="flex-1">
