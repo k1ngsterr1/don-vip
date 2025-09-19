@@ -389,7 +389,14 @@ export function PaymentMethodSelector({
           >
             <div className="w-10 h-10 rounded-md flex items-center justify-center mr-4 bg-gray-100">
               <Image
-                src={method.icon || "/placeholder.svg"}
+                src={(() => {
+                  const iconSrc = getIconSrc(method.icon) || "/placeholder.svg";
+                  console.log(
+                    `Image src for ${method.translationKey}:`,
+                    iconSrc
+                  );
+                  return iconSrc;
+                })()}
                 width={24}
                 height={24}
                 alt={
@@ -397,18 +404,27 @@ export function PaymentMethodSelector({
                     ? i18n(method.translationKey)
                     : method.translationKey
                 }
-                onLoad={() => {
+                onLoad={() =>
                   console.log(
-                    "Payment method icon loaded successfully:",
-                    method.icon
-                  );
-                }}
+                    `✅ Image loaded successfully for ${method.translationKey}`
+                  )
+                }
                 onError={(e) => {
                   console.error(
-                    "Failed to load payment method icon:",
-                    method.icon
+                    `❌ Image failed to load for ${method.translationKey}:`,
+                    e
                   );
-                  // Fallback to placeholder or default icon if image fails to load
+                  console.error("Failed src:", getIconSrc(method.icon));
+                  // Fallback test with regular img tag
+                  if (typeof window !== "undefined") {
+                    const testImg = document.createElement("img");
+                    testImg.onload = () =>
+                      console.log("✅ Direct img test passed");
+                    testImg.onerror = () =>
+                      console.error("❌ Direct img test failed");
+                    testImg.src = getIconSrc(method.icon) || "/placeholder.svg";
+                  }
+                  // Fallback to placeholder
                   e.currentTarget.src = "/placeholder.svg";
                 }}
               />
