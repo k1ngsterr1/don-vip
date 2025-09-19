@@ -33,6 +33,7 @@ interface FrontendPaymentMethod {
   apiName: string; // Name used in the API for matching
   icon: StaticImageData | string; // Allow both StaticImageData and string URLs
   descriptionKey?: string;
+  description?: string; // Add description field from API
 }
 
 export function PaymentMethodSelector({
@@ -209,6 +210,7 @@ export function PaymentMethodSelector({
         method.methodCode || method.id?.toString() || method.name.toLowerCase(),
       translationKey: method.name, // Используем название из API напрямую, без переводов
       apiName: method.name,
+      description: method.description, // Добавляем описание из API
       icon: method.icon
         ? getFullIconUrl(method.icon)
         : getPaymentMethodIcon("card", method.name),
@@ -356,7 +358,17 @@ export function PaymentMethodSelector({
                     ? i18n(method.translationKey)
                     : method.translationKey
                 }
+                onLoad={() => {
+                  console.log(
+                    "Payment method icon loaded successfully:",
+                    method.icon
+                  );
+                }}
                 onError={(e) => {
+                  console.error(
+                    "Failed to load payment method icon:",
+                    method.icon
+                  );
                   // Fallback to placeholder or default icon if image fails to load
                   e.currentTarget.src = "/placeholder.svg";
                 }}
@@ -373,9 +385,9 @@ export function PaymentMethodSelector({
                   {i18n(method.descriptionKey)}
                 </p>
               )}
-              {isOnlyMethod && (
-                <p className="text-xs text-blue-600 mt-1">
-                  Единственный доступный метод
+              {method.description && (
+                <p className="text-xs text-gray-500 mt-1">
+                  {method.description}
                 </p>
               )}
             </div>

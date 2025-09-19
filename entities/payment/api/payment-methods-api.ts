@@ -54,6 +54,7 @@ export interface PaymentMethodByCurrency {
   icon: string;
   isActive: boolean;
   sortOrder: number;
+  description?: string; // Add description field
 }
 
 export interface PaymentMethodsByCurrencyResponse {
