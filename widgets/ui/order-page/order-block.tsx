@@ -627,13 +627,13 @@ export function OrderBlock({
 
       const currencyType =
         replenishmentArray.length > 0 ? replenishmentArray[0].type : "";
-      const formattedCurrencyName =
-        product.currency_name ||
-        (currencyType
-          ? currencyType.charAt(0).toUpperCase() + currencyType.slice(1)
-          : product.type === "Bigo"
-          ? "Diamonds"
-          : "Coins");
+
+      // Правильное получение названия игровой валюты с бэка
+      const formattedCurrencyName = currencyType
+        ? currencyType.charAt(0).toUpperCase() + currencyType.slice(1)
+        : product.type === "Bigo"
+        ? "Diamonds"
+        : "Coins";
 
       setGame({
         id: product.id,
@@ -641,7 +641,7 @@ export function OrderBlock({
         description:
           locale === "ru" ? product.description : product.description_en,
         image: product.image,
-        currencyName: formattedCurrencyName,
+        currencyName: formattedCurrencyName, // Используем название из replenishment.type, а не currency_name
         currencyImage:
           product.currency_image ||
           `/currency-${product.type.toLowerCase()}.png`,
