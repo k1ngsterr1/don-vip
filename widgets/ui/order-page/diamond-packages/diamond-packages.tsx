@@ -80,6 +80,16 @@ export function DiamondPackages({
     isMobile && !showAll ? packages.slice(0, MOBILE_VISIBLE_COUNT) : packages;
   const hasMorePackages = isMobile && packages.length > MOBILE_VISIBLE_COUNT;
 
+  // Функция для получения fallback emoji в зависимости от типа валюты
+  const getFallbackEmoji = (currencyName: string) => {
+    const name = currencyName.toLowerCase();
+    if (name.includes("diamond")) return "💎";
+    if (name.includes("uc") || name.includes("coins")) return "🪙";
+    if (name.includes("gold")) return "🏆";
+    if (name.includes("gem")) return "💎";
+    return "🪙"; // Default fallback
+  };
+
   const handlePackageSelect = (id: number) => {
     console.log("Package selected:", id);
     onSelect(id);
@@ -210,7 +220,9 @@ export function DiamondPackages({
                       }
                     }}
                   />
-                  <span style={{ display: "none" }}>💎</span>
+                  <span style={{ display: "none" }}>
+                    {getFallbackEmoji(currencyName)}
+                  </span>
                 </div>
                 <div className="text-[14px] md:text-[16px] font-semibold text-[#212529] leading-tight">
                   {pkg.amount.toLocaleString()}
