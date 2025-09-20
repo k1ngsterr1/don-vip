@@ -102,18 +102,6 @@ export function MobileNav({
         </Link>
 
         {/* Currency selector */}
-        <Link
-          href="/language-currency"
-          onClick={closeMenu}
-          className={`block text-dark font-condensed ${
-            isTablet ? "text-lg py-1" : ""
-          }`}
-        >
-          <div className="flex items-center">
-            <span className="mr-2">{selectedCurrency.flag}</span>
-            <span>RUB/{selectedCurrency.code}</span>
-          </div>
-        </Link>
 
         {isAuthenticated && (
           <button

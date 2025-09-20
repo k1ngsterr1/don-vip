@@ -164,6 +164,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
           }`}
         >
           <Logo />
+
           {isSearchBar && (
             <div className="hidden sm:block flex-1 mx-4 lg:mx-8 max-w-xl">
               <SearchBar
@@ -199,11 +200,21 @@ export default function Header({ isSearchBar = true }: IHeader) {
               className="hidden md:flex items-center gap-1 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg mr-2 transition-colors duration-200 cursor-pointer"
             >
               <span className="text-xs font-roboto font-medium text-gray-600">
-                RUB/{selectedCurrency.code}
+                {selectedCurrency.code}
               </span>
               <span className="text-sm">{selectedCurrency.symbol}</span>
             </Link>
-
+            <Link
+              href="/language-currency"
+              className={`block text-dark font-condensed ${
+                isTablet ? "text-lg py-1" : ""
+              }`}
+            >
+              <div className="flex items-center">
+                <span className="mr-2">{selectedCurrency.flag}</span>
+                <span>{selectedCurrency.code}</span>
+              </div>
+            </Link>
             <LanguageSwitcher />
             <AuthMenu />
             <button
@@ -213,6 +224,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
             >
               <Menu size={24} />
             </button>
+
             <button
               className="hidden sm:block lg:hidden ml-2 p-1 rounded-full hover:bg-gray-100"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

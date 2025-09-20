@@ -177,7 +177,7 @@ export function DiamondPackages({
   };
 
   return (
-    <div className="px-4 py-6 md:px-0">
+    <div className="px-4 py-1 md:px-0">
       <div className="grid grid-cols-2 gap-2 sm:gap-3 md:flex md:flex-wrap md:gap-3 lg:gap-4">
         {displayedPackages.map((pkg, index) => {
           const isSelected = selectedId === pkg.id;
