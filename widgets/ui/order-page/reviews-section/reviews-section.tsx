@@ -200,23 +200,13 @@ export function ReviewsSection({
             <div className="text-black text-xs font-light leading-relaxed mb-3">
               {review.comment}
             </div>
-
-            {/* Game info */}
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-gray-300 overflow-hidden">
-                <div className="w-full h-full bg-gradient-to-br from-orange-400 to-red-500" />
-              </div>
-              <span className="text-blue-600 text-xs underline">
-                {review.gameName}
-              </span>
-            </div>
           </div>
         ))}
       </div>
 
       {/* Show all button */}
       {!showAll && reviews.length > 3 && (
-        <div className="mt-1 mb-8 text-center">
+        <div className="mt-5 mb-5 text-center">
           <Link href="/reviews">
             <button
               className="bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 font-medium text-sm px-6 py-3 rounded-lg border border-blue-200 hover:border-blue-300 transition-all duration-200 shadow-sm hover:shadow-md"

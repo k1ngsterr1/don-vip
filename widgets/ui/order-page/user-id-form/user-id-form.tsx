@@ -222,7 +222,7 @@ export function UserIdForm({
   return (
     <div className="">
       <div className="flex items-center mb-4">
-        <h2 className="text-dark font-roboto font-bold">
+        <h2 className="text-base md:text-lg font-bold text-gray-800">
           2.{" "}
           {needsEmail
             ? isServerRequired

@@ -111,53 +111,402 @@ export function OrderBlock({
     "instruction" | "reviews" | "description" | "faq"
   >("instruction");
 
-  // Моковые отзывы
-  const mockReviews = [
-    {
-      id: "review-1",
-      userName: "Александр К.",
-      rating: 5,
-      comment:
-        "Отличный сервис! Алмазы пришли моментально, никаких проблем. Буду пользоваться еще!",
-      date: "2024-01-15T10:30:00Z",
-      isVerified: true,
-    },
-    {
-      id: "review-2",
-      userName: "Мария С.",
-      rating: 5,
-      comment:
-        "Быстро и надежно. Заказывала уже несколько раз - всегда все четко работает.",
-      date: "2024-01-12T14:20:00Z",
-      isVerified: true,
-    },
-    {
-      id: "review-3",
-      userName: "Дмитрий В.",
-      rating: 4,
-      comment: "Хорошие цены, быстрая доставка. Рекомендую!",
-      date: "2024-01-10T09:15:00Z",
-      isVerified: false,
-    },
-    {
-      id: "review-4",
-      userName: "Анна Л.",
-      rating: 5,
-      comment:
-        "Супер сервис! Алмазы зачислились за 2 минуты. Очень довольна покупкой.",
-      date: "2024-01-08T16:45:00Z",
-      isVerified: true,
-    },
-    {
-      id: "review-5",
-      userName: "Игорь М.",
-      rating: 5,
-      comment:
-        "Пользуюсь уже полгода, никогда не подводили. Цены адекватные, поддержка отвечает быстро.",
-      date: "2024-01-05T11:30:00Z",
-      isVerified: true,
-    },
-  ];
+  // Функция для получения моковых отзывов в зависимости от локали и игры
+  const getMockReviews = () => {
+    const gameType = getGameIdFromSlug(gameSlug);
+
+    if (locale === "ru") {
+      // Русские отзывы для разных игр
+      switch (gameType) {
+        case "bigo":
+          return [
+            {
+              id: "review-1",
+              userName: "Александр К.",
+              rating: 5,
+              comment:
+                "Отличный сервис! Алмазы Bigo пришли моментально, никаких проблем. Буду пользоваться еще!",
+              date: "2024-01-15T10:30:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-2",
+              userName: "Мария С.",
+              rating: 5,
+              comment:
+                "Быстро и надежно. Заказывала алмазы Bigo уже несколько раз - всегда все четко работает.",
+              date: "2024-01-12T14:20:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-3",
+              userName: "Дмитрий В.",
+              rating: 4,
+              comment:
+                "Хорошие цены на алмазы Bigo, быстрая доставка. Рекомендую!",
+              date: "2024-01-10T09:15:00Z",
+              isVerified: false,
+            },
+            {
+              id: "review-4",
+              userName: "Анна Л.",
+              rating: 5,
+              comment:
+                "Супер сервис! Алмазы Bigo зачислились за 2 минуты. Очень довольна покупкой.",
+              date: "2024-01-08T16:45:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-5",
+              userName: "Игорь М.",
+              rating: 5,
+              comment:
+                "Пользуюсь уже полгода, покупаю алмазы Bigo - никогда не подводили. Цены адекватные, поддержка отвечает быстро.",
+              date: "2024-01-05T11:30:00Z",
+              isVerified: true,
+            },
+          ];
+        case "mlbb":
+          return [
+            {
+              id: "review-1",
+              userName: "Александр К.",
+              rating: 5,
+              comment:
+                "Отличный сервис! Алмазы Mobile Legends пришли моментально, никаких проблем. Буду пользоваться еще!",
+              date: "2024-01-15T10:30:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-2",
+              userName: "Мария С.",
+              rating: 5,
+              comment:
+                "Быстро и надежно. Заказывала алмазы ML уже несколько раз - всегда все четко работает.",
+              date: "2024-01-12T14:20:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-3",
+              userName: "Дмитрий В.",
+              rating: 4,
+              comment:
+                "Хорошие цены на алмазы Mobile Legends, быстрая доставка. Рекомендую!",
+              date: "2024-01-10T09:15:00Z",
+              isVerified: false,
+            },
+            {
+              id: "review-4",
+              userName: "Анна Л.",
+              rating: 5,
+              comment:
+                "Супер сервис! Алмазы ML зачислились за 2 минуты. Очень довольна покупкой.",
+              date: "2024-01-08T16:45:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-5",
+              userName: "Игорь М.",
+              rating: 5,
+              comment:
+                "Пользуюсь уже полгода, покупаю алмазы Mobile Legends - никогда не подводили. Цены адекватные, поддержка отвечает быстро.",
+              date: "2024-01-05T11:30:00Z",
+              isVerified: true,
+            },
+          ];
+        case "pubg":
+          return [
+            {
+              id: "review-1",
+              userName: "Александр К.",
+              rating: 5,
+              comment:
+                "Отличный сервис! UC PUBG пришли моментально, никаких проблем. Буду пользоваться еще!",
+              date: "2024-01-15T10:30:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-2",
+              userName: "Мария С.",
+              rating: 5,
+              comment:
+                "Быстро и надежно. Заказывала UC уже несколько раз - всегда все четко работает.",
+              date: "2024-01-12T14:20:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-3",
+              userName: "Дмитрий В.",
+              rating: 4,
+              comment: "Хорошие цены на UC PUBG, быстрая доставка. Рекомендую!",
+              date: "2024-01-10T09:15:00Z",
+              isVerified: false,
+            },
+            {
+              id: "review-4",
+              userName: "Анна Л.",
+              rating: 5,
+              comment:
+                "Супер сервис! UC зачислились за 2 минуты. Очень довольна покупкой.",
+              date: "2024-01-08T16:45:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-5",
+              userName: "Игорь М.",
+              rating: 5,
+              comment:
+                "Пользуюсь уже полгода, покупаю UC - никогда не подводили. Цены адекватные, поддержка отвечает быстро.",
+              date: "2024-01-05T11:30:00Z",
+              isVerified: true,
+            },
+          ];
+        default:
+          return [
+            {
+              id: "review-1",
+              userName: "Александр К.",
+              rating: 5,
+              comment:
+                "Отличный сервис! Валюта пришла моментально, никаких проблем. Буду пользоваться еще!",
+              date: "2024-01-15T10:30:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-2",
+              userName: "Мария С.",
+              rating: 5,
+              comment:
+                "Быстро и надежно. Заказывала уже несколько раз - всегда все четко работает.",
+              date: "2024-01-12T14:20:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-3",
+              userName: "Дмитрий В.",
+              rating: 4,
+              comment: "Хорошие цены, быстрая доставка. Рекомендую!",
+              date: "2024-01-10T09:15:00Z",
+              isVerified: false,
+            },
+            {
+              id: "review-4",
+              userName: "Анна Л.",
+              rating: 5,
+              comment:
+                "Супер сервис! Валюта зачислилась за 2 минуты. Очень довольна покупкой.",
+              date: "2024-01-08T16:45:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-5",
+              userName: "Игорь М.",
+              rating: 5,
+              comment:
+                "Пользуюсь уже полгода, никогда не подводили. Цены адекватные, поддержка отвечает быстро.",
+              date: "2024-01-05T11:30:00Z",
+              isVerified: true,
+            },
+          ];
+      }
+    } else {
+      // English reviews for different games
+      switch (gameType) {
+        case "bigo":
+          return [
+            {
+              id: "review-1",
+              userName: "Alexander K.",
+              rating: 5,
+              comment:
+                "Excellent service! Bigo diamonds arrived instantly, no problems. Will use again!",
+              date: "2024-01-15T10:30:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-2",
+              userName: "Maria S.",
+              rating: 5,
+              comment:
+                "Fast and reliable. Ordered Bigo diamonds several times - always works perfectly.",
+              date: "2024-01-12T14:20:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-3",
+              userName: "Dmitry V.",
+              rating: 4,
+              comment:
+                "Good prices for Bigo diamonds, fast delivery. Recommend!",
+              date: "2024-01-10T09:15:00Z",
+              isVerified: false,
+            },
+            {
+              id: "review-4",
+              userName: "Anna L.",
+              rating: 5,
+              comment:
+                "Super service! Bigo diamonds were credited in 2 minutes. Very satisfied with the purchase.",
+              date: "2024-01-08T16:45:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-5",
+              userName: "Igor M.",
+              rating: 5,
+              comment:
+                "Using for half a year, buying Bigo diamonds - never let me down. Fair prices, support responds quickly.",
+              date: "2024-01-05T11:30:00Z",
+              isVerified: true,
+            },
+          ];
+        case "mlbb":
+          return [
+            {
+              id: "review-1",
+              userName: "Alexander K.",
+              rating: 5,
+              comment:
+                "Excellent service! Mobile Legends diamonds arrived instantly, no problems. Will use again!",
+              date: "2024-01-15T10:30:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-2",
+              userName: "Maria S.",
+              rating: 5,
+              comment:
+                "Fast and reliable. Ordered ML diamonds several times - always works perfectly.",
+              date: "2024-01-12T14:20:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-3",
+              userName: "Dmitry V.",
+              rating: 4,
+              comment:
+                "Good prices for Mobile Legends diamonds, fast delivery. Recommend!",
+              date: "2024-01-10T09:15:00Z",
+              isVerified: false,
+            },
+            {
+              id: "review-4",
+              userName: "Anna L.",
+              rating: 5,
+              comment:
+                "Super service! ML diamonds were credited in 2 minutes. Very satisfied with the purchase.",
+              date: "2024-01-08T16:45:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-5",
+              userName: "Igor M.",
+              rating: 5,
+              comment:
+                "Using for half a year, buying Mobile Legends diamonds - never let me down. Fair prices, support responds quickly.",
+              date: "2024-01-05T11:30:00Z",
+              isVerified: true,
+            },
+          ];
+        case "pubg":
+          return [
+            {
+              id: "review-1",
+              userName: "Alexander K.",
+              rating: 5,
+              comment:
+                "Excellent service! PUBG UC arrived instantly, no problems. Will use again!",
+              date: "2024-01-15T10:30:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-2",
+              userName: "Maria S.",
+              rating: 5,
+              comment:
+                "Fast and reliable. Ordered UC several times - always works perfectly.",
+              date: "2024-01-12T14:20:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-3",
+              userName: "Dmitry V.",
+              rating: 4,
+              comment: "Good prices for PUBG UC, fast delivery. Recommend!",
+              date: "2024-01-10T09:15:00Z",
+              isVerified: false,
+            },
+            {
+              id: "review-4",
+              userName: "Anna L.",
+              rating: 5,
+              comment:
+                "Super service! UC was credited in 2 minutes. Very satisfied with the purchase.",
+              date: "2024-01-08T16:45:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-5",
+              userName: "Igor M.",
+              rating: 5,
+              comment:
+                "Using for half a year, buying UC - never let me down. Fair prices, support responds quickly.",
+              date: "2024-01-05T11:30:00Z",
+              isVerified: true,
+            },
+          ];
+        default:
+          return [
+            {
+              id: "review-1",
+              userName: "Alexander K.",
+              rating: 5,
+              comment:
+                "Excellent service! Currency arrived instantly, no problems. Will use again!",
+              date: "2024-01-15T10:30:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-2",
+              userName: "Maria S.",
+              rating: 5,
+              comment:
+                "Fast and reliable. Ordered several times - always works perfectly.",
+              date: "2024-01-12T14:20:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-3",
+              userName: "Dmitry V.",
+              rating: 4,
+              comment: "Good prices, fast delivery. Recommend!",
+              date: "2024-01-10T09:15:00Z",
+              isVerified: false,
+            },
+            {
+              id: "review-4",
+              userName: "Anna L.",
+              rating: 5,
+              comment:
+                "Super service! Currency was credited in 2 minutes. Very satisfied with the purchase.",
+              date: "2024-01-08T16:45:00Z",
+              isVerified: true,
+            },
+            {
+              id: "review-5",
+              userName: "Igor M.",
+              rating: 5,
+              comment:
+                "Using for half a year, never let me down. Fair prices, support responds quickly.",
+              date: "2024-01-05T11:30:00Z",
+              isVerified: true,
+            },
+          ];
+      }
+    }
+  };
+
+  const mockReviews = getMockReviews();
 
   const mockMetadata = {
     totalReviews: 127,
@@ -478,7 +827,7 @@ export function OrderBlock({
 
       {/* Section title for mobile */}
       <div className="px-4 mt-6 mb-4">
-        <h2 className="text-base font-bold text-gray-800">
+        <h2 className="text-base md:text-lg font-bold text-gray-800">
           1. {t("block.selectAmount")}
         </h2>
       </div>
@@ -510,9 +859,9 @@ export function OrderBlock({
 
       {/* Payment Method Selector */}
       <div className="px-4 py-6 pb-0" data-step="payment">
-        <h3 className="text-base font-bold text-gray-800 mb-3">
+        <h2 className="text-base md:text-lg font-bold text-gray-800 mb-3 md:mb-4">
           {orderTexts.selectPaymentMethod}
-        </h3>
+        </h2>
         <PaymentMethodSelector
           onSelect={setSelectedPaymentMethod}
           selectedMethod={selectedPaymentMethod}
