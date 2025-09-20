@@ -94,6 +94,34 @@ export default function LanguageCurrencyPage() {
   const currentLocale = useLocale();
   const t = useTranslations("languageCurrency");
 
+  // Hardcoded translations using useLocale
+  const translations = {
+    currencyTitle:
+      currentLocale === "ru"
+        ? "Выберите свой язык и валюту"
+        : "Select your language and currency",
+    searchPlaceholder:
+      currentLocale === "ru"
+        ? "Поиск стран, валют..."
+        : "Search countries, currencies...",
+    searchResults:
+      currentLocale === "ru" ? "Результаты поиска для" : "Search results for",
+    noResults:
+      currentLocale === "ru" ? "Результаты не найдены" : "No results found",
+    noResultsDesc:
+      currentLocale === "ru"
+        ? "Попробуйте поискать по другим ключевым словам"
+        : "Try searching with different keywords",
+    loadingRates:
+      currentLocale === "ru"
+        ? "Загрузка курсов валют..."
+        : "Loading exchange rates...",
+    result: currentLocale === "ru" ? "результат" : "result",
+    results: currentLocale === "ru" ? "результатов" : "results",
+    country: currentLocale === "ru" ? "страна" : "country",
+    countries: currentLocale === "ru" ? "стран" : "countries",
+  };
+
   const { selectedCurrency, currencies, isLoading, error, setCurrency } =
     useCurrency();
 
@@ -215,7 +243,7 @@ export default function LanguageCurrencyPage() {
                 <ArrowLeft className="h-4 w-4 md:h-5 md:w-5 text-gray-600" />
               </Button>
               <h1 className="text-sm md:text-[16px] font-unbounded font-bold text-dark">
-                {t("content.currencyTitle") || "Select Currency"}
+                {translations.currencyTitle}
               </h1>
             </div>
           </div>
@@ -236,10 +264,7 @@ export default function LanguageCurrencyPage() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={
-                    t("content.searchPlaceholder") ||
-                    "Search countries, currencies..."
-                  }
+                  placeholder={translations.searchPlaceholder}
                   className="block w-full pl-10 pr-10 py-2.5 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg bg-white text-dark placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue focus:border-transparent"
                 />
                 {searchQuery && (
@@ -253,14 +278,13 @@ export default function LanguageCurrencyPage() {
               </div>
               {searchQuery && (
                 <div className="mt-2 text-xs md:text-sm text-gray-600">
-                  {t("content.searchResults") || "Search results for"}: "
-                  {searchQuery}"
+                  {translations.searchResults}: "{searchQuery}"
                   {Object.values(getFilteredRegions()).flat().length > 0 && (
                     <span className="ml-2 text-blue font-medium">
                       ({Object.values(getFilteredRegions()).flat().length}{" "}
                       {Object.values(getFilteredRegions()).flat().length === 1
-                        ? "result"
-                        : "results"}
+                        ? translations.result
+                        : translations.results}
                       )
                     </span>
                   )}
@@ -273,7 +297,7 @@ export default function LanguageCurrencyPage() {
               <div className="flex items-center justify-center py-12 md:py-16">
                 <Loader2 className="h-6 w-6 md:h-8 md:w-8 animate-spin text-blue mr-3" />
                 <span className="text-sm md:text-base text-dark font-roboto">
-                  {t("content.loadingRates")}
+                  {translations.loadingRates}
                 </span>
               </div>
             ) : (
@@ -282,11 +306,10 @@ export default function LanguageCurrencyPage() {
                   <div className="text-center py-12 md:py-16">
                     <Search className="h-12 w-12 md:h-16 md:w-16 text-gray-300 mx-auto mb-4" />
                     <h3 className="text-lg md:text-xl font-roboto font-medium text-gray-600 mb-2">
-                      {t("content.noResults") || "No results found"}
+                      {translations.noResults}
                     </h3>
                     <p className="text-sm md:text-base text-gray-500">
-                      {t("content.noResultsDesc") ||
-                        "Try searching with different keywords"}
+                      {translations.noResultsDesc}
                     </p>
                   </div>
                 ) : (
@@ -297,7 +320,10 @@ export default function LanguageCurrencyPage() {
                           {getLocalizedRegionName(regionName)}
                           <span className="text-xs md:text-sm font-roboto font-normal text-gray-500 ml-2 md:ml-3 capitalize">
                             ({countries.length}{" "}
-                            {countries.length === 1 ? "country" : "countries"})
+                            {countries.length === 1
+                              ? translations.country
+                              : translations.countries}
+                            )
                           </span>
                         </h2>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 md:gap-3">
