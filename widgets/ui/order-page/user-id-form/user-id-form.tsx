@@ -12,7 +12,7 @@ import { useDebounce } from "@/shared/hooks/use-debounce";
 interface UserIdFormProps {
   apiGame?: string;
   productType?: string;
-  requiresServer: boolean;
+  requiresServer?: boolean;
   gameData?: any; // Добавляем данные игры из API
   userId: string;
   serverId: string;

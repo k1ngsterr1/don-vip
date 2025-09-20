@@ -499,7 +499,6 @@ export function OrderBlock({
         <UserIdForm
           apiGame={product?.smile_api_game}
           productType={product?.type}
-          requiresServer={false} // Fallback, will use gameData instead
           gameData={game}
           userId={userId}
           serverId={serverId}
@@ -613,7 +612,6 @@ export function OrderBlock({
               <UserIdForm
                 apiGame={product?.smile_api_game}
                 productType={product?.type}
-                requiresServer={false} // Fallback, will use gameData instead
                 gameData={game}
                 userId={userId}
                 serverId={serverId}
