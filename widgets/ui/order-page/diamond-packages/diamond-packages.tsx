@@ -208,25 +208,13 @@ export function DiamondPackages({
             >
               <div className="flex items-center gap-2 mb-1">
                 <div className="text-lg">
-                  {currencyImage ? (
+                  {currencyImage && (
                     <img
                       src={currencyImage}
                       alt={currencyName}
                       className="w-5 h-5 md:w-6 md:h-6 object-contain"
-                      onError={(e) => {
-                        // Fallback to emoji if image fails to load
-                        e.currentTarget.style.display = "none";
-                        const nextSibling = e.currentTarget
-                          .nextElementSibling as HTMLElement;
-                        if (nextSibling) {
-                          nextSibling.style.display = "inline";
-                        }
-                      }}
                     />
-                  ) : null}
-                  <span style={{ display: currencyImage ? "none" : "inline" }}>
-                    {getFallbackEmoji(currencyName)}
-                  </span>
+                  )}
                 </div>
                 <div className="text-[14px] md:text-[16px] font-semibold text-[#212529] leading-tight">
                   {pkg.amount.toLocaleString()}

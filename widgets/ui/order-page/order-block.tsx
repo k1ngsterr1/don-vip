@@ -838,11 +838,7 @@ export function OrderBlock({
         onSelect={setSelectedAmount}
         selectedId={selectedAmount}
         currencyName={currentCurrency.code}
-        currencyImage={
-          currentCurrency.code === "RUB"
-            ? game.currencyImage
-            : "/assets/EN.webp"
-        }
+        currencyImage={game.currencyImage}
       />
       <div data-step="user-id" className="px-4 md:px-0">
         <UserIdForm
@@ -946,11 +942,7 @@ export function OrderBlock({
                 onSelect={setSelectedAmount}
                 selectedId={selectedAmount}
                 currencyName={currentCurrency.code}
-                currencyImage={
-                  currentCurrency.code === "RUB"
-                    ? game.currencyImage
-                    : "/assets/EN.webp"
-                }
+                currencyImage={game.currencyImage}
               />
             </div>
             <div
