@@ -197,24 +197,14 @@ export default function Header({ isSearchBar = true }: IHeader) {
             {/* Currency Display */}
             <Link
               href="/language-currency"
-              className="hidden md:flex items-center gap-1 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg mr-2 transition-colors duration-200 cursor-pointer"
+              className="items-center gap-1 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg mr-2 transition-colors duration-200 cursor-pointer"
             >
               <span className="text-xs font-roboto font-medium text-gray-600">
                 {selectedCurrency.code}
               </span>
               <span className="text-sm">{selectedCurrency.symbol}</span>
             </Link>
-            <Link
-              href="/language-currency"
-              className={`block text-dark font-condensed lg:hidden ${
-                isTablet ? "text-lg py-1" : ""
-              }`}
-            >
-              <div className="flex items-center">
-                <span className="mr-2">{selectedCurrency.flag}</span>
-                <span>{selectedCurrency.code}</span>
-              </div>
-            </Link>
+
             <LanguageSwitcher />
             <AuthMenu />
             <button

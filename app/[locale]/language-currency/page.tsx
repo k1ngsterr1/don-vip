@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useCurrency } from "@/entities/currency/hooks/use-currency";
 import { useLanguageStore } from "@/shared/stores";
 import { Button } from "@/shared/ui/button/button";
 import { ArrowLeft, Loader2, Search, X } from "lucide-react";
-import { Link } from "@/i18n/routing";
 
 interface CountryCurrency {
   country: string;
@@ -98,22 +97,10 @@ export default function LanguageCurrencyPage() {
   const { selectedCurrency, currencies, isLoading, error, setCurrency } =
     useCurrency();
 
-  // Zustand store for language settings
-  const {
-    selectedLocale,
-    selectedCountry,
-    setSelectedLocale,
-    setSelectedCountry,
-  } = useLanguageStore();
+  // Zustand store for currency settings
+  const { selectedCountry, setSelectedCountry } = useLanguageStore();
 
   const [searchQuery, setSearchQuery] = useState("");
-
-  // Initialize store with current locale on mount
-  useEffect(() => {
-    if (!selectedLocale || selectedLocale !== currentLocale) {
-      setSelectedLocale(currentLocale);
-    }
-  }, [currentLocale, selectedLocale, setSelectedLocale]);
 
   const handleCountrySelect = (country: CountryCurrency) => {
     setSelectedCountry(country);
@@ -122,6 +109,8 @@ export default function LanguageCurrencyPage() {
     const currency = currencies.find((c) => c.code === country.currency);
     if (currency) {
       setCurrency(currency);
+      // Save currency and immediately redirect to home
+      localStorage.setItem("selectedCurrency", JSON.stringify(currency));
     } else {
       // If currency not found in list, create a basic currency object
       const basicCurrency = {
@@ -132,38 +121,24 @@ export default function LanguageCurrencyPage() {
         rate: 1, // Default rate, will be updated when API loads
       };
       setCurrency(basicCurrency);
+      // Save currency and immediately redirect to home
+      localStorage.setItem("selectedCurrency", JSON.stringify(basicCurrency));
     }
+
+    // Immediately redirect to home and reload
+    const homePath = `/${currentLocale}`;
+    router.push(homePath);
+    setTimeout(() => {
+      window.location.reload();
+    }, 300);
   };
 
   const handleLanguageChange = (newLocale: string) => {
-    setSelectedLocale(newLocale);
+    // Language functionality removed - currency only
   };
 
   const handleSaveSettings = () => {
-    if (selectedCurrency) {
-      localStorage.setItem(
-        "selectedCurrency",
-        JSON.stringify(selectedCurrency)
-      );
-    }
-
-    // Language and country are already persisted in Zustand store
-
-    // Check if language was changed and redirect with new locale
-    if (selectedLocale !== currentLocale) {
-      // Redirect to home page with new locale and reload
-      const newPath = `/${selectedLocale}`;
-      window.location.href = newPath;
-    } else {
-      // Redirect to home page first, then reload after timeout
-      const homePath = `/${currentLocale}`;
-      router.push(homePath);
-
-      // Reload the page after a short timeout to apply settings
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
-    }
+    // Auto-save functionality moved to handleCountrySelect
   };
 
   // Get localized region name
@@ -226,7 +201,7 @@ export default function LanguageCurrencyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white pb-32 md:pb-8">
+    <div className="min-h-screen bg-white pb-8">
       {/* Header */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 md:py-6">
@@ -240,7 +215,7 @@ export default function LanguageCurrencyPage() {
                 <ArrowLeft className="h-4 w-4 md:h-5 md:w-5 text-gray-600" />
               </Button>
               <h1 className="text-sm md:text-[16px] font-unbounded font-bold text-dark">
-                {t("content.title")}
+                {t("content.currencyTitle") || "Select Currency"}
               </h1>
             </div>
           </div>
@@ -248,8 +223,8 @@ export default function LanguageCurrencyPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 md:py-8">
-        <div className="flex flex-col xl:flex-row gap-6 xl:gap-8">
-          {/* Left Column - Countries List */}
+        <div className="flex flex-col">
+          {/* Countries List */}
           <div className="flex-1">
             {/* Search Bar */}
             <div className="mb-6 md:mb-8">
@@ -388,113 +363,6 @@ export default function LanguageCurrencyPage() {
                 )}
               </div>
             )}
-          </div>
-
-          {/* Right Column - Settings Panel */}
-          <div className="w-full xl:w-80 xl:flex-shrink-0">
-            {/* Mobile: Fixed bottom panel */}
-            <div className="xl:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 p-4">
-              <div className="max-w-sm mx-auto">
-                <h3 className="text-dark font-roboto font-medium mb-3 text-center">
-                  {t("content.title")}
-                </h3>
-
-                {/* Selected Country Display */}
-                {selectedCountry && (
-                  <div className="mb-3 flex items-center justify-center gap-3 text-dark">
-                    <span className="text-xl">{selectedCountry.flag}</span>
-                    <div className="text-center">
-                      <div className="font-medium text-sm">
-                        {selectedCountry.country}
-                      </div>
-                      <div className="text-xs text-gray-600">
-                        {selectedCountry.language}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Language Selector */}
-                <div className="mb-3">
-                  <div className="flex items-center justify-center gap-2 text-dark text-sm">
-                    <span className="text-lg">🌐</span>
-                    <span className="font-roboto">
-                      {currentLocale === "ru" ? "Русский" : "English"}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Currency Selector */}
-                <div className="mb-4">
-                  <div className="flex items-center justify-center gap-2 text-dark text-sm">
-                    <span className="text-lg">💵</span>
-                    <span className="font-roboto">
-                      {selectedCurrency.code} ({selectedCurrency.symbol})
-                    </span>
-                  </div>
-                </div>
-
-                {/* Save Button */}
-                <Button
-                  onClick={handleSaveSettings}
-                  className="w-full bg-blue hover:bg-blue/90 text-white py-3 rounded-lg font-roboto font-medium"
-                >
-                  {t("content.saveSettings")}
-                </Button>
-              </div>
-            </div>
-
-            {/* Desktop/Tablet: Sticky sidebar */}
-            <div className="hidden xl:block">
-              <div className="sticky top-[128px] z-40 bg-white border border-gray-200 rounded-xl p-6 shadow-lg">
-                <h3 className="text-dark font-roboto font-medium mb-4">
-                  {t("content.title")}
-                </h3>
-
-                {/* Selected Country Display */}
-                {selectedCountry && (
-                  <div className="mb-4 flex items-center gap-3 text-dark">
-                    <span className="text-2xl">{selectedCountry.flag}</span>
-                    <div>
-                      <div className="font-medium">
-                        {selectedCountry.country}
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        {selectedCountry.language}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Language Selector */}
-                <div className="mb-4">
-                  <div className="flex items-center gap-2 text-dark mb-2">
-                    <span className="text-xl">🌐</span>
-                    <span className="font-roboto">
-                      {currentLocale === "ru" ? "Русский" : "English"}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Currency Selector */}
-                <div className="mb-6">
-                  <div className="flex items-center gap-2 text-dark mb-2">
-                    <span className="text-xl">💵</span>
-                    <span className="font-roboto">
-                      {selectedCurrency.code} ({selectedCurrency.symbol})
-                    </span>
-                  </div>
-                </div>
-
-                {/* Save Button */}
-                <Button
-                  onClick={handleSaveSettings}
-                  className="w-full bg-blue hover:bg-blue/90 text-white py-3 rounded-lg font-roboto font-medium"
-                >
-                  {t("content.saveSettings")}
-                </Button>
-              </div>
-            </div>
           </div>
         </div>
       </div>
