@@ -41,7 +41,7 @@ interface GameData {
   image: string;
   currencyName: string;
   currencyImage: string;
-  requiresServer: boolean;
+  isServerRequired: boolean;
 }
 
 interface CurrencyOption {
@@ -185,7 +185,7 @@ export function OrderBlock({
     // Если ID валиден и выбран пакет, автоматически переходим к оплате
     if (isValid && selectedAmount !== null && userId.trim() !== "") {
       // Для игр требующих сервер, проверяем что сервер ID тоже введен
-      if (game?.requiresServer && serverId.trim() === "") {
+      if (game?.isServerRequired && serverId.trim() === "") {
         return; // Не переходим если сервер ID не введен
       }
 
@@ -200,7 +200,7 @@ export function OrderBlock({
     // Если ID достаточно длинный и выбран пакет, автоматически переходим к оплате
     if (value.trim().length >= 4 && selectedAmount !== null) {
       // Для игр требующих сервер, проверяем что сервер ID тоже введен
-      if (game?.requiresServer && serverId.trim() === "") {
+      if (game?.isServerRequired && serverId.trim() === "") {
         return; // Не переходим если сервер ID не введен
       }
 
@@ -296,8 +296,7 @@ export function OrderBlock({
         currencyImage:
           product.currency_image ||
           `/currency-${product.type.toLowerCase()}.png`,
-        requiresServer:
-          product.type === "Smile" && product.smile_api_game !== "pubgmobile",
+        isServerRequired: product.isServerRequired || false,
       });
 
       setCurrencyOptions(
@@ -339,7 +338,7 @@ export function OrderBlock({
   const isFormValid =
     selectedCurrency !== null &&
     userId.trim() !== "" &&
-    (!game.requiresServer || serverId.trim() !== "") &&
+    (!game.isServerRequired || serverId.trim() !== "") &&
     isUserIdValid;
 
   // Get user identifier from various sources
@@ -394,7 +393,7 @@ export function OrderBlock({
       price: formattedPrice,
       payment_method: selectedPaymentMethod,
       user_game_id: !userId || userId.trim() === "" ? "unknown" : userId,
-      server_id: game.requiresServer ? serverId : undefined,
+      server_id: game.isServerRequired ? serverId : undefined,
       coupon_code: couponInfo?.code || undefined,
     };
 
@@ -412,7 +411,7 @@ export function OrderBlock({
             gameName: game.name,
             userId: userId,
             userIdDB: userIdDB,
-            serverId: game.requiresServer ? serverId : "",
+            serverId: game.isServerRequired ? serverId : "",
           });
 
           window.location.href = `/t-bank?${params.toString()}`;
@@ -500,7 +499,8 @@ export function OrderBlock({
         <UserIdForm
           apiGame={product?.smile_api_game}
           productType={product?.type}
-          requiresServer={game.requiresServer}
+          requiresServer={false} // Fallback, will use gameData instead
+          gameData={game}
           userId={userId}
           serverId={serverId}
           onUserIdChange={handleUserIdChange}
@@ -613,7 +613,8 @@ export function OrderBlock({
               <UserIdForm
                 apiGame={product?.smile_api_game}
                 productType={product?.type}
-                requiresServer={game.requiresServer}
+                requiresServer={false} // Fallback, will use gameData instead
+                gameData={game}
                 userId={userId}
                 serverId={serverId}
                 onUserIdChange={handleUserIdChange}

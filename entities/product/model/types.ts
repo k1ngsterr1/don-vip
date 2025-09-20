@@ -26,6 +26,7 @@ export interface Product {
   type: "Bigo" | "Smile";
   currency_image: string; // URL to the currency icon image
   currency_name: string; // Name of the currency (e.g., USD, EUR, RUB)
+  isServerRequired?: boolean; // Whether the game requires server selection
   created_at: string;
   updated_at: string;
 }

@@ -13,6 +13,7 @@ interface UserIdFormProps {
   apiGame?: string;
   productType?: string;
   requiresServer: boolean;
+  gameData?: any; // Добавляем данные игры из API
   userId: string;
   serverId: string;
   onUserIdChange: (value: string) => void;
@@ -24,6 +25,7 @@ export function UserIdForm({
   apiGame,
   productType,
   requiresServer,
+  gameData,
   userId,
   serverId,
   onUserIdChange,
@@ -37,7 +39,15 @@ export function UserIdForm({
   const needsEmail = isPubgMobile; // Убираем DonatBank из условия email
   const locale = useLocale();
 
-  console.log("UserIdForm initialized:", { productType, isBigo }); // Для отладки
+  // Определяем нужность сервера из API данных игры
+  const isServerRequired = gameData?.isServerRequired || requiresServer;
+
+  console.log("UserIdForm initialized:", {
+    productType,
+    isBigo,
+    isServerRequired,
+    gameData,
+  }); // Для отладки
   const [userIdInput, setUserIdInput] = useState(userId);
   const [serverIdInput, setServerIdInput] = useState(serverId);
   const [showSpaceWarning, setShowSpaceWarning] = useState(false);
@@ -215,17 +225,17 @@ export function UserIdForm({
         <h2 className="text-dark font-roboto font-bold">
           2.{" "}
           {needsEmail
-            ? requiresServer
+            ? isServerRequired
               ? "Enter your Email and Server ID"
               : "Enter your Email"
-            : requiresServer
+            : isServerRequired
             ? t("enterIdAndServer")
             : t("enterIdNoPrefix")}
         </h2>
         <CustomTooltip
           content={
             <div className="p-1">
-              {requiresServer
+              {isServerRequired
                 ? t("tooltipTextWithServer", {
                     defaultValue:
                       "Enter your user ID and server ID to proceed with the order. Both fields are required for proper identification.",
@@ -243,7 +253,7 @@ export function UserIdForm({
         </CustomTooltip>
       </div>
       <div className="space-y-3">
-        {!requiresServer && (
+        {!isServerRequired && (
           <div className="relative">
             {!needsEmail && (
               <div className="absolute left-3 font-roboto font-black text-black text-[13px] top-1/2 transform -translate-y-1/2 text-sm">
@@ -291,7 +301,7 @@ export function UserIdForm({
           </div>
         )}
 
-        {requiresServer ? (
+        {isServerRequired ? (
           <>
             <div className="relative">
               <input
