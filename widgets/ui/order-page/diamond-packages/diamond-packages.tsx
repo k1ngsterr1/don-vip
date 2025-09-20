@@ -195,13 +195,29 @@ export function DiamondPackages({
               )}
             >
               <div className="flex items-center gap-2 mb-1">
-                <div className="text-lg">💎</div>
+                <div className="text-lg">
+                  <img
+                    src={currencyImage}
+                    alt={currencyName}
+                    className="w-5 h-5 md:w-6 md:h-6 object-contain"
+                    onError={(e) => {
+                      // Fallback to emoji if image fails to load
+                      e.currentTarget.style.display = "none";
+                      const nextSibling = e.currentTarget
+                        .nextElementSibling as HTMLElement;
+                      if (nextSibling) {
+                        nextSibling.style.display = "inline";
+                      }
+                    }}
+                  />
+                  <span style={{ display: "none" }}>💎</span>
+                </div>
                 <div className="text-[14px] md:text-[16px] font-semibold text-[#212529] leading-tight">
                   {pkg.amount.toLocaleString()}
                 </div>
               </div>
               <div className="text-[11px] md:text-[12px] text-[#6c757d] mb-1">
-                Diamonds
+                {currencyName}
               </div>
               <div className="text-[13px] md:text-[14px] font-medium text-[#212529]">
                 {pkg.price}
