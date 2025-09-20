@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 interface GameDescriptionProps {
   gameName?: string;
   description?: string;
@@ -67,7 +69,15 @@ export function GameDescription({
       <div className="px-3 pb-3">
         <div className="flex items-start gap-3">
           {/* Game Icon */}
-          <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex-shrink-0" />
+          <div className="w-12 h-12 rounded-lg flex-shrink-0 overflow-hidden">
+            <Image
+              src="/bigo_new.png"
+              alt={gameName}
+              width={480}
+              height={480}
+              className="w-full h-full object-cover"
+            />
+          </div>
 
           {/* Game Info */}
           <div>

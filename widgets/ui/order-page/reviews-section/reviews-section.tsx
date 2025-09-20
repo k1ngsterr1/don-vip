@@ -30,8 +30,9 @@ const defaultReviews: Review[] = [
   {
     id: "1",
     userName: "Dante Asmo",
-    avatar: "/avatars/user1.jpg",
-    date: "17 мар. 2025 г.",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+    date: "15 сен. 2025 г. 14:30 ",
     rating: 5,
     comment:
       "Отличный сервис! Все пришло очень быстро. Сначала думал что развод, а нет, всё четко. Большое спасибо!",
@@ -42,8 +43,9 @@ const defaultReviews: Review[] = [
   {
     id: "2",
     userName: "Zhora Boroda",
-    avatar: "/avatars/user2.jpg",
-    date: "15 мар. 2025 г.",
+    avatar:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+    date: "28 авг. 2025 г. 18:45 ",
     rating: 1,
     comment:
       "Больше не обращусь к этому сервису! Из-за вас, моя борода выпала, а на голове выросли кучерявые волосы!",
@@ -54,8 +56,9 @@ const defaultReviews: Review[] = [
   {
     id: "3",
     userName: "Davo Marshal",
-    avatar: "/avatars/user3.jpg",
-    date: "12 мар. 2025 г.",
+    avatar:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
+    date: "3 сен. 2025 г. 21:15 ",
     rating: 5,
     comment:
       "Брат джан, спасибо за классный сервис! Кайфую, от скорости, всегда буду теперь тут покупать!",
@@ -148,8 +151,7 @@ export function ReviewsSection({
       <div className="flex items-center justify-between mb-4">
         <div className="bg-[#f3f4f7] px-3 py-2 rounded-lg">
           <span className="text-black text-xs font-light">
-            {reviewTexts.reviews}{" "}
-            {metadata ? `(${metadata.totalReviews})` : `(${reviews.length})`}
+            {reviewTexts.reviews} {metadata ? `(3)` : `(3)`}
           </span>
         </div>
 
@@ -162,14 +164,24 @@ export function ReviewsSection({
 
       {/* Reviews */}
       <div className="space-y-4">
-        {displayedReviews.map((review) => (
+        {defaultReviews.slice(0, 3).map((review) => (
           <div key={review.id} className="bg-[#f3f4f7] rounded-lg p-3">
             {/* User info and like */}
             <div className="flex items-start justify-between mb-2">
               <div className="flex items-start gap-2">
                 {/* Avatar */}
                 <div className="w-8 h-8 rounded-full bg-gray-300 overflow-hidden">
-                  <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500" />
+                  {review.avatar ? (
+                    <Image
+                      src={review.avatar}
+                      alt={review.userName}
+                      width={32}
+                      height={32}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500" />
+                  )}
                 </div>
 
                 {/* Name and date */}

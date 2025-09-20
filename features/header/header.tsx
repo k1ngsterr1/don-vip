@@ -206,7 +206,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
             </Link>
             <Link
               href="/language-currency"
-              className={`block text-dark font-condensed ${
+              className={`block text-dark font-condensed lg:hidden ${
                 isTablet ? "text-lg py-1" : ""
               }`}
             >
