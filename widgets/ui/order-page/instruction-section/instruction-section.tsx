@@ -3,13 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { cn } from "@/shared/utils/cn";
-import {
-  Info,
-  Heart,
-  ClipboardList,
-  HelpCircle,
-  ArrowRight,
-} from "lucide-react";
+import { Info, Heart, ClipboardList, HelpCircle } from "lucide-react";
 import type {
   GameContent,
   InstructionStep,
@@ -194,9 +188,11 @@ export function InstructionContent({
         {/* Steps */}
         <div className="p-3 pt-0">
           <div className="text-gray-800 text-sm font-normal leading-relaxed space-y-2">
-            {instruction.steps.map((step) => (
-              <div key={step.id} className="flex items-center gap-2">
-                <ArrowRight className="w-4 h-4 text-gray-600" />
+            {instruction.steps.map((step, index) => (
+              <div key={step.id} className="flex items-start gap-2">
+                <div className="w-5 h-5 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0 mt-0.5">
+                  {index + 1}
+                </div>
                 <p>
                   {step.highlight ? (
                     <>

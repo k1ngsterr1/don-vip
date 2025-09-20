@@ -73,9 +73,9 @@ export function DiamondPackages({
   const t =
     translations[locale as keyof typeof translations] || translations.ru;
 
-  // На мобильных показываем только первые 4 пакета, если не нажали "Показать все"
+  // На мобильных показываем только первые 6 пакетов, если не нажали "Показать все"
   // На PC показываем все пакеты сразу
-  const MOBILE_VISIBLE_COUNT = 4;
+  const MOBILE_VISIBLE_COUNT = 6;
   const displayedPackages =
     isMobile && !showAll ? packages.slice(0, MOBILE_VISIBLE_COUNT) : packages;
   const hasMorePackages = isMobile && packages.length > MOBILE_VISIBLE_COUNT;
@@ -178,7 +178,7 @@ export function DiamondPackages({
 
   return (
     <div className="px-4 py-6 md:px-0">
-      <div className="space-y-3 md:space-y-0 md:flex md:flex-wrap md:gap-3">
+      <div className="grid grid-cols-2 gap-2 sm:gap-3 md:flex md:flex-wrap md:gap-3 lg:gap-4">
         {displayedPackages.map((pkg, index) => {
           const isSelected = selectedId === pkg.id;
           const hasDiscount = pkg.discount && pkg.discount > 0;
@@ -188,30 +188,31 @@ export function DiamondPackages({
               key={pkg.id}
               onClick={() => handlePackageSelect(pkg.id)}
               className={cn(
-                "h-[68px] rounded-xl px-4 cursor-pointer transition-all duration-200 border flex items-center justify-between md:w-[calc(50%-6px)]",
+                "h-[68px] rounded-xl px-3 sm:px-4 cursor-pointer transition-all duration-200 border flex items-center justify-between md:w-[calc(50%-6px)] lg:w-[calc(33.333%-11px)]",
                 isSelected
                   ? "border-[#03cc60] bg-[#eeeff3]"
                   : "border-transparent bg-[#eeeff3] hover:border-gray-300"
               )}
             >
-              <div className="flex items-center gap-3">
-                <div className="text-2xl">💎</div>
-                <div>
-                  <div className="text-[18px] font-medium text-[#212529] leading-tight">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="text-xl sm:text-2xl">💎</div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-[16px] sm:text-[18px] font-medium text-[#212529] leading-tight truncate">
                     {pkg.amount.toLocaleString()} Diamonds
                   </div>
-                  <div className="text-[14px] text-[#6c757d] leading-tight">
+                  <div className="text-[13px] sm:text-[14px] text-[#6c757d] leading-tight">
                     {pkg.price}
                   </div>
                 </div>
               </div>
               {isSelected && (
-                <div className="text-[#03cc60] text-xl">
+                <div className="text-[#03cc60] text-lg sm:text-xl flex-shrink-0">
                   <svg
-                    width="20"
-                    height="20"
+                    width="18"
+                    height="18"
                     viewBox="0 0 20 20"
                     fill="currentColor"
+                    className="sm:w-5 sm:h-5"
                   >
                     <path
                       fillRule="evenodd"
@@ -231,7 +232,7 @@ export function DiamondPackages({
         <div className="mt-6 text-center md:hidden">
           <button
             onClick={() => setShowAll(!showAll)}
-            className="text-blue-600 hover:text-blue-700 font-medium text-sm underline transition-colors md:bg-blue-50 md:hover:bg-blue-100 md:px-4 md:py-2 md:rounded-lg md:no-underline md:border md:border-blue-200"
+            className="bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 font-medium text-sm px-6 py-3 rounded-lg border border-blue-200 hover:border-blue-300 transition-all duration-200 shadow-sm hover:shadow-md"
           >
             {showAll ? t.hide : t.showAll}
           </button>

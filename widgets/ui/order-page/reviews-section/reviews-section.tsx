@@ -182,7 +182,6 @@ export function ReviewsSection({
               </div>
 
               {/* Like button */}
-              <div className="text-lg">{review.isPositive ? "👍" : "👎"}</div>
             </div>
 
             {/* Comment */}
