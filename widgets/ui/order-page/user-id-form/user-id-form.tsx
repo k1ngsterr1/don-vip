@@ -31,7 +31,7 @@ export function UserIdForm({
   onValidationChange,
 }: UserIdFormProps) {
   const t = useTranslations("orderBlock.user");
-  const isPubgMobile = apiGame === "pubgmobile";
+  const isPubgMobile = apiGame === "pubgmobile" || apiGame === "PUBG";
   const isDonatBank = productType === "DonatBank";
   const isBigo = productType === "Bigo";
   const needsEmail = isPubgMobile; // Убираем DonatBank из условия email
@@ -336,19 +336,39 @@ export function UserIdForm({
               )}
             </div>
             <div className="relative">
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                (
-              </div>
-              <input
-                type="text"
-                placeholder={t("userServerPlaceholder")}
-                value={serverIdInput}
-                onChange={(e) => handleServerIdChange(e.target.value)}
-                className="w-full p-3 px-8 border border-gray-200 rounded-lg text-center"
-              />
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                )
-              </div>
+              {isPubgMobile ? (
+                <select
+                  value={serverIdInput}
+                  onChange={(e) => handleServerIdChange(e.target.value)}
+                  className="w-full p-3 border border-gray-200 rounded-lg bg-white"
+                >
+                  <option value="">
+                    {t("selectServer") || "Выберите сервер"}
+                  </option>
+                  <option value="Asia">Asia</option>
+                  <option value="Europe">Europe</option>
+                  <option value="North America">North America</option>
+                  <option value="South America">South America</option>
+                  <option value="Middle East">Middle East</option>
+                  <option value="Korea/Japan">Korea/Japan</option>
+                </select>
+              ) : (
+                <>
+                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    (
+                  </div>
+                  <input
+                    type="text"
+                    placeholder={t("userServerPlaceholder")}
+                    value={serverIdInput}
+                    onChange={(e) => handleServerIdChange(e.target.value)}
+                    className="w-full p-3 px-8 border border-gray-200 rounded-lg text-center"
+                  />
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    )
+                  </div>
+                </>
+              )}
             </div>
           </>
         ) : null}
