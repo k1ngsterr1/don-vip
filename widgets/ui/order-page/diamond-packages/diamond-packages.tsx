@@ -84,9 +84,11 @@ export function DiamondPackages({
   const getFallbackEmoji = (currencyName: string) => {
     const name = currencyName.toLowerCase();
     if (name.includes("diamond")) return "💎";
-    if (name.includes("uc") || name.includes("coins")) return "🪙";
+    if (name === "uc" || name.includes("uc") || name.includes("coins"))
+      return "🪙";
     if (name.includes("gold")) return "🏆";
     if (name.includes("gem")) return "💎";
+    if (name.includes("crystal")) return "💎";
     return "🪙"; // Default fallback
   };
 
