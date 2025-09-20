@@ -41,11 +41,38 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "Metadata" });
 
+  const title = `${t("title")} | DonVip`;
+  const description = t("description");
+
   return {
-    title: t("title"),
-    description: t("description"),
+    title: {
+      default: title,
+      template: "%s | DonVip",
+    },
+    description,
+    keywords:
+      "game currency, virtual currency, gaming, mobile games, PUBG, Bigo Live, Mobile Legends, DonVip",
     icons: {
       icon: "/favicon.png",
+    },
+    openGraph: {
+      title,
+      description,
+      siteName: "DonVip",
+      type: "website",
+      locale: locale === "ru" ? "ru_RU" : "en_US",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+    verification: {
+      google: "your-google-verification-code", // Добавьте свой код верификации Google
     },
   };
 }

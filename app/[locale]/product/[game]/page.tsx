@@ -14,13 +14,67 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const gameId = parseInt(resolvedParams.game, 10);
     const gameData = await productService.findOne(gameId);
 
+    const gameName = gameData.name;
+    const gameDescription = gameData.description || gameData.description_en;
+    const locale = resolvedParams.locale;
+
+    // Базовые тексты для метатегов
+    const baseTexts = {
+      ru: {
+        buyPrefix: "Купить",
+        cheapPrefix: "Дешево и быстро",
+        suffix: "| DonVip",
+      },
+      en: {
+        buyPrefix: "Buy",
+        cheapPrefix: "Cheap and fast",
+        suffix: "| DonVip",
+      },
+    };
+
+    const texts = baseTexts[locale as keyof typeof baseTexts] || baseTexts.en;
+
+    // Формируем title с названием игры и брендом
+    const title = `${texts.buyPrefix} ${gameName} ${texts.suffix}`;
+
+    // Формируем описание
+    const description = gameDescription
+      ? `${texts.cheapPrefix} ${gameName}. ${gameDescription.slice(0, 120)}...`
+      : `${texts.cheapPrefix} ${gameName} ${texts.suffix}`;
+
     return {
-      title: `${gameData.name}`,
-      description: gameData.description,
+      title,
+      description,
+      keywords: `${gameName}, ${texts.buyPrefix.toLowerCase()}, game currency, virtual currency, gaming, DonVip`,
+      openGraph: {
+        title,
+        description,
+        images: gameData.image ? [gameData.image] : [],
+        siteName: "DonVip",
+        type: "website",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        images: gameData.image ? [gameData.image] : [],
+      },
+      robots: {
+        index: true,
+        follow: true,
+      },
     };
   } catch (error) {
+    const locale = resolvedParams.locale;
+    const fallbackTitle = locale === "ru" ? "Игра | DonVip" : "Game | DonVip";
+    const fallbackDescription =
+      locale === "ru"
+        ? "Покупка игровой валюты на DonVip"
+        : "Buy game currency on DonVip";
+
     return {
-      title: resolvedParams.locale === "ru" ? "Игра" : "Game",
+      title: fallbackTitle,
+      description: fallbackDescription,
     };
   }
 }

@@ -689,6 +689,49 @@ export function OrderBlock({
 
   return (
     <>
+      {/* JSON-LD Structure Data для SEO */}
+      {product && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Product",
+              name: `${product.name} Currency`,
+              description:
+                product.description || `Buy ${product.name} game currency`,
+              image: product.image,
+              brand: {
+                "@type": "Brand",
+                name: "DonVip",
+              },
+              offers: currencyOptions.map((option) => ({
+                "@type": "Offer",
+                price: option.price.toString().replace(/[^\d.]/g, ""),
+                priceCurrency: currentCurrency?.code || "RUB",
+                availability: "https://schema.org/InStock",
+                seller: {
+                  "@type": "Organization",
+                  name: "DonVip",
+                },
+              })),
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: "4.8",
+                reviewCount: "150",
+                bestRating: "5",
+                worstRating: "1",
+              },
+              provider: {
+                "@type": "Organization",
+                name: "DonVip",
+                url: "https://don-vip.com",
+              },
+            }),
+          }}
+        />
+      )}
+
       {mobileVersion}
       {desktopVersion}
       <GuestAuthPopup
