@@ -216,7 +216,7 @@ export function ReviewsSection({
 
       {/* Show all button */}
       {!showAll && reviews.length > 3 && (
-        <div className="mt-6 text-center">
+        <div className="mt-1 mb-8 text-center">
           <Link href="/reviews">
             <button
               className="bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 font-medium text-sm px-6 py-3 rounded-lg border border-blue-200 hover:border-blue-300 transition-all duration-200 shadow-sm hover:shadow-md"

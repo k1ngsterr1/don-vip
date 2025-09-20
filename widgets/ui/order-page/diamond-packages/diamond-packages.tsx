@@ -178,7 +178,7 @@ export function DiamondPackages({
 
   return (
     <div className="px-4 py-1 md:px-0">
-      <div className="grid grid-cols-2 gap-2 sm:gap-3 md:flex md:flex-wrap md:gap-3 lg:gap-4">
+      <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-3 md:gap-3 lg:gap-4">
         {displayedPackages.map((pkg, index) => {
           const isSelected = selectedId === pkg.id;
           const hasDiscount = pkg.discount && pkg.discount > 0;
@@ -188,31 +188,31 @@ export function DiamondPackages({
               key={pkg.id}
               onClick={() => handlePackageSelect(pkg.id)}
               className={cn(
-                "h-[68px] rounded-xl px-3 sm:px-4 cursor-pointer transition-all duration-200 border flex items-center justify-between md:w-[calc(50%-6px)] lg:w-[calc(33.333%-11px)]",
+                "relative rounded-xl p-3 cursor-pointer transition-all duration-200 border-2 min-h-[80px] flex flex-col justify-center",
                 isSelected
-                  ? "border-[#03cc60] bg-[#eeeff3]"
-                  : "border-transparent bg-[#eeeff3] hover:border-gray-300"
+                  ? "border-[#007bff] bg-[#f8f9fa]"
+                  : "border-[#e9ecef] bg-white hover:border-[#dee2e6]"
               )}
             >
-              <div className="flex items-center gap-2 sm:gap-3">
-                <div className="text-xl sm:text-2xl">💎</div>
-                <div className="min-w-0 flex-1">
-                  <div className="text-[16px] sm:text-[18px] font-medium text-[#212529] leading-tight truncate">
-                    {pkg.amount.toLocaleString()} Diamonds
-                  </div>
-                  <div className="text-[13px] sm:text-[14px] text-[#6c757d] leading-tight">
-                    {pkg.price}
-                  </div>
+              <div className="flex items-center gap-2 mb-1">
+                <div className="text-lg">💎</div>
+                <div className="text-[14px] md:text-[16px] font-semibold text-[#212529] leading-tight">
+                  {pkg.amount.toLocaleString()}
                 </div>
               </div>
+              <div className="text-[11px] md:text-[12px] text-[#6c757d] mb-1">
+                Diamonds
+              </div>
+              <div className="text-[13px] md:text-[14px] font-medium text-[#212529]">
+                {pkg.price}
+              </div>
               {isSelected && (
-                <div className="text-[#03cc60] text-lg sm:text-xl flex-shrink-0">
+                <div className="absolute top-2 right-2 text-[#007bff] text-sm">
                   <svg
-                    width="18"
-                    height="18"
+                    width="16"
+                    height="16"
                     viewBox="0 0 20 20"
                     fill="currentColor"
-                    className="sm:w-5 sm:h-5"
                   >
                     <path
                       fillRule="evenodd"
@@ -229,7 +229,7 @@ export function DiamondPackages({
 
       {/* Show all button - только для мобильных устройств если есть скрытые пакеты */}
       {hasMorePackages && (
-        <div className="mt-6 text-center md:hidden">
+        <div className="mt-1 mb-8 text-center md:hidden">
           <button
             onClick={() => setShowAll(!showAll)}
             className="bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 font-medium text-sm px-6 py-3 rounded-lg border border-blue-200 hover:border-blue-300 transition-all duration-200 shadow-sm hover:shadow-md"
