@@ -10,7 +10,6 @@ import { ArrowLeft, Loader2, Search, X } from "lucide-react";
 
 interface CountryCurrency {
   country: string;
-  language: string;
   currency: string;
   flag: string;
 }
@@ -42,50 +41,30 @@ const REGION_TRANSLATIONS = {
 // Countries with their currencies organized by regions like SEAGM
 const COUNTRIES_BY_REGION = {
   EUROPE: [
-    { country: "AUSTRIA", language: "Deutsch", currency: "EUR", flag: "🇦🇹" },
-    { country: "BELGIUM", language: "Français", currency: "EUR", flag: "🇧🇪" },
-    { country: "CYPRUS", language: "Ελληνικά", currency: "EUR", flag: "🇨🇾" },
-    { country: "ESTONIA", language: "Eesti", currency: "EUR", flag: "🇪🇪" },
-    { country: "FINLAND", language: "Suomi", currency: "EUR", flag: "🇫🇮" },
-    { country: "FRANCE", language: "Français", currency: "EUR", flag: "🇫🇷" },
-    { country: "GERMANY", language: "Deutsch", currency: "EUR", flag: "🇩🇪" },
-    { country: "GREECE", language: "Ελληνικά", currency: "EUR", flag: "🇬🇷" },
-    { country: "HUNGARY", language: "Magyar", currency: "HUF", flag: "🇭🇺" },
-    { country: "IRELAND", language: "English", currency: "EUR", flag: "🇮🇪" },
-    { country: "ITALY", language: "Italiano", currency: "EUR", flag: "🇮🇹" },
-    { country: "LATVIA", language: "Latviešu", currency: "EUR", flag: "🇱🇻" },
-    { country: "LITHUANIA", language: "Lietuvių", currency: "EUR", flag: "🇱🇹" },
-    {
-      country: "LUXEMBOURG",
-      language: "Français",
-      currency: "EUR",
-      flag: "🇱🇺",
-    },
-    { country: "MALTA", language: "English", currency: "EUR", flag: "🇲🇹" },
-    {
-      country: "NETHERLANDS",
-      language: "Nederlands",
-      currency: "EUR",
-      flag: "🇳🇱",
-    },
-    { country: "PORTUGAL", language: "Português", currency: "EUR", flag: "🇵🇹" },
-    {
-      country: "SLOVAKIA",
-      language: "Slovenčina",
-      currency: "EUR",
-      flag: "🇸🇰",
-    },
-    {
-      country: "SLOVENIA",
-      language: "Slovenščina",
-      currency: "EUR",
-      flag: "🇸🇮",
-    },
-    { country: "SPAIN", language: "Español", currency: "EUR", flag: "🇪🇸" },
+    { country: "AUSTRIA", currency: "EUR", flag: "🇦🇹" },
+    { country: "BELGIUM", currency: "EUR", flag: "🇧🇪" },
+    { country: "CYPRUS", currency: "EUR", flag: "🇨🇾" },
+    { country: "ESTONIA", currency: "EUR", flag: "🇪🇪" },
+    { country: "FINLAND", currency: "EUR", flag: "🇫🇮" },
+    { country: "FRANCE", currency: "EUR", flag: "🇫🇷" },
+    { country: "GERMANY", currency: "EUR", flag: "🇩🇪" },
+    { country: "GREECE", currency: "EUR", flag: "🇬🇷" },
+    { country: "HUNGARY", currency: "HUF", flag: "🇭🇺" },
+    { country: "IRELAND", currency: "EUR", flag: "🇮🇪" },
+    { country: "ITALY", currency: "EUR", flag: "🇮🇹" },
+    { country: "LATVIA", currency: "EUR", flag: "🇱🇻" },
+    { country: "LITHUANIA", currency: "EUR", flag: "🇱🇹" },
+    { country: "LUXEMBOURG", currency: "EUR", flag: "🇱🇺" },
+    { country: "MALTA", currency: "EUR", flag: "🇲🇹" },
+    { country: "NETHERLANDS", currency: "EUR", flag: "🇳🇱" },
+    { country: "PORTUGAL", currency: "EUR", flag: "🇵🇹" },
+    { country: "SLOVAKIA", currency: "EUR", flag: "🇸🇰" },
+    { country: "SLOVENIA", currency: "EUR", flag: "🇸🇮" },
+    { country: "SPAIN", currency: "EUR", flag: "🇪🇸" },
   ],
   ASIA: [
-    { country: "RUSSIA", language: "Русский", currency: "RUB", flag: "🇷🇺" },
-    { country: "KAZAKHSTAN", language: "Қазақша", currency: "KZT", flag: "🇰🇿" },
+    { country: "RUSSIA", currency: "RUB", flag: "🇷🇺" },
+    { country: "KAZAKHSTAN", currency: "KZT", flag: "🇰🇿" },
   ],
 };
 
@@ -97,9 +76,7 @@ export default function LanguageCurrencyPage() {
   // Hardcoded translations using useLocale
   const translations = {
     currencyTitle:
-      currentLocale === "ru"
-        ? "Выберите свой язык и валюту"
-        : "Select your language and currency",
+      currentLocale === "ru" ? "Выберите свою валюту" : "Select your currency",
     searchPlaceholder:
       currentLocale === "ru"
         ? "Поиск стран, валют..."
@@ -161,10 +138,6 @@ export default function LanguageCurrencyPage() {
     }, 300);
   };
 
-  const handleLanguageChange = (newLocale: string) => {
-    // Language functionality removed - currency only
-  };
-
   const handleSaveSettings = () => {
     // Auto-save functionality moved to handleCountrySelect
   };
@@ -186,8 +159,7 @@ export default function LanguageCurrencyPage() {
     return countries.filter(
       (country) =>
         country.country.toLowerCase().includes(query) ||
-        country.currency.toLowerCase().includes(query) ||
-        country.language.toLowerCase().includes(query)
+        country.currency.toLowerCase().includes(query)
     );
   };
 
@@ -340,7 +312,7 @@ export default function LanguageCurrencyPage() {
                                     : "border-gray-200 hover:border-gray-300"
                                 }`}
                               >
-                                <div className="flex items-center gap-1.5 md:gap-2 mb-1">
+                                <div className="flex items-center gap-1.5 md:gap-2 mb-2">
                                   <span className="text-base md:text-lg">
                                     {country.flag}
                                   </span>
@@ -358,14 +330,6 @@ export default function LanguageCurrencyPage() {
                                         : country.country}
                                     </div>
                                   </div>
-                                </div>
-                                <div className="text-[9px] sm:text-xs text-gray-500 mb-1">
-                                  {searchQuery
-                                    ? highlightText(
-                                        country.language,
-                                        searchQuery
-                                      )
-                                    : country.language}
                                 </div>
                                 <div
                                   className={`text-[10px] sm:text-xs font-medium ${

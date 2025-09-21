@@ -3,7 +3,6 @@ import { persist, createJSONStorage } from "zustand/middleware";
 
 interface CountryCurrency {
   country: string;
-  language: string;
   currency: string;
   flag: string;
 }
