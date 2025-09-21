@@ -199,9 +199,6 @@ export default function Header({ isSearchBar = true }: IHeader) {
               href="/language-currency"
               className="items-center gap-1 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg mr-2 transition-colors duration-200 cursor-pointer"
             >
-              <span className="text-xs font-roboto font-medium text-gray-600">
-                {selectedCurrency.code}
-              </span>
               <span className="text-sm">{selectedCurrency.symbol}</span>
             </Link>
 
