@@ -35,6 +35,7 @@ export function UserIdForm({
   productType,
   requiresServer,
   gameData,
+  productRequirements,
   userId,
   serverId,
   onUserIdChange,
@@ -48,17 +49,25 @@ export function UserIdForm({
   const isSmile =
     productType === "Smile" ||
     (apiGame && !isBigo && !isDonatBank && !isPubgMobile);
-  const needsEmail = isPubgMobile; // Убираем DonatBank из условия email
+  
+  // Use product requirements from the database instead of hardcoded logic
+  const needsEmail = productRequirements?.requireEmail || isPubgMobile; // Keep PUBG logic for backward compatibility
   const locale = useLocale();
 
-  // Определяем нужность сервера из API данных игры
-  const isServerRequired = gameData?.isServerRequired || requiresServer;
+  // Determine server requirement from product requirements or fallback to existing logic
+  const isServerRequired = 
+    productRequirements?.requireServer || 
+    productRequirements?.isServerRequired || 
+    gameData?.isServerRequired || 
+    requiresServer;
 
   console.log("UserIdForm initialized:", {
     productType,
     isBigo,
     isServerRequired,
     gameData,
+    productRequirements,
+    needsEmail,
   }); // Для отладки
   const [userIdInput, setUserIdInput] = useState(userId);
   const [serverIdInput, setServerIdInput] = useState(serverId);
@@ -332,6 +341,8 @@ export function UserIdForm({
               : "Enter your Email"
             : isServerRequired
             ? t("enterIdAndServer")
+            : productRequirements?.requireUID
+            ? "Enter your User ID and UID"
             : t("enterIdNoPrefix")}
         </h2>
         <CustomTooltip

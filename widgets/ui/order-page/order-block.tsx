@@ -852,6 +852,13 @@ export function OrderBlock({
           apiGame={product?.smile_api_game}
           productType={product?.type}
           gameData={game}
+          productRequirements={{
+            isServerRequired: product?.isServerRequired,
+            requireUserId: product?.requireUserId,
+            requireServer: product?.requireServer,
+            requireEmail: product?.requireEmail,
+            requireUID: product?.requireUID,
+          }}
           userId={userId}
           serverId={serverId}
           onUserIdChange={handleUserIdChange}
@@ -968,6 +975,13 @@ export function OrderBlock({
                 apiGame={product?.smile_api_game}
                 productType={product?.type}
                 gameData={game}
+                productRequirements={{
+                  isServerRequired: product?.isServerRequired,
+                  requireUserId: product?.requireUserId,
+                  requireServer: product?.requireServer,
+                  requireEmail: product?.requireEmail,
+                  requireUID: product?.requireUID,
+                }}
                 userId={userId}
                 serverId={serverId}
                 onUserIdChange={handleUserIdChange}
