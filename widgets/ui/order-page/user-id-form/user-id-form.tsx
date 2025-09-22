@@ -49,16 +49,16 @@ export function UserIdForm({
   const isSmile =
     productType === "Smile" ||
     (apiGame && !isBigo && !isDonatBank && !isPubgMobile);
-  
+
   // Use product requirements from the database instead of hardcoded logic
   const needsEmail = productRequirements?.requireEmail || isPubgMobile; // Keep PUBG logic for backward compatibility
   const locale = useLocale();
 
   // Determine server requirement from product requirements or fallback to existing logic
-  const isServerRequired = 
-    productRequirements?.requireServer || 
-    productRequirements?.isServerRequired || 
-    gameData?.isServerRequired || 
+  const isServerRequired =
+    productRequirements?.requireServer ||
+    productRequirements?.isServerRequired ||
+    gameData?.isServerRequired ||
     requiresServer;
 
   console.log("UserIdForm initialized:", {
