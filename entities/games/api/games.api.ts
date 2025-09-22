@@ -28,6 +28,8 @@ export interface GameContent {
   gameId: string;
   gameName: string;
   gameName_en?: string | null;
+  title?: string | null;
+  title_en?: string | null;
   instruction: GameInstruction;
   description: string;
   description_en?: string | null;

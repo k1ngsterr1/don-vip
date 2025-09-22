@@ -822,7 +822,14 @@ export function OrderBlock({
   const mobileVersion = (
     <div className="md:hidden min-h-screen bg-white">
       <Banner backgroundImage={game.image || "/banner.png"} height="120px" />
-      <GameInfoBlock gameName={game.name} />
+      <GameInfoBlock
+        gameName={game.name}
+        gameName_en={gameContent?.gameName_en}
+        title={gameContent?.title}
+        title_en={gameContent?.title_en}
+        description={gameContent?.description}
+        description_en={gameContent?.description_en}
+      />
       {/* <PromoBlock onLoginClick={() => console.log("Login clicked")} /> */}
 
       {/* Section title for mobile */}
@@ -927,7 +934,14 @@ export function OrderBlock({
           <div className="bg-white rounded-lg shadow-sm border border-gray-100 mt-6 overflow-hidden">
             <div className="p-6 border-b border-gray-100">
               <div className="">
-                <GameInfoBlock gameName={game.name} />
+                <GameInfoBlock
+                  gameName={game.name}
+                  gameName_en={gameContent?.gameName_en}
+                  title={gameContent?.title}
+                  title_en={gameContent?.title_en}
+                  description={gameContent?.description}
+                  description_en={gameContent?.description_en}
+                />
               </div>
               {/* <div>
                 <PromoBlock />
