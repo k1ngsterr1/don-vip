@@ -854,7 +854,7 @@ export function OrderBlock({
       </div>
 
       {/* Payment Method Selector */}
-      <div className="px-4 py-6 pb-0" data-step="payment">
+      <div className="px-4 py-[34px] pb-0" data-step="payment">
         <h2 className="text-base md:text-lg font-bold text-gray-800 mb-3 md:mb-4">
           {orderTexts.selectPaymentMethod}
         </h2>
