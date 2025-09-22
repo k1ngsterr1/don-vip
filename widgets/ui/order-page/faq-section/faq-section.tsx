@@ -3,11 +3,14 @@
 import { useState } from "react";
 import { cn } from "@/shared/utils/cn";
 import { Plus, X } from "lucide-react";
+import { useLocale } from "next-intl";
 
 interface FAQItem {
   id: string;
   question: string;
+  question_en?: string;
   answer: string;
+  answer_en?: string;
   isExpanded?: boolean;
 }
 
@@ -103,9 +106,15 @@ const defaultFAQItems: FAQItem[] = [
 ];
 
 export function FAQSection({ items = defaultFAQItems }: FAQSectionProps) {
+  const locale = useLocale();
   const [expandedItems, setExpandedItems] = useState<Set<string>>(
     new Set(items.filter((item) => item.isExpanded).map((item) => item.id))
   );
+
+  // Helper function to get localized text
+  const getLocalizedText = (text: string, textEn?: string): string => {
+    return locale === "en" && textEn ? textEn : text;
+  };
 
   const toggleItem = (id: string) => {
     const newExpanded = new Set(expandedItems);
@@ -145,7 +154,7 @@ export function FAQSection({ items = defaultFAQItems }: FAQSectionProps) {
                 className="w-full p-4 text-left flex items-center justify-between hover:bg-blue-50 transition-colors duration-200"
               >
                 <span className="text-gray-800 text-sm font-medium pr-4 leading-relaxed">
-                  {item.question}
+                  {getLocalizedText(item.question, item.question_en)}
                 </span>
 
                 <div className="flex-shrink-0 transition-transform duration-200">
@@ -165,8 +174,11 @@ export function FAQSection({ items = defaultFAQItems }: FAQSectionProps) {
               {isExpanded && (
                 <div className="px-4 pb-4 border-t border-gray-100">
                   <div className="text-gray-600 text-sm leading-relaxed pt-3">
-                    {item.answer ||
-                      "Ответ на этот вопрос появится в ближайшее время."}
+                    {getLocalizedText(
+                      item.answer ||
+                        "Ответ на этот вопрос появится в ближайшее время.",
+                      item.answer_en
+                    )}
                   </div>
                 </div>
               )}

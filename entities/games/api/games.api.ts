@@ -3,13 +3,16 @@ import { apiClient, extractErrorMessage } from "@/shared/config/apiClient";
 export interface InstructionStep {
   id: string;
   text: string;
+  text_en?: string;
   highlight?: string;
+  highlight_en?: string;
 }
 
 export interface InstructionImage {
   id: string;
   src: string;
   alt: string;
+  alt_en?: string;
   width?: number;
   height?: number;
 }
@@ -18,18 +21,23 @@ export interface GameInstruction {
   steps: InstructionStep[];
   images: InstructionImage[];
   headerText?: string;
+  headerText_en?: string;
 }
 
 export interface GameContent {
   gameId: string;
   gameName: string;
+  gameName_en?: string;
   instruction: GameInstruction;
   description: string;
+  description_en?: string;
   reviews: any[];
   faq: Array<{
     id: string;
     question: string;
+    question_en?: string;
     answer: string;
+    answer_en?: string;
   }>;
   metadata: {
     totalReviews: number;
