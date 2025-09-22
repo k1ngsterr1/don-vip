@@ -103,7 +103,7 @@ export function FAQSection({ items }: FAQSectionProps) {
   const locale = useLocale();
   const defaultFAQItems = getDefaultFAQItems(locale);
   const faqItems = items || defaultFAQItems;
-  
+
   const [expandedItems, setExpandedItems] = useState<Set<string>>(
     new Set(faqItems.filter((item) => item.isExpanded).map((item) => item.id))
   );
