@@ -97,7 +97,7 @@ export function InstructionContent({
   }, [gameContent]);
 
   // Helper function to get localized text
-  const getLocalizedText = (text: string, textEn?: string): string => {
+  const getLocalizedText = (text: string, textEn?: string | null): string => {
     return locale === "en" && textEn ? textEn : text;
   };
 
