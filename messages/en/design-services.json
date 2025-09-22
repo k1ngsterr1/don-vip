@@ -1,0 +1,48 @@
+{
+  "title": "Design Services with Fixed Prices",
+  "subtitle": "Choose the right service and place your order online.",
+  "orderButton": "Order",
+  "services": {
+    "miniFix": {
+      "title": "Mini Fix",
+      "description": "Small layout correction",
+      "feature": "Small layout correction"
+    },
+    "icon": {
+      "title": "Icon",
+      "description": "1 unique vector icon",
+      "feature": "1 unique vector icon"
+    },
+    "storiesBanner": {
+      "title": "Stories Banner",
+      "description": "Design 1 banner for social networks",
+      "feature": "Design 1 banner for social networks"
+    },
+    "businessCard": {
+      "title": "Business Card",
+      "description": "Layout 1 business card (two sides)",
+      "feature": "Layout 1 business card (two sides)"
+    },
+    "flyer": {
+      "title": "Flyer",
+      "description": "A5 flyer design",
+      "feature": "A5 flyer design"
+    },
+    "baseLogo": {
+      "title": "Basic Logo",
+      "description": "1 logo concept",
+      "feature1": "1 logo concept",
+      "feature2": "2 revision iterations"
+    },
+    "avatarCover": {
+      "title": "Avatar + Cover",
+      "description": "Avatar and cover for social networks",
+      "feature": "Avatar and cover for social networks"
+    },
+    "miniPresentation": {
+      "title": "Mini Presentation",
+      "description": "5 presentation slides",
+      "feature": "5 presentation slides"
+    }
+  }
+}
