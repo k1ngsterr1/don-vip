@@ -23,6 +23,7 @@ export function InstructionTabs({
   onTabChange,
   defaultTab = "instruction",
 }: InstructionTabsProps) {
+  const locale = useLocale();
   const [activeTab, setActiveTab] = useState<TabType>(defaultTab);
 
   const handleTabClick = (tab: TabType) => {
@@ -30,11 +31,30 @@ export function InstructionTabs({
     onTabChange?.(tab);
   };
 
+  // Localized tab labels
+  const getTabLabel = (tabId: TabType): string => {
+    const labels = {
+      instruction: locale === "en" ? "Instructions" : "Инструкция",
+      reviews: locale === "en" ? "Reviews" : "Отзывы",
+      description: locale === "en" ? "Description" : "Описание",
+      faq: locale === "en" ? "FAQ" : "FAQ",
+    };
+    return labels[tabId];
+  };
+
   const tabs = [
-    { id: "instruction" as TabType, label: "Инструкция", icon: Info },
-    { id: "reviews" as TabType, label: "Отзывы", icon: Heart },
-    { id: "description" as TabType, label: "Описание", icon: ClipboardList },
-    { id: "faq" as TabType, label: "FAQ", icon: HelpCircle },
+    {
+      id: "instruction" as TabType,
+      label: getTabLabel("instruction"),
+      icon: Info,
+    },
+    { id: "reviews" as TabType, label: getTabLabel("reviews"), icon: Heart },
+    {
+      id: "description" as TabType,
+      label: getTabLabel("description"),
+      icon: ClipboardList,
+    },
+    { id: "faq" as TabType, label: getTabLabel("faq"), icon: HelpCircle },
   ];
 
   return (
@@ -83,47 +103,76 @@ export function InstructionContent({
 
   // Use API data if available, otherwise fallback to hardcoded content
   const instruction = gameContent?.instruction || {
-    steps: [
-      {
-        id: "step-1",
-        text: "ойдите в приложение",
-        highlight: "Bigo Live",
-      },
-      {
-        id: "step-2",
-        text: "Перейдите на страницу",
-        highlight: "Я",
-      },
-      {
-        id: "step-3",
-        text: "Под вашим ником отобразится Bigo Live ID",
-      },
-      {
-        id: "step-4",
-        text: "Скопируйте и введите цифры на сайте",
-      },
-      {
-        id: "step-5",
-        text: "Оплатите заказ любым удобным способом",
-      },
-    ],
+    steps:
+      locale === "en"
+        ? [
+            {
+              id: "step-1",
+              text: "Go to the application",
+              highlight: "Bigo Live",
+            },
+            {
+              id: "step-2",
+              text: "Go to the page",
+              highlight: "Me",
+            },
+            {
+              id: "step-3",
+              text: "Your Bigo Live ID will be displayed under your nickname",
+            },
+            {
+              id: "step-4",
+              text: "Copy and enter the numbers on the website",
+            },
+            {
+              id: "step-5",
+              text: "Pay for your order in any convenient way",
+            },
+          ]
+        : [
+            {
+              id: "step-1",
+              text: "ойдите в приложение",
+              highlight: "Bigo Live",
+            },
+            {
+              id: "step-2",
+              text: "Перейдите на страницу",
+              highlight: "Я",
+            },
+            {
+              id: "step-3",
+              text: "Под вашим ником отобразится Bigo Live ID",
+            },
+            {
+              id: "step-4",
+              text: "Скопируйте и введите цифры на сайте",
+            },
+            {
+              id: "step-5",
+              text: "Оплатите заказ любым удобным способом",
+            },
+          ],
     images: [
       {
         id: "instruction-image",
         src: "/info-buy.png",
-        alt: "Инструкция по покупке алмазов",
+        alt:
+          locale === "en"
+            ? "Diamond purchase instructions"
+            : "Инструкция по покупке алмазов",
         width: 400,
         height: 200,
       },
       {
         id: "check-image",
         src: "/id.png",
-        alt: "Проверка ID",
+        alt: locale === "en" ? "ID verification" : "Проверка ID",
         width: 400,
         height: 80,
       },
     ],
-    headerText: "Инструкция",
+    headerText: locale === "en" ? "Instructions" : "Инструкция",
   };
 
   return (
@@ -146,7 +195,9 @@ export function InstructionContent({
           {/* Steps Column */}
           <div className="space-y-4">
             <h3 className="text-lg font-medium text-gray-800 mb-4">
-              Как получить {gameName} валюту:
+              {locale === "en"
+                ? `How to get ${gameName} currency:`
+                : `Как получить ${gameName} валюту:`}
             </h3>
             <div className="space-y-3">
               {instruction.steps.map((step, index) => (

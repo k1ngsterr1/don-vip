@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useLocale } from "next-intl";
 
 interface GameDescriptionProps {
   gameName?: string;
