@@ -7,6 +7,7 @@ import { useEffect, useState, useCallback } from "react";
 import { CustomAlert } from "../alert/alert";
 import QuestionIcon from "@/shared/icons/question-icon";
 import { useValidateBigoUser } from "@/entities/bigo/hooks/use-validate-bigo";
+import { useValidateSmileUser } from "@/entities/smile/hooks/use-validate-smile";
 import { useDebounce } from "@/shared/hooks/use-debounce";
 
 interface UserIdFormProps {
@@ -14,6 +15,14 @@ interface UserIdFormProps {
   productType?: string;
   requiresServer?: boolean;
   gameData?: any; // Добавляем данные игры из API
+  // Add product requirement fields
+  productRequirements?: {
+    isServerRequired?: boolean;
+    requireUserId?: boolean;
+    requireServer?: boolean;
+    requireEmail?: boolean;
+    requireUID?: boolean;
+  };
   userId: string;
   serverId: string;
   onUserIdChange: (value: string) => void;
@@ -36,6 +45,9 @@ export function UserIdForm({
   const isPubgMobile = apiGame === "pubgmobile" || apiGame === "PUBG";
   const isDonatBank = productType === "DonatBank";
   const isBigo = productType === "Bigo";
+  const isSmile =
+    productType === "Smile" ||
+    (apiGame && !isBigo && !isDonatBank && !isPubgMobile);
   const needsEmail = isPubgMobile; // Убираем DonatBank из условия email
   const locale = useLocale();
 
@@ -61,6 +73,13 @@ export function UserIdForm({
     isValidating,
     error: validationError,
   } = useValidateBigoUser();
+
+  // Smile validation
+  const {
+    validateUser: validateSmileUser,
+    isValidating: isValidatingSmile,
+    error: smileValidationError,
+  } = useValidateSmileUser();
   const [validationResult, setValidationResult] = useState<{
     isValid: boolean;
     username?: string;
@@ -96,28 +115,60 @@ export function UserIdForm({
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 
   useEffect(() => {
+    // Handle validation based on product type
     if (isBigo && debouncedUserId.trim().length >= 4) {
-      console.log("Starting debounced validation for:", debouncedUserId); // Для отладки
+      console.log("Starting debounced Bigo validation for:", debouncedUserId);
       handleValidateUserId(debouncedUserId.trim());
-    } else if (isBigo && debouncedUserId.trim().length < 4) {
+    } else if (
+      isSmile &&
+      debouncedUserId.trim().length >= 4 &&
+      serverIdInput.trim().length > 0
+    ) {
+      console.log(
+        "Starting debounced Smile validation for:",
+        debouncedUserId,
+        serverIdInput
+      );
+      handleValidateSmileUser(debouncedUserId.trim(), serverIdInput.trim());
+    } else if (isPubgMobile) {
+      // For PUBG, validate email format locally
+      const emailValid = isEmail(debouncedUserId);
+      console.log(
+        "PUBG email validation:",
+        debouncedUserId,
+        "valid:",
+        emailValid
+      );
+      setValidationResult({
+        isValid: emailValid,
+        username: emailValid ? "Email format valid" : undefined,
+        errorMessage: emailValid ? undefined : "Invalid email format",
+      });
+      setHasValidated(true);
+      onValidationChange?.(emailValid);
+    } else if ((isBigo || isSmile) && debouncedUserId.trim().length < 4) {
       // Reset validation state for short IDs
       setHasValidated(false);
       setValidationResult(null);
       onValidationChange?.(false);
     }
-  }, [debouncedUserId, isBigo]);
+  }, [debouncedUserId, serverIdInput, isBigo, isSmile, isPubgMobile]);
 
   useEffect(() => {
     onUserIdChange(userIdInput);
 
-    if (isBigo) {
+    if (isBigo || isSmile) {
       if (userIdInput.trim().length >= 4 && hasValidated && validationResult) {
         onValidationChange?.(validationResult.isValid);
       } else {
         onValidationChange?.(false);
       }
+    } else if (isPubgMobile) {
+      // For PUBG, validate email format locally
+      const emailValid = isEmail(userIdInput);
+      onValidationChange?.(emailValid);
     } else {
-      // Для всех продуктов кроме Bigo - валидируем по длине
+      // For other products - validate by length
       const isValidLength = userIdInput.trim().length >= 4;
       onValidationChange?.(isValidLength);
     }
@@ -125,6 +176,8 @@ export function UserIdForm({
     userIdInput,
     onUserIdChange,
     isBigo,
+    isSmile,
+    isPubgMobile,
     hasValidated,
     validationResult,
     onValidationChange,
@@ -143,20 +196,29 @@ export function UserIdForm({
   };
 
   const handleUserIdChange = (value: string) => {
-    console.log("handleUserIdChange called with:", value, "isBigo:", isBigo); // Для отладки
+    console.log(
+      "handleUserIdChange called with:",
+      value,
+      "productType:",
+      productType
+    );
 
     const cleanValue = handleSpaceDetection(value, "userId");
     setUserIdInput(cleanValue);
 
-    // Reset validation when ID changes
-    if (isBigo && hasValidated) {
+    // Reset validation when ID changes for products that require API validation
+    if ((isBigo || isSmile) && hasValidated) {
       setHasValidated(false);
       setValidationResult(null);
-      onValidationChange?.(false); // Сообщаем, что валидность сброшена
+      onValidationChange?.(false); // Inform that validity is reset
     }
 
-    // For non-Bigo products, consider valid if ID has reasonable length
-    if (!isBigo) {
+    // For PUBG, validate email format immediately
+    if (isPubgMobile) {
+      const emailValid = isEmail(cleanValue);
+      onValidationChange?.(emailValid);
+    } else if (!isBigo && !isSmile) {
+      // For other products without API validation, consider valid if ID has reasonable length
       const isValidLength = cleanValue.trim().length >= 4;
       onValidationChange?.(isValidLength);
     }
@@ -166,6 +228,13 @@ export function UserIdForm({
     const cleanValue = handleSpaceDetection(value, "serverId");
     setServerIdInput(cleanValue);
     onServerIdChange(cleanValue);
+
+    // Reset Smile validation when server ID changes
+    if (isSmile && hasValidated) {
+      setHasValidated(false);
+      setValidationResult(null);
+      onValidationChange?.(false);
+    }
   };
 
   const handleValidateUserId = async (valueToValidate?: string) => {
@@ -199,6 +268,39 @@ export function UserIdForm({
       setHasValidated(true);
 
       // Информируем родительский компонент о неудачной валидации
+      onValidationChange?.(false);
+    }
+  };
+
+  const handleValidateSmileUser = async (userId: string, serverId: string) => {
+    if (!isSmile || !userId || !serverId) {
+      return;
+    }
+
+    console.log("Validating Smile user:", { userId, serverId, apiGame });
+
+    try {
+      const result = await validateSmileUser(userId, serverId, apiGame);
+      setValidationResult(result);
+      setHasValidated(true);
+
+      console.log("Smile validation result:", result);
+
+      // Inform parent component about validation result
+      onValidationChange?.(result.isValid);
+    } catch (error) {
+      console.error("Smile validation error:", error);
+      // Set error state if validation fails
+      const errorResult = {
+        isValid: false,
+        errorMessage:
+          smileValidationError ||
+          (locale === "ru" ? "Ошибка валидации" : "Validation error"),
+      };
+      setValidationResult(errorResult);
+      setHasValidated(true);
+
+      // Inform parent component about failed validation
       onValidationChange?.(false);
     }
   };
@@ -268,7 +370,7 @@ export function UserIdForm({
               value={userIdInput}
               onChange={(e) => handleUserIdChange(e.target.value)}
               className={`w-full p-3 ${needsEmail ? "pl-3" : "pl-10"} ${
-                isBigo ? "pr-10" : ""
+                isBigo || isSmile ? "pr-10" : ""
               } border rounded-lg ${
                 hasValidated && validationResult
                   ? validationResult.isValid
@@ -277,9 +379,9 @@ export function UserIdForm({
                   : "border-gray-200"
               }`}
             />
-            {isBigo && (
+            {(isBigo || isSmile) && (
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
-                {isValidating && (
+                {(isValidating || isValidatingSmile) && (
                   <div className="flex items-center">
                     <Loader className="w-5 h-5 animate-spin text-blue-500" />
                     <span className="ml-1 text-xs text-blue-500">
@@ -287,15 +389,17 @@ export function UserIdForm({
                     </span>
                   </div>
                 )}
-                {hasValidated && validationResult && !isValidating && (
-                  <>
-                    {validationResult.isValid ? (
-                      <CheckCircle className="w-5 h-5 text-green-500" />
-                    ) : (
-                      <AlertTriangle className="w-5 h-5 text-red-500" />
-                    )}
-                  </>
-                )}
+                {hasValidated &&
+                  validationResult &&
+                  !(isValidating || isValidatingSmile) && (
+                    <>
+                      {validationResult.isValid ? (
+                        <CheckCircle className="w-5 h-5 text-green-500" />
+                      ) : (
+                        <AlertTriangle className="w-5 h-5 text-red-500" />
+                      )}
+                    </>
+                  )}
               </div>
             )}
           </div>
@@ -314,7 +418,7 @@ export function UserIdForm({
                 value={userIdInput}
                 onChange={(e) => handleUserIdChange(e.target.value)}
                 className={`w-full p-3 ${
-                  isBigo ? "pr-10" : ""
+                  isBigo || isSmile ? "pr-10" : ""
                 } border rounded-lg ${
                   hasValidated && validationResult
                     ? validationResult.isValid
@@ -323,9 +427,9 @@ export function UserIdForm({
                     : "border-gray-200"
                 }`}
               />
-              {isBigo && (
+              {(isBigo || isSmile) && (
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
-                  {isValidating && (
+                  {(isValidating || isValidatingSmile) && (
                     <div className="flex items-center">
                       <Loader className="w-5 h-5 animate-spin text-blue-500" />
                       <span className="ml-1 text-xs text-blue-500">
@@ -333,15 +437,17 @@ export function UserIdForm({
                       </span>
                     </div>
                   )}
-                  {hasValidated && validationResult && !isValidating && (
-                    <>
-                      {validationResult.isValid ? (
-                        <CheckCircle className="w-5 h-5 text-green-500" />
-                      ) : (
-                        <AlertTriangle className="w-5 h-5 text-red-500" />
-                      )}
-                    </>
-                  )}
+                  {hasValidated &&
+                    validationResult &&
+                    !(isValidating || isValidatingSmile) && (
+                      <>
+                        {validationResult.isValid ? (
+                          <CheckCircle className="w-5 h-5 text-green-500" />
+                        ) : (
+                          <AlertTriangle className="w-5 h-5 text-red-500" />
+                        )}
+                      </>
+                    )}
                 </div>
               )}
             </div>
@@ -384,48 +490,52 @@ export function UserIdForm({
         ) : null}
       </div>
 
-      {/* Bigo Validation Result */}
-      {isBigo && hasValidated && validationResult && (
-        <div
-          className={`mt-3 p-3 rounded-lg border ${
-            validationResult.isValid
-              ? "bg-green-50 border-green-200"
-              : "bg-red-50 border-red-200"
-          }`}
-        >
+      {/* Validation Result for Bigo, Smile, and PUBG */}
+      {(isBigo || isSmile || isPubgMobile) &&
+        hasValidated &&
+        validationResult && (
           <div
-            className={`flex items-center ${
-              validationResult.isValid ? "text-green-700" : "text-red-700"
+            className={`mt-3 p-3 rounded-lg border ${
+              validationResult.isValid
+                ? "bg-green-50 border-green-200"
+                : "bg-red-50 border-red-200"
             }`}
           >
-            {validationResult.isValid ? (
-              <CheckCircle size={16} className="mr-2" />
-            ) : (
-              <AlertTriangle size={16} className="mr-2" />
-            )}
-            <span className="font-medium">
-              {validationResult.isValid
-                ? getTranslation("idValid")
-                : getTranslation("idNotFound")}
-            </span>
-          </div>
-          {validationResult.isValid && validationResult.username && (
-            <div className="mt-1 text-sm text-green-600">
-              {getTranslation("username")}: {validationResult.username}
-              {validationResult.vipStatus && (
-                <span className="ml-2 px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">
-                  {validationResult.vipStatus}
-                </span>
+            <div
+              className={`flex items-center ${
+                validationResult.isValid ? "text-green-700" : "text-red-700"
+              }`}
+            >
+              {validationResult.isValid ? (
+                <CheckCircle size={16} className="mr-2" />
+              ) : (
+                <AlertTriangle size={16} className="mr-2" />
               )}
+              <span className="font-medium">
+                {validationResult.isValid
+                  ? getTranslation("idValid")
+                  : getTranslation("idNotFound")}
+              </span>
             </div>
-          )}
-          {!validationResult.isValid && validationResult.errorMessage && (
-            <div className="mt-1 text-sm text-red-600">
-              {getTranslation("userNotFound")}
-            </div>
-          )}
-        </div>
-      )}
+            {validationResult.isValid && validationResult.username && (
+              <div className="mt-1 text-sm text-green-600">
+                {getTranslation("username")}: {validationResult.username}
+                {validationResult.vipStatus && (
+                  <span className="ml-2 px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">
+                    {validationResult.vipStatus}
+                  </span>
+                )}
+              </div>
+            )}
+            {!validationResult.isValid && validationResult.errorMessage && (
+              <div className="mt-1 text-sm text-red-600">
+                {isPubgMobile
+                  ? validationResult.errorMessage
+                  : getTranslation("userNotFound")}
+              </div>
+            )}
+          </div>
+        )}
 
       {/* Space Warning Alert */}
       <CustomAlert
