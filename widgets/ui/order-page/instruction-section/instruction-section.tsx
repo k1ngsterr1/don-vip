@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { cn } from "@/shared/utils/cn";
 import { Info, Heart, ClipboardList, HelpCircle } from "lucide-react";
+import { useLocale } from "next-intl";
 import type {
   GameContent,
   InstructionStep,
@@ -22,6 +23,7 @@ export function InstructionTabs({
   onTabChange,
   defaultTab = "instruction",
 }: InstructionTabsProps) {
+  const locale = useLocale();
   const [activeTab, setActiveTab] = useState<TabType>(defaultTab);
 
   const handleTabClick = (tab: TabType) => {
@@ -29,11 +31,30 @@ export function InstructionTabs({
     onTabChange?.(tab);
   };
 
+  // Localized tab labels
+  const getTabLabel = (tabId: TabType): string => {
+    const labels = {
+      instruction: locale === "en" ? "Instructions" : "Инструкция",
+      reviews: locale === "en" ? "Reviews" : "Отзывы",
+      description: locale === "en" ? "Description" : "Описание",
+      faq: locale === "en" ? "FAQ" : "FAQ",
+    };
+    return labels[tabId];
+  };
+
   const tabs = [
-    { id: "instruction" as TabType, label: "Инструкция", icon: Info },
-    { id: "reviews" as TabType, label: "Отзывы", icon: Heart },
-    { id: "description" as TabType, label: "Описание", icon: ClipboardList },
-    { id: "faq" as TabType, label: "FAQ", icon: HelpCircle },
+    {
+      id: "instruction" as TabType,
+      label: getTabLabel("instruction"),
+      icon: Info,
+    },
+    { id: "reviews" as TabType, label: getTabLabel("reviews"), icon: Heart },
+    {
+      id: "description" as TabType,
+      label: getTabLabel("description"),
+      icon: ClipboardList,
+    },
+    { id: "faq" as TabType, label: getTabLabel("faq"), icon: HelpCircle },
   ];
 
   return (
@@ -68,54 +89,90 @@ export function InstructionContent({
   gameContent,
   gameName = "Bigo Live",
 }: InstructionContentProps) {
+  const locale = useLocale();
+
   // Debug: Log gameContent
   useEffect(() => {
     console.log("🎮 InstructionContent received gameContent:", gameContent);
   }, [gameContent]);
 
+  // Helper function to get localized text
+  const getLocalizedText = (text: string, textEn?: string | null): string => {
+    return locale === "en" && textEn ? textEn : text;
+  };
+
   // Use API data if available, otherwise fallback to hardcoded content
   const instruction = gameContent?.instruction || {
-    steps: [
-      {
-        id: "step-1",
-        text: "ойдите в приложение",
-        highlight: "Bigo Live",
-      },
-      {
-        id: "step-2",
-        text: "Перейдите на страницу",
-        highlight: "Я",
-      },
-      {
-        id: "step-3",
-        text: "Под вашим ником отобразится Bigo Live ID",
-      },
-      {
-        id: "step-4",
-        text: "Скопируйте и введите цифры на сайте",
-      },
-      {
-        id: "step-5",
-        text: "Оплатите заказ любым удобным способом",
-      },
-    ],
+    steps:
+      locale === "en"
+        ? [
+            {
+              id: "step-1",
+              text: "Go to the application",
+              highlight: "Bigo Live",
+            },
+            {
+              id: "step-2",
+              text: "Go to the page",
+              highlight: "Me",
+            },
+            {
+              id: "step-3",
+              text: "Your Bigo Live ID will be displayed under your nickname",
+            },
+            {
+              id: "step-4",
+              text: "Copy and enter the numbers on the website",
+            },
+            {
+              id: "step-5",
+              text: "Pay for your order in any convenient way",
+            },
+          ]
+        : [
+            {
+              id: "step-1",
+              text: "ойдите в приложение",
+              highlight: "Bigo Live",
+            },
+            {
+              id: "step-2",
+              text: "Перейдите на страницу",
+              highlight: "Я",
+            },
+            {
+              id: "step-3",
+              text: "Под вашим ником отобразится Bigo Live ID",
+            },
+            {
+              id: "step-4",
+              text: "Скопируйте и введите цифры на сайте",
+            },
+            {
+              id: "step-5",
+              text: "Оплатите заказ любым удобным способом",
+            },
+          ],
     images: [
       {
         id: "instruction-image",
         src: "/info-buy.png",
-        alt: "Инструкция по покупке алмазов",
+        alt:
+          locale === "en"
+            ? "Diamond purchase instructions"
+            : "Инструкция по покупке алмазов",
         width: 400,
         height: 200,
       },
       {
         id: "check-image",
         src: "/id.png",
-        alt: "Проверка ID",
+        alt: locale === "en" ? "ID verification" : "Проверка ID",
         width: 400,
         height: 80,
       },
     ],
-    headerText: "Инструкция",
+    headerText: locale === "en" ? "Instructions" : "Инструкция",
   };
 
   return (
@@ -124,7 +181,10 @@ export function InstructionContent({
       <div className="p-3">
         <div className="bg-white px-3 py-2 rounded-lg inline-block">
           <span className="text-black text-xs font-light">
-            {instruction.headerText || "Инструкция"}
+            {getLocalizedText(
+              instruction.headerText || "Инструкция",
+              instruction.headerText_en
+            )}
           </span>
         </div>
       </div>
@@ -135,7 +195,9 @@ export function InstructionContent({
           {/* Steps Column */}
           <div className="space-y-4">
             <h3 className="text-lg font-medium text-gray-800 mb-4">
-              Как получить {gameName} валюту:
+              {locale === "en"
+                ? `How to get ${gameName} currency:`
+                : `Как получить ${gameName} валюту:`}
             </h3>
             <div className="space-y-3">
               {instruction.steps.map((step, index) => (
@@ -146,16 +208,20 @@ export function InstructionContent({
                   <p className="text-gray-800 text-sm leading-relaxed">
                     {step.highlight ? (
                       <>
-                        <span className="uppercase">{step.text.charAt(0)}</span>
+                        <span className="uppercase">
+                          {getLocalizedText(step.text, step.text_en).charAt(0)}
+                        </span>
                         <span className="lowercase">
-                          {step.text.slice(1)}
+                          {getLocalizedText(step.text, step.text_en).slice(1)}
                         </span>{" "}
                         <span className="font-medium text-blue-600">
-                          {step.highlight}
+                          {getLocalizedText(step.highlight, step.highlight_en)}
                         </span>
                       </>
                     ) : (
-                      <span className="lowercase">{step.text}</span>
+                      <span className="lowercase">
+                        {getLocalizedText(step.text, step.text_en)}
+                      </span>
                     )}
                   </p>
                 </div>
@@ -172,7 +238,7 @@ export function InstructionContent({
               >
                 <Image
                   src={image.src}
-                  alt={image.alt}
+                  alt={getLocalizedText(image.alt, image.alt_en)}
                   width={image.width || 400}
                   height={image.height || 200}
                   className="w-full h-auto object-contain"
@@ -196,19 +262,29 @@ export function InstructionContent({
                 <p>
                   {step.highlight ? (
                     <>
-                      <span className="uppercase">{step.text.charAt(0)}</span>
-                      <span className="lowercase">
-                        {step.text.slice(1)}
-                      </span>{" "}
                       <span className="uppercase">
-                        {step.highlight.charAt(0)}
+                        {getLocalizedText(step.text, step.text_en).charAt(0)}
                       </span>
                       <span className="lowercase">
-                        {step.highlight.slice(1)}
+                        {getLocalizedText(step.text, step.text_en).slice(1)}
+                      </span>{" "}
+                      <span className="uppercase">
+                        {getLocalizedText(
+                          step.highlight,
+                          step.highlight_en
+                        ).charAt(0)}
+                      </span>
+                      <span className="lowercase">
+                        {getLocalizedText(
+                          step.highlight,
+                          step.highlight_en
+                        ).slice(1)}
                       </span>
                     </>
                   ) : (
-                    <span className="lowercase">{step.text}</span>
+                    <span className="lowercase">
+                      {getLocalizedText(step.text, step.text_en)}
+                    </span>
                   )}
                 </p>
               </div>

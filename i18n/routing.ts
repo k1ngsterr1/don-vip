@@ -25,6 +25,7 @@ export const routing = defineRouting({
     "/language-currency": "/language-currency",
 
     "/services": "/services",
+    "/design-services": "/design-services",
 
     "/coupons": "/coupons",
     "/google": "/google",
