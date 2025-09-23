@@ -43,6 +43,7 @@ export function UserIdForm({
   const [spaceWarningField, setSpaceWarningField] = useState<
     "userId" | "serverId"
   >("userId");
+  const [showIdPrefixWarning, setShowIdPrefixWarning] = useState(false);
 
   // Bigo validation
   const {
@@ -109,6 +110,19 @@ export function UserIdForm({
   const handleUserIdChange = (value: string) => {
     console.log("handleUserIdChange called with:", value, "isBigo:", isBigo); // Для отладки
 
+    // Валидация: запретить ввод "ID:" в начале или в любом месте
+    if (value.toLowerCase().includes("id:")) {
+      // Показываем предупреждение
+      setShowIdPrefixWarning(true);
+      // Удаляем "ID:" из строки (в любом регистре)
+      value = value.replace(/id:/gi, "");
+
+      // Скрываем предупреждение через 3 секунды
+      setTimeout(() => {
+        setShowIdPrefixWarning(false);
+      }, 3000);
+    }
+
     const cleanValue = handleSpaceDetection(value, "userId");
     setUserIdInput(cleanValue);
 
@@ -140,6 +154,19 @@ export function UserIdForm({
   };
 
   const handleServerIdChange = (value: string) => {
+    // Валидация: запретить ввод "ID:" в Server ID
+    if (value.toLowerCase().includes("id:")) {
+      // Показываем предупреждение
+      setShowIdPrefixWarning(true);
+      // Удаляем "ID:" из строки (в любом регистре)
+      value = value.replace(/id:/gi, "");
+
+      // Скрываем предупреждение через 3 секунды
+      setTimeout(() => {
+        setShowIdPrefixWarning(false);
+      }, 3000);
+    }
+
     const cleanValue = handleSpaceDetection(value, "serverId");
     setServerIdInput(cleanValue);
     onServerIdChange(cleanValue);
@@ -393,6 +420,48 @@ export function UserIdForm({
                 <>
                   <div className="mb-1">🇺🇸 {errorMessages.en.spaceWarning}</div>
                   <div>🇷🇺 {errorMessages.ru.spaceWarning}</div>
+                </>
+              )}
+            </div>
+          </div>
+        }
+      />
+
+      {/* ID Prefix Warning Alert */}
+      <CustomAlert
+        isOpen={showIdPrefixWarning}
+        onClose={() => setShowIdPrefixWarning(false)}
+        message={
+          <div className="space-y-2">
+            <div className="flex items-center text-amber-600">
+              <AlertTriangle size={16} className="mr-2" />
+              <span className="font-medium">
+                {locale === "ru" ? "Предупреждение" : "Warning"}
+              </span>
+            </div>
+            <div className="text-sm">
+              {locale === "en" && (
+                <div className="mb-1">
+                  🇺🇸 Please don't include "ID:" in your User ID. Just enter the
+                  numbers.
+                </div>
+              )}
+              {locale === "ru" && (
+                <div>
+                  🇷🇺 Пожалуйста, не включайте "ID:" в ваш User ID. Введите
+                  только цифры.
+                </div>
+              )}
+              {locale !== "en" && locale !== "ru" && (
+                <>
+                  <div className="mb-1">
+                    🇺🇸 Please don't include "ID:" in your User ID. Just enter
+                    the numbers.
+                  </div>
+                  <div>
+                    🇷🇺 Пожалуйста, не включайте "ID:" в ваш User ID. Введите
+                    только цифры.
+                  </div>
                 </>
               )}
             </div>
