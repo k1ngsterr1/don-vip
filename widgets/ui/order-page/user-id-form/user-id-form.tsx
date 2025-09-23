@@ -110,17 +110,18 @@ export function UserIdForm({
 
   // Функция для проверки и удаления специальных символов
   const handleSpecialCharsDetection = (value: string) => {
-    // Разрешены только буквы, цифры и @ (для email в PUBG)
+    // Разрешены только английские буквы, цифры, точка и нижнее подчеркивание
+    // Для PUBG Mobile дополнительно разрешен @ и дефис для email
     const allowedCharsRegex = isPubgMobile
-      ? /^[a-zA-Z0-9@._-]*$/
-      : /^[a-zA-Z0-9]*$/;
+      ? /^[a-zA-Z0-9._@-]*$/
+      : /^[a-zA-Z0-9._]*$/;
 
     if (!allowedCharsRegex.test(value)) {
       setShowSpecialCharsWarning(true);
       // Удаляем все недопустимые символы
       const cleanValue = isPubgMobile
-        ? value.replace(/[^a-zA-Z0-9@._-]/g, "")
-        : value.replace(/[^a-zA-Z0-9]/g, "");
+        ? value.replace(/[^a-zA-Z0-9._@-]/g, "")
+        : value.replace(/[^a-zA-Z0-9._]/g, "");
 
       // Скрываем предупреждение через 3 секунды
       setTimeout(() => {
@@ -519,25 +520,27 @@ export function UserIdForm({
             <div className="text-sm">
               {locale === "en" && (
                 <div className="mb-1">
-                  🇺🇸 Special characters are not allowed. Only letters and
-                  numbers{isPubgMobile ? " (and @._- for email)" : ""}.
+                  🇺🇸 Only English letters, numbers, dot (.) and underscore (_)
+                  are allowed{isPubgMobile ? ", plus @ and - for email" : ""}.
                 </div>
               )}
               {locale === "ru" && (
                 <div>
-                  🇷🇺 Специальные символы не разрешены. Только буквы и цифры
-                  {isPubgMobile ? " (и @._- для email)" : ""}.
+                  🇷🇺 Разрешены только английские буквы, цифры, точка (.) и
+                  нижнее подчеркивание (_)
+                  {isPubgMobile ? ", плюс @ и - для email" : ""}.
                 </div>
               )}
               {locale !== "en" && locale !== "ru" && (
                 <>
                   <div className="mb-1">
-                    🇺🇸 Special characters are not allowed. Only letters and
-                    numbers{isPubgMobile ? " (and @._- for email)" : ""}.
+                    🇺🇸 Only English letters, numbers, dot (.) and underscore (_)
+                    are allowed{isPubgMobile ? ", plus @ and - for email" : ""}.
                   </div>
                   <div>
-                    🇷🇺 Специальные символы не разрешены. Только буквы и цифры
-                    {isPubgMobile ? " (и @._- для email)" : ""}.
+                    🇷🇺 Разрешены только английские буквы, цифры, точка (.) и
+                    нижнее подчеркивание (_)
+                    {isPubgMobile ? ", плюс @ и - для email" : ""}.
                   </div>
                 </>
               )}
