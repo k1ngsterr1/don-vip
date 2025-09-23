@@ -123,11 +123,6 @@ export function UserIdForm({
         ? value.replace(/[^a-zA-Z0-9._@-]/g, "")
         : value.replace(/[^a-zA-Z0-9._]/g, "");
 
-      // Скрываем предупреждение через 3 секунды
-      setTimeout(() => {
-        setShowSpecialCharsWarning(false);
-      }, 3000);
-
       return cleanValue;
     }
     return value;
