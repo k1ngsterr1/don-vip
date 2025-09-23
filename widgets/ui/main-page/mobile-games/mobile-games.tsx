@@ -4,14 +4,12 @@ import { useState } from "react";
 import GameCard from "@/entities/games/ui/game-card/game-card";
 import JoystickIcon from "@/shared/icons/joystick-icon";
 import SectionTitle from "@/shared/ui/section-title/section-title";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useProducts } from "@/entities/product/hooks/queries/use-products";
 import { Skeleton } from "@/shared/ui/skeleton/skeleton";
-import { DesignServiceCard } from "@/entities/design-services/ui/design-service-card/design-service-card";
 
 export const MobileGamesBlock = () => {
   const t = useTranslations();
-  const locale = useLocale();
   const [limit, setLimit] = useState(8); // Initially show 8 products
   const {
     data: productsData,
@@ -22,46 +20,6 @@ export const MobileGamesBlock = () => {
   // Filter out Bigo products
   const nonBigoProducts =
     productsData?.data?.filter((product) => product.type !== "Bigo") || [];
-
-  // Design services data
-  const designServices = [
-    {
-      id: "mini-fix",
-      title: locale === "ru" ? "Мини-правка" : "Mini Fix",
-      description:
-        locale === "ru"
-          ? "Мелкая корректировка макета"
-          : "Small layout correction",
-      price: locale === "ru" ? "40 ₽" : "$1.50",
-    },
-    {
-      id: "icon",
-      title: locale === "ru" ? "Иконка" : "Icon",
-      description:
-        locale === "ru"
-          ? "1 уникальная иконка в векторе"
-          : "1 unique vector icon",
-      price: locale === "ru" ? "167 ₽" : "$5.90",
-    },
-    {
-      id: "stories-banner",
-      title: locale === "ru" ? "Сториc-баннер" : "Stories Banner",
-      description:
-        locale === "ru"
-          ? "Дизайн 1 баннера для соцсетей"
-          : "Design 1 banner for social networks",
-      price: locale === "ru" ? "335 ₽" : "$11.50",
-    },
-    {
-      id: "business-card",
-      title: locale === "ru" ? "Визитка" : "Business Card",
-      description:
-        locale === "ru"
-          ? "Макет 1 визитки (две стороны)"
-          : "Layout 1 business card (two sides)",
-      price: locale === "ru" ? "505 ₽" : "$17.50",
-    },
-  ];
 
   // Handle loading state
   if (isLoading) {
@@ -104,8 +62,7 @@ export const MobileGamesBlock = () => {
     <div className="w-full">
       <SectionTitle icon={<JoystickIcon />} title={t("mobile_games.title")} />
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-        {/* Render games */}
-        {nonBigoProducts.length > 0 &&
+        {nonBigoProducts.length > 0 ? (
           nonBigoProducts.map((product) => (
             <GameCard
               key={product.id}
@@ -116,21 +73,8 @@ export const MobileGamesBlock = () => {
               gemColor=""
               badge=""
             />
-          ))}
-
-        {/* Render design services */}
-        {designServices.map((service) => (
-          <DesignServiceCard
-            key={service.id}
-            id={service.id}
-            title={service.title}
-            description={service.description}
-            price={service.price}
-          />
-        ))}
-
-        {/* Show message if no content */}
-        {nonBigoProducts.length === 0 && designServices.length === 0 && (
+          ))
+        ) : (
           <div className="col-span-full p-4 text-center text-muted-foreground">
             {t("services.notFound")}
           </div>
