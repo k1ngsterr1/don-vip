@@ -499,42 +499,34 @@ export function UserIdForm({
           </div>
         }
       />
-
-      {/* Special Characters Warning Alert */}
       <CustomAlert
         isOpen={showSpecialCharsWarning}
         onClose={() => setShowSpecialCharsWarning(false)}
         message={
           <div className="space-y-2">
-            <div className="flex items-center text-amber-600">
-              <AlertTriangle size={16} className="mr-2" />
-              <span className="font-medium">
-                {locale === "ru" ? "Предупреждение" : "Warning"}
-              </span>
-            </div>
             <div className="text-sm">
               {locale === "en" && (
                 <div className="mb-1">
-                  🇺🇸 Only English letters, numbers, dot (.) and underscore (_)
-                  are allowed{isPubgMobile ? ", plus @ and - for email" : ""}.
+                  Only English letters, numbers, dot (.) and underscore (_) are
+                  allowed{isPubgMobile ? ", plus @ and - for email" : ""}.
                 </div>
               )}
               {locale === "ru" && (
                 <div>
-                  🇷🇺 Разрешены только английские буквы, цифры, точка (.) и
-                  нижнее подчеркивание (_)
+                  Разрешены только английские буквы, цифры, точка (.) и нижнее
+                  подчеркивание (_)
                   {isPubgMobile ? ", плюс @ и - для email" : ""}.
                 </div>
               )}
               {locale !== "en" && locale !== "ru" && (
                 <>
                   <div className="mb-1">
-                    🇺🇸 Only English letters, numbers, dot (.) and underscore (_)
+                    Only English letters, numbers, dot (.) and underscore (_)
                     are allowed{isPubgMobile ? ", plus @ and - for email" : ""}.
                   </div>
                   <div>
-                    🇷🇺 Разрешены только английские буквы, цифры, точка (.) и
-                    нижнее подчеркивание (_)
+                    Разрешены только английские буквы, цифры, точка (.) и нижнее
+                    подчеркивание (_)
                     {isPubgMobile ? ", плюс @ и - для email" : ""}.
                   </div>
                 </>
