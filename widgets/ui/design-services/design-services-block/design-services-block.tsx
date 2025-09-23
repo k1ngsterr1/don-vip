@@ -1,52 +1,53 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { ServiceCard } from "../service-card/service-card";
 
 export function DesignServicesBlock() {
   const t = useTranslations("DesignServices");
+  const locale = useLocale();
 
   const services = [
     {
       id: "mini-fix",
       title: t("services.miniFix.title"),
       description: t("services.miniFix.description"),
-      price: "40 ₽",
+      price: locale === "ru" ? "40 ₽" : "$1.50",
       features: [t("services.miniFix.feature")],
     },
     {
       id: "icon",
       title: t("services.icon.title"),
       description: t("services.icon.description"),
-      price: "167 ₽",
+      price: locale === "ru" ? "167 ₽" : "$5.90",
       features: [t("services.icon.feature")],
     },
     {
       id: "stories-banner",
       title: t("services.storiesBanner.title"),
       description: t("services.storiesBanner.description"),
-      price: "335 ₽",
+      price: locale === "ru" ? "335 ₽" : "$11.50",
       features: [t("services.storiesBanner.feature")],
     },
     {
       id: "business-card",
       title: t("services.businessCard.title"),
       description: t("services.businessCard.description"),
-      price: "505 ₽",
+      price: locale === "ru" ? "505 ₽" : "$17.50",
       features: [t("services.businessCard.feature")],
     },
     {
       id: "flyer",
       title: t("services.flyer.title"),
       description: t("services.flyer.description"),
-      price: "840 ₽",
+      price: locale === "ru" ? "840 ₽" : "$29.00",
       features: [t("services.flyer.feature")],
     },
     {
       id: "base-logo",
       title: t("services.baseLogo.title"),
       description: t("services.baseLogo.description"),
-      price: "1 670 ₽",
+      price: locale === "ru" ? "1 670 ₽" : "$58.00",
       features: [
         t("services.baseLogo.feature1"),
         t("services.baseLogo.feature2"),
@@ -56,14 +57,14 @@ export function DesignServicesBlock() {
       id: "avatar-cover",
       title: t("services.avatarCover.title"),
       description: t("services.avatarCover.description"),
-      price: "2 510 ₽",
+      price: locale === "ru" ? "2 510 ₽" : "$87.00",
       features: [t("services.avatarCover.feature")],
     },
     {
       id: "mini-presentation",
       title: t("services.miniPresentation.title"),
       description: t("services.miniPresentation.description"),
-      price: "3 350 ₽",
+      price: locale === "ru" ? "3 350 ₽" : "$116.00",
       features: [t("services.miniPresentation.feature")],
     },
   ];
