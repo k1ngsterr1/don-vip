@@ -3,6 +3,7 @@
 import { cn } from "@/shared/utils/cn";
 import { useLocale } from "next-intl";
 import { useState, useEffect } from "react";
+import { CurrencyIcon } from "@/shared/ui/currency-icon";
 
 interface Package {
   id: number;
@@ -209,9 +210,11 @@ export function DiamondPackages({
               <div className="flex items-center gap-2 mb-1">
                 <div className="text-lg">
                   {currencyImage && (
-                    <img
+                    <CurrencyIcon
                       src={currencyImage}
                       alt={currencyName}
+                      width={24}
+                      height={24}
                       className="w-5 h-5 md:w-6 md:h-6 object-contain"
                     />
                   )}

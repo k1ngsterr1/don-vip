@@ -5,6 +5,7 @@ import Image from "next/image";
 import type React from "react";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { CurrencyIcon } from "@/shared/ui/currency-icon";
 import { useRepeatOrder } from "@/entities/order/hooks/use-repeat-order";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 
@@ -183,7 +184,7 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
             />
           </div>
           <div className="relative">
-            <Image
+            <CurrencyIcon
               src={currencyImage || "/placeholder.svg"}
               alt={t("currencyImageAlt")}
               width={48}
@@ -275,7 +276,7 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
                   {t("diamonds")}
                 </div>
                 <div className="text-sm font-medium text-gray-900 flex items-center gap-1">
-                  <Image
+                  <CurrencyIcon
                     src={currencyImage || "/placeholder.svg"}
                     alt={t("diamondIconAlt")}
                     width={16}

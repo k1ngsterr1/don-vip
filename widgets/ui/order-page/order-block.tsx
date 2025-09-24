@@ -10,7 +10,7 @@ import { OrderSummary } from "./order-summary/order-summary";
 import { UserIdForm } from "./user-id-form/user-id-form";
 import { useCreateOrder } from "@/entities/order/hooks/use-create-order";
 import type { CreateOrderDto } from "@/entities/order/model/types";
-import { useProduct } from "@/entities/product/hooks/queries/use-product";
+import { useProductWithHardcoded } from "@/entities/product/hooks/queries/use-product-with-hardcoded";
 import { OrderBlockSkeleton } from "./loading/skeleton-loading";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useGetMe } from "@/entities/auth/hooks/use-auth";
@@ -61,7 +61,8 @@ export function OrderBlock({
 }: OrderBlockProps) {
   const t = useTranslations("orderBlock");
   const locale = useLocale();
-  const { data: product, isLoading: isProductLoading } = useProduct(gameSlug);
+  const { data: product, isLoading: isProductLoading } =
+    useProductWithHardcoded(gameSlug);
 
   // Хардкодные переводы для заголовков
   const translations = {

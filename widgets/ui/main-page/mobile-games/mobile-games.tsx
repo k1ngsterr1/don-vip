@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import GameCard from "@/entities/games/ui/game-card/game-card";
+import ServiceCard from "@/entities/games/ui/service-card/service-card";
 import JoystickIcon from "@/shared/icons/joystick-icon";
 import SectionTitle from "@/shared/ui/section-title/section-title";
 import { useTranslations, useLocale } from "next-intl";
 import { useProducts } from "@/entities/product/hooks/queries/use-products";
 import { Skeleton } from "@/shared/ui/skeleton/skeleton";
+import { Paintbrush } from "lucide-react";
 
 export const MobileGamesBlock = () => {
   const t = useTranslations();
@@ -21,6 +23,17 @@ export const MobileGamesBlock = () => {
   // Filter out Bigo products
   const nonBigoProducts =
     productsData?.data?.filter((product) => product.type !== "Bigo") || [];
+
+  // Hardcoded icon service as game
+  const iconService = {
+    id: "icon-service",
+    name: locale === "ru" ? "Иконка" : "Icon",
+    image: "/feature-card.webp",
+    href: "/product/icon-service",
+    hasGem: false,
+    gemColor: "",
+    badge: locale === "ru" ? "100 ₽" : "$3.50",
+  };
 
   // Handle loading state
   if (isLoading) {
@@ -76,6 +89,16 @@ export const MobileGamesBlock = () => {
               badge=""
             />
           ))}
+
+        {/* Render hardcoded icon service */}
+        <ServiceCard
+          key={iconService.id}
+          title={iconService.name}
+          href={iconService.href}
+          badge={iconService.badge}
+          useIcon={true}
+          icon={<Paintbrush className="w-16 h-16 text-blue-600" />}
+        />
 
         {/* Show message if no content */}
         {nonBigoProducts.length === 0 && (

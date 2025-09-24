@@ -6,6 +6,7 @@ import { Check, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
+import { CurrencyIcon } from "@/shared/ui/currency-icon";
 import { useUpdateUserCurrency } from "@/entities/currency/hooks/use-update-user-currency";
 import { useState } from "react";
 
@@ -101,12 +102,12 @@ export function CurrencySelector({
             </span>
             <div className="flex items-center justify-between w-full mt-1">
               {currencyImage ? (
-                <Image
+                <CurrencyIcon
                   src={currencyImage || "/placeholder.svg"}
                   width={30}
                   height={30}
                   alt={i18n("currencyIconAlt", { currencyName })}
-                  className="object-contain"
+                  className="object-contain w-8 h-8"
                 />
               ) : (
                 <Image
@@ -153,12 +154,12 @@ export function CurrencySelector({
             <div className="flex items-center mb-2">
               {currencyImage ? (
                 <>
-                  <Image
+                  <CurrencyIcon
                     src={currencyImage || "/placeholder.svg"}
                     width={36}
                     height={36}
                     alt={i18n("currencyIconAlt", { currencyName })}
-                    className="object-contain mr-2"
+                    className="object-contain mr-2 w-9 h-9"
                   />
                   <span className="text-sm text-gray-600">
                     {getDisplayName(item)}

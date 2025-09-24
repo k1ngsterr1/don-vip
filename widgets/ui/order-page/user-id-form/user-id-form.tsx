@@ -364,12 +364,18 @@ export function UserIdForm({
           2.{" "}
           {needsEmail
             ? isServerRequired
-              ? "Enter your Email and Server ID"
+              ? locale === "ru"
+                ? "Введите ваш Email и ID сервера"
+                : "Enter your Email and Server ID"
+              : locale === "ru"
+              ? "Введите ваш Email"
               : "Enter your Email"
             : isServerRequired
             ? t("enterIdAndServer")
             : productRequirements?.requireUID
-            ? "Enter your User ID and UID"
+            ? locale === "ru"
+              ? "Введите ваш User ID и UID"
+              : "Enter your User ID and UID"
             : t("enterIdNoPrefix")}
         </h2>
         <CustomTooltip
