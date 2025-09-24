@@ -22,46 +22,6 @@ export const MobileGamesBlock = () => {
   const nonBigoProducts =
     productsData?.data?.filter((product) => product.type !== "Bigo") || [];
 
-  // Hardcoded design services as game-style products
-  const designServiceProducts = [
-    {
-      id: "design-mini-fix",
-      name: locale === "ru" ? "Мини-правка" : "Mini Fix",
-      image: "/feature-card.webp", // используем существующее изображение
-      href: "/design-services",
-      hasGem: false,
-      gemColor: "",
-      badge: locale === "ru" ? "40 ₽" : "$1.50",
-    },
-    {
-      id: "design-icon",
-      name: locale === "ru" ? "Иконка" : "Icon Design",
-      image: "/feature-card.webp",
-      href: "/design-services",
-      hasGem: false,
-      gemColor: "",
-      badge: locale === "ru" ? "167 ₽" : "$5.90",
-    },
-    {
-      id: "design-banner",
-      name: locale === "ru" ? "Сториc-баннер" : "Stories Banner",
-      image: "/feature-card.webp",
-      href: "/design-services",
-      hasGem: false,
-      gemColor: "",
-      badge: locale === "ru" ? "335 ₽" : "$11.50",
-    },
-    {
-      id: "design-card",
-      name: locale === "ru" ? "Визитка" : "Business Card",
-      image: "/feature-card.webp",
-      href: "/design-services",
-      hasGem: false,
-      gemColor: "",
-      badge: locale === "ru" ? "505 ₽" : "$17.50",
-    },
-  ];
-
   // Handle loading state
   if (isLoading) {
     return (
@@ -117,21 +77,8 @@ export const MobileGamesBlock = () => {
             />
           ))}
 
-        {/* Render design services as game cards */}
-        {designServiceProducts.map((service) => (
-          <GameCard
-            key={service.id}
-            title={service.name}
-            image={service.image}
-            href={service.href}
-            hasGem={service.hasGem}
-            gemColor={service.gemColor}
-            badge={service.badge}
-          />
-        ))}
-
         {/* Show message if no content */}
-        {nonBigoProducts.length === 0 && designServiceProducts.length === 0 && (
+        {nonBigoProducts.length === 0 && (
           <div className="col-span-full p-4 text-center text-muted-foreground">
             {t("services.notFound")}
           </div>
