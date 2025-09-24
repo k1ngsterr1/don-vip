@@ -2,7 +2,7 @@
 
 import type { CurrencyOption } from "@/entities/currency/model/types";
 import { cn } from "@/shared/utils/cn";
-import { Check, Loader2 } from "lucide-react";
+import { Check, Loader2, Diamond } from "lucide-react";
 import Image from "next/image";
 import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
@@ -69,7 +69,10 @@ export function CurrencySelector({
 
   const mobileSelector = (
     <div className={enhanced ? "hidden" : "px-4 mb-6"}>
-      <h2 className="text-dark font-medium mb-4">{i18n("title")}</h2>
+      <h2 className="text-dark font-medium mb-4 flex items-center gap-2">
+        <Diamond className="w-5 h-5 text-blue-600" />
+        {i18n("title")}
+      </h2>
       <div className="grid grid-cols-2 gap-3">
         {options.map((item) => (
           <button

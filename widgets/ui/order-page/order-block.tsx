@@ -4,6 +4,7 @@ import { PaymentMethodSelector } from "@/entities/payment/ui/payment-method-sele
 import { cn } from "@/shared/utils/cn";
 import { useState, useEffect, useRef } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { Diamond } from "lucide-react";
 import Link from "next/link";
 import { Banner } from "./banner/banner";
 import { OrderSummary } from "./order-summary/order-summary";
@@ -835,7 +836,7 @@ export function OrderBlock({
 
       {/* Section title for mobile */}
       <div className="px-4 mt-6 mb-4">
-        <h2 className="text-base md:text-lg font-bold text-gray-800">
+        <h2 className="text-base md:text-lg font-bold text-gray-800 flex items-center gap-2">
           1. {t("block.selectAmount")}
         </h2>
       </div>
@@ -847,6 +848,7 @@ export function OrderBlock({
         selectedId={selectedAmount}
         currencyName={currentCurrency.code}
         currencyImage={game.currencyImage}
+        productId={gameSlug}
       />
       <div data-step="user-id" className="px-4 md:px-0">
         <UserIdForm
@@ -956,7 +958,7 @@ export function OrderBlock({
               </div> */}
             </div>
             <div className="p-6 border-b border-gray-100">
-              <h2 className="text-lg font-bold text-gray-800 mb-4">
+              <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                 1. {t("block.selectAmount")}
               </h2>
               <DiamondPackages
@@ -965,6 +967,7 @@ export function OrderBlock({
                 selectedId={selectedAmount}
                 currencyName={currentCurrency.code}
                 currencyImage={game.currencyImage}
+                productId={gameSlug}
               />
             </div>
             <div

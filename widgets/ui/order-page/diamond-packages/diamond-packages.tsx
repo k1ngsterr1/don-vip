@@ -23,6 +23,7 @@ interface DiamondPackagesProps {
   selectedId: number | null;
   currencyName: string;
   currencyImage: string;
+  productId?: number;
 }
 
 export function DiamondPackages({
@@ -31,6 +32,7 @@ export function DiamondPackages({
   selectedId,
   currencyName,
   currencyImage,
+  productId,
 }: DiamondPackagesProps) {
   const locale = useLocale();
   const [showAll, setShowAll] = useState(false);
@@ -90,7 +92,18 @@ export function DiamondPackages({
     if (name.includes("gold")) return "🏆";
     if (name.includes("gem")) return "💎";
     if (name.includes("crystal")) return "💎";
+    if (name.includes("service") || name.includes("услуга")) return "⚙️";
     return "🪙"; // Default fallback
+  };
+
+  // Функция для отображения количества в зависимости от типа услуги
+  const getAmountDisplay = (pkg: Package) => {
+    if (currencyName === "Услуга" || currencyName === "Service") {
+      return locale === "ru"
+        ? `${pkg.amount} ${pkg.amount === 1 ? "иконка" : "иконок"}`
+        : `${pkg.amount} ${pkg.amount === 1 ? "icon" : "icons"}`;
+    }
+    return pkg.amount.toLocaleString();
   };
 
   const handlePackageSelect = (id: number) => {
@@ -220,11 +233,15 @@ export function DiamondPackages({
                   )}
                 </div>
                 <div className="text-[14px] md:text-[16px] font-semibold text-[#212529] leading-tight">
-                  {pkg.amount.toLocaleString()}
+                  {getAmountDisplay(pkg)}
                 </div>
               </div>
               <div className="text-[11px] md:text-[12px] text-[#6c757d] mb-1">
-                {currencyName}
+                {productId === 9999
+                  ? locale === "ru"
+                    ? "генерация иконок"
+                    : "icon generation"
+                  : currencyName}
               </div>
               <div className="text-[13px] md:text-[14px] font-medium text-[#212529]">
                 {pkg.price}
