@@ -561,7 +561,7 @@ export function UserIdForm({
                   : getTranslation("idNotFound")}
               </span>
             </div>
-            {validationResult.isValid && validationResult.username && (
+            {/* {validationResult.isValid && validationResult.username && (
               <div className="mt-1 text-sm text-green-600">
                 {getTranslation("username")}: {validationResult.username}
                 {validationResult.vipStatus && (
@@ -570,7 +570,7 @@ export function UserIdForm({
                   </span>
                 )}
               </div>
-            )}
+            )} */}
             {!validationResult.isValid && validationResult.errorMessage && (
               <div className="mt-1 text-sm text-red-600">
                 {isPubgMobile
