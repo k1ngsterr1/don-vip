@@ -855,6 +855,7 @@ export function OrderBlock({
           apiGame={product?.smile_api_game}
           productType={product?.type}
           gameData={game}
+          gameId={gameSlug}
           productRequirements={{
             isServerRequired: product?.isServerRequired,
             requireUserId: product?.requireUserId,
@@ -979,6 +980,7 @@ export function OrderBlock({
                 apiGame={product?.smile_api_game}
                 productType={product?.type}
                 gameData={game}
+                gameId={gameSlug}
                 productRequirements={{
                   isServerRequired: product?.isServerRequired,
                   requireUserId: product?.requireUserId,

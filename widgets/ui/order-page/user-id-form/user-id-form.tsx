@@ -7,7 +7,8 @@ import { useEffect, useState, useCallback } from "react";
 import { CustomAlert } from "../alert/alert";
 import QuestionIcon from "@/shared/icons/question-icon";
 import { useValidateBigoUser } from "@/entities/bigo/hooks/use-validate-bigo";
-import { useValidateSmileUser } from "@/entities/smile/hooks/use-validate-smile";
+// import { useValidateSmileUser } from "@/entities/smile/hooks/use-validate-smile"; // Заменено на Donatbank
+import { useValidateUser } from "@/entities/user/hooks/use-validate-user";
 import { useDebounce } from "@/shared/hooks/use-debounce";
 
 interface UserIdFormProps {
@@ -15,6 +16,7 @@ interface UserIdFormProps {
   productType?: string;
   requiresServer?: boolean;
   gameData?: any; // Добавляем данные игры из API
+  gameId?: number; // Добавляем ID игры для Donatbank валидации
   // Add product requirement fields
   productRequirements?: {
     isServerRequired?: boolean;
@@ -35,6 +37,7 @@ export function UserIdForm({
   productType,
   requiresServer,
   gameData,
+  gameId,
   productRequirements,
   userId,
   serverId,
@@ -44,11 +47,21 @@ export function UserIdForm({
 }: UserIdFormProps) {
   const t = useTranslations("orderBlock.user");
   const isPubgMobile = apiGame === "pubgmobile" || apiGame === "PUBG";
-  const isDonatBank = productType === "DonatBank";
-  const isBigo = productType === "Bigo";
-  const isSmile =
+  const isDonatBank =
+    productType === "DonatBank" ||
     productType === "Smile" ||
-    (apiGame && !isBigo && !isDonatBank && !isPubgMobile);
+    (apiGame && productType !== "Bigo" && !isPubgMobile);
+  const isBigo = productType === "Bigo";
+  const isSmile = false; // Заменено все Smile на DonatBank - удалить после тестирования
+
+  console.log("UserIdForm initialized:", {
+    productType,
+    isDonatBank,
+    isBigo,
+
+    gameId,
+    gameData: gameData?.id,
+  });
 
   // Use product requirements from the database instead of hardcoded logic
   const needsEmail = productRequirements?.requireEmail || isPubgMobile; // Keep PUBG logic for backward compatibility
@@ -84,12 +97,16 @@ export function UserIdForm({
     error: validationError,
   } = useValidateBigoUser();
 
-  // Smile validation
+  // Smile validation заменено на Donatbank
+  const isValidatingSmile = false; // Удалить после завершения миграции
+  const smileValidationError = null; // Удалить после завершения миграции
+
+  // Donatbank validation
   const {
-    validateUser: validateSmileUser,
-    isValidating: isValidatingSmile,
-    error: smileValidationError,
-  } = useValidateSmileUser();
+    mutate: validateDonatbankUser,
+    isPending: isValidatingDonatbank,
+    error: donatbankValidationError,
+  } = useValidateUser();
   const [validationResult, setValidationResult] = useState<{
     isValid: boolean;
     username?: string;
@@ -129,17 +146,14 @@ export function UserIdForm({
     if (isBigo && debouncedUserId.trim().length >= 4) {
       console.log("Starting debounced Bigo validation for:", debouncedUserId);
       handleValidateUserId(debouncedUserId.trim());
-    } else if (
-      isSmile &&
-      debouncedUserId.trim().length >= 4 &&
-      serverIdInput.trim().length > 0
-    ) {
+    } else if (isDonatBank && debouncedUserId.trim().length >= 4) {
       console.log(
-        "Starting debounced Smile validation for:",
+        "Starting debounced Donatbank validation for:",
         debouncedUserId,
-        serverIdInput
+        "gameId:",
+        gameId
       );
-      handleValidateSmileUser(debouncedUserId.trim(), serverIdInput.trim());
+      handleValidateUserId(debouncedUserId.trim());
     } else if (isPubgMobile) {
       // For PUBG, validate email format locally
       const emailValid = isEmail(debouncedUserId);
@@ -156,18 +170,25 @@ export function UserIdForm({
       });
       setHasValidated(true);
       onValidationChange?.(emailValid);
-    } else if ((isBigo || isSmile) && debouncedUserId.trim().length < 4) {
+    } else if ((isBigo || isDonatBank) && debouncedUserId.trim().length < 4) {
       // Reset validation state for short IDs
       setHasValidated(false);
       setValidationResult(null);
       onValidationChange?.(false);
     }
-  }, [debouncedUserId, serverIdInput, isBigo, isSmile, isPubgMobile]);
+  }, [
+    debouncedUserId,
+    serverIdInput,
+    isBigo,
+    isPubgMobile,
+    isDonatBank,
+    gameId,
+  ]);
 
   useEffect(() => {
     onUserIdChange(userIdInput);
 
-    if (isBigo || isSmile) {
+    if (isBigo || isDonatBank) {
       if (userIdInput.trim().length >= 4 && hasValidated && validationResult) {
         onValidationChange?.(validationResult.isValid);
       } else {
@@ -186,7 +207,7 @@ export function UserIdForm({
     userIdInput,
     onUserIdChange,
     isBigo,
-    isSmile,
+    isDonatBank,
     isPubgMobile,
     hasValidated,
     validationResult,
@@ -230,7 +251,7 @@ export function UserIdForm({
     setUserIdInput(cleanValue);
 
     // Reset validation when ID changes for products that require API validation
-    if ((isBigo || isSmile) && hasValidated) {
+    if ((isBigo || isDonatBank) && hasValidated) {
       setHasValidated(false);
       setValidationResult(null);
       onValidationChange?.(false); // Inform that validity is reset
@@ -240,7 +261,7 @@ export function UserIdForm({
     if (isPubgMobile) {
       const emailValid = isEmail(cleanValue);
       onValidationChange?.(emailValid);
-    } else if (!isBigo && !isSmile) {
+    } else if (!isBigo && !isDonatBank) {
       // For other products without API validation, consider valid if ID has reasonable length
       const isValidLength = cleanValue.trim().length >= 4;
       onValidationChange?.(isValidLength);
@@ -265,8 +286,8 @@ export function UserIdForm({
     setServerIdInput(cleanValue);
     onServerIdChange(cleanValue);
 
-    // Reset Smile validation when server ID changes
-    if (isSmile && hasValidated) {
+    // Reset DonatBank validation when server ID changes
+    if (isDonatBank && hasValidated) {
       setHasValidated(false);
       setValidationResult(null);
       onValidationChange?.(false);
@@ -276,69 +297,78 @@ export function UserIdForm({
   const handleValidateUserId = async (valueToValidate?: string) => {
     const targetValue = valueToValidate || userIdInput.trim();
 
-    if (!isBigo || !targetValue) {
+    if (!targetValue) {
       return;
     }
 
-    console.log("Validating Bigo ID:", targetValue); // Для отладки
+    // Bigo validation
+    if (isBigo) {
+      console.log("Validating Bigo ID:", targetValue);
+      try {
+        const result = await validateUser(targetValue);
+        setValidationResult(result);
+        setHasValidated(true);
+        onValidationChange?.(result.isValid);
+      } catch (error) {
+        console.error("Bigo validation error:", error);
+        const errorResult = {
+          isValid: false,
+          errorMessage:
+            validationError ||
+            (locale === "ru" ? "Ошибка валидации" : "Validation error"),
+        };
+        setValidationResult(errorResult);
+        setHasValidated(true);
+        onValidationChange?.(false);
+      }
+      return;
+    }
 
-    try {
-      const result = await validateUser(targetValue);
-      setValidationResult(result);
-      setHasValidated(true);
-
-      console.log("Validation result:", result); // Для отладки
-
-      // Информируем родительский компонент о результате валидации
-      onValidationChange?.(result.isValid);
-    } catch (error) {
-      console.error("Validation error:", error);
-      // Set error state if validation fails
-      const errorResult = {
-        isValid: false,
-        errorMessage:
-          validationError ||
-          (locale === "ru" ? "Ошибка валидации" : "Validation error"),
-      };
-      setValidationResult(errorResult);
-      setHasValidated(true);
-
-      // Информируем родительский компонент о неудачной валидации
-      onValidationChange?.(false);
+    // Donatbank validation
+    if (isDonatBank && gameId) {
+      console.log("Validating Donatbank ID:", targetValue, "for game:", gameId);
+      try {
+        validateDonatbankUser(
+          { userId: targetValue, gameId, zoneId: serverId },
+          {
+            onSuccess: (result) => {
+              console.log("Donatbank validation result:", result);
+              const validationResultFormatted = {
+                isValid: result.validated,
+                username: result.nickname || undefined,
+                errorMessage: result.validated ? undefined : result.message,
+              };
+              setValidationResult(validationResultFormatted);
+              setHasValidated(true);
+              onValidationChange?.(result.validated);
+            },
+            onError: (error) => {
+              console.error("Donatbank validation error:", error);
+              const errorResult = {
+                isValid: false,
+                errorMessage:
+                  locale === "ru"
+                    ? "Ошибка валидации пользователя"
+                    : "User validation error",
+              };
+              setValidationResult(errorResult);
+              setHasValidated(true);
+              onValidationChange?.(false);
+            },
+          }
+        );
+      } catch (error) {
+        console.error("Donatbank validation catch error:", error);
+      }
     }
   };
 
   const handleValidateSmileUser = async (userId: string, serverId: string) => {
-    if (!isSmile || !userId || !serverId) {
-      return;
-    }
-
-    console.log("Validating Smile user:", { userId, serverId, apiGame });
-
-    try {
-      const result = await validateSmileUser(userId, serverId, apiGame);
-      setValidationResult(result);
-      setHasValidated(true);
-
-      console.log("Smile validation result:", result);
-
-      // Inform parent component about validation result
-      onValidationChange?.(result.isValid);
-    } catch (error) {
-      console.error("Smile validation error:", error);
-      // Set error state if validation fails
-      const errorResult = {
-        isValid: false,
-        errorMessage:
-          smileValidationError ||
-          (locale === "ru" ? "Ошибка валидации" : "Validation error"),
-      };
-      setValidationResult(errorResult);
-      setHasValidated(true);
-
-      // Inform parent component about failed validation
-      onValidationChange?.(false);
-    }
+    // Deprecated: Smile validation заменена на DonatBank через handleValidateUserId
+    console.log(
+      "Deprecated Smile validation - redirecting to DonatBank validation"
+    );
+    handleValidateUserId(userId);
   };
 
   // Get space warning message based on locale
@@ -414,7 +444,7 @@ export function UserIdForm({
               value={userIdInput}
               onChange={(e) => handleUserIdChange(e.target.value)}
               className={`w-full p-3 ${needsEmail ? "pl-3" : "pl-10"} ${
-                isBigo || isSmile ? "pr-10" : ""
+                isBigo || isDonatBank ? "pr-10" : ""
               } border rounded-lg ${
                 hasValidated && validationResult
                   ? validationResult.isValid
@@ -423,9 +453,9 @@ export function UserIdForm({
                   : "border-gray-200"
               }`}
             />
-            {(isBigo || isSmile) && (
+            {(isBigo || isDonatBank) && (
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
-                {(isValidating || isValidatingSmile) && (
+                {(isValidating || isValidatingDonatbank) && (
                   <div className="flex items-center">
                     <Loader className="w-5 h-5 animate-spin text-blue-500" />
                     <span className="ml-1 text-xs text-blue-500">
@@ -435,7 +465,7 @@ export function UserIdForm({
                 )}
                 {hasValidated &&
                   validationResult &&
-                  !(isValidating || isValidatingSmile) && (
+                  !(isValidating || isValidatingDonatbank) && (
                     <>
                       {validationResult.isValid ? (
                         <CheckCircle className="w-5 h-5 text-green-500" />
@@ -462,7 +492,7 @@ export function UserIdForm({
                 value={userIdInput}
                 onChange={(e) => handleUserIdChange(e.target.value)}
                 className={`w-full p-3 ${
-                  isBigo || isSmile ? "pr-10" : ""
+                  isBigo || isDonatBank ? "pr-10" : ""
                 } border rounded-lg ${
                   hasValidated && validationResult
                     ? validationResult.isValid
@@ -471,9 +501,9 @@ export function UserIdForm({
                     : "border-gray-200"
                 }`}
               />
-              {(isBigo || isSmile) && (
+              {(isBigo || isDonatBank) && (
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
-                  {(isValidating || isValidatingSmile) && (
+                  {(isValidating || isValidatingDonatbank) && (
                     <div className="flex items-center">
                       <Loader className="w-5 h-5 animate-spin text-blue-500" />
                       <span className="ml-1 text-xs text-blue-500">
@@ -483,7 +513,7 @@ export function UserIdForm({
                   )}
                   {hasValidated &&
                     validationResult &&
-                    !(isValidating || isValidatingSmile) && (
+                    !(isValidating || isValidatingDonatbank) && (
                       <>
                         {validationResult.isValid ? (
                           <CheckCircle className="w-5 h-5 text-green-500" />
@@ -534,8 +564,8 @@ export function UserIdForm({
         ) : null}
       </div>
 
-      {/* Validation Result for Bigo, Smile, and PUBG */}
-      {(isBigo || isSmile || isPubgMobile) &&
+      {/* Validation Result for Bigo, DonatBank, and PUBG */}
+      {(isBigo || isDonatBank || isPubgMobile) &&
         hasValidated &&
         validationResult && (
           <div
