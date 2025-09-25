@@ -5,6 +5,7 @@ interface SmileSuccessResponse {
   data: {
     nickname: string;
     avatar: string;
+    username?: string;
   };
 }
 
@@ -23,6 +24,7 @@ interface ValidateSmileUserResponse {
   data?: {
     nickname: string;
     avatar: string;
+    username?: string;
   };
   error?: string;
   errorCode?: number;
@@ -45,6 +47,7 @@ export const smileService = {
       );
 
       const data = response.data;
+      console.log("Smile API raw response:", data);
 
       // Check if the response indicates an error
       if (data.status === "error" && data.error) {
@@ -58,7 +61,7 @@ export const smileService = {
       // If we got here, it's a success response
       return {
         success: true,
-        data: (data as SmileSuccessResponse).data,
+        data: data as any,
       };
     } catch (error: any) {
       // Handle axios errors or other exceptions

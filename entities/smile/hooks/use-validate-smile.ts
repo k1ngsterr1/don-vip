@@ -59,10 +59,11 @@ export function useValidateSmileUser(): UseValidateSmileUserResult {
           errorCode: response.errorCode,
         };
       }
+      console.log("Smile API response data:", response.data);
 
       return {
         isValid: true,
-        username: response.data?.nickname,
+        username: response.data?.username || response.data?.nickname,
         userAccount: {
           user_id: userId,
           server_id: serverId,
