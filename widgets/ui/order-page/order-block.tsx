@@ -4,13 +4,14 @@ import { PaymentMethodSelector } from "@/entities/payment/ui/payment-method-sele
 import { cn } from "@/shared/utils/cn";
 import { useState, useEffect, useRef } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { Diamond } from "lucide-react";
 import Link from "next/link";
 import { Banner } from "./banner/banner";
 import { OrderSummary } from "./order-summary/order-summary";
 import { UserIdForm } from "./user-id-form/user-id-form";
 import { useCreateOrder } from "@/entities/order/hooks/use-create-order";
 import type { CreateOrderDto } from "@/entities/order/model/types";
-import { useProduct } from "@/entities/product/hooks/queries/use-product";
+import { useProductWithHardcoded } from "@/entities/product/hooks/queries/use-product-with-hardcoded";
 import { OrderBlockSkeleton } from "./loading/skeleton-loading";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useGetMe } from "@/entities/auth/hooks/use-auth";
@@ -61,7 +62,8 @@ export function OrderBlock({
 }: OrderBlockProps) {
   const t = useTranslations("orderBlock");
   const locale = useLocale();
-  const { data: product, isLoading: isProductLoading } = useProduct(gameSlug);
+  const { data: product, isLoading: isProductLoading } =
+    useProductWithHardcoded(gameSlug);
 
   // Хардкодные переводы для заголовков
   const translations = {
@@ -834,7 +836,7 @@ export function OrderBlock({
 
       {/* Section title for mobile */}
       <div className="px-4 mt-6 mb-4">
-        <h2 className="text-base md:text-lg font-bold text-gray-800">
+        <h2 className="text-base md:text-lg font-bold text-gray-800 flex items-center gap-2">
           1. {t("block.selectAmount")}
         </h2>
       </div>
@@ -846,12 +848,14 @@ export function OrderBlock({
         selectedId={selectedAmount}
         currencyName={currentCurrency.code}
         currencyImage={game.currencyImage}
+        productId={gameSlug}
       />
       <div data-step="user-id" className="px-4 md:px-0">
         <UserIdForm
           apiGame={product?.smile_api_game}
           productType={product?.type}
           gameData={game}
+          gameId={gameSlug}
           productRequirements={{
             isServerRequired: product?.isServerRequired,
             requireUserId: product?.requireUserId,
@@ -955,7 +959,7 @@ export function OrderBlock({
               </div> */}
             </div>
             <div className="p-6 border-b border-gray-100">
-              <h2 className="text-lg font-bold text-gray-800 mb-4">
+              <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                 1. {t("block.selectAmount")}
               </h2>
               <DiamondPackages
@@ -964,6 +968,7 @@ export function OrderBlock({
                 selectedId={selectedAmount}
                 currencyName={currentCurrency.code}
                 currencyImage={game.currencyImage}
+                productId={gameSlug}
               />
             </div>
             <div
@@ -975,6 +980,7 @@ export function OrderBlock({
                 apiGame={product?.smile_api_game}
                 productType={product?.type}
                 gameData={game}
+                gameId={gameSlug}
                 productRequirements={{
                   isServerRequired: product?.isServerRequired,
                   requireUserId: product?.requireUserId,

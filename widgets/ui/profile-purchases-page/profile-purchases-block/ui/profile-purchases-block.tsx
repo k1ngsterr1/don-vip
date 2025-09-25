@@ -4,13 +4,13 @@ import { ArrowLeft } from "lucide-react";
 import { PurchaseCard } from "@/entities/product/ui/purchase-card";
 import { usePurchaseHistory } from "@/entities/product/hooks/queries/use-purchase-history";
 import { PurchaseHistorySkeleton } from "../state/purchase-history-skeleton";
-import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 
 export default function PurchaseProfileBlock() {
   const { data, isLoading, isError } = usePurchaseHistory();
-  const t = useTranslations("history.purchases");
   const router = useRouter();
+  const locale = useLocale();
 
   const hasPurchases = data?.data?.length > 0;
 
@@ -26,14 +26,20 @@ export default function PurchaseProfileBlock() {
               size={18}
               className="mr-2 group-hover:-translate-x-1 transition-transform"
             />
-            <span className="text-base md:text-lg">{t("return")}</span>
+            <span className="text-base md:text-lg">
+              {locale === "ru" ? "Назад" : "Back"}
+            </span>
           </button>
         </div>
       </div>
       {isLoading ? (
         <PurchaseHistorySkeleton />
       ) : isError ? (
-        <p className="text-red-500 mt-4">Failed to load purchase history.</p>
+        <p className="text-red-500 mt-4">
+          {locale === "ru"
+            ? "Не удалось загрузить историю покупок."
+            : "Failed to load purchase history."}
+        </p>
       ) : hasPurchases ? (
         <div className="w-full mt-4 space-y-4">
           {data.data.map((purchase: any) => (
@@ -50,7 +56,9 @@ export default function PurchaseProfileBlock() {
             height={68}
           />
           <span className="text-[15px] md:text-base font-medium text-black">
-            {t("noPurchases")}
+            {locale === "ru"
+              ? "У вас пока нет покупок"
+              : "You have no purchases yet"}
           </span>
         </div>
       )}

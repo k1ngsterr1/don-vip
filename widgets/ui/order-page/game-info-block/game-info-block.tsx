@@ -31,8 +31,15 @@ export function GameInfoBlock({
   // Get localized game name
   const localizedGameName = getLocalizedText(gameName, gameName_en);
 
-  // Get title from backend data
-  const displayTitle = title ? getLocalizedText(title, title_en) : "";
+  // Get title from props or use hardcoded title for icon-service
+  const isIconService = gameName === "Иконка" || gameName === "Icon Design";
+  const displayTitle = isIconService
+    ? locale === "ru"
+      ? "Профессиональная разработка иконки"
+      : "Professional Icon Design Service"
+    : title
+    ? getLocalizedText(title, title_en)
+    : "";
 
   // Get localized description
   const localizedDescription = getLocalizedText(description, description_en);

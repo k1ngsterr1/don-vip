@@ -4,7 +4,8 @@ import { Check, Clock, X, RotateCcw } from "lucide-react";
 import Image from "next/image";
 import type React from "react";
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
+import { CurrencyIcon } from "@/shared/ui/currency-icon";
 import { useRepeatOrder } from "@/entities/order/hooks/use-repeat-order";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 
@@ -32,10 +33,61 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
   diamonds,
   price,
 }) => {
-  const t = useTranslations("history.purchases");
+  const locale = useLocale();
   const [isExpanded, setIsExpanded] = useState(false);
   const { mutate: repeatOrder, isPending: isRepeating } = useRepeatOrder();
   const { user, isAuthenticated } = useAuthStore();
+
+  // Translation helper function
+  const getText = (key: string) => {
+    const translations: Record<string, { ru: string; en: string }> = {
+      purchase: { ru: "Покупка", en: "Purchase" },
+      gameImageAlt: { ru: "Изображение игры", en: "Game Image" },
+      currencyImageAlt: { ru: "Изображение валюты", en: "Currency Image" },
+      diamondIconAlt: { ru: "Иконка алмаза", en: "Diamond Icon" },
+      playerId: { ru: "ID игрока", en: "Player ID" },
+      serverId: { ru: "ID сервера", en: "Server ID" },
+      diamonds: { ru: "Алмазы", en: "Diamonds" },
+      repeatOrder: { ru: "Повторить заказ", en: "Repeat Order" },
+      repeating: { ru: "Повторение...", en: "Repeating..." },
+      purchaseCompleted: { ru: "Покупка завершена", en: "Purchase Completed" },
+      purchaseCompletedDesc: {
+        ru: "Ваша покупка была успешно обработана",
+        en: "Your purchase has been successfully processed",
+      },
+      inDelivery: { ru: "В доставке", en: "In Delivery" },
+      inDeliveryDesc: {
+        ru: "Ваш заказ находится в процессе доставки",
+        en: "Your order is being delivered",
+      },
+      successfulDelivery: {
+        ru: "Успешная доставка",
+        en: "Successful Delivery",
+      },
+      successfulDeliveryDesc: {
+        ru: "Ваш заказ был успешно доставлен",
+        en: "Your order has been successfully delivered",
+      },
+      orderClosed: { ru: "Заказ закрыт", en: "Order Closed" },
+      orderClosedDesc: {
+        ru: "Ваш заказ был успешно завершен",
+        en: "Your order has been successfully completed",
+      },
+      inPending: { ru: "В ожидании", en: "Pending" },
+      inPendingDesc: {
+        ru: "Ваш заказ ожидает обработки",
+        en: "Your order is pending processing",
+      },
+      paymentCancelled: { ru: "Платеж отменен", en: "Payment Cancelled" },
+      paymentCancelledDesc: {
+        ru: "Ваш платеж был отменен",
+        en: "Your payment has been cancelled",
+      },
+    };
+    return (
+      translations[key]?.[locale as "ru" | "en"] || translations[key]?.en || key
+    );
+  };
 
   // Функция для форматирования цены - заменяем ? на ₽
   const formatPrice = (priceString: string) => {
@@ -161,7 +213,7 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-blue-600 font-medium text-sm">
-              {t("purchase")} #{id}
+              {getText("purchase")} #{id}
             </span>
             <span className="text-gray-500 text-sm">{date}</span>
           </div>
@@ -176,16 +228,16 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
           <div className="relative">
             <Image
               src={gameImage || "/placeholder.svg"}
-              alt={t("gameImageAlt")}
+              alt={getText("gameImageAlt")}
               width={48}
               height={48}
               className="rounded-full w-12 h-12 object-cover"
             />
           </div>
           <div className="relative">
-            <Image
+            <CurrencyIcon
               src={currencyImage || "/placeholder.svg"}
-              alt={t("currencyImageAlt")}
+              alt={getText("currencyImageAlt")}
               width={48}
               height={48}
               className="rounded-full w-12 h-12 object-contain"
@@ -238,10 +290,10 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
                   {/* Status Content */}
                   <div className="flex-1 min-w-0 py-1">
                     <h3 className="text-sm font-semibold text-gray-900">
-                      {t(step.key)}
+                      {getText(step.key)}
                     </h3>
                     <p className="text-xs text-gray-600 mb-3">
-                      {t(step.description)}
+                      {getText(step.description)}
                     </p>
                   </div>
                 </div>
@@ -252,7 +304,7 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
             <div className="flex flex-wrap gap-2 mt-4">
               <div className="bg-gray-50 p-3 rounded-lg w-fit">
                 <div className="text-xs text-gray-500 uppercase tracking-wide text-center">
-                  {t("playerId")}
+                  {getText("playerId")}
                 </div>
                 <div className="text-sm font-medium text-gray-900">
                   {playerId}
@@ -262,7 +314,7 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
               {serverId && (
                 <div className="bg-gray-50 p-3 rounded-lg w-fit">
                   <div className="text-xs text-gray-500 uppercase tracking-wide text-center">
-                    {t("serverId")}
+                    {getText("serverId")}
                   </div>
                   <div className="text-sm font-medium text-gray-900">
                     {serverId}
@@ -272,12 +324,12 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
 
               <div className="bg-gray-50 p-3 rounded-lg w-fit">
                 <div className="text-xs text-gray-500 uppercase tracking-wide text-center">
-                  {t("diamonds")}
+                  {getText("diamonds")}
                 </div>
                 <div className="text-sm font-medium text-gray-900 flex items-center gap-1">
-                  <Image
+                  <CurrencyIcon
                     src={currencyImage || "/placeholder.svg"}
-                    alt={t("diamondIconAlt")}
+                    alt={getText("diamondIconAlt")}
                     width={16}
                     height={16}
                     className="w-4 h-4"
@@ -302,7 +354,7 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
                     size={16}
                     className={isRepeating ? "animate-spin" : ""}
                   />
-                  {isRepeating ? t("repeating") : t("repeatOrder")}
+                  {isRepeating ? getText("repeating") : getText("repeatOrder")}
                 </button>
               )}
             </div>

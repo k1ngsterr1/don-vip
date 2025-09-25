@@ -193,8 +193,7 @@ export default function Header({ isSearchBar = true }: IHeader) {
               />
             </div>
           )}
-          <div className="relative flex items-center gap-2 ml-2 sm:ml-4 lg:ml-9 group">
-            {/* Currency Display */}
+          <div className="relative flex items-center gap-1 ml-2 sm:ml-4 lg:ml-9 group">
             <Link
               href="/language-currency"
               className="items-center gap-1 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg mr-2 transition-colors duration-200 cursor-pointer"

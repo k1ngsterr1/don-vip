@@ -4,6 +4,7 @@ import { cn } from "@/shared/utils/cn";
 import { Check, ShieldCheck, Percent } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { CurrencyIcon } from "@/shared/ui/currency-icon";
 import { useCurrency } from "@/entities/currency/hooks/use-currency";
 
 interface OrderSummaryProps {
@@ -68,12 +69,12 @@ export function OrderSummary({
         <div className="flex items-center mb-4">
           <div className="w-16 h-16 flex items-center justify-center rounded-lg overflow-hidden mr-4 bg-gray-100 flex-shrink-0">
             {game.currencyImage && (
-              <Image
+              <CurrencyIcon
                 src={game.currencyImage || "/placeholder.svg"}
                 alt={game.currencyName}
                 width={64}
                 height={64}
-                className="object-cover w-[54px] h-[54px] "
+                className="object-cover w-[54px] h-[54px]"
               />
             )}
           </div>

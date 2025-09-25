@@ -2,14 +2,17 @@
 
 import { useState } from "react";
 import GameCard from "@/entities/games/ui/game-card/game-card";
+import ServiceCard from "@/entities/games/ui/service-card/service-card";
 import JoystickIcon from "@/shared/icons/joystick-icon";
 import SectionTitle from "@/shared/ui/section-title/section-title";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useProducts } from "@/entities/product/hooks/queries/use-products";
 import { Skeleton } from "@/shared/ui/skeleton/skeleton";
+import { Paintbrush } from "lucide-react";
 
 export const MobileGamesBlock = () => {
   const t = useTranslations();
+  const locale = useLocale();
   const [limit, setLimit] = useState(8); // Initially show 8 products
   const {
     data: productsData,
@@ -20,6 +23,17 @@ export const MobileGamesBlock = () => {
   // Filter out Bigo products
   const nonBigoProducts =
     productsData?.data?.filter((product) => product.type !== "Bigo") || [];
+
+  // Hardcoded icon service as game
+  const iconService = {
+    id: "icon-service",
+    name: locale === "ru" ? "Иконка" : "Icon",
+    image: "/feature-card.webp",
+    href: "/product/icon-service",
+    hasGem: false,
+    gemColor: "",
+    badge: locale === "ru" ? "100 ₽" : "$3.50",
+  };
 
   // Handle loading state
   if (isLoading) {
@@ -62,7 +76,8 @@ export const MobileGamesBlock = () => {
     <div className="w-full">
       <SectionTitle icon={<JoystickIcon />} title={t("mobile_games.title")} />
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-        {nonBigoProducts.length > 0 ? (
+        {/* Render games */}
+        {nonBigoProducts.length > 0 &&
           nonBigoProducts.map((product) => (
             <GameCard
               key={product.id}
@@ -73,8 +88,20 @@ export const MobileGamesBlock = () => {
               gemColor=""
               badge=""
             />
-          ))
-        ) : (
+          ))}
+
+        {/* Render hardcoded icon service */}
+        <ServiceCard
+          key={iconService.id}
+          title={iconService.name}
+          href={iconService.href}
+          badge={iconService.badge}
+          useIcon={true}
+          icon={<Paintbrush className="w-16 h-16 text-blue-600" />}
+        />
+
+        {/* Show message if no content */}
+        {nonBigoProducts.length === 0 && (
           <div className="col-span-full p-4 text-center text-muted-foreground">
             {t("services.notFound")}
           </div>
