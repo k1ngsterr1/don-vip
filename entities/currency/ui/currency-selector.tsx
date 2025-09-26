@@ -99,7 +99,18 @@ export function CurrencySelector({
                 <Loader2 className="text-blue animate-spin" size={16} />
               </div>
             )}
-            <span className="text-dark font-bold text-lg">{item.price}</span>
+            {item.isDiscounted && item.originalPrice ? (
+              <div className="flex flex-col">
+                <span className="text-gray-500 line-through text-sm">
+                  {item.originalPrice.toFixed(2)} руб
+                </span>
+                <span className="text-red-600 font-bold text-lg">
+                  {item.price}
+                </span>
+              </div>
+            ) : (
+              <span className="text-dark font-bold text-lg">{item.price}</span>
+            )}
             <span className="text-sm text-gray-600">
               {getDisplayName(item)}
             </span>
@@ -178,9 +189,20 @@ export function CurrencySelector({
                 />
               )}
             </div>
-            <span className="text-2xl font-bold text-gray-900">
-              {item.price}
-            </span>
+            {item.isDiscounted && item.originalPrice ? (
+              <div className="flex flex-col">
+                <span className="text-gray-500 line-through text-lg">
+                  {item.originalPrice.toFixed(2)} руб
+                </span>
+                <span className="text-red-600 text-2xl font-bold">
+                  {item.price}
+                </span>
+              </div>
+            ) : (
+              <span className="text-2xl font-bold text-gray-900">
+                {item.price}
+              </span>
+            )}
           </button>
         ))}
       </div>

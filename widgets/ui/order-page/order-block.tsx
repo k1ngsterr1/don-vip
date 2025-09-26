@@ -28,6 +28,7 @@ import { GameDescription } from "./game-description/game-description";
 import { GameInfoBlock } from "./game-info-block/game-info-block";
 import { PromoBlock } from "./promo-block/promo-block";
 import { useGameContent } from "@/entities/games/hooks/use-game-content";
+import { DiscountPackagesDemo } from "./discount-packages-demo/discount-packages-demo";
 import { InfoBlock } from "./info-block/info-block";
 
 interface OrderBlockProps {
@@ -52,7 +53,10 @@ interface CurrencyOption {
   originalPriceRub: number;
   type: string;
   sku: string;
-  discount?: number;
+  originalPrice?: number;
+  discountPercent?: number;
+  isDiscounted?: boolean;
+  discount?: number; // legacy field
   isPopular?: boolean;
 }
 
@@ -661,8 +665,13 @@ export function OrderBlock({
 
           // Add sample discount and popularity for demo
           const isPopular = index === 0; // First item is popular
-          const discount =
+          const discountPercent =
             index === 0 ? 21 : index === 1 ? 20 : index === 2 ? 11 : 0;
+
+          // Calculate original price if there's a discount
+          const originalPrice =
+            discountPercent > 0 ? priceInRub * 1.3 : undefined;
+          const isDiscounted = discountPercent > 0;
 
           return {
             id: index,
@@ -671,7 +680,9 @@ export function OrderBlock({
             originalPriceRub: priceInRub, // Keep original RUB price for order
             type: item.type,
             sku: item.sku,
-            ...(discount > 0 && { discount }), // Only include discount if > 0
+            originalPrice,
+            discountPercent,
+            isDiscounted,
             isPopular,
           };
         })
