@@ -2,8 +2,13 @@ export interface CurrencyOption {
   id: number;
   amount: number;
   price: string;
-  priceValue: number;
+  priceValue?: number;
+  originalPriceRub: number;
+  type: string;
+  sku: string;
+  discount?: number;
   discountPercent?: number;
-  type?: string;
-  sku?: string;
+  isDiscounted?: boolean;
+  isPopular?: boolean;
+  bonus?: number;
 }
