@@ -11,7 +11,7 @@ export function Banner({ backgroundImage, height }: BannerProps) {
   const t = useTranslations("orderSummary.summary.benefits");
 
   console.log("Translations:", {
-    instantDelivery: t("benefits.instantDelivery"),
+    instantDelivery: t("instantDelivery"),
   });
 
   const mobileBanner = (
