@@ -116,6 +116,7 @@ export function OrderBlock({
   const [activeTab, setActiveTab] = useState<
     "instruction" | "reviews" | "description" | "faq"
   >("instruction");
+  const [isDemoMode, setIsDemoMode] = useState(false);
 
   // Функция для получения моковых отзывов в зависимости от локали и игры
   const getMockReviews = () => {
@@ -665,13 +666,20 @@ export function OrderBlock({
 
           // Add sample discount and popularity for demo
           const isPopular = index === 0; // First item is popular
-          const discountPercent =
-            index === 0 ? 21 : index === 1 ? 20 : index === 2 ? 11 : 0;
+          const discountPercent = isDemoMode
+            ? index === 0
+              ? 21
+              : index === 1
+              ? 20
+              : index === 2
+              ? 11
+              : 0
+            : 0;
 
           // Calculate original price if there's a discount
           const originalPrice =
             discountPercent > 0 ? priceInRub * 1.3 : undefined;
-          const isDiscounted = discountPercent > 0;
+          const isDiscounted = isDemoMode && discountPercent > 0;
 
           return {
             id: index,
@@ -688,7 +696,7 @@ export function OrderBlock({
         })
       );
     }
-  }, [product, currentCurrency]);
+  }, [product, currentCurrency, isDemoMode]);
 
   if (isProductLoading || isGameContentLoading || !game) {
     return <OrderBlockSkeleton />;
@@ -1126,6 +1134,12 @@ export function OrderBlock({
         }}
         onSubmit={handleGuestAuthSubmit}
         isLoading={isLoading}
+      />
+
+      {/* Demo режим для скидочных пакетов */}
+      <DiscountPackagesDemo
+        isDemoEnabled={isDemoMode}
+        onToggleDemo={setIsDemoMode}
       />
     </>
   );

@@ -15,6 +15,9 @@ interface Package {
   discount?: number;
   isPopular?: boolean;
   bonus?: number;
+  originalPrice?: number;
+  discountPercent?: number;
+  isDiscounted?: boolean;
 }
 
 interface DiamondPackagesProps {
@@ -236,14 +239,33 @@ export function DiamondPackages({
                   {getAmountDisplay(pkg)}
                 </div>
               </div>
-              <div className="text-[11px] md:text-[12px] text-[#6c757d] mb-1">
-                {productId === 9999
-                  ? locale === "ru"
-                    ? "генерация иконок"
-                    : "icon generation"
-                  : currencyName}
-              </div>
-              <div className="text-[13px] md:text-[14px] font-medium text-[#212529]">
+              {/* Скидочная плашка или тип валюты */}
+              {pkg.isDiscounted && pkg.originalPrice ? (
+                <div className="flex flex-col gap-1 mb-1">
+                  <div className="flex items-center gap-2">
+                    <span className="bg-red-500 text-white text-[10px] md:text-[11px] font-bold px-2 py-1 rounded">
+                      -{pkg.discountPercent}%
+                    </span>
+                    <span className="text-[10px] md:text-[11px] text-gray-500 line-through">
+                      {pkg.originalPrice.toFixed(2)} ₽
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-[11px] md:text-[12px] text-[#6c757d] mb-1">
+                  {productId === 9999
+                    ? locale === "ru"
+                      ? "генерация иконок"
+                      : "icon generation"
+                    : currencyName}
+                </div>
+              )}
+              <div
+                className={cn(
+                  "text-[13px] md:text-[14px] font-medium",
+                  pkg.isDiscounted ? "text-red-600 font-bold" : "text-[#212529]"
+                )}
+              >
                 {pkg.price}
               </div>
               {isSelected && (
