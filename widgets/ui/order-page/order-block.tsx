@@ -675,9 +675,6 @@ export function OrderBlock({
               : 0
             : 0;
 
-          // Calculate original price if there's a discount
-          const originalPrice =
-            discountPercent > 0 ? priceInRub * 1.3 : undefined;
           const isDiscounted = isDemoMode && discountPercent > 0;
 
           return {
@@ -687,7 +684,6 @@ export function OrderBlock({
             originalPriceRub: priceInRub, // Keep original RUB price for order
             type: item.type,
             sku: item.sku,
-            originalPrice,
             discountPercent,
             isDiscounted,
             isPopular,

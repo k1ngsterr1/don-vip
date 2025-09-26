@@ -15,7 +15,6 @@ interface Package {
   discount?: number;
   isPopular?: boolean;
   bonus?: number;
-  originalPrice?: number;
   discountPercent?: number;
   isDiscounted?: boolean;
 }
@@ -240,14 +239,14 @@ export function DiamondPackages({
                 </div>
               </div>
               {/* Скидочная плашка или тип валюты */}
-              {pkg.isDiscounted && pkg.originalPrice ? (
+              {pkg.isDiscounted && pkg.discountPercent ? (
                 <div className="flex flex-col gap-1 mb-1">
                   <div className="flex items-center gap-2">
                     <span className="bg-red-500 text-white text-[10px] md:text-[11px] font-bold px-2 py-1 rounded">
                       -{pkg.discountPercent}%
                     </span>
                     <span className="text-[10px] md:text-[11px] text-gray-500 line-through">
-                      {pkg.originalPrice.toFixed(2)} ₽
+                      {pkg.originalPriceRub.toFixed(2)} ₽
                     </span>
                   </div>
                 </div>
@@ -266,7 +265,12 @@ export function DiamondPackages({
                   pkg.isDiscounted ? "text-red-600 font-bold" : "text-[#212529]"
                 )}
               >
-                {pkg.price}
+                {pkg.isDiscounted && pkg.discountPercent
+                  ? `${(
+                      pkg.originalPriceRub *
+                      (1 - pkg.discountPercent / 100)
+                    ).toFixed(2)} ₽`
+                  : pkg.price}
               </div>
               {isSelected && (
                 <div className="absolute top-2 right-2 text-[#007bff] text-sm">
