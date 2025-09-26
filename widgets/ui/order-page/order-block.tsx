@@ -41,6 +41,9 @@ interface CurrencyOption {
   originalPriceRub: number;
   type: string;
   sku: string;
+  originalPrice?: number;
+  discountPercent?: number;
+  isDiscounted?: boolean;
 }
 
 export function OrderBlock({
