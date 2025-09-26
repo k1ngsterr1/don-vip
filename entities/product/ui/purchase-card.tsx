@@ -1,10 +1,11 @@
 "use client";
 
-import { Check, Clock, X } from "lucide-react";
+import { Check, Clock, X, RotateCcw } from "lucide-react";
 import Image from "next/image";
 import type React from "react";
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 
 export interface PurchaseCardProps {
   id: number | string;
@@ -17,6 +18,8 @@ export interface PurchaseCardProps {
   serverId?: string | null;
   diamonds: number;
   price: string;
+  gameId?: number | string; // Add gameId for navigation to product page
+  gameName?: string; // Add gameName as fallback identifier
 }
 
 export const PurchaseCard: React.FC<PurchaseCardProps> = ({
@@ -29,13 +32,36 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
   serverId,
   diamonds,
   price,
+  gameId,
+  gameName,
 }) => {
   const t = useTranslations("purchases");
+  const locale = useLocale();
+  const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
+  // For now, always show button (can be enhanced later with proper auth check)
+  const isAuthenticated = true;
 
   // Функция для форматирования цены - заменяем ? на ₽
   const formatPrice = (priceString: string) => {
     return priceString.replace(/\?/g, "₽");
+  };
+
+  const handleRepeatOrder = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card expansion
+
+    // Navigate to product page if gameId or gameName is available
+    if (gameId) {
+      router.push(`/${locale}/product/${gameId}`);
+    } else if (gameName) {
+      // Use gameName as fallback identifier
+      router.push(
+        `/${locale}/product/${gameName.toLowerCase().replace(/\s+/g, "-")}`
+      );
+    } else {
+      // Fallback: for now just log, as we don't have useRepeatOrder in this branch
+      console.warn("No gameId or gameName provided for repeat order");
+    }
   };
 
   const getStatusIcon = (stepStatus: "completed" | "pending" | "cancelled") => {
@@ -278,11 +304,20 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
               </div>
             </div>
 
-            {/* Price */}
-            <div className="flex justify-end mt-4 pt-4 border-t border-gray-100">
+            {/* Price and Repeat Order Button */}
+            <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
               <div className="text-2xl font-bold text-gray-900">
                 {formatPrice(price)}
               </div>
+              {isAuthenticated && (
+                <button
+                  onClick={handleRepeatOrder}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm font-medium"
+                >
+                  <RotateCcw size={16} />
+                  {t("repeatOrder")}
+                </button>
+              )}
             </div>
           </div>
         )}

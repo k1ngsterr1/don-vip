@@ -37,7 +37,12 @@ export default function PurchaseProfileBlock() {
       ) : hasPurchases ? (
         <div className="w-full mt-4 space-y-4">
           {data.data.map((purchase: any) => (
-            <PurchaseCard key={purchase.id} {...purchase} />
+            <PurchaseCard
+              key={purchase.id}
+              {...purchase}
+              gameId={purchase.game_id} // Map game_id to gameId
+              gameName={purchase.game?.name || purchase.gameName} // Map game name if available
+            />
           ))}
         </div>
       ) : (
