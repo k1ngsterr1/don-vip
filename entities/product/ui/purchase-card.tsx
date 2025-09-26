@@ -50,17 +50,23 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
   const handleRepeatOrder = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent card expansion
 
-    // Navigate to product page if gameId or gameName is available
+    // Navigate to product/game page using locale for proper translation
     if (gameId) {
+      // Direct navigation to product page with gameId
       router.push(`/${locale}/product/${gameId}`);
     } else if (gameName) {
-      // Use gameName as fallback identifier
-      router.push(
-        `/${locale}/product/${gameName.toLowerCase().replace(/\s+/g, "-")}`
-      );
+      // Use gameName as fallback identifier, convert to URL-friendly format
+      const gameSlug = gameName
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "");
+      router.push(`/${locale}/product/${gameSlug}`);
     } else {
-      // Fallback: for now just log, as we don't have useRepeatOrder in this branch
-      console.warn("No gameId or gameName provided for repeat order");
+      // Last resort: try to navigate to games catalog
+      router.push(`/${locale}/games`);
+      console.warn(
+        "No gameId or gameName provided for repeat order, redirecting to games catalog"
+      );
     }
   };
 
@@ -315,7 +321,7 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
                   className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm font-medium"
                 >
                   <RotateCcw size={16} />
-                  {t("repeatOrder")}
+                  {locale === "ru" ? "Повторить заказ" : "Repeat Order"}
                 </button>
               )}
             </div>

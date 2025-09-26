@@ -29,6 +29,7 @@
       "pending": "Pending"
     },
     "inPending": "Wating for payment",
-    "inPendingDesc": "Wating for payment gateway to finish order"
+    "inPendingDesc": "Wating for payment gateway to finish order",
+    "repeatOrder": "Repeat Order"
   }
 }
