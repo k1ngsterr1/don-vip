@@ -5,6 +5,7 @@ import Image from "next/image";
 import type React from "react";
 import { useState } from "react";
 import { useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 import { CurrencyIcon } from "@/shared/ui/currency-icon";
 import { useRepeatOrder } from "@/entities/order/hooks/use-repeat-order";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
@@ -20,6 +21,8 @@ export interface PurchaseCardProps {
   serverId?: string | null;
   diamonds: number;
   price: string;
+  gameId?: number | string; // Add gameId for navigation to product page
+  gameName?: string; // Add gameName as fallback identifier
 }
 
 export const PurchaseCard: React.FC<PurchaseCardProps> = ({
@@ -32,8 +35,11 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
   serverId,
   diamonds,
   price,
+  gameId,
+  gameName,
 }) => {
   const locale = useLocale();
+  const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
   const { mutate: repeatOrder, isPending: isRepeating } = useRepeatOrder();
   const { user, isAuthenticated } = useAuthStore();
@@ -96,7 +102,22 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
 
   const handleRepeatOrder = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent card expansion
-    repeatOrder(id);
+
+    // Navigate to product page if gameId or gameName is available
+    if (gameId) {
+      router.push(`/${locale}/product/${gameId}`);
+    } else if (gameName) {
+      // Use gameName as fallback identifier
+      router.push(
+        `/${locale}/product/${gameName.toLowerCase().replace(/\s+/g, "-")}`
+      );
+    } else {
+      // Fallback to the original repeat order logic if no product identifier available
+      console.warn(
+        "No gameId or gameName provided for repeat order, falling back to original logic"
+      );
+      repeatOrder(id);
+    }
   };
 
   const getStatusIcon = (stepStatus: "completed" | "pending" | "cancelled") => {
