@@ -89,6 +89,7 @@ export function UserIdForm({
     "userId" | "serverId"
   >("userId");
   const [showIdPrefixWarning, setShowIdPrefixWarning] = useState(false);
+  const [showSpecialCharsWarning, setShowSpecialCharsWarning] = useState(false);
 
   // Bigo validation
   const {
@@ -226,6 +227,31 @@ export function UserIdForm({
     return value;
   };
 
+  // Функция для проверки и удаления специальных символов
+  const handleSpecialCharsDetection = (value: string) => {
+    // Разрешены только английские буквы, цифры, точка и нижнее подчеркивание
+    // Для PUBG Mobile дополнительно разрешен @ и дефис для email
+    const allowedCharsRegex = isPubgMobile
+      ? /^[a-zA-Z0-9._@-]*$/
+      : /^[a-zA-Z0-9._]*$/;
+
+    if (!allowedCharsRegex.test(value)) {
+      setShowSpecialCharsWarning(true);
+      // Удаляем все недопустимые символы
+      const cleanValue = isPubgMobile
+        ? value.replace(/[^a-zA-Z0-9._@-]/g, "")
+        : value.replace(/[^a-zA-Z0-9._]/g, "");
+
+      // Скрываем предупреждение через 3 секунды
+      setTimeout(() => {
+        setShowSpecialCharsWarning(false);
+      }, 3000);
+
+      return cleanValue;
+    }
+    return value;
+  };
+
   const handleUserIdChange = (value: string) => {
     console.log(
       "handleUserIdChange called with:",
@@ -247,7 +273,12 @@ export function UserIdForm({
       }, 3000);
     }
 
-    const cleanValue = handleSpaceDetection(value, "userId");
+    // Валидация специальных символов
+    const cleanValueFromSpecialChars = handleSpecialCharsDetection(value);
+    const cleanValue = handleSpaceDetection(
+      cleanValueFromSpecialChars,
+      "userId"
+    );
     setUserIdInput(cleanValue);
 
     // Reset validation when ID changes for products that require API validation
@@ -282,7 +313,12 @@ export function UserIdForm({
       }, 3000);
     }
 
-    const cleanValue = handleSpaceDetection(value, "serverId");
+    // Валидация специальных символов для Server ID
+    const cleanValueFromSpecialChars = handleSpecialCharsDetection(value);
+    const cleanValue = handleSpaceDetection(
+      cleanValueFromSpecialChars,
+      "serverId"
+    );
     setServerIdInput(cleanValue);
     onServerIdChange(cleanValue);
 
@@ -673,6 +709,50 @@ export function UserIdForm({
                   <div>
                     🇷🇺 Пожалуйста, не включайте "ID:" в ваш User ID. Введите
                     только цифры.
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        }
+      />
+
+      {/* Special Characters Warning Alert */}
+      <CustomAlert
+        isOpen={showSpecialCharsWarning}
+        onClose={() => setShowSpecialCharsWarning(false)}
+        message={
+          <div className="space-y-2">
+            <div className="flex items-center text-amber-600">
+              <AlertTriangle size={16} className="mr-2" />
+              <span className="font-medium">
+                {locale === "ru" ? "Предупреждение" : "Warning"}
+              </span>
+            </div>
+            <div className="text-sm">
+              {locale === "en" && (
+                <div className="mb-1">
+                  🇺🇸 Only English letters, numbers, dot (.) and underscore (_)
+                  are allowed{isPubgMobile ? ", plus @ and - for email" : ""}.
+                </div>
+              )}
+              {locale === "ru" && (
+                <div>
+                  🇷🇺 Разрешены только английские буквы, цифры, точка (.) и
+                  нижнее подчеркивание (_)
+                  {isPubgMobile ? ", плюс @ и - для email" : ""}.
+                </div>
+              )}
+              {locale !== "en" && locale !== "ru" && (
+                <>
+                  <div className="mb-1">
+                    🇺🇸 Only English letters, numbers, dot (.) and underscore (_)
+                    are allowed{isPubgMobile ? ", plus @ and - for email" : ""}.
+                  </div>
+                  <div>
+                    🇷🇺 Разрешены только английские буквы, цифры, точка (.) и
+                    нижнее подчеркивание (_)
+                    {isPubgMobile ? ", плюс @ и - для email" : ""}.
                   </div>
                 </>
               )}

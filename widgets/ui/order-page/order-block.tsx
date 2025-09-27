@@ -20,7 +20,6 @@ import { useCurrency } from "@/entities/currency/hooks/use-currency";
 import { DiamondPackages } from "./diamond-packages/diamond-packages";
 import { ReviewsSection } from "./reviews-section/reviews-section";
 import { FAQSection } from "./faq-section/faq-section";
-import { ValidationToast } from "./validation-toast/validation-toast";
 import {
   InstructionTabs,
   InstructionContent,
@@ -993,51 +992,7 @@ export function OrderBlock({
           onValidationChange={handleUserIdValidation}
         />
 
-        {/* Предупреждения валидации */}
-        {showSpaceWarning && (
-          <div className="mb-4">
-            <ValidationToast
-              isVisible={showSpaceWarning}
-              type="info"
-              message={
-                locale === "ru"
-                  ? "Пробелы не допускаются и были автоматически удалены."
-                  : "Spaces are not allowed and have been automatically removed."
-              }
-              onClose={() => setShowSpaceWarning(false)}
-            />
-          </div>
-        )}
 
-        {showIdPrefixWarning && (
-          <div className="mb-4">
-            <ValidationToast
-              isVisible={showIdPrefixWarning}
-              type="info"
-              message={
-                locale === "ru"
-                  ? 'Префикс "ID:" не нужен и был автоматически удален.'
-                  : 'The "ID:" prefix is not needed and has been automatically removed.'
-              }
-              onClose={() => setShowIdPrefixWarning(false)}
-            />
-          </div>
-        )}
-
-        {showSpecialCharsWarning && (
-          <div className="mb-4">
-            <ValidationToast
-              isVisible={showSpecialCharsWarning}
-              type="info"
-              message={
-                locale === "ru"
-                  ? "Специальные символы не допускаются и были автоматически удалены."
-                  : "Special characters are not allowed and have been automatically removed."
-              }
-              onClose={() => setShowSpecialCharsWarning(false)}
-            />
-          </div>
-        )}
       </div>
 
       {/* Payment Method Selector */}
