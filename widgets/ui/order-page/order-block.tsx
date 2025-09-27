@@ -117,25 +117,6 @@ export function OrderBlock({
   >("instruction");
   const [isDemoMode, setIsDemoMode] = useState(false);
 
-  // Состояния для предупреждений валидации
-  const [showSpaceWarning, setShowSpaceWarning] = useState(false);
-  const [spaceWarningField, setSpaceWarningField] = useState<
-    "userId" | "serverId"
-  >("userId");
-  const [showIdPrefixWarning, setShowIdPrefixWarning] = useState(false);
-  const [showSpecialCharsWarning, setShowSpecialCharsWarning] = useState(false);
-
-  // Отслеживание показанных предупреждений для предотвращения спама
-  const [shownWarnings, setShownWarnings] = useState<Set<string>>(new Set());
-
-  // Функция для сброса предупреждений (например, при смене игры)
-  const resetWarnings = () => {
-    setShownWarnings(new Set());
-    setShowSpaceWarning(false);
-    setShowIdPrefixWarning(false);
-    setShowSpecialCharsWarning(false);
-  };
-
   // Функция для получения моковых отзывов в зависимости от локали и игры
   const getMockReviews = () => {
     const gameType = getGameIdFromSlug(gameSlug);
@@ -567,93 +548,12 @@ export function OrderBlock({
     }
   };
 
-  // Функция для обработки и удаления пробелов
-  const handleSpaceDetection = (
-    value: string,
-    field: "userId" | "serverId"
-  ) => {
-    if (value.includes(" ")) {
-      const warningKey = `space-${field}`;
-
-      // Показываем предупреждение только если его еще не показывали
-      if (!shownWarnings.has(warningKey) && !showSpaceWarning) {
-        setSpaceWarningField(field);
-        setShowSpaceWarning(true);
-        setShownWarnings((prev) => new Set([...prev, warningKey]));
-
-        // Автоматически скрываем предупреждение
-        setTimeout(() => setShowSpaceWarning(false), 4000);
-      }
-
-      return value.replace(/\s/g, ""); // Remove all spaces
-    }
-    return value;
-  };
-
-  // Функция для проверки и удаления специальных символов
-  const handleSpecialCharsDetection = (value: string) => {
-    // Получаем тип игры для определения разрешенных символов
-    const gameType = getGameIdFromSlug(gameSlug);
-    const isPubgMobile = gameType === "pubgmobile";
-
-    // Разрешены только английские буквы, цифры, точка и нижнее подчеркивание
-    // Для PUBG Mobile дополнительно разрешен @ и дефис для email
-    const allowedCharsRegex = isPubgMobile
-      ? /^[a-zA-Z0-9._@-]*$/
-      : /^[a-zA-Z0-9._]*$/;
-
-    if (!allowedCharsRegex.test(value)) {
-      const warningKey = "special-chars";
-
-      // Показываем предупреждение только если его еще не показывали
-      if (!shownWarnings.has(warningKey) && !showSpecialCharsWarning) {
-        setShowSpecialCharsWarning(true);
-        setShownWarnings((prev) => new Set([...prev, warningKey]));
-
-        // Автоматически скрываем предупреждение
-        setTimeout(() => setShowSpecialCharsWarning(false), 4000);
-      }
-
-      // Удаляем все недопустимые символы
-      const cleanValue = isPubgMobile
-        ? value.replace(/[^a-zA-Z0-9._@-]/g, "")
-        : value.replace(/[^a-zA-Z0-9._]/g, "");
-
-      return cleanValue;
-    }
-    return value;
-  };
-
-  // Функция для обработки префикса "ID:"
-  const handleIdPrefixDetection = (value: string) => {
-    if (value.toLowerCase().includes("id:")) {
-      const warningKey = "id-prefix";
-
-      // Показываем предупреждение только если его еще не показывали
-      if (!shownWarnings.has(warningKey) && !showIdPrefixWarning) {
-        setShowIdPrefixWarning(true);
-        setShownWarnings((prev) => new Set([...prev, warningKey]));
-
-        // Автоматически скрываем предупреждение
-        setTimeout(() => setShowIdPrefixWarning(false), 4000);
-      }
-
-      return value.replace(/id:/gi, "");
-    }
-    return value;
-  };
-
   // Обработчик изменения User ID
   const handleUserIdChange = (value: string) => {
-    // Применяем валидацию
-    let cleanValue = handleIdPrefixDetection(value);
-    cleanValue = handleSpecialCharsDetection(cleanValue);
-    cleanValue = handleSpaceDetection(cleanValue, "userId");
-
-    setUserId(cleanValue);
+    setUserId(value);
 
     // Если ID достаточно длинный и выбран пакет, автоматически переходим к оплате
-    if (cleanValue.trim().length >= 4 && selectedAmount !== null) {
+    if (value.trim().length >= 4 && selectedAmount !== null) {
       // Для игр требующих сервер, проверяем что сервер ID тоже введен
       if (game?.isServerRequired && serverId.trim() === "") {
         return; // Не переходим если сервер ID не введен
@@ -665,16 +565,11 @@ export function OrderBlock({
 
   // Обработчик изменения Server ID
   const handleServerIdChange = (value: string) => {
-    // Применяем валидацию
-    let cleanValue = handleIdPrefixDetection(value);
-    cleanValue = handleSpecialCharsDetection(cleanValue);
-    cleanValue = handleSpaceDetection(cleanValue, "serverId");
-
-    setServerId(cleanValue);
+    setServerId(value);
 
     // Если все поля заполнены и выбран пакет, автоматически переходим к оплате
     if (
-      cleanValue.trim().length >= 1 &&
+      value.trim().length >= 1 &&
       userId.trim().length >= 4 &&
       selectedAmount !== null
     ) {
@@ -716,9 +611,6 @@ export function OrderBlock({
   const { data: me } = useGetMe();
 
   useEffect(() => {
-    // Сбрасываем предупреждения при смене игры
-    resetWarnings();
-
     const local_user = localStorage.getItem("userId");
     if (local_user && local_user.trim() !== "") {
       setUserIdDB(local_user.trim());
