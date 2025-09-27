@@ -20,6 +20,7 @@ import { useCurrency } from "@/entities/currency/hooks/use-currency";
 import { DiamondPackages } from "./diamond-packages/diamond-packages";
 import { ReviewsSection } from "./reviews-section/reviews-section";
 import { FAQSection } from "./faq-section/faq-section";
+import { CustomAlert } from "./alert/alert";
 import {
   InstructionTabs,
   InstructionContent,
@@ -116,6 +117,14 @@ export function OrderBlock({
     "instruction" | "reviews" | "description" | "faq"
   >("instruction");
   const [isDemoMode, setIsDemoMode] = useState(false);
+
+  // Состояния для предупреждений валидации
+  const [showSpaceWarning, setShowSpaceWarning] = useState(false);
+  const [spaceWarningField, setSpaceWarningField] = useState<
+    "userId" | "serverId"
+  >("userId");
+  const [showIdPrefixWarning, setShowIdPrefixWarning] = useState(false);
+  const [showSpecialCharsWarning, setShowSpecialCharsWarning] = useState(false);
 
   // Функция для получения моковых отзывов в зависимости от локали и игры
   const getMockReviews = () => {
@@ -548,12 +557,66 @@ export function OrderBlock({
     }
   };
 
+  // Функция для обработки и удаления пробелов
+  const handleSpaceDetection = (
+    value: string,
+    field: "userId" | "serverId"
+  ) => {
+    if (value.includes(" ")) {
+      setSpaceWarningField(field);
+      setShowSpaceWarning(true);
+      setTimeout(() => setShowSpaceWarning(false), 3000);
+      return value.replace(/\s/g, ""); // Remove all spaces
+    }
+    return value;
+  };
+
+  // Функция для проверки и удаления специальных символов
+  const handleSpecialCharsDetection = (value: string) => {
+    // Получаем тип игры для определения разрешенных символов
+    const gameType = getGameIdFromSlug(gameSlug);
+    const isPubgMobile = gameType === "pubgmobile";
+
+    // Разрешены только английские буквы, цифры, точка и нижнее подчеркивание
+    // Для PUBG Mobile дополнительно разрешен @ и дефис для email
+    const allowedCharsRegex = isPubgMobile
+      ? /^[a-zA-Z0-9._@-]*$/
+      : /^[a-zA-Z0-9._]*$/;
+
+    if (!allowedCharsRegex.test(value)) {
+      setShowSpecialCharsWarning(true);
+      setTimeout(() => setShowSpecialCharsWarning(false), 3000);
+      // Удаляем все недопустимые символы
+      const cleanValue = isPubgMobile
+        ? value.replace(/[^a-zA-Z0-9._@-]/g, "")
+        : value.replace(/[^a-zA-Z0-9._]/g, "");
+
+      return cleanValue;
+    }
+    return value;
+  };
+
+  // Функция для обработки префикса "ID:"
+  const handleIdPrefixDetection = (value: string) => {
+    if (value.toLowerCase().includes("id:")) {
+      setShowIdPrefixWarning(true);
+      setTimeout(() => setShowIdPrefixWarning(false), 3000);
+      return value.replace(/id:/gi, "");
+    }
+    return value;
+  };
+
   // Обработчик изменения User ID
   const handleUserIdChange = (value: string) => {
-    setUserId(value);
+    // Применяем валидацию
+    let cleanValue = handleIdPrefixDetection(value);
+    cleanValue = handleSpecialCharsDetection(cleanValue);
+    cleanValue = handleSpaceDetection(cleanValue, "userId");
+
+    setUserId(cleanValue);
 
     // Если ID достаточно длинный и выбран пакет, автоматически переходим к оплате
-    if (value.trim().length >= 4 && selectedAmount !== null) {
+    if (cleanValue.trim().length >= 4 && selectedAmount !== null) {
       // Для игр требующих сервер, проверяем что сервер ID тоже введен
       if (game?.isServerRequired && serverId.trim() === "") {
         return; // Не переходим если сервер ID не введен
@@ -565,11 +628,16 @@ export function OrderBlock({
 
   // Обработчик изменения Server ID
   const handleServerIdChange = (value: string) => {
-    setServerId(value);
+    // Применяем валидацию
+    let cleanValue = handleIdPrefixDetection(value);
+    cleanValue = handleSpecialCharsDetection(cleanValue);
+    cleanValue = handleSpaceDetection(cleanValue, "serverId");
+
+    setServerId(cleanValue);
 
     // Если все поля заполнены и выбран пакет, автоматически переходим к оплате
     if (
-      value.trim().length >= 1 &&
+      cleanValue.trim().length >= 1 &&
       userId.trim().length >= 4 &&
       selectedAmount !== null
     ) {
@@ -883,6 +951,46 @@ export function OrderBlock({
           onServerIdChange={handleServerIdChange}
           onValidationChange={handleUserIdValidation}
         />
+
+        {/* Предупреждения валидации */}
+        {showSpaceWarning && (
+          <CustomAlert
+            isOpen={showSpaceWarning}
+            type="info"
+            message={
+              locale === "ru"
+                ? "Пробелы не допускаются и были автоматически удалены."
+                : "Spaces are not allowed and have been automatically removed."
+            }
+            onClose={() => setShowSpaceWarning(false)}
+          />
+        )}
+
+        {showIdPrefixWarning && (
+          <CustomAlert
+            isOpen={showIdPrefixWarning}
+            type="info"
+            message={
+              locale === "ru"
+                ? 'Префикс "ID:" не нужен и был автоматически удален.'
+                : 'The "ID:" prefix is not needed and has been automatically removed.'
+            }
+            onClose={() => setShowIdPrefixWarning(false)}
+          />
+        )}
+
+        {showSpecialCharsWarning && (
+          <CustomAlert
+            isOpen={showSpecialCharsWarning}
+            type="info"
+            message={
+              locale === "ru"
+                ? "Специальные символы не допускаются и были автоматически удалены."
+                : "Special characters are not allowed and have been automatically removed."
+            }
+            onClose={() => setShowSpecialCharsWarning(false)}
+          />
+        )}
       </div>
 
       {/* Payment Method Selector */}
