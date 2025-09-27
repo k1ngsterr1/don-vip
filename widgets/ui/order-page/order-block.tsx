@@ -20,7 +20,7 @@ import { useCurrency } from "@/entities/currency/hooks/use-currency";
 import { DiamondPackages } from "./diamond-packages/diamond-packages";
 import { ReviewsSection } from "./reviews-section/reviews-section";
 import { FAQSection } from "./faq-section/faq-section";
-import { CustomAlert } from "./alert/alert";
+import { ValidationToast } from "./validation-toast/validation-toast";
 import {
   InstructionTabs,
   InstructionContent,
@@ -125,6 +125,17 @@ export function OrderBlock({
   >("userId");
   const [showIdPrefixWarning, setShowIdPrefixWarning] = useState(false);
   const [showSpecialCharsWarning, setShowSpecialCharsWarning] = useState(false);
+
+  // Отслеживание показанных предупреждений для предотвращения спама
+  const [shownWarnings, setShownWarnings] = useState<Set<string>>(new Set());
+
+  // Функция для сброса предупреждений (например, при смене игры)
+  const resetWarnings = () => {
+    setShownWarnings(new Set());
+    setShowSpaceWarning(false);
+    setShowIdPrefixWarning(false);
+    setShowSpecialCharsWarning(false);
+  };
 
   // Функция для получения моковых отзывов в зависимости от локали и игры
   const getMockReviews = () => {
@@ -563,9 +574,18 @@ export function OrderBlock({
     field: "userId" | "serverId"
   ) => {
     if (value.includes(" ")) {
-      setSpaceWarningField(field);
-      setShowSpaceWarning(true);
-      setTimeout(() => setShowSpaceWarning(false), 3000);
+      const warningKey = `space-${field}`;
+
+      // Показываем предупреждение только если его еще не показывали
+      if (!shownWarnings.has(warningKey) && !showSpaceWarning) {
+        setSpaceWarningField(field);
+        setShowSpaceWarning(true);
+        setShownWarnings((prev) => new Set([...prev, warningKey]));
+
+        // Автоматически скрываем предупреждение
+        setTimeout(() => setShowSpaceWarning(false), 4000);
+      }
+
       return value.replace(/\s/g, ""); // Remove all spaces
     }
     return value;
@@ -584,8 +604,17 @@ export function OrderBlock({
       : /^[a-zA-Z0-9._]*$/;
 
     if (!allowedCharsRegex.test(value)) {
-      setShowSpecialCharsWarning(true);
-      setTimeout(() => setShowSpecialCharsWarning(false), 3000);
+      const warningKey = "special-chars";
+
+      // Показываем предупреждение только если его еще не показывали
+      if (!shownWarnings.has(warningKey) && !showSpecialCharsWarning) {
+        setShowSpecialCharsWarning(true);
+        setShownWarnings((prev) => new Set([...prev, warningKey]));
+
+        // Автоматически скрываем предупреждение
+        setTimeout(() => setShowSpecialCharsWarning(false), 4000);
+      }
+
       // Удаляем все недопустимые символы
       const cleanValue = isPubgMobile
         ? value.replace(/[^a-zA-Z0-9._@-]/g, "")
@@ -599,8 +628,17 @@ export function OrderBlock({
   // Функция для обработки префикса "ID:"
   const handleIdPrefixDetection = (value: string) => {
     if (value.toLowerCase().includes("id:")) {
-      setShowIdPrefixWarning(true);
-      setTimeout(() => setShowIdPrefixWarning(false), 3000);
+      const warningKey = "id-prefix";
+
+      // Показываем предупреждение только если его еще не показывали
+      if (!shownWarnings.has(warningKey) && !showIdPrefixWarning) {
+        setShowIdPrefixWarning(true);
+        setShownWarnings((prev) => new Set([...prev, warningKey]));
+
+        // Автоматически скрываем предупреждение
+        setTimeout(() => setShowIdPrefixWarning(false), 4000);
+      }
+
       return value.replace(/id:/gi, "");
     }
     return value;
@@ -679,6 +717,9 @@ export function OrderBlock({
   const { data: me } = useGetMe();
 
   useEffect(() => {
+    // Сбрасываем предупреждения при смене игры
+    resetWarnings();
+
     const local_user = localStorage.getItem("userId");
     if (local_user && local_user.trim() !== "") {
       setUserIdDB(local_user.trim());
@@ -954,42 +995,48 @@ export function OrderBlock({
 
         {/* Предупреждения валидации */}
         {showSpaceWarning && (
-          <CustomAlert
-            isOpen={showSpaceWarning}
-            type="info"
-            message={
-              locale === "ru"
-                ? "Пробелы не допускаются и были автоматически удалены."
-                : "Spaces are not allowed and have been automatically removed."
-            }
-            onClose={() => setShowSpaceWarning(false)}
-          />
+          <div className="mb-4">
+            <ValidationToast
+              isVisible={showSpaceWarning}
+              type="info"
+              message={
+                locale === "ru"
+                  ? "Пробелы не допускаются и были автоматически удалены."
+                  : "Spaces are not allowed and have been automatically removed."
+              }
+              onClose={() => setShowSpaceWarning(false)}
+            />
+          </div>
         )}
 
         {showIdPrefixWarning && (
-          <CustomAlert
-            isOpen={showIdPrefixWarning}
-            type="info"
-            message={
-              locale === "ru"
-                ? 'Префикс "ID:" не нужен и был автоматически удален.'
-                : 'The "ID:" prefix is not needed and has been automatically removed.'
-            }
-            onClose={() => setShowIdPrefixWarning(false)}
-          />
+          <div className="mb-4">
+            <ValidationToast
+              isVisible={showIdPrefixWarning}
+              type="info"
+              message={
+                locale === "ru"
+                  ? 'Префикс "ID:" не нужен и был автоматически удален.'
+                  : 'The "ID:" prefix is not needed and has been automatically removed.'
+              }
+              onClose={() => setShowIdPrefixWarning(false)}
+            />
+          </div>
         )}
 
         {showSpecialCharsWarning && (
-          <CustomAlert
-            isOpen={showSpecialCharsWarning}
-            type="info"
-            message={
-              locale === "ru"
-                ? "Специальные символы не допускаются и были автоматически удалены."
-                : "Special characters are not allowed and have been automatically removed."
-            }
-            onClose={() => setShowSpecialCharsWarning(false)}
-          />
+          <div className="mb-4">
+            <ValidationToast
+              isVisible={showSpecialCharsWarning}
+              type="info"
+              message={
+                locale === "ru"
+                  ? "Специальные символы не допускаются и были автоматически удалены."
+                  : "Special characters are not allowed and have been automatically removed."
+              }
+              onClose={() => setShowSpecialCharsWarning(false)}
+            />
+          </div>
         )}
       </div>
 
