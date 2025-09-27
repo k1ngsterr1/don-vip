@@ -991,8 +991,6 @@ export function OrderBlock({
           onServerIdChange={handleServerIdChange}
           onValidationChange={handleUserIdValidation}
         />
-
-
       </div>
 
       {/* Payment Method Selector */}
