@@ -31,12 +31,12 @@ export default function ResetPasswordSuccessPage() {
 
         <div className="space-y-3 pt-4">
           <Link href="/auth/login">
-            <Button className="w-full bg-blue hover:bg-blue/90 text-white py-3 rounded-full font-medium">
+            <Button className="w-full bg-blue hover:bg-blue/90 text-white py-3  rounded-full font-medium">
               {i18n("tryLogin")}
             </Button>
           </Link>
 
-          <Link href="/" className="block">
+          <Link href="/" className="block mt-4">
             <Button
               variant="secondary"
               className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 py-3 rounded-full"
