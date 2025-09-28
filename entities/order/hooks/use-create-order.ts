@@ -14,6 +14,7 @@ import type {
 import { paymentApi } from "@/entities/payment/api/payment.api";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useGetMe } from "@/entities/auth/hooks/use-auth";
+import { useOrderCookies } from "@/shared/hooks/use-order-cookies";
 
 function isSafariBrowser(): boolean {
   if (typeof window === "undefined") return false;
@@ -42,6 +43,8 @@ export function useCreateOrder(
 
   const { user: authUser, isGuestAuth } = useAuthStore();
   const { data: me } = useGetMe();
+  const { saveSuccessfulOrder, saveGameData, getOrCreateGuestId } =
+    useOrderCookies();
 
   // Determine if we should use Pagsmile checkout (for non-RUB currencies)
   const shouldUsePagsmileCheckout = currency !== "RUB";
@@ -95,6 +98,33 @@ export function useCreateOrder(
 
     onSuccess: (orderData, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.orders.all });
+
+      // Save successful order data to cookies
+      saveSuccessfulOrder({
+        orderId: orderData.id,
+        accountId: variables.user_game_id,
+        serverId: variables.server_id,
+        gameId: variables.game_id,
+        gameName: `Game ${variables.game_id}`, // You might want to pass actual game name
+        timestamp: Date.now(),
+      });
+
+      // Save game data for quick access next time
+      if (variables.user_game_id) {
+        saveGameData({
+          gameId: variables.game_id,
+          accountId: variables.user_game_id,
+          serverId: variables.server_id,
+          gameName: `Game ${variables.game_id}`,
+          lastUsed: Date.now(),
+        });
+      }
+
+      // Ensure guest user has an ID saved
+      if (!authUser && !me) {
+        getOrCreateGuestId();
+      }
+
       if (paymentMethod === "tbank" && currency === "RUB") {
         return; // T-Bank handles its own redirect
       } else {

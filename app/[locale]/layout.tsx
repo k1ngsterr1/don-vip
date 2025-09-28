@@ -15,6 +15,7 @@ import "./globals.css";
 import { getMessages, getTranslations } from "next-intl/server";
 import FooterWrapper from "@/features/footer/footer-wrapper";
 import { CookieBanner } from "@/shared/ui/cookie-banner/cookie-banner";
+import { CookieConsent } from "@/shared/ui/cookie-consent/cookie-consent";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -161,6 +162,7 @@ export default async function LocaleLayout({
             <FooterWrapper />
           </ClientLayout>
           <CookieBanner />
+          <CookieConsent />
         </NextIntlClientProvider>
       </body>
     </html>

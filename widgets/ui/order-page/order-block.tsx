@@ -17,6 +17,8 @@ import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useGetMe } from "@/entities/auth/hooks/use-auth";
 import { GuestAuthPopup } from "@/entities/order/ui/guest-user-popup";
 import { useCurrency } from "@/entities/currency/hooks/use-currency";
+import { useOrderCookies } from "@/shared/hooks/use-order-cookies";
+import { SavedAccountsQuickSelect } from "./saved-accounts-quick-select/saved-accounts-quick-select";
 import { DiamondPackages } from "./diamond-packages/diamond-packages";
 import { ReviewsSection } from "./reviews-section/reviews-section";
 import { FAQSection } from "./faq-section/faq-section";
@@ -552,6 +554,17 @@ export function OrderBlock({
   const handleUserIdChange = (value: string) => {
     setUserId(value);
 
+    // Save game data to cookies when user enters valid ID
+    if (value.trim().length >= 4 && game?.id) {
+      saveGameData({
+        gameId: game.id,
+        accountId: value.trim(),
+        serverId: serverId || undefined,
+        gameName: game.name,
+        lastUsed: Date.now(),
+      });
+    }
+
     // Если ID достаточно длинный и выбран пакет, автоматически переходим к оплате
     if (value.trim().length >= 4 && selectedAmount !== null) {
       // Для игр требующих сервер, проверяем что сервер ID тоже введен
@@ -567,6 +580,17 @@ export function OrderBlock({
   const handleServerIdChange = (value: string) => {
     setServerId(value);
 
+    // Save game data to cookies when user enters server ID
+    if (value.trim().length >= 1 && userId.trim().length >= 4 && game?.id) {
+      saveGameData({
+        gameId: game.id,
+        accountId: userId.trim(),
+        serverId: value.trim(),
+        gameName: game.name,
+        lastUsed: Date.now(),
+      });
+    }
+
     // Если все поля заполнены и выбран пакет, автоматически переходим к оплате
     if (
       value.trim().length >= 1 &&
@@ -574,6 +598,33 @@ export function OrderBlock({
       selectedAmount !== null
     ) {
       scrollToPaymentSection();
+    }
+  };
+
+  // Обработчик выбора сохраненного аккаунта
+  const handleSavedAccountSelect = (accountId: string, serverId?: string) => {
+    setUserId(accountId);
+    if (serverId) {
+      setServerId(serverId);
+    }
+
+    // Update saved data timestamp
+    if (game?.id) {
+      saveGameData({
+        gameId: game.id,
+        accountId: accountId,
+        serverId: serverId,
+        gameName: game.name,
+        lastUsed: Date.now(),
+      });
+    }
+
+    // Auto-scroll to payment if package is selected
+    if (selectedAmount !== null) {
+      // Check if server is required and provided
+      if (!game?.isServerRequired || serverId) {
+        setTimeout(() => scrollToPaymentSection(), 300);
+      }
     }
   };
 
@@ -609,6 +660,8 @@ export function OrderBlock({
 
   const { user: authUser, isGuestAuth } = useAuthStore();
   const { data: me } = useGetMe();
+  const { fillFormFromLastOrder, getGameData, saveGameData } =
+    useOrderCookies();
 
   useEffect(() => {
     const local_user = localStorage.getItem("userId");
@@ -692,6 +745,19 @@ export function OrderBlock({
       );
     }
   }, [product, currentCurrency, isDemoMode]);
+
+  // Load saved game data from cookies when game changes
+  useEffect(() => {
+    if (game?.id) {
+      const savedData = fillFormFromLastOrder(game.id);
+      if (savedData.hasData) {
+        setUserId(savedData.accountId);
+        if (savedData.serverId) {
+          setServerId(savedData.serverId);
+        }
+      }
+    }
+  }, [game?.id, fillFormFromLastOrder]);
 
   if (isProductLoading || isGameContentLoading || !game) {
     return <OrderBlockSkeleton />;
@@ -865,6 +931,13 @@ export function OrderBlock({
         productId={gameSlug}
       />
       <div data-step="user-id" className="px-4 md:px-0">
+        {/* Saved Accounts Quick Select */}
+        <SavedAccountsQuickSelect
+          gameId={game.id}
+          onAccountSelect={handleSavedAccountSelect}
+          className="mb-4"
+        />
+
         <UserIdForm
           apiGame={product?.smile_api_game}
           productType={product?.type}
@@ -990,6 +1063,13 @@ export function OrderBlock({
               data-step="user-id"
               id="desktop-user-id-section"
             >
+              {/* Saved Accounts Quick Select for Desktop */}
+              <SavedAccountsQuickSelect
+                gameId={game.id}
+                onAccountSelect={handleSavedAccountSelect}
+                className="mb-6"
+              />
+
               <UserIdForm
                 apiGame={product?.smile_api_game}
                 productType={product?.type}

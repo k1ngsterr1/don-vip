@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { apiClient } from "@/shared/config/apiClient";
 import type { User } from "@/entities/user/model/types";
+import { CookieManager, COOKIE_NAMES } from "@/shared/utils/cookies";
 
 interface AuthState {
   user: User | null;
@@ -52,6 +53,19 @@ export const useAuthStore = create<AuthState>()(
         apiClient.defaults.headers.common[
           "Authorization"
         ] = `Bearer ${accessToken}`;
+
+        // Save tokens to cookies for persistence across browser sessions
+        CookieManager.set(COOKIE_NAMES.AUTH_TOKEN, accessToken, {
+          expires: 7, // 7 days
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+        });
+
+        CookieManager.set(COOKIE_NAMES.REFRESH_TOKEN, refreshToken, {
+          expires: 30, // 30 days
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+        });
       },
 
       setGuestAuth: (isGuest) => {
@@ -63,6 +77,10 @@ export const useAuthStore = create<AuthState>()(
 
         // Clear axios authorization header
         delete apiClient.defaults.headers.common["Authorization"];
+
+        // Clear cookies
+        CookieManager.remove(COOKIE_NAMES.AUTH_TOKEN);
+        CookieManager.remove(COOKIE_NAMES.REFRESH_TOKEN);
       },
 
       logout: () => {
@@ -76,6 +94,10 @@ export const useAuthStore = create<AuthState>()(
 
         // Clear axios authorization header
         delete apiClient.defaults.headers.common["Authorization"];
+
+        // Clear auth cookies
+        CookieManager.remove(COOKIE_NAMES.AUTH_TOKEN);
+        CookieManager.remove(COOKIE_NAMES.REFRESH_TOKEN);
 
         // Clear userId from localStorage
         localStorage.removeItem("userId");
@@ -139,8 +161,27 @@ apiClient.interceptors.response.use(
   }
 );
 
-// Initialize auth header from persisted state
-const accessToken = useAuthStore.getState().accessToken;
-if (accessToken) {
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
-}
+// Initialize auth from cookies if not present in store
+const initializeAuthFromCookies = () => {
+  const state = useAuthStore.getState();
+
+  // If tokens are already in store, use them
+  if (state.accessToken) {
+    apiClient.defaults.headers.common[
+      "Authorization"
+    ] = `Bearer ${state.accessToken}`;
+    return;
+  }
+
+  // Try to get tokens from cookies
+  const cookieAccessToken = CookieManager.get(COOKIE_NAMES.AUTH_TOKEN);
+  const cookieRefreshToken = CookieManager.get(COOKIE_NAMES.REFRESH_TOKEN);
+
+  if (cookieAccessToken && cookieRefreshToken) {
+    // Set tokens in store from cookies
+    state.setTokens(cookieAccessToken, cookieRefreshToken);
+  }
+};
+
+// Initialize auth header from persisted state or cookies
+initializeAuthFromCookies();
