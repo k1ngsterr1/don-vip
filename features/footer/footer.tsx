@@ -35,7 +35,7 @@ export default function Footer() {
       address: "Address",
       officialContacts: "Official Contacts",
       director: "Director:",
-      company: "Company:",
+      company: "Company: ",
       companyRegNo: "Company Registration No.:",
       businessRegNo: "Business Registration No.:",
       country: "Country:",
@@ -159,7 +159,7 @@ export default function Footer() {
                   Aslanyan
                 </p>
                 <p>
-                  <span className="font-medium">{legal.company}</span>
+                  <span className="font-medium">{legal.company} </span>
                   <span className="font-black text-gray-900 text-sm md:text-base">
                     DMME HK LIMITED
                   </span>
