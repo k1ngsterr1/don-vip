@@ -15,8 +15,10 @@ export const ContactsPageBlock = () => {
       officialContacts: "Официальные контакты",
       director: "Директор:",
       company: "Компания:",
+      companyRegNo: "Рег. номер компании:",
+      businessRegNo: "Бизнес рег. номер:",
       country: "Страна:",
-      street: "Улица:",
+      street: "Зарегистрированный офис:",
       city: "Город:",
       postalCode: "Почтовый индекс:",
       phone: "Телефон:",
@@ -29,8 +31,10 @@ export const ContactsPageBlock = () => {
       officialContacts: "Official Contacts",
       director: "Director:",
       company: "Company:",
+      companyRegNo: "Company Registration No.:",
+      businessRegNo: "Business Registration No.:",
       country: "Country:",
-      street: "Street:",
+      street: "Registered Office:",
       city: "City:",
       postalCode: "Postal Code:",
       phone: "Phone:",
@@ -98,15 +102,23 @@ export const ContactsPageBlock = () => {
               </h3>
               <div className="space-y-1">
                 <p>
-                  <span className="font-bold">{legal.director}:</span> Davit
+                  <span className="font-bold">{legal.director}</span> Davit
                   Aslanyan
                 </p>
                 <p>
-                  <span className="font-bold">{legal.company}:</span> DMME HK
+                  <span className="font-bold">{legal.company}</span> DMME HK
                   LIMITED
                 </p>
                 <p>
-                  <span className="font-bold">{legal.country}:</span> HK
+                  <span className="font-bold">{legal.companyRegNo}</span>{" "}
+                  77196171
+                </p>
+                <p>
+                  <span className="font-bold">{legal.businessRegNo}</span>{" "}
+                  77196171-000-10-24-9
+                </p>
+                <p>
+                  <span className="font-bold">{legal.country}</span> Hong Kong
                 </p>
               </div>
             </div>
@@ -118,15 +130,11 @@ export const ContactsPageBlock = () => {
               </h3>
               <div className="space-y-1">
                 <p>
-                  <span className="font-bold">{legal.street}:</span> 000000,
-                  Hong Kong, 8/F., China Hong Kong Tower, 8-12 Hennessy Road,
-                  Wan Chai, Hong Kong
+                  <span className="font-bold">{legal.street}</span> 8/F., China
+                  Hong Kong Tower, 8-12 Hennessy Road, Wan Chai, Hong Kong
                 </p>
                 <p>
-                  <span className="font-bold">{legal.city}:</span> Hong Kong
-                </p>
-                <p>
-                  <span className="font-bold">{legal.postalCode}:</span> 000000
+                  <span className="font-bold">{legal.city}</span> Hong Kong
                 </p>
               </div>
             </div>
@@ -139,16 +147,16 @@ export const ContactsPageBlock = () => {
             </h3>
             <div className="space-y-1">
               <p>
-                <span className="font-bold">{legal.phone}:</span>{" "}
+                <span className="font-bold">{legal.phone}</span>{" "}
                 <a
-                  href="tel:+37443090070"
+                  href="tel:+85230080551"
                   className="text-blue-600 hover:underline"
                 >
-                  +374.43090070
+                  +852 3008 0551
                 </a>
               </p>
               <p>
-                <span className="font-bold">{legal.email}:</span>{" "}
+                <span className="font-bold">{legal.email}</span>{" "}
                 <a
                   href="mailto:info@don-vip.com"
                   className="text-blue-600 hover:underline"
