@@ -20,8 +20,10 @@ export default function Footer() {
       officialContacts: "Официальные контакты",
       director: "Директор:",
       company: "Компания:",
+      companyRegNo: "Рег. номер компании:",
+      businessRegNo: "Бизнес рег. номер:",
       country: "Страна:",
-      street: "Улица:",
+      street: "Адрес:",
       city: "Город:",
       postalCode: "Почтовый индекс:",
       phone: "Телефон:",
@@ -34,8 +36,10 @@ export default function Footer() {
       officialContacts: "Official Contacts",
       director: "Director:",
       company: "Company:",
+      companyRegNo: "Company Registration No.:",
+      businessRegNo: "Business Registration No.:",
       country: "Country:",
-      street: "Street:",
+      street: "Registered Office:",
       city: "City:",
       postalCode: "Postal Code:",
       phone: "Phone:",
@@ -161,7 +165,15 @@ export default function Footer() {
                   </span>
                 </p>
                 <p>
-                  <span className="font-medium">{legal.country}</span> HK
+                  <span className="font-medium">{legal.companyRegNo}</span>{" "}
+                  77196171
+                </p>
+                <p>
+                  <span className="font-medium">{legal.businessRegNo}</span>{" "}
+                  77196171-000-10-24-9
+                </p>
+                <p>
+                  <span className="font-medium">{legal.country}</span> Hong Kong
                 </p>
               </div>
             </div>
@@ -173,15 +185,12 @@ export default function Footer() {
               </h3>
               <div className="space-y-1 text-gray-600">
                 <p>
-                  <span className="font-medium">{legal.street}</span> 000000,
-                  Hong Kong, 8/F., China Hong Kong Tower, 8-12 Hennessy Road,
-                  Wan Chai, Hong Kong
+                  <span className="font-medium">{legal.street}</span>
+                  8/F., China Hong Kong Tower, 8-12 Hennessy Road, Wan Chai,
+                  Hong Kong
                 </p>
                 <p>
                   <span className="font-medium">{legal.city}</span> Hong Kong
-                </p>
-                <p>
-                  <span className="font-medium">{legal.postalCode}</span> 000000
                 </p>
               </div>
             </div>
@@ -195,10 +204,10 @@ export default function Footer() {
                 <p>
                   <span className="font-medium">{legal.phone}</span>{" "}
                   <a
-                    href="tel:+37443090070"
+                    href="tel:+85230080551"
                     className="text-blue-600 hover:underline"
                   >
-                    +374.43090070
+                    +852 3008 0551
                   </a>
                 </p>
                 <p>
