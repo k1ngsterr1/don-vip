@@ -20,8 +20,10 @@ export default function Footer() {
       officialContacts: "Официальные контакты",
       director: "Директор:",
       company: "Компания:",
+      companyRegNo: "Рег. номер компании:",
+      businessRegNo: "Бизнес рег. номер:",
       country: "Страна:",
-      street: "Улица:",
+      street: "Адрес:",
       city: "Город:",
       postalCode: "Почтовый индекс:",
       phone: "Телефон:",
@@ -34,8 +36,10 @@ export default function Footer() {
       officialContacts: "Official Contacts",
       director: "Director:",
       company: "Company:",
+      companyRegNo: "Company Registration No.:",
+      businessRegNo: "Business Registration No.:",
       country: "Country:",
-      street: "Street:",
+      street: "Registered Office:",
       city: "City:",
       postalCode: "Postal Code:",
       phone: "Phone:",
@@ -83,13 +87,7 @@ export default function Footer() {
           </nav>
         </div>
         <div className="mt-6  md:mt-8 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-          <div className="flex flex-col gap-2">
-            <div className="text-sm text-gray-400">{i18n("copyright")}</div>
-            <div className="text-xs text-gray-500">
-              000000, Hong Kong, 8/F., China Hong Kong Tower, 8-12 Hennessy
-              Road, Wan Chai, Hong Kong
-            </div>
-          </div>
+          <div className="text-sm text-gray-400">{i18n("copyright")}</div>
           <div className="flex flex-wrap items-center gap-2 md:gap-3">
             <Image
               src={require("@/assets/mir.webp")}
@@ -167,7 +165,15 @@ export default function Footer() {
                   </span>
                 </p>
                 <p>
-                  <span className="font-medium">{legal.country}</span> HK
+                  <span className="font-medium">{legal.companyRegNo}</span>{" "}
+                  77196171
+                </p>
+                <p>
+                  <span className="font-medium">{legal.businessRegNo}</span>{" "}
+                  77196171-000-10-24-9
+                </p>
+                <p>
+                  <span className="font-medium">{legal.country}</span> Hong Kong
                 </p>
               </div>
             </div>
@@ -179,15 +185,12 @@ export default function Footer() {
               </h3>
               <div className="space-y-1 text-gray-600">
                 <p>
-                  <span className="font-medium">{legal.street}</span> 000000,
-                  Hong Kong, 8/F., China Hong Kong Tower, 8-12 Hennessy Road,
-                  Wan Chai, Hong Kong
+                  <span className="font-medium">{legal.street}</span>
+                  8/F., China Hong Kong Tower, 8-12 Hennessy Road, Wan Chai,
+                  Hong Kong
                 </p>
                 <p>
                   <span className="font-medium">{legal.city}</span> Hong Kong
-                </p>
-                <p>
-                  <span className="font-medium">{legal.postalCode}</span> 000000
                 </p>
               </div>
             </div>
@@ -201,7 +204,7 @@ export default function Footer() {
                 <p>
                   <span className="font-medium">{legal.phone}</span>{" "}
                   <a
-                    href="tel:+37443090070"
+                    href="tel:+85230080551"
                     className="text-blue-600 hover:underline"
                   >
                     +852 3008 0551
