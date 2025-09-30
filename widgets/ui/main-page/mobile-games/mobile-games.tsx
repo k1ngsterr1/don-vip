@@ -24,83 +24,6 @@ export const MobileGamesBlock = () => {
   const nonBigoProducts =
     productsData?.data?.filter((product) => product.type !== "Bigo") || [];
 
-  // Service packages data
-  const servicePackages = [
-    {
-      id: "mini-edit",
-      name: locale === "ru" ? "Мини-правка" : "Mini Edit",
-      description:
-        locale === "ru" ? "Мелкая корректировка" : "Small correction",
-      price: locale === "ru" ? "40 ₽" : "$1.20",
-      href: "/product/mini-edit",
-      icon: <Paintbrush className="w-16 h-16 text-blue-600" />,
-    },
-    {
-      id: "small-edit",
-      name: locale === "ru" ? "Небольшая правка" : "Small Edit",
-      description:
-        locale === "ru" ? "Правка среднего объема" : "Medium-sized correction",
-      price: locale === "ru" ? "80 ₽" : "$2.40",
-      href: "/product/small-edit",
-      icon: <Paintbrush className="w-16 h-16 text-green-600" />,
-    },
-    {
-      id: "medium-edit",
-      name: locale === "ru" ? "Средняя правка" : "Medium Edit",
-      description:
-        locale === "ru" ? "Правка большого объема" : "Large-sized correction",
-      price: locale === "ru" ? "150 ₽" : "$4.50",
-      href: "/product/medium-edit",
-      icon: <Paintbrush className="w-16 h-16 text-yellow-600" />,
-    },
-    {
-      id: "large-edit",
-      name: locale === "ru" ? "Большая правка" : "Large Edit",
-      description:
-        locale === "ru" ? "Крупная корректировка" : "Major correction",
-      price: locale === "ru" ? "250 ₽" : "$7.50",
-      href: "/product/large-edit",
-      icon: <Paintbrush className="w-16 h-16 text-orange-600" />,
-    },
-    {
-      id: "full-redesign",
-      name: locale === "ru" ? "Полный редизайн" : "Full Redesign",
-      description:
-        locale === "ru"
-          ? "Полная переработка дизайна"
-          : "Complete design overhaul",
-      price: locale === "ru" ? "500 ₽" : "$15.00",
-      href: "/product/full-redesign",
-      icon: <Paintbrush className="w-16 h-16 text-red-600" />,
-    },
-    {
-      id: "icon-generation",
-      name: locale === "ru" ? "Генерация иконок" : "Icon Generation",
-      description:
-        locale === "ru" ? "Создание новых иконок" : "Create new icons",
-      price: locale === "ru" ? "100 ₽" : "$3.00",
-      href: "/product/icon-generation",
-      icon: <Paintbrush className="w-16 h-16 text-purple-600" />,
-    },
-    {
-      id: "logo-design",
-      name: locale === "ru" ? "Дизайн логотипа" : "Logo Design",
-      description: locale === "ru" ? "Создание логотипа" : "Logo creation",
-      price: locale === "ru" ? "300 ₽" : "$9.00",
-      href: "/product/logo-design",
-      icon: <Paintbrush className="w-16 h-16 text-indigo-600" />,
-    },
-    {
-      id: "custom-graphics",
-      name: locale === "ru" ? "Кастомная графика" : "Custom Graphics",
-      description:
-        locale === "ru" ? "Индивидуальная графика" : "Custom graphic design",
-      price: locale === "ru" ? "400 ₽" : "$12.00",
-      href: "/product/custom-graphics",
-      icon: <Paintbrush className="w-16 h-16 text-pink-600" />,
-    },
-  ];
-
   // Handle loading state
   if (isLoading) {
     return (
@@ -156,18 +79,20 @@ export const MobileGamesBlock = () => {
             />
           ))}
 
-        {/* Render service packages */}
-        {servicePackages.map((service) => (
-          <ServiceCard
-            key={service.id}
-            title={service.name}
-            href={service.href}
-            badge={service.price}
-            useIcon={true}
-            icon={service.icon}
-            description={service.description}
-          />
-        ))}
+        {/* Render single services card */}
+        <ServiceCard
+          key="services"
+          title={locale === "ru" ? "УСЛУГИ" : "SERVICES"}
+          href="/product/services"
+          badge={locale === "ru" ? "8 услуг" : "8 services"}
+          useIcon={true}
+          icon={<Paintbrush className="w-16 h-16 text-blue-600" />}
+          description={
+            locale === "ru"
+              ? "Дизайн, правки, иконки и многое другое"
+              : "Design, edits, icons and more"
+          }
+        />
 
         {/* Show message if no content */}
         {nonBigoProducts.length === 0 && (
