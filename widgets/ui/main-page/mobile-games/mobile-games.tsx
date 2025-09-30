@@ -27,7 +27,7 @@ export const MobileGamesBlock = () => {
   // Hardcoded icon service as game
   const iconService = {
     id: "icon-service",
-    name: locale === "ru" ? "Иконка" : "Icon",
+    name: locale === "ru" ? "Услуги" : "Services",
     image: "/feature-card.webp",
     href: "/product/icon-service",
     hasGem: false,
