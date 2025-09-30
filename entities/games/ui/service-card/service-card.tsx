@@ -11,6 +11,7 @@ interface ServiceCardProps {
   badge?: string;
   href?: string;
   useIcon?: boolean; // Флаг для использования иконки вместо изображения
+  description?: string; // Описание услуги
 }
 
 export default function ServiceCard({
@@ -20,6 +21,7 @@ export default function ServiceCard({
   badge,
   href = "#",
   useIcon = false,
+  description,
 }: ServiceCardProps) {
   return (
     <Link href={href} className="block">
@@ -47,6 +49,11 @@ export default function ServiceCard({
         {title && (
           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
             <h3 className="text-white font-medium text-sm truncate">{title}</h3>
+            {description && (
+              <p className="text-white/80 text-xs mt-1 truncate">
+                {description}
+              </p>
+            )}
           </div>
         )}
       </div>

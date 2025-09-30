@@ -834,12 +834,16 @@ export function OrderBlock({
           selectedPaymentMethod === "tbank" &&
           currentCurrency.code === "RUB"
         ) {
+          // Формируем название пакета для чека
+          const packageName = `${selectedCurrency.amount} ${game.currencyName}`;
+
           const params = new URLSearchParams({
             orderId: response.id,
             amount: selectedCurrency.amount.toString(),
             price: formattedPrice, // Changed from numericPrice to formattedPrice (discounted price)
             currencyName: game.currencyName,
             gameName: game.name,
+            packageName: packageName,
             userId: userId,
             userIdDB: userIdDB,
             serverId: game.isServerRequired ? serverId : "",

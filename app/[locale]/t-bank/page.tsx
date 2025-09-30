@@ -59,9 +59,11 @@ export default function TBankPaymentPage() {
       const phone = (formElements.namedItem("phone") as HTMLInputElement).value;
       const name =
         (formElements.namedItem("name") as HTMLInputElement)?.value || "";
-      const description =
-        (formElements.namedItem("description") as HTMLInputElement)?.value ||
-        "Payment";
+
+      // Генерируем описательное название для чека
+      const packageName =
+        searchParams.get("packageName") || `${amount} ${currencyName}`;
+      const description = `${gameName} - ${packageName}`;
 
       if (!email && !phone) {
         alert(t("errors.emailOrPhone"));
@@ -82,7 +84,7 @@ export default function TBankPaymentPage() {
         Phone: phone || undefined,
         Items: [
           {
-            Name: description || "Оплата",
+            Name: packageName || `${amount} ${currencyName} для ${gameName}`,
             Price: amountInKopecks,
             Quantity: 1,
             Amount: amountInKopecks,
