@@ -209,6 +209,8 @@ export function DiamondPackages({
       <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-3 md:gap-3 lg:gap-4">
         {displayedPackages.map((pkg, index) => {
           const isSelected = selectedId === pkg.id;
+          const hasDiscountPercent =
+            pkg.discountPercent && pkg.discountPercent > 0;
           const hasDiscount = pkg.discount && pkg.discount > 0;
 
           return (
@@ -239,7 +241,7 @@ export function DiamondPackages({
                 </div>
               </div>
               {/* Скидочная плашка или тип валюты */}
-              {pkg.isDiscounted && pkg.discountPercent ? (
+              {hasDiscountPercent ? (
                 <div className="flex flex-col gap-1 mb-1">
                   <div className="flex items-center gap-2">
                     <span className="bg-red-500 text-white text-[10px] md:text-[11px] font-bold px-2 py-1 rounded">
@@ -262,10 +264,12 @@ export function DiamondPackages({
               <div
                 className={cn(
                   "text-[13px] md:text-[14px] font-medium",
-                  pkg.isDiscounted ? "text-red-600 font-bold" : "text-[#212529]"
+                  hasDiscountPercent
+                    ? "text-red-600 font-bold"
+                    : "text-[#212529]"
                 )}
               >
-                {pkg.isDiscounted && pkg.discountPercent
+                {hasDiscountPercent && pkg.discountPercent
                   ? `${(
                       pkg.originalPriceRub *
                       (1 - pkg.discountPercent / 100)
