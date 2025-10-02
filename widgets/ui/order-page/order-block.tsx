@@ -114,7 +114,6 @@ export function OrderBlock({
   const [activeTab, setActiveTab] = useState<
     "instruction" | "reviews" | "description" | "faq"
   >("instruction");
-  const [isDemoMode, setIsDemoMode] = useState(false);
 
   // Функция для получения моковых отзывов в зависимости от локали и игры
   const getMockReviews = () => {
@@ -713,19 +712,10 @@ export function OrderBlock({
               ? priceInRub
               : priceInRub * currentCurrency.rate; // Multiply by rate (how many foreign currency units per 1 RUB)
 
-          // Add sample discount and popularity for demo
+          // Use only real discount data from replenishment
           const isPopular = index === 0; // First item is popular
-          const discountPercent = isDemoMode
-            ? index === 0
-              ? 21
-              : index === 1
-              ? 20
-              : index === 2
-              ? 11
-              : 0
-            : 0;
-
-          const isDiscounted = isDemoMode && discountPercent > 0;
+          const discountPercent = item.discountPercent || 0; // Real discount from data
+          const isDiscounted = discountPercent > 0;
 
           return {
             id: index,
@@ -741,7 +731,7 @@ export function OrderBlock({
         })
       );
     }
-  }, [product, currentCurrency, isDemoMode]);
+  }, [product, currentCurrency]);
 
   // Load saved game data from cookies when game changes
   useEffect(() => {
