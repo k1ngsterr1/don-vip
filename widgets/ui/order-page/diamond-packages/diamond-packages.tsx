@@ -219,9 +219,14 @@ export function DiamondPackages({
               onClick={() => handlePackageSelect(pkg.id)}
               className={cn(
                 "relative rounded-xl p-3 cursor-pointer transition-all duration-200 border-2 min-h-[80px] flex flex-col justify-center",
-                isSelected
+                hasDiscountPercent
+                  ? "border-red-400 bg-gradient-to-br from-red-50 to-red-100 shadow-lg transform hover:scale-[1.02]"
+                  : isSelected
                   ? "border-[#007bff] bg-[#f8f9fa]"
-                  : "border-[#e9ecef] bg-white hover:border-[#dee2e6]"
+                  : "border-[#e9ecef] bg-white hover:border-[#dee2e6]",
+                hasDiscountPercent &&
+                  isSelected &&
+                  "ring-2 ring-red-300 ring-opacity-50"
               )}
             >
               <div className="flex items-center gap-2 mb-1">
@@ -240,42 +245,52 @@ export function DiamondPackages({
                   {getAmountDisplay(pkg)}
                 </div>
               </div>
-              {/* Скидочная плашка или тип валюты */}
-              {hasDiscountPercent ? (
-                <div className="flex flex-col gap-1 mb-1">
-                  <div className="flex items-center gap-2">
-                    <span className="bg-red-500 text-white text-[10px] md:text-[11px] font-bold px-2 py-1 rounded">
-                      -{pkg.discountPercent}%
-                    </span>
-                    <span className="text-[10px] md:text-[11px] text-gray-500 line-through">
-                      {pkg.originalPriceRub.toFixed(2)} ₽
-                    </span>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-[11px] md:text-[12px] text-[#6c757d] mb-1">
+              {/* Скидочная плашка и тип валюты */}
+              <div className="flex items-center justify-between mb-1">
+                <div className="text-[11px] md:text-[12px] text-[#6c757d]">
                   {productId === 9999
                     ? locale === "ru"
                       ? "генерация иконок"
                       : "icon generation"
                     : currencyName}
                 </div>
-              )}
-              <div
-                className={cn(
-                  "text-[13px] md:text-[14px] font-medium",
-                  hasDiscountPercent
-                    ? "text-red-600 font-bold"
-                    : "text-[#212529]"
+                {hasDiscountPercent && (
+                  <span className="bg-gradient-to-r from-red-500 to-red-600 text-white text-[10px] md:text-[11px] font-bold px-2 py-0.5 rounded-full shadow-sm">
+                    -{pkg.discountPercent}%
+                  </span>
                 )}
-              >
-                {hasDiscountPercent && pkg.discountPercent
-                  ? `${(
-                      pkg.originalPriceRub *
-                      (1 - pkg.discountPercent / 100)
-                    ).toFixed(2)} ₽`
-                  : pkg.price}
               </div>
+
+              {/* Цена со скидкой */}
+              {hasDiscountPercent ? (
+                <div className="flex flex-col">
+                  <div className="text-[10px] md:text-[11px] text-gray-400 line-through mb-0.5">
+                    {pkg.originalPriceRub.toFixed(2)} ₽
+                  </div>
+                  <div className="text-[13px] md:text-[14px] font-bold text-green-600">
+                    {pkg.discountPercent
+                      ? (
+                          pkg.originalPriceRub *
+                          (1 - pkg.discountPercent / 100)
+                        ).toFixed(2)
+                      : pkg.originalPriceRub.toFixed(2)}{" "}
+                    ₽
+                  </div>
+                </div>
+              ) : null}
+              {/* Обычная цена для пакетов без скидки */}
+              {!hasDiscountPercent && (
+                <div className="text-[13px] md:text-[14px] font-medium text-[#212529]">
+                  {pkg.price}
+                </div>
+              )}
+              {/* Популярный бейдж для пакетов со скидкой */}
+              {hasDiscountPercent && (
+                <div className="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-[8px] md:text-[9px] font-bold px-2 py-1 rounded-full shadow-md transform rotate-12">
+                  {locale === "ru" ? "ХИТ" : "HIT"}
+                </div>
+              )}
+
               {isSelected && (
                 <div className="absolute top-2 right-2 text-[#007bff] text-sm">
                   <svg
