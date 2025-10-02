@@ -28,10 +28,7 @@ import {
 } from "./instruction-section/instruction-section";
 import { GameDescription } from "./game-description/game-description";
 import { GameInfoBlock } from "./game-info-block/game-info-block";
-import { PromoBlock } from "./promo-block/promo-block";
 import { useGameContent } from "@/entities/games/hooks/use-game-content";
-import { DiscountPackagesDemo } from "./discount-packages-demo/discount-packages-demo";
-import { InfoBlock } from "./info-block/info-block";
 
 interface OrderBlockProps {
   gameSlug: number;
@@ -1213,12 +1210,6 @@ export function OrderBlock({
         }}
         onSubmit={handleGuestAuthSubmit}
         isLoading={isLoading}
-      />
-
-      {/* Demo режим для скидочных пакетов */}
-      <DiscountPackagesDemo
-        isDemoEnabled={isDemoMode}
-        onToggleDemo={setIsDemoMode}
       />
     </>
   );
