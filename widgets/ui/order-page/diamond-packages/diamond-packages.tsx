@@ -213,6 +213,16 @@ export function DiamondPackages({
             pkg.discountPercent && pkg.discountPercent > 0;
           const hasDiscount = pkg.discount && pkg.discount > 0;
 
+          // Debug: логируем данные пакетов
+          console.log(`Package ${index}:`, {
+            id: pkg.id,
+            amount: pkg.amount,
+            price: pkg.price,
+            originalPriceRub: pkg.originalPriceRub,
+            discountPercent: pkg.discountPercent,
+            hasDiscountPercent,
+          });
+
           return (
             <div
               key={pkg.id}
@@ -261,29 +271,29 @@ export function DiamondPackages({
                 )}
               </div>
 
-              {/* Цена со скидкой */}
-              {hasDiscountPercent ? (
-                <div className="flex flex-col">
+              {/* Цена - всегда показываем */}
+              <div className="flex flex-col">
+                {hasDiscountPercent && (
                   <div className="text-[10px] md:text-[11px] text-gray-400 line-through mb-0.5">
                     {pkg.originalPriceRub.toFixed(2)} ₽
                   </div>
-                  <div className="text-[13px] md:text-[14px] font-bold text-green-600">
-                    {pkg.discountPercent
-                      ? (
-                          pkg.originalPriceRub *
-                          (1 - pkg.discountPercent / 100)
-                        ).toFixed(2)
-                      : pkg.originalPriceRub.toFixed(2)}{" "}
-                    ₽
-                  </div>
+                )}
+                <div
+                  className={cn(
+                    "text-[13px] md:text-[14px] font-medium",
+                    hasDiscountPercent
+                      ? "text-green-600 font-bold"
+                      : "text-[#212529]"
+                  )}
+                >
+                  {hasDiscountPercent && pkg.discountPercent
+                    ? `${(
+                        pkg.originalPriceRub *
+                        (1 - pkg.discountPercent / 100)
+                      ).toFixed(2)} ₽`
+                    : pkg.price}
                 </div>
-              ) : null}
-              {/* Обычная цена для пакетов без скидки */}
-              {!hasDiscountPercent && (
-                <div className="text-[13px] md:text-[14px] font-medium text-[#212529]">
-                  {pkg.price}
-                </div>
-              )}
+              </div>
               {/* Популярный бейдж для пакетов со скидкой */}
               {hasDiscountPercent && (
                 <div className="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-[8px] md:text-[9px] font-bold px-2 py-1 rounded-full shadow-md transform rotate-12">
