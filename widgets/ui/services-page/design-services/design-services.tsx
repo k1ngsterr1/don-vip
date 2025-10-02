@@ -12,8 +12,6 @@ import {
   Users,
   Star,
 } from "lucide-react";
-import { useCurrency } from "@/entities/currency/hooks/use-currency";
-
 interface DesignService {
   id: number;
   titleKey: string;
@@ -149,8 +147,12 @@ const designServices: DesignService[] = [
 
 export const DesignServices = () => {
   const locale = useLocale();
-  const { selectedCurrency } = useCurrency();
   const [selectedService, setSelectedService] = useState<number | null>(null);
+
+  // Простой форматтер цен в рублях
+  const formatPrice = (priceInRub: number) => {
+    return `${priceInRub.toLocaleString()} ₽`;
+  };
 
   // Хардкодные переводы
   const translations = {
@@ -234,15 +236,6 @@ export const DesignServices = () => {
 
   const t =
     translations[locale as keyof typeof translations] || translations.ru;
-
-  const formatPrice = (priceInRub: number) => {
-    const convertedPrice =
-      selectedCurrency.code === "RUB"
-        ? priceInRub
-        : priceInRub * selectedCurrency.rate;
-
-    return `${convertedPrice.toLocaleString()} ${selectedCurrency.code}`;
-  };
 
   const handleServiceSelect = (serviceId: number) => {
     setSelectedService(serviceId);

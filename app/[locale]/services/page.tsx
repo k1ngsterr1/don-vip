@@ -1,4 +1,3 @@
-import { ContentWrapper } from "@/shared/ui/content-wrapper/content-wrapper";
 import { DesignServices } from "@/widgets/ui/services-page/design-services/design-services";
 import { Metadata } from "next";
 
@@ -12,8 +11,8 @@ export const metadata: Metadata = {
 
 export default function ServicesPage() {
   return (
-    <ContentWrapper>
+    <div className="min-h-screen bg-gray-50">
       <DesignServices />
-    </ContentWrapper>
+    </div>
   );
 }
