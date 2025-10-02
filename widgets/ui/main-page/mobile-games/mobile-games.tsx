@@ -83,7 +83,7 @@ export const MobileGamesBlock = () => {
         <ServiceCard
           key="services"
           title={locale === "ru" ? "УСЛУГИ" : "SERVICES"}
-          href="/product/services"
+          href="/product-services"
           badge={locale === "ru" ? "8 услуг" : "8 services"}
           useIcon={true}
           icon={<Paintbrush className="w-16 h-16 text-blue-600" />}
