@@ -26,6 +26,8 @@ interface DiamondPackagesProps {
   currencyName: string;
   currencyImage: string;
   productId?: number;
+  onCustomAmountClick?: () => void;
+  showCustomAmountButton?: boolean;
 }
 
 export function DiamondPackages({
@@ -35,6 +37,8 @@ export function DiamondPackages({
   currencyName,
   currencyImage,
   productId,
+  onCustomAmountClick,
+  showCustomAmountButton = true,
 }: DiamondPackagesProps) {
   const locale = useLocale();
   const [showAll, setShowAll] = useState(false);
@@ -64,6 +68,8 @@ export function DiamondPackages({
       bonus: "бонус",
       discount: "СКИДКА",
       popular: "Популярный",
+      customAmount: "Свое значение",
+      forResellers: "Для перепродавцов",
     },
     en: {
       selectPackage: "Select Package",
@@ -72,6 +78,8 @@ export function DiamondPackages({
       bonus: "bonus",
       discount: "DISCOUNT",
       popular: "Popular",
+      customAmount: "Custom Amount",
+      forResellers: "For resellers",
     },
   };
 
@@ -106,6 +114,11 @@ export function DiamondPackages({
         : `${pkg.amount} ${pkg.amount === 1 ? "icon" : "icons"}`;
     }
     return pkg.amount.toLocaleString();
+  };
+
+  // Функция для форматирования цены без лишних нулей
+  const formatPrice = (price: number): string => {
+    return price % 1 === 0 ? `${price.toFixed(0)} ₽` : `${price.toFixed(2)} ₽`;
   };
 
   const handlePackageSelect = (id: number) => {
@@ -275,7 +288,7 @@ export function DiamondPackages({
               <div className="flex flex-col">
                 {hasDiscountPercent && (
                   <div className="text-[10px] md:text-[11px] text-gray-400 line-through mb-0.5">
-                    {pkg.originalPriceRub.toFixed(2)} ₽
+                    {formatPrice(pkg.originalPriceRub)}
                   </div>
                 )}
                 <div
@@ -287,11 +300,24 @@ export function DiamondPackages({
                   )}
                 >
                   {hasDiscountPercent && pkg.discountPercent
-                    ? `${(
-                        pkg.originalPriceRub *
-                        (1 - pkg.discountPercent / 100)
-                      ).toFixed(2)} ₽`
-                    : pkg.price}
+                    ? formatPrice(
+                        pkg.originalPriceRub * (1 - pkg.discountPercent / 100)
+                      )
+                    : (() => {
+                        // Если цена уже содержит символ рубля, проверяем её формат
+                        if (
+                          typeof pkg.price === "string" &&
+                          pkg.price.includes("₽")
+                        ) {
+                          const numericPrice = parseFloat(
+                            pkg.price.replace(/[^\d.,]/g, "").replace(",", ".")
+                          );
+                          return formatPrice(numericPrice);
+                        }
+                        // Иначе парсим как число и форматируем
+                        const numericPrice = parseFloat(pkg.price.toString());
+                        return formatPrice(numericPrice);
+                      })()}
                 </div>
               </div>
               {/* Популярный бейдж для пакетов со скидкой */}
@@ -320,6 +346,28 @@ export function DiamondPackages({
             </div>
           );
         })}
+
+        {/* Custom Amount Button - добавляем как отдельную карточку в grid */}
+        {showCustomAmountButton && onCustomAmountClick && (
+          <div
+            onClick={onCustomAmountClick}
+            className={cn(
+              "relative rounded-xl p-3 cursor-pointer transition-all duration-200 border-2 min-h-[80px] flex flex-col justify-center items-center",
+              "border-dashed border-blue-400 bg-gradient-to-br from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100",
+              "hover:border-blue-500 transform hover:scale-[1.02]"
+            )}
+          >
+            <div className="flex flex-col items-center justify-center text-center">
+              <div className="text-2xl mb-1">💎</div>
+              <div className="text-[13px] md:text-[14px] font-semibold text-blue-600 leading-tight mb-1">
+                {t.customAmount}
+              </div>
+              <div className="text-[10px] md:text-[11px] text-blue-500">
+                {t.forResellers}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Show all button - только для мобильных устройств если есть скрытые пакеты */}
