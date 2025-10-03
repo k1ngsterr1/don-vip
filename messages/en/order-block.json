@@ -7,6 +7,16 @@
     "block": {
       "selectAmount": "Select the amount to top up"
     },
+    "customAmount": {
+      "title": "Or specify a custom amount",
+      "placeholder": "Enter amount",
+      "calculate": "Calculate",
+      "pricePerUnit": "Price per unit",
+      "totalPrice": "Total price",
+      "minAmount": "Minimum amount",
+      "forResellers": "For resellers",
+      "reset": "Reset"
+    },
     "payment": {
       "international": {
         "title": "International Payment",

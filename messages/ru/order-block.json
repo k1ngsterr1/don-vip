@@ -7,6 +7,16 @@
     "block": {
       "selectAmount": "Выберите сумму пополнения"
     },
+    "customAmount": {
+      "title": "Или укажите произвольное количество",
+      "placeholder": "Введите количество",
+      "calculate": "Рассчитать",
+      "pricePerUnit": "Цена за единицу",
+      "totalPrice": "Общая стоимость",
+      "minAmount": "Минимальное количество",
+      "forResellers": "Для перепродавцов",
+      "reset": "Сбросить"
+    },
     "payment": {
       "international": {
         "title": "Международный платеж",

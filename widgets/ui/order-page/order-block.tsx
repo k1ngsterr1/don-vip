@@ -20,6 +20,7 @@ import { useCurrency } from "@/entities/currency/hooks/use-currency";
 import { useOrderCookies } from "@/shared/hooks/use-order-cookies";
 import { SavedAccountsQuickSelect } from "./saved-accounts-quick-select/saved-accounts-quick-select";
 import { DiamondPackages } from "./diamond-packages/diamond-packages";
+import { CustomAmountSelector } from "./custom-amount-selector/custom-amount-selector";
 import { ReviewsSection } from "./reviews-section/reviews-section";
 import { FAQSection } from "./faq-section/faq-section";
 import {
@@ -105,6 +106,9 @@ export function OrderBlock({
   const [currencyOptions, setCurrencyOptions] = useState<CurrencyOption[]>([]);
   const [showInfo, setShowInfo] = useState(initialExpandInfo);
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
+  const [customAmount, setCustomAmount] = useState<number | null>(null);
+  const [customPrice, setCustomPrice] = useState<number | null>(null);
+  const [isCustomAmountSelected, setIsCustomAmountSelected] = useState(false);
   const [userId, setUserId] = useState("");
   const [serverId, setServerId] = useState("");
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
@@ -751,10 +755,22 @@ export function OrderBlock({
   }
 
   const selectedCurrency =
-    currencyOptions.find((c) => c.id === selectedAmount) || null;
+    isCustomAmountSelected && customAmount && customPrice
+      ? {
+          id: -1, // Специальный ID для произвольного количества
+          amount: customAmount,
+          price: customPrice.toFixed(2),
+          originalPriceRub: customPrice,
+          type: "custom",
+          sku: "custom",
+        }
+      : currencyOptions.find((c) => c.id === selectedAmount) || null;
 
   const isFormValid =
-    selectedCurrency !== null &&
+    (selectedCurrency !== null ||
+      (isCustomAmountSelected &&
+        customAmount !== null &&
+        customPrice !== null)) &&
     userId.trim() !== "" &&
     (!game.isServerRequired || serverId.trim() !== "") &&
     isUserIdValid;
@@ -766,6 +782,28 @@ export function OrderBlock({
     if (authUser?.email) return authUser.email;
     if (me?.email) return me.email;
     return guestIdentifier || null;
+  };
+
+  // Обработчики для произвольного количества
+  const handleCustomAmountSelect = (amount: number, price: number) => {
+    setCustomAmount(amount);
+    setCustomPrice(price);
+    setIsCustomAmountSelected(true);
+    setSelectedAmount(null); // Сбрасываем стандартный выбор
+  };
+
+  const handleCustomAmountReset = () => {
+    setCustomAmount(null);
+    setCustomPrice(null);
+    setIsCustomAmountSelected(false);
+  };
+
+  const handlePackageSelect = (packageId: number) => {
+    setSelectedAmount(packageId);
+    // Сбрасываем произвольное количество при выборе стандартного пакета
+    setIsCustomAmountSelected(false);
+    setCustomAmount(null);
+    setCustomPrice(null);
   };
 
   const handleCouponApplied = (discount: number, couponData: any) => {
@@ -915,12 +953,23 @@ export function OrderBlock({
       {/* Diamond Packages for mobile */}
       <DiamondPackages
         packages={currencyOptions}
-        onSelect={setSelectedAmount}
+        onSelect={handlePackageSelect}
         selectedId={selectedAmount}
         currencyName={currentCurrency.code}
         currencyImage={game.currencyImage}
         productId={gameSlug}
       />
+
+      {/* Custom Amount Selector for mobile */}
+      <CustomAmountSelector
+        packages={currencyOptions}
+        onCustomAmountSelect={handleCustomAmountSelect}
+        currencyName={currentCurrency.code}
+        currencyImage={game.currencyImage}
+        isActive={isCustomAmountSelected}
+        onReset={handleCustomAmountReset}
+      />
+
       <div data-step="user-id" className="px-4 md:px-0">
         {/* Saved Accounts Quick Select */}
         <SavedAccountsQuickSelect
@@ -1042,12 +1091,24 @@ export function OrderBlock({
               </h2>
               <DiamondPackages
                 packages={currencyOptions}
-                onSelect={setSelectedAmount}
+                onSelect={handlePackageSelect}
                 selectedId={selectedAmount}
                 currencyName={currentCurrency.code}
                 currencyImage={game.currencyImage}
                 productId={gameSlug}
               />
+
+              {/* Custom Amount Selector for desktop */}
+              <div className="mt-6">
+                <CustomAmountSelector
+                  packages={currencyOptions}
+                  onCustomAmountSelect={handleCustomAmountSelect}
+                  currencyName={currentCurrency.code}
+                  currencyImage={game.currencyImage}
+                  isActive={isCustomAmountSelected}
+                  onReset={handleCustomAmountReset}
+                />
+              </div>
             </div>
             <div
               className="p-6 border-b   border-gray-100"
