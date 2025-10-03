@@ -14,9 +14,15 @@ import { SubmitButton } from "@/widgets/ui/t-bank-form/ui/submit-button";
 import { PaymentFooter } from "@/widgets/ui/t-bank-form/ui/payment-footer";
 import { getUserId } from "@/shared/hooks/use-get-user-id";
 import { PhoneInputWithCountry } from "@/shared/ui/phone-input/phone-input";
+import {
+  getDesignServiceNameByPrice,
+  isDesignServicePrice,
+} from "@/shared/utils/design-service-names";
+import { useLocale } from "next-intl";
 
 export default function TBankPaymentPage() {
   const searchParams = useSearchParams();
+  const locale = useLocale();
   const t = useTranslations("tpayment");
   const formT = useTranslations("tpayment.form");
   const descriptionT = useTranslations("tpayment.form.description");
@@ -61,8 +67,18 @@ export default function TBankPaymentPage() {
         (formElements.namedItem("name") as HTMLInputElement)?.value || "";
 
       // Генерируем описательное название для чека
-      const packageName =
-        searchParams.get("packageName") || `${amount} ${currencyName}`;
+      let packageName = searchParams.get("packageName");
+
+      if (!packageName) {
+        // Если packageName не передан, пытаемся определить по цене
+        const priceInRub = Math.round(Number.parseFloat(price));
+        if (isDesignServicePrice(priceInRub)) {
+          packageName = getDesignServiceNameByPrice(priceInRub, locale);
+        } else {
+          packageName = `${amount} ${currencyName}`;
+        }
+      }
+
       const description = `${gameName} - ${packageName}`;
 
       if (!email && !phone) {

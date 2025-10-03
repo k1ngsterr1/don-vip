@@ -30,6 +30,10 @@ import {
 import { GameDescription } from "./game-description/game-description";
 import { GameInfoBlock } from "./game-info-block/game-info-block";
 import { useGameContent } from "@/entities/games/hooks/use-game-content";
+import {
+  getDesignServiceNameByPrice,
+  isDesignServicePrice,
+} from "@/shared/utils/design-service-names";
 
 interface OrderBlockProps {
   gameSlug: number;
@@ -860,7 +864,16 @@ export function OrderBlock({
           currentCurrency.code === "RUB"
         ) {
           // Формируем название пакета для чека
-          const packageName = `${selectedCurrency.amount} ${game.currencyName}`;
+          const priceInRub = Math.round(finalPriceRub); // Округляем до целого числа
+          let packageName: string;
+
+          if (isDesignServicePrice(priceInRub)) {
+            // Если цена соответствует дизайнерской услуге, используем её название
+            packageName = getDesignServiceNameByPrice(priceInRub, locale);
+          } else {
+            // Иначе используем стандартное название с количеством и валютой
+            packageName = `${selectedCurrency.amount} ${game.currencyName}`;
+          }
 
           const params = new URLSearchParams({
             orderId: response.id,

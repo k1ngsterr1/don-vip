@@ -33,6 +33,10 @@ import {
 import { GameDescription } from "@/widgets/ui/order-page/game-description/game-description";
 import { GameInfoBlock } from "@/widgets/ui/order-page/game-info-block/game-info-block";
 import { CustomAmountSelector } from "@/widgets/ui/order-page/custom-amount-selector/custom-amount-selector";
+import {
+  getDesignServiceNameByPrice,
+  isDesignServicePrice,
+} from "@/shared/utils/design-service-names";
 
 interface DesignService {
   id: number;
