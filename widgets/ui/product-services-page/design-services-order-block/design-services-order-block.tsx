@@ -32,6 +32,7 @@ import {
 } from "@/widgets/ui/order-page/instruction-section/instruction-section";
 import { GameDescription } from "@/widgets/ui/order-page/game-description/game-description";
 import { GameInfoBlock } from "@/widgets/ui/order-page/game-info-block/game-info-block";
+import { CustomAmountSelector } from "@/widgets/ui/order-page/custom-amount-selector/custom-amount-selector";
 
 interface DesignService {
   id: number;
@@ -55,128 +56,190 @@ interface ServiceData {
 const designServices: DesignService[] = [
   {
     id: 1,
-    titleKey: "logoDesign",
-    descriptionKey: "logoDesignDesc",
+    titleKey: "miniEdit",
+    descriptionKey: "miniEditDesc",
     icon: <PenTool className="w-8 h-8" />,
-    price: 1500,
+    price: 40,
     features: [
-      "5 концептов",
-      "3 правки",
-      "Векторные файлы",
-      "Гайд по использованию",
+      "Изменение цвета",
+      "Редактирование текста",
+      "Корректировка размеров",
     ],
+    delivery: "1 день",
+  },
+  {
+    id: 2,
+    titleKey: "basicElement",
+    descriptionKey: "basicElementDesc",
+    icon: <Star className="w-8 h-8" />,
+    price: 170,
+    features: ["Одна иконка", "Кнопка", "Простой баннер"],
+    delivery: "1-2 дня",
+  },
+  {
+    id: 3,
+    titleKey: "lightBanner",
+    descriptionKey: "lightBannerDesc",
+    icon: <Layout className="w-8 h-8" />,
+    price: 340,
+    features: ["Простой баннер", "Карточка товара", "Готовый дизайн"],
+    delivery: "2-3 дня",
+  },
+  {
+    id: 4,
+    titleKey: "socialStart",
+    descriptionKey: "socialStartDesc",
+    icon: <Users className="w-8 h-8" />,
+    price: 510,
+    features: [
+      "Пост для Instagram",
+      "Сторис для Telegram",
+      "Контент для TikTok",
+    ],
+    delivery: "2-3 дня",
+  },
+  {
+    id: 5,
+    titleKey: "logoLight",
+    descriptionKey: "logoLightDesc",
+    icon: <Palette className="w-8 h-8" />,
+    price: 850,
+    features: ["1-2 варианта логотипа", "Векторные файлы", "Базовые правки"],
     delivery: "3-5 дней",
     popular: true,
   },
   {
-    id: 2,
-    titleKey: "brandingPackage",
-    descriptionKey: "brandingPackageDesc",
-    icon: <Palette className="w-8 h-8" />,
-    price: 3000,
-    features: [
-      "Логотип",
-      "Фирменный стиль",
-      "Цветовая палитра",
-      "Шрифты",
-      "Визитки",
-      "Презентация",
-    ],
+    id: 6,
+    titleKey: "brandMini",
+    descriptionKey: "brandMiniDesc",
+    icon: <Star className="w-8 h-8" />,
+    price: 1700,
+    features: ["Логотип", "Цветовая схема", "Шрифты", "Базовый набор"],
+    delivery: "5-7 дней",
+  },
+  {
+    id: 7,
+    titleKey: "webDesignLight",
+    descriptionKey: "webDesignLightDesc",
+    icon: <Globe className="w-8 h-8" />,
+    price: 2550,
+    features: ["1-2 блока сайта", "Главная секция", "Карточка товара"],
     delivery: "7-10 дней",
   },
   {
-    id: 3,
-    titleKey: "websiteDesign",
-    descriptionKey: "websiteDesignDesc",
-    icon: <Globe className="w-8 h-8" />,
-    price: 2500,
+    id: 8,
+    titleKey: "businessBanner",
+    descriptionKey: "businessBannerDesc",
+    icon: <Layout className="w-8 h-8" />,
+    price: 3400,
+    features: ["3-5 баннеров", "Для сайта и рекламы", "Готовый пакет"],
+    delivery: "7-10 дней",
+  },
+  {
+    id: 9,
+    titleKey: "socialPro",
+    descriptionKey: "socialProDesc",
+    icon: <Users className="w-8 h-8" />,
+    price: 5100,
     features: [
-      "До 5 страниц",
-      "Адаптивный дизайн",
-      "UI/UX проектирование",
-      "Интерактивный прототип",
+      "Аватарка",
+      "Баннер",
+      "5 шаблонов постов",
+      "Комплект оформления",
     ],
     delivery: "10-14 дней",
   },
   {
-    id: 4,
-    titleKey: "mobileAppDesign",
-    descriptionKey: "mobileAppDesignDesc",
-    icon: <Smartphone className="w-8 h-8" />,
-    price: 2800,
+    id: 10,
+    titleKey: "logoPro",
+    descriptionKey: "logoProDesc",
+    icon: <Palette className="w-8 h-8" />,
+    price: 6800,
+    features: ["3-4 варианта логотипа", "Исходники", "Премиум качество"],
+    delivery: "7-14 дней",
+  },
+  {
+    id: 11,
+    titleKey: "startupPack",
+    descriptionKey: "startupPackDesc",
+    icon: <Zap className="w-8 h-8" />,
+    price: 8500,
     features: [
-      "До 10 экранов",
-      "iOS/Android",
-      "Интерактивный прототип",
-      "UI Kit",
-      "Иконки",
+      "Логотип",
+      "Фирменный стиль",
+      "Баннер для запуска",
+      "Полный комплект",
     ],
     delivery: "14-21 день",
   },
   {
-    id: 5,
-    titleKey: "uiuxDesign",
-    descriptionKey: "uiuxDesignDesc",
-    icon: <Layout className="w-8 h-8" />,
-    price: 2200,
-    features: [
-      "Пользовательские сценарии",
-      "Wireframes",
-      "UI дизайн",
-      "Интерактивный прототип",
-    ],
-    delivery: "7-12 дней",
+    id: 12,
+    titleKey: "webDesignLight2",
+    descriptionKey: "webDesignLight2Desc",
+    icon: <Globe className="w-8 h-8" />,
+    price: 17000,
+    features: ["Полный дизайн лендинга", "До 5 блоков", "Адаптивный дизайн"],
+    delivery: "21-30 дней",
   },
   {
-    id: 6,
-    titleKey: "socialMediaDesign",
-    descriptionKey: "socialMediaDesignDesc",
-    icon: <Users className="w-8 h-8" />,
-    price: 800,
-    features: [
-      "10 постов",
-      "Обложки",
-      "Stories шаблоны",
-      "Аватарки",
-      "Исходники",
-    ],
-    delivery: "3-7 дней",
+    id: 13,
+    titleKey: "webDesignPro",
+    descriptionKey: "webDesignProDesc",
+    icon: <Globe className="w-8 h-8" />,
+    price: 25500,
+    features: ["Многостраничный сайт", "До 10 страниц", "Полный UI/UX"],
+    delivery: "30-45 дней",
   },
   {
-    id: 7,
-    titleKey: "printDesign",
-    descriptionKey: "printDesignDesc",
+    id: 14,
+    titleKey: "ecommerce",
+    descriptionKey: "ecommerceDesc",
+    icon: <Smartphone className="w-8 h-8" />,
+    price: 34000,
+    features: [
+      "Дизайн интернет-магазина",
+      "UI/UX дизайн",
+      "E-commerce платформа",
+    ],
+    delivery: "45-60 дней",
+  },
+  {
+    id: 15,
+    titleKey: "brandingPremium",
+    descriptionKey: "brandingPremiumDesc",
     icon: <Star className="w-8 h-8" />,
-    price: 600,
+    price: 42500,
     features: [
-      "Флаеры",
-      "Буклеты",
-      "Баннеры",
-      "Визитки",
-      "Подготовка к печати",
+      "Фирменный стиль компании",
+      "Брендбук",
+      "Гайдлайны",
+      "Премиум качество",
     ],
-    delivery: "2-5 дней",
+    delivery: "60-90 дней",
   },
   {
-    id: 8,
-    titleKey: "motionGraphics",
-    descriptionKey: "motionGraphicsDesc",
+    id: 16,
+    titleKey: "fullDesign",
+    descriptionKey: "fullDesignDesc",
     icon: <Zap className="w-8 h-8" />,
-    price: 1200,
+    price: 51000,
     features: [
-      "Анимированный логотип",
-      "Промо видео",
-      "Интро/Outro",
-      "До 30 сек",
-      "Full HD",
+      "Дизайн сайта",
+      "Соцсети",
+      "Брендбук",
+      "Маркетинговые материалы",
+      "Полный пакет",
     ],
-    delivery: "5-10 дней",
+    delivery: "90-120 дней",
   },
 ];
 
 export function DesignServicesOrderBlock() {
   const locale = useLocale();
   const [selectedService, setSelectedService] = useState<number | null>(null);
+  const [customAmount, setCustomAmount] = useState<number | null>(null);
+  const [customPrice, setCustomPrice] = useState<number | null>(null);
+  const [isCustomAmountSelected, setIsCustomAmountSelected] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [userName, setUserName] = useState("");
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
@@ -205,29 +268,40 @@ export function DesignServicesOrderBlock() {
       nameLabel: "Имя *",
       emailPlaceholder: "your@email.com",
       namePlaceholder: "Ваше имя",
-      logoDesign: "Дизайн Логотипа",
-      logoDesignDesc:
-        "Создание уникального и запоминающегося логотипа для вашего бренда",
-      brandingPackage: "Фирменный Стиль",
-      brandingPackageDesc:
-        "Полный пакет фирменного стиля: логотип, цвета, шрифты, визитки",
-      websiteDesign: "Дизайн Сайта",
-      websiteDesignDesc:
-        "Современный адаптивный дизайн сайта с учетом UX/UI принципов",
-      mobileAppDesign: "Дизайн Мобильного Приложения",
-      mobileAppDesignDesc:
-        "Дизайн интерфейса мобильного приложения для iOS и Android",
-      uiuxDesign: "UI/UX Дизайн",
-      uiuxDesignDesc: "Проектирование пользовательского опыта и интерфейса",
-      socialMediaDesign: "Дизайн для Соцсетей",
-      socialMediaDesignDesc:
-        "Креативные посты, обложки и Stories для социальных сетей",
-      printDesign: "Печатный Дизайн",
-      printDesignDesc:
-        "Дизайн полиграфической продукции с подготовкой к печати",
-      motionGraphics: "Моушн Графика",
-      motionGraphicsDesc:
-        "Анимированные логотипы, промо-видео и интро для бренда",
+      miniEdit: "Мини-правка",
+      miniEditDesc: "Мелкие правки дизайна (цвет, текст, размеры)",
+      basicElement: "Базовый элемент",
+      basicElementDesc: "Создание одной иконки, кнопки или простого баннера",
+      lightBanner: "Лёгкий баннер",
+      lightBannerDesc: "Дизайн простого баннера или карточки товара",
+      socialStart: "Соцсети старт",
+      socialStartDesc:
+        "Оформление поста/сторис для Instagram, Telegram или TikTok",
+      logoLight: "Логотип Лайт",
+      logoLightDesc: "Простой логотип в 1-2 вариантах",
+      brandMini: "Фирменный стиль Мини",
+      brandMiniDesc: "Базовый набор: логотип + цветовая схема + шрифты",
+      webDesignLight: "Дизайн для сайта Лайт",
+      webDesignLightDesc: "1–2 блока сайта (главная секция, карточка товара)",
+      businessBanner: "Бизнес-баннер",
+      businessBannerDesc: "Пакет баннеров для сайта или рекламы (3–5 шт.)",
+      socialPro: "Соцсети PRO",
+      socialProDesc: "Комплект оформления: аватарка, баннер, 5 шаблонов постов",
+      logoPro: "Логотип PRO",
+      logoProDesc: "Премиум-логотип в 3–4 вариантах + исходники",
+      startupPack: "Дизайн-пакет «Стартап»",
+      startupPackDesc: "Логотип + фирменный стиль + баннер для запуска бизнеса",
+      webDesignLight2: "Дизайн сайта Лайт",
+      webDesignLight2Desc: "Полный дизайн лендинга до 5 блоков",
+      webDesignPro: "Дизайн сайта PRO",
+      webDesignProDesc: "Дизайн многостраничного сайта (до 10 страниц)",
+      ecommerce: "Дизайн интернет-магазина",
+      ecommerceDesc: "Полный UI/UX дизайн e-commerce платформы",
+      brandingPremium: "Брендинг Premium",
+      brandingPremiumDesc: "Фирменный стиль компании + брендбук + гайдлайны",
+      fullDesign: "Дизайн под ключ",
+      fullDesignDesc:
+        "Полный дизайн-пакет: сайт, соцсети, брендбук, маркетинговые материалы",
     },
     en: {
       title: "Design Services",
@@ -245,27 +319,39 @@ export function DesignServicesOrderBlock() {
       nameLabel: "Name *",
       emailPlaceholder: "your@email.com",
       namePlaceholder: "Your name",
-      logoDesign: "Logo Design",
-      logoDesignDesc: "Creating a unique and memorable logo for your brand",
-      brandingPackage: "Brand Identity Package",
-      brandingPackageDesc:
-        "Complete brand identity package: logo, colors, fonts, business cards",
-      websiteDesign: "Website Design",
-      websiteDesignDesc:
-        "Modern responsive website design following UX/UI principles",
-      mobileAppDesign: "Mobile App Design",
-      mobileAppDesignDesc: "Mobile app interface design for iOS and Android",
-      uiuxDesign: "UI/UX Design",
-      uiuxDesignDesc:
-        "User experience and interface design with focus on usability",
-      socialMediaDesign: "Social Media Design",
-      socialMediaDesignDesc:
-        "Creative posts, covers and Stories for your social media",
-      printDesign: "Print Design",
-      printDesignDesc: "Printing materials design with print-ready preparation",
-      motionGraphics: "Motion Graphics",
-      motionGraphicsDesc:
-        "Animated logos, promo videos and intros for your brand",
+      miniEdit: "Mini Edit",
+      miniEditDesc: "Small design edits (color, text, sizes)",
+      basicElement: "Basic Element",
+      basicElementDesc: "Creating one icon, button or simple banner",
+      lightBanner: "Light Banner",
+      lightBannerDesc: "Simple banner or product card design",
+      socialStart: "Social Start",
+      socialStartDesc: "Post/story design for Instagram, Telegram or TikTok",
+      logoLight: "Logo Light",
+      logoLightDesc: "Simple logo in 1-2 variants",
+      brandMini: "Brand Style Mini",
+      brandMiniDesc: "Basic set: logo + color scheme + fonts",
+      webDesignLight: "Website Design Light",
+      webDesignLightDesc: "1–2 website blocks (main section, product card)",
+      businessBanner: "Business Banner",
+      businessBannerDesc: "Banner pack for website or advertising (3–5 pcs)",
+      socialPro: "Social PRO",
+      socialProDesc: "Design set: avatar, banner, 5 post templates",
+      logoPro: "Logo PRO",
+      logoProDesc: "Premium logo in 3–4 variants + source files",
+      startupPack: "Startup Design Pack",
+      startupPackDesc: "Logo + brand style + banner for business launch",
+      webDesignLight2: "Website Design Light",
+      webDesignLight2Desc: "Full landing page design up to 5 blocks",
+      webDesignPro: "Website Design PRO",
+      webDesignProDesc: "Multi-page website design (up to 10 pages)",
+      ecommerce: "E-commerce Design",
+      ecommerceDesc: "Full UI/UX design for e-commerce platform",
+      brandingPremium: "Branding Premium",
+      brandingPremiumDesc: "Company brand style + brandbook + guidelines",
+      fullDesign: "Full Design Package",
+      fullDesignDesc:
+        "Complete design package: website, social media, brandbook, marketing materials",
     },
   };
 
@@ -311,13 +397,17 @@ export function DesignServicesOrderBlock() {
   };
 
   const isFormValid =
-    selectedService !== null &&
+    (selectedService !== null || isCustomAmountSelected) &&
     userEmail.trim() !== "" &&
     userName.trim() !== "" &&
     selectedPaymentMethod !== "";
 
   const handleServiceSelect = (serviceId: number) => {
     setSelectedService(serviceId);
+    // Сбрасываем произвольное количество при выборе пакета
+    setCustomAmount(null);
+    setCustomPrice(null);
+    setIsCustomAmountSelected(false);
     // Auto-scroll to user details
     setTimeout(() => {
       const detailsSection = document.querySelector(
@@ -327,6 +417,20 @@ export function DesignServicesOrderBlock() {
         detailsSection.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     }, 300);
+  };
+
+  const handleCustomAmountSelect = (amount: number, price: number) => {
+    setCustomAmount(amount);
+    setCustomPrice(price);
+    setIsCustomAmountSelected(true);
+    // Сбрасываем выбор обычной услуги
+    setSelectedService(null);
+  };
+
+  const handleResetCustomAmount = () => {
+    setCustomAmount(null);
+    setCustomPrice(null);
+    setIsCustomAmountSelected(false);
   };
 
   const handleEmailChange = (value: string) => {
@@ -370,18 +474,36 @@ export function DesignServicesOrderBlock() {
   };
 
   const submitOrderWithIdentifier = (identifier: string) => {
-    if (!isFormValid || !selectedServiceData) {
+    if (!isFormValid || (!selectedServiceData && !isCustomAmountSelected)) {
       setError("Please fill in all required fields");
+      return;
+    }
+
+    // Определяем данные для заказа в зависимости от типа выбора
+    let serviceId, amount, price;
+
+    if (isCustomAmountSelected && customAmount && customPrice) {
+      // Произвольное количество услуг
+      serviceId = 999; // Специальный ID для произвольных услуг
+      amount = customAmount;
+      price = customPrice.toString();
+    } else if (selectedServiceData) {
+      // Стандартная услуга
+      serviceId = selectedServiceData.id;
+      amount = 1;
+      price = selectedServiceData.price.toString();
+    } else {
+      setError("Please select a service or specify custom amount");
       return;
     }
 
     const orderData: CreateOrderDto = {
       identifier: identifier,
-      game_id: selectedServiceData.id,
+      game_id: serviceId,
       user_id: userName,
-      currency_id: selectedServiceData.id,
-      amount: 1, // Service quantity
-      price: selectedServiceData.price.toString(),
+      currency_id: serviceId,
+      amount: amount,
+      price: price,
       payment_method: selectedPaymentMethod,
       user_game_id: userEmail,
       coupon_code: "",
@@ -524,6 +646,23 @@ export function DesignServicesOrderBlock() {
           ))}
         </div>
       </div>
+
+      {/* Custom Amount Selector for mobile */}
+      <CustomAmountSelector
+        packages={designServices.map((service) => ({
+          id: service.id,
+          amount: 1,
+          price: service.price.toString(),
+          originalPriceRub: service.price,
+          type: "service",
+          sku: service.titleKey,
+        }))}
+        onCustomAmountSelect={handleCustomAmountSelect}
+        currencyName="услуг"
+        currencyImage=""
+        isActive={isCustomAmountSelected}
+        onReset={handleResetCustomAmount}
+      />
 
       {/* User Details Form */}
       <div data-step="user-details" className="px-4 mt-8">
@@ -728,6 +867,25 @@ export function DesignServicesOrderBlock() {
                   </div>
                 ))}
               </div>
+
+              {/* Custom Amount Selector for desktop */}
+              <div className="mt-6">
+                <CustomAmountSelector
+                  packages={designServices.map((service) => ({
+                    id: service.id,
+                    amount: 1,
+                    price: service.price.toString(),
+                    originalPriceRub: service.price,
+                    type: "service",
+                    sku: service.titleKey,
+                  }))}
+                  onCustomAmountSelect={handleCustomAmountSelect}
+                  currencyName="услуг"
+                  currencyImage=""
+                  isActive={isCustomAmountSelected}
+                  onReset={handleResetCustomAmount}
+                />
+              </div>
             </div>
 
             <div
@@ -843,7 +1001,16 @@ export function DesignServicesOrderBlock() {
           <OrderSummary
             game={serviceData}
             selectedCurrency={
-              selectedServiceData
+              isCustomAmountSelected && customAmount && customPrice
+                ? {
+                    id: -1,
+                    amount: customAmount,
+                    price: formatPrice(customPrice),
+                    originalPriceRub: customPrice,
+                    type: "custom",
+                    sku: "custom-services",
+                  }
+                : selectedServiceData
                 ? {
                     id: selectedServiceData.id,
                     amount: 1,
