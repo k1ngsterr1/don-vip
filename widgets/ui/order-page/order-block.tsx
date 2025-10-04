@@ -724,20 +724,35 @@ export function OrderBlock({
 
           // Use only real discount data from replenishment
           const isPopular = index === 0; // First item is popular
-          const discountPercent = item.discountPercent || 0; // Real discount from data
-          const isDiscounted = discountPercent > 0;
+          const discountPercent =
+            item.discountPercent && item.discountPercent > 0
+              ? item.discountPercent
+              : undefined; // НЕ передаем discountPercent если его нет или он 0
+          const isDiscounted = discountPercent ? discountPercent > 0 : false;
 
-          return {
+          const packageData: any = {
             id: index,
             amount: item.amount,
             price: `${convertedPrice.toFixed(2)} ${currentCurrency.code}`,
             originalPriceRub: priceInRub, // Keep original RUB price for order
             type: item.type,
             sku: item.sku,
-            discountPercent,
             isDiscounted,
             isPopular,
           };
+
+          // Добавляем discountPercent только если он есть и больше 0
+          if (discountPercent && discountPercent > 0) {
+            packageData.discountPercent = discountPercent;
+          }
+
+          console.log(`Package ${index} creation:`, {
+            originalDiscountPercent: item.discountPercent,
+            processedDiscountPercent: discountPercent,
+            finalPackageData: packageData,
+          });
+
+          return packageData;
         })
       );
     }
