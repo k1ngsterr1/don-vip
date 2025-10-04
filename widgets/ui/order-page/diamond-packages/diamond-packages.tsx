@@ -4,6 +4,7 @@ import { cn } from "@/shared/utils/cn";
 import { useLocale } from "next-intl";
 import { useState, useEffect } from "react";
 import { CurrencyIcon } from "@/shared/ui/currency-icon";
+import { useCurrency } from "@/entities/currency/hooks/use-currency";
 
 interface Package {
   id: number;
@@ -38,6 +39,7 @@ export function DiamondPackages({
   showCustomAmountButton = true,
 }: DiamondPackagesProps) {
   const locale = useLocale();
+  const { selectedCurrency } = useCurrency();
   const [showAll, setShowAll] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -112,8 +114,26 @@ export function DiamondPackages({
   };
 
   // Функция для форматирования цены без лишних нулей
-  const formatPrice = (price: number): string => {
-    return price % 1 === 0 ? `${price.toFixed(0)} ₽` : `${price.toFixed(2)} ₽`;
+  const formatPrice = (priceInRub: number): string => {
+    if (!selectedCurrency) {
+      return priceInRub % 1 === 0
+        ? `${priceInRub.toFixed(0)} ₽`
+        : `${priceInRub.toFixed(2)} ₽`;
+    }
+
+    // Конвертируем из рублей в выбранную валюту
+    const convertedPrice =
+      selectedCurrency.code === "RUB"
+        ? priceInRub
+        : priceInRub * selectedCurrency.rate;
+
+    const decimals =
+      selectedCurrency.code === "JPY" || selectedCurrency.code === "KRW"
+        ? 0
+        : 2;
+    return convertedPrice % 1 === 0 && decimals > 0
+      ? `${convertedPrice.toFixed(0)} ${selectedCurrency.symbol}`
+      : `${convertedPrice.toFixed(decimals)} ${selectedCurrency.symbol}`;
   };
 
   // Функция для проверки и скрытия нулевых значений
@@ -355,8 +375,8 @@ export function DiamondPackages({
                   )}
                 >
                   {(() => {
-                    // Сначала определяем финальную цену
-                    let finalPrice = 0;
+                    // Определяем финальную цену В РУБЛЯХ (для конвертации)
+                    let finalPriceInRub = 0;
 
                     if (
                       hasDiscountPercent &&
@@ -365,41 +385,33 @@ export function DiamondPackages({
                       pkg.discountPercent > 0 &&
                       pkg.originalPriceRub > 0
                     ) {
-                      finalPrice =
+                      // Если есть скидка, вычисляем от originalPriceRub
+                      finalPriceInRub =
                         pkg.originalPriceRub * (1 - pkg.discountPercent / 100);
                     } else {
-                      // Если цена уже содержит символ рубля, проверяем её формат
-                      if (
-                        typeof pkg.price === "string" &&
-                        pkg.price.includes("₽")
-                      ) {
-                        finalPrice = parseFloat(
-                          pkg.price.replace(/[^\d.,]/g, "").replace(",", ".")
-                        );
-                      } else {
-                        finalPrice = parseFloat(pkg.price.toString());
-                      }
+                      // Используем originalPriceRub вместо pkg.price для корректной конвертации
+                      finalPriceInRub = pkg.originalPriceRub;
                     }
 
                     // Если цена 0 или NaN, не показываем её
                     if (
-                      !finalPrice ||
-                      finalPrice <= 0 ||
-                      isNaN(finalPrice) ||
-                      finalPrice === 0
+                      !finalPriceInRub ||
+                      finalPriceInRub <= 0 ||
+                      isNaN(finalPriceInRub) ||
+                      finalPriceInRub === 0
                     ) {
                       console.log(
-                        `Package ${pkg.id}: Hiding price because finalPrice=${finalPrice}`
+                        `Package ${pkg.id}: Hiding price because finalPriceInRub=${finalPriceInRub}`
                       );
                       return "";
                     }
 
                     console.log(
                       `Package ${pkg.id}: Showing price ${formatPrice(
-                        finalPrice
-                      )}`
+                        finalPriceInRub
+                      )} (from ${finalPriceInRub} RUB)`
                     );
-                    return formatPrice(finalPrice);
+                    return formatPrice(finalPriceInRub);
                   })()}
                 </div>
               </div>
