@@ -737,14 +737,37 @@ export function OrderBlock({
             originalPriceRub: priceInRub, // Keep original RUB price for order
             type: item.type,
             sku: item.sku,
-            isDiscounted,
-            isPopular,
           };
 
-          // Добавляем discountPercent только если он есть и больше 0
+          // Добавляем ТОЛЬКО поля которые действительно существуют и не равны 0
           if (discountPercent && discountPercent > 0) {
             packageData.discountPercent = discountPercent;
+            packageData.isDiscounted = true;
           }
+
+          if (index === 0) {
+            packageData.isPopular = true;
+          }
+
+          // Добавляем ЛЮБЫЕ другие поля из item, но ТОЛЬКО если они не равны 0
+          Object.keys(item).forEach((key) => {
+            if (
+              !["price", "amount", "type", "sku", "discountPercent"].includes(
+                key
+              )
+            ) {
+              const value = item[key];
+              if (
+                value !== 0 &&
+                value !== "0" &&
+                value !== null &&
+                value !== undefined &&
+                value !== ""
+              ) {
+                packageData[key] = value;
+              }
+            }
+          });
 
           console.log(`Package ${index} creation:`, {
             originalDiscountPercent: item.discountPercent,

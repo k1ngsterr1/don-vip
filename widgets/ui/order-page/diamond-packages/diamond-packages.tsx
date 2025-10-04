@@ -12,11 +12,8 @@ interface Package {
   originalPriceRub: number;
   type: string;
   sku: string;
-  discount?: number;
-  isPopular?: boolean;
-  bonus?: number;
-  discountPercent?: number;
-  isDiscounted?: boolean;
+  // ВСЕ остальные поля опциональные и будут добавлены только если они НЕ равны 0
+  [key: string]: any;
 }
 
 interface DiamondPackagesProps {
@@ -121,10 +118,28 @@ export function DiamondPackages({
 
   // Функция для проверки и скрытия нулевых значений
   const hideZeroValues = (value: any): boolean => {
-    if (value === 0 || value === "0" || value === null || value === undefined) {
+    // СУКА, СКРЫВАЕМ ВСЕ ЧТО МОЖЕТ БЫТЬ НУЛЕМ!
+    if (
+      value === 0 ||
+      value === "0" ||
+      value === null ||
+      value === undefined ||
+      value === false
+    ) {
       return false; // не показывать
     }
-    if (typeof value === "string" && value.trim() === "0") {
+    if (typeof value === "string") {
+      const trimmed = value.trim();
+      if (
+        trimmed === "0" ||
+        trimmed === "" ||
+        trimmed === "null" ||
+        trimmed === "undefined"
+      ) {
+        return false; // не показывать
+      }
+    }
+    if (typeof value === "number" && (value === 0 || isNaN(value))) {
       return false; // не показывать
     }
     return true; // показывать
@@ -393,26 +408,42 @@ export function DiamondPackages({
               {(() => {
                 const extraFields = Object.entries(pkg).filter(
                   ([key, value]) => {
-                    // Исключаем основные поля
-                    if (
-                      [
-                        "id",
-                        "amount",
-                        "price",
-                        "originalPriceRub",
-                        "type",
-                        "sku",
-                        "discountPercent",
-                        "isPopular",
-                        "bonus",
-                        "isDiscounted",
-                      ].includes(key)
-                    ) {
+                    // БЛЯДСКИЕ ИСКЛЮЧЕНИЯ - ВСЕХ НАХУЙ УБИРАЕМ!
+                    const excludedFields = [
+                      "id",
+                      "amount",
+                      "price",
+                      "originalPriceRub",
+                      "type",
+                      "sku",
+                      "discountPercent",
+                      "isPopular",
+                      "bonus",
+                      "isDiscounted",
+                      "discount", // тоже убираем
+                      "__typename", // GraphQL поле
+                      "createdAt",
+                      "updatedAt",
+                      "created_at",
+                      "updated_at",
+                    ];
+
+                    if (excludedFields.includes(key)) {
                       return false;
                     }
-                    return hideZeroValues(value);
+
+                    const shouldShow = hideZeroValues(value);
+                    console.log(
+                      `Extra field ${key}:`,
+                      value,
+                      `shouldShow:`,
+                      shouldShow
+                    );
+                    return shouldShow;
                   }
                 );
+
+                console.log(`Package ${pkg.id} extra fields:`, extraFields);
 
                 return (
                   extraFields.length > 0 && (
