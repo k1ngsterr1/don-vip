@@ -277,11 +277,25 @@ export function DiamondPackages({
                       : "icon generation"
                     : currencyName}
                 </div>
-                {hasDiscountPercent && pkg.discountPercent != 0 && (
-                  <span className="bg-gradient-to-r from-red-500 to-red-600 text-white text-[10px] md:text-[11px] font-bold px-2 py-0.5 rounded-full shadow-sm">
-                    -{pkg.discountPercent}%
-                  </span>
-                )}
+                {(() => {
+                  const shouldShowDiscount =
+                    hasDiscountPercent && pkg.discountPercent != 0;
+                  console.log(`Package ${pkg.id} discount logic:`, {
+                    discountPercent: pkg.discountPercent,
+                    hasDiscountPercent,
+                    notZero: pkg.discountPercent != 0,
+                    shouldShow: shouldShowDiscount,
+                    originalPriceRub: pkg.originalPriceRub,
+                  });
+
+                  return (
+                    shouldShowDiscount && (
+                      <span className="bg-gradient-to-r from-red-500 to-red-600 text-white text-[10px] md:text-[11px] font-bold px-2 py-0.5 rounded-full shadow-sm">
+                        -{pkg.discountPercent}%
+                      </span>
+                    )
+                  );
+                })()}
               </div>
 
               {/* Цена - всегда показываем */}
