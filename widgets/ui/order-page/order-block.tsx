@@ -119,7 +119,13 @@ export function OrderBlock({
     useState(false);
   const [userId, setUserId] = useState("");
   const [serverId, setServerId] = useState("");
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
+  const [selectedPaymentMethod, setSelectedPaymentMethodState] = useState("");
+
+  // Обертка для логирования изменений способа оплаты
+  const setSelectedPaymentMethod = (method: string) => {
+    console.log("🔄 Payment method changed:", `"${method}"`);
+    setSelectedPaymentMethodState(method);
+  };
   const [showGuestAuthPopup, setShowGuestAuthPopup] = useState(false);
   const [guestIdentifier, setGuestIdentifier] = useState("");
   const [isUserIdValid, setIsUserIdValid] = useState(true); // Добавляем состояние для валидности User ID
@@ -545,6 +551,7 @@ export function OrderBlock({
 
   // Обработчик для валидного ввода User ID
   const handleUserIdValidation = (isValid: boolean) => {
+    console.log("🔄 User ID validation changed:", isValid);
     setIsUserIdValid(isValid);
 
     // Если ID валиден и выбран пакет, автоматически переходим к оплате
@@ -560,6 +567,7 @@ export function OrderBlock({
 
   // Обработчик изменения User ID
   const handleUserIdChange = (value: string) => {
+    console.log("🔄 User ID changed:", `"${value}"`);
     setUserId(value);
 
     // Save game data to cookies when user enters valid ID
@@ -908,29 +916,81 @@ export function OrderBlock({
         }
       : currencyOptions.find((c) => c.id === selectedAmount) || null;
 
-  const isFormValid =
-    (selectedCurrency !== null ||
-      (isCustomAmountSelected &&
-        customAmount !== null &&
-        customPrice !== null)) &&
-    userId.trim() !== "" &&
-    (!game.isServerRequired || serverId.trim() !== "") &&
-    isUserIdValid &&
-    selectedPaymentMethod !== null;
+  // Детальная проверка каждого условия валидности формы
+  const packageSelected = selectedCurrency !== null;
+  const customAmountValid =
+    isCustomAmountSelected && customAmount !== null && customPrice !== null;
+  const amountSelectionValid = packageSelected || customAmountValid;
+  const userIdFilled = userId.trim() !== "";
+  const serverIdValid = !game.isServerRequired || serverId.trim() !== "";
+  const userIdValidationPassed = isUserIdValid;
+  const paymentMethodSelected =
+    selectedPaymentMethod !== null && selectedPaymentMethod !== "";
 
-  // Debug: логируем состояние формы
-  console.log("Form validation state:", {
+  const isFormValid =
+    amountSelectionValid &&
+    userIdFilled &&
+    serverIdValid &&
+    userIdValidationPassed &&
+    paymentMethodSelected;
+
+  // ДЕТАЛЬНЫЕ ЛОГИ ВАЛИДАЦИИ ФОРМЫ
+  console.log("=== FORM VALIDATION DEBUG ===");
+  console.log("1. Amount Selection:", {
+    packageSelected,
     selectedCurrency,
+    customAmountValid,
     isCustomAmountSelected,
     customAmount,
     customPrice,
-    userId: userId.trim(),
-    isServerRequired: game.isServerRequired,
-    serverId: serverId.trim(),
-    isUserIdValid,
-    selectedPaymentMethod,
-    isFormValid,
+    result: amountSelectionValid,
+    status: amountSelectionValid ? "✅ VALID" : "❌ INVALID",
   });
+
+  console.log("2. User ID:", {
+    userId: `"${userId}"`,
+    trimmed: `"${userId.trim()}"`,
+    length: userId.trim().length,
+    result: userIdFilled,
+    status: userIdFilled ? "✅ VALID" : "❌ INVALID",
+  });
+
+  console.log("3. Server ID:", {
+    isServerRequired: game.isServerRequired,
+    serverId: `"${serverId}"`,
+    trimmed: `"${serverId.trim()}"`,
+    length: serverId.trim().length,
+    result: serverIdValid,
+    status: serverIdValid ? "✅ VALID" : "❌ INVALID",
+  });
+
+  console.log("4. User ID Validation:", {
+    isUserIdValid,
+    status: userIdValidationPassed ? "✅ VALID" : "❌ INVALID",
+  });
+
+  console.log("5. Payment Method:", {
+    selectedPaymentMethod: `"${selectedPaymentMethod}"`,
+    isNotNull: selectedPaymentMethod !== null,
+    isNotEmpty: selectedPaymentMethod !== "",
+    result: paymentMethodSelected,
+    status: paymentMethodSelected ? "✅ VALID" : "❌ INVALID",
+  });
+
+  console.log("🔥 FINAL FORM STATE:", {
+    isFormValid,
+    status: isFormValid
+      ? "✅ FORM VALID - BUTTON ENABLED"
+      : "❌ FORM INVALID - BUTTON DISABLED",
+    failedChecks: [
+      !amountSelectionValid && "Amount/Package not selected",
+      !userIdFilled && "User ID empty",
+      !serverIdValid && "Server ID required but empty",
+      !userIdValidationPassed && "User ID validation failed",
+      !paymentMethodSelected && "Payment method not selected",
+    ].filter(Boolean),
+  });
+  console.log("=== END VALIDATION DEBUG ===");
 
   // Get user identifier from various sources
   const getUserIdentifier = (): string | null => {
@@ -962,6 +1022,7 @@ export function OrderBlock({
   };
 
   const handlePackageSelect = (packageId: number) => {
+    console.log("🔄 Package selected:", packageId);
     setSelectedAmount(packageId);
     // Сбрасываем произвольное количество при выборе стандартного пакета
     setIsCustomAmountSelected(false);
@@ -1208,7 +1269,14 @@ export function OrderBlock({
             isFormValid ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-400"
           )}
           disabled={!isFormValid || isLoading}
-          onClick={handleSubmitOrder}
+          onClick={() => {
+            console.log("🔥 BUTTON CLICKED - Current state:", {
+              isFormValid,
+              isLoading,
+              disabled: !isFormValid || isLoading,
+            });
+            handleSubmitOrder();
+          }}
         >
           {isLoading
             ? isProcessingPayment
