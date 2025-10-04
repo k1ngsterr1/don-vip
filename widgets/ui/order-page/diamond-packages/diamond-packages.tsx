@@ -221,7 +221,9 @@ export function DiamondPackages({
         {displayedPackages.map((pkg, index) => {
           const isSelected = selectedId === pkg.id;
           const hasDiscountPercent =
-            pkg.discountPercent && pkg.discountPercent > 0;
+            pkg.discountPercent &&
+            pkg.discountPercent > 0 &&
+            pkg.discountPercent !== 0;
           const hasDiscount = pkg.discount && pkg.discount > 0;
 
           // Debug: логируем данные пакетов
@@ -275,7 +277,7 @@ export function DiamondPackages({
                       : "icon generation"
                     : currencyName}
                 </div>
-                {hasDiscountPercent && (
+                {hasDiscountPercent && pkg.discountPercent !== 0 && (
                   <span className="bg-gradient-to-r from-red-500 to-red-600 text-white text-[10px] md:text-[11px] font-bold px-2 py-0.5 rounded-full shadow-sm">
                     -{pkg.discountPercent}%
                   </span>
@@ -284,7 +286,7 @@ export function DiamondPackages({
 
               {/* Цена - всегда показываем */}
               <div className="flex flex-col">
-                {hasDiscountPercent && (
+                {hasDiscountPercent && pkg.discountPercent !== 0 && (
                   <div className="text-[10px] md:text-[11px] text-gray-400 line-through mb-0.5">
                     {formatPrice(pkg.originalPriceRub)}
                   </div>
@@ -297,7 +299,9 @@ export function DiamondPackages({
                       : "text-[#212529]"
                   )}
                 >
-                  {hasDiscountPercent && pkg.discountPercent
+                  {hasDiscountPercent &&
+                  pkg.discountPercent &&
+                  pkg.discountPercent !== 0
                     ? formatPrice(
                         pkg.originalPriceRub * (1 - pkg.discountPercent / 100)
                       )
@@ -319,7 +323,7 @@ export function DiamondPackages({
                 </div>
               </div>
               {/* Популярный бейдж для пакетов со скидкой */}
-              {hasDiscountPercent && (
+              {hasDiscountPercent && pkg.discountPercent !== 0 && (
                 <div className="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-[8px] md:text-[9px] font-bold px-2 py-1 rounded-full shadow-md transform rotate-12">
                   {locale === "ru" ? "ХИТ" : "HIT"}
                 </div>
