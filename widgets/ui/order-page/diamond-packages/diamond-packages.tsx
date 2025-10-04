@@ -226,8 +226,9 @@ export function DiamondPackages({
             pkg.discountPercent !== 0;
           const hasDiscount = pkg.discount && pkg.discount > 0;
 
-          // Debug: логируем данные пакетов
-          console.log(`Package ${index}:`, {
+          // Debug: логируем ВСЕ данные пакетов
+          console.log(`Package ${index} FULL DATA:`, pkg);
+          console.log(`Package ${index} FILTERED:`, {
             id: pkg.id,
             amount: pkg.amount,
             price: pkg.price,
