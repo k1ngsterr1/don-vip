@@ -4,6 +4,7 @@ import { cn } from "@/shared/utils/cn";
 import { useLocale } from "next-intl";
 import { useState, useEffect } from "react";
 import { CurrencyIcon } from "@/shared/ui/currency-icon";
+import { useCurrency } from "@/entities/currency/hooks/use-currency";
 
 interface Package {
   id: number;
@@ -37,6 +38,7 @@ export function CustomAmountSelector({
   onReset,
 }: CustomAmountSelectorProps) {
   const locale = useLocale();
+  const { selectedCurrency } = useCurrency();
 
   // Хардкодные переводы
   const translations = {
@@ -58,7 +60,7 @@ export function CustomAmountSelector({
 
   // Вычисляем среднюю цену за единицу на основе существующих пакетов
   useEffect(() => {
-    if (packages.length > 0) {
+    if (packages.length > 0 && selectedCurrency) {
       // Берем несколько средних пакетов для расчета средней цены
       const middlePackages = packages
         .slice()
@@ -68,16 +70,17 @@ export function CustomAmountSelector({
       if (middlePackages.length > 0) {
         const averagePrice =
           middlePackages.reduce((sum, pkg) => {
-            const price = pkg.discountPercent
-              ? pkg.originalPriceRub * (1 - pkg.discountPercent / 100)
-              : parseFloat(pkg.price.replace(/[^\d.,]/g, "").replace(",", "."));
-            return sum + price / pkg.amount;
+            // Используем цену в выбранной валюте из pkg.price
+            const priceInSelectedCurrency = parseFloat(
+              pkg.price.replace(/[^\d.,]/g, "").replace(",", ".")
+            );
+            return sum + priceInSelectedCurrency / pkg.amount;
           }, 0) / middlePackages.length;
 
         setPricePerUnit(averagePrice);
       }
     }
-  }, [packages]);
+  }, [packages, selectedCurrency]);
 
   // Функция для получения fallback emoji в зависимости от типа валюты
   const getFallbackEmoji = (currencyName: string) => {
@@ -107,10 +110,16 @@ export function CustomAmountSelector({
   };
 
   const handleCalculate = () => {
-    if (customAmount && calculatedPrice && pricePerUnit) {
+    if (customAmount && calculatedPrice && pricePerUnit && selectedCurrency) {
       const amount = parseInt(customAmount);
       if (amount > 0) {
-        onCustomAmountSelect(amount, calculatedPrice);
+        // Конвертируем цену обратно в рубли для заказа
+        const priceInRub =
+          selectedCurrency.code === "RUB"
+            ? calculatedPrice
+            : calculatedPrice / selectedCurrency.rate;
+
+        onCustomAmountSelect(amount, priceInRub);
       }
     }
   };
@@ -158,21 +167,20 @@ export function CustomAmountSelector({
                 placeholder={`${translations.minAmount}: ${minAmount}`}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               />
-              <div className="absolute right-3 top-2 text-gray-400 text-sm">
-                {currencyName}
-              </div>
             </div>
           </div>
 
           <div className="flex flex-col justify-end">
-            {pricePerUnit && (
+            {pricePerUnit && selectedCurrency && (
               <div className="text-sm text-gray-600 mb-2">
-                {translations.pricePerUnit}: {pricePerUnit.toFixed(4)} ₽
+                {translations.pricePerUnit}: {pricePerUnit.toFixed(4)}{" "}
+                {selectedCurrency.symbol}
               </div>
             )}
-            {calculatedPrice && (
+            {calculatedPrice && selectedCurrency && (
               <div className="text-lg font-semibold text-green-600 mb-2">
-                {translations.totalPrice}: {calculatedPrice.toFixed(2)} ₽
+                {translations.totalPrice}: {calculatedPrice.toFixed(2)}{" "}
+                {selectedCurrency.symbol}
               </div>
             )}
           </div>
