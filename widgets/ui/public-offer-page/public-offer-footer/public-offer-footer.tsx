@@ -6,6 +6,50 @@ export default function PublicOfferContactFooter() {
 
   return (
     <div className="mt-12 pt-8 border-t border-gray-100">
+      {/* Company Information Section */}
+      <div className="mb-8 p-6 bg-gray-50 rounded-lg">
+        <h3 className="font-semibold text-gray-800 mb-4">
+          Информация о компании / Company Information
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+          <div>
+            <p className="text-gray-600 mb-1">
+              <span className="font-medium">Директор / Director:</span> Davit
+              Aslanyan
+            </p>
+            <p className="text-gray-600 mb-1">
+              <span className="font-medium">Компания / Company:</span> DMME HK
+              LIMITED
+            </p>
+            <p className="text-gray-600 mb-1">
+              <span className="font-medium">
+                Рег. номер компании / Company Reg. No.:
+              </span>{" "}
+              77196171
+            </p>
+          </div>
+          <div>
+            <p className="text-gray-600 mb-1">
+              <span className="font-medium">
+                Бизнес рег. номер / Business Reg. No.:
+              </span>{" "}
+              77196171-000-10-24-9
+            </p>
+            <p className="text-gray-600 mb-1">
+              <span className="font-medium">Страна / Country:</span> Hong Kong
+            </p>
+            <p className="text-gray-600 mb-1">
+              <span className="font-medium">Адрес / Address:</span> 8/F., China
+              Hong Kong Tower, 8-12 Hennessy Road, Wan Chai, Hong Kong
+            </p>
+            <p className="text-gray-600">
+              <span className="font-medium">Город / City:</span> Hong Kong
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Contact Section */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center">
           <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mr-4 shrink-0">
