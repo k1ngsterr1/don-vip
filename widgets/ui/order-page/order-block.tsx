@@ -4,6 +4,7 @@ import { PaymentMethodSelector } from "@/entities/payment/ui/payment-method-sele
 import { cn } from "@/shared/utils/cn";
 import { useState, useEffect, useRef } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Diamond } from "lucide-react";
 import Link from "next/link";
 import { Banner } from "./banner/banner";
@@ -69,6 +70,7 @@ export function OrderBlock({
 }: OrderBlockProps) {
   const t = useTranslations("orderBlock");
   const locale = useLocale();
+  const router = useRouter();
   const { data: product, isLoading: isProductLoading } =
     useProductWithHardcoded(gameSlug);
 
@@ -668,6 +670,102 @@ export function OrderBlock({
   const { data: me } = useGetMe();
   const { fillFormFromLastOrder, getGameData, saveGameData } =
     useOrderCookies();
+  const searchParams = useSearchParams();
+
+  // Проверяем статус платежа при возврате с PayMaster или других платежных провайдеров
+  useEffect(() => {
+    const paymentStatus = searchParams.get("payment_status");
+    const orderId = searchParams.get("order_id");
+    const paymentError = searchParams.get("error");
+    const isPaymentReturn = searchParams.get("from_payment");
+
+    if (paymentStatus || orderId || paymentError || isPaymentReturn) {
+      console.log("Returned from payment with:", {
+        paymentStatus,
+        orderId,
+        paymentError,
+        isPaymentReturn,
+      });
+
+      // Если есть ошибка или статус "failed" или "cancel"
+      if (
+        paymentError ||
+        paymentStatus === "failed" ||
+        paymentStatus === "cancel" ||
+        paymentStatus === "cancelled"
+      ) {
+        setError(
+          "Платеж был отменен или произошла ошибка. Попробуйте еще раз."
+        );
+        // Очищаем URL от параметров платежа
+        const url = new URL(window.location.href);
+        url.searchParams.delete("payment_status");
+        url.searchParams.delete("order_id");
+        url.searchParams.delete("error");
+        url.searchParams.delete("from_payment");
+        router.replace(url.pathname + url.search);
+      }
+
+      // Если платеж успешен, перенаправляем на страницу успеха
+      if (paymentStatus === "success" && orderId) {
+        router.push(`/product/success/${orderId}`);
+      }
+
+      // Если просто вернулись с платежа без статуса - показываем предупреждение
+      if (isPaymentReturn && !paymentStatus && !paymentError) {
+        setError(
+          "Возврат с платежной страницы. Если оплата не завершена, попробуйте еще раз."
+        );
+        // Очищаем URL
+        const url = new URL(window.location.href);
+        url.searchParams.delete("from_payment");
+        router.replace(url.pathname + url.search);
+      }
+    }
+  }, [searchParams, router, setError]);
+
+  // Дополнительная проверка - если есть только order_id без статуса (незавершенный платеж)
+  useEffect(() => {
+    const orderId = searchParams.get("order_id");
+    const paymentStatus = searchParams.get("payment_status");
+
+    if (orderId && !paymentStatus) {
+      // Заказ создан, но статус платежа неизвестен
+      console.log("Order created but payment status unknown:", orderId);
+      setError(
+        "Заказ создан, но статус оплаты неизвестен. Проверьте историю заказов или попробуйте оплатить заново."
+      );
+
+      // Очищаем URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete("order_id");
+      router.replace(url.pathname + url.search);
+    }
+  }, [searchParams, router, setError]);
+
+  // Обработчик возврата фокуса на страницу (когда пользователь закрыл вкладку с платежом)
+  useEffect(() => {
+    let paymentWindowClosed = false;
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden && isProcessingPayment && paymentWindowClosed) {
+        // Пользователь вернулся на страницу во время обработки платежа
+        setError(
+          "Платежное окно было закрыто. Если оплата не завершена, попробуйте еще раз."
+        );
+        // Сбрасываем состояние обработки платежа (это должно делаться в useCreateOrder)
+      }
+    };
+
+    if (isProcessingPayment) {
+      paymentWindowClosed = true;
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+    }
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [isProcessingPayment, setError]);
 
   useEffect(() => {
     const local_user = localStorage.getItem("userId");
