@@ -286,11 +286,13 @@ export function DiamondPackages({
 
               {/* Цена - всегда показываем */}
               <div className="flex flex-col">
-                {hasDiscountPercent && pkg.discountPercent !== 0 && (
-                  <div className="text-[10px] md:text-[11px] text-gray-400 line-through mb-0.5">
-                    {formatPrice(pkg.originalPriceRub)}
-                  </div>
-                )}
+                {hasDiscountPercent &&
+                  pkg.discountPercent !== 0 &&
+                  pkg.originalPriceRub > 0 && (
+                    <div className="text-[10px] md:text-[11px] text-gray-400 line-through mb-0.5">
+                      {formatPrice(pkg.originalPriceRub)}
+                    </div>
+                  )}
                 <div
                   className={cn(
                     "text-[13px] md:text-[14px] font-medium",
@@ -299,27 +301,39 @@ export function DiamondPackages({
                       : "text-[#212529]"
                   )}
                 >
-                  {hasDiscountPercent &&
-                  pkg.discountPercent &&
-                  pkg.discountPercent !== 0
-                    ? formatPrice(
-                        pkg.originalPriceRub * (1 - pkg.discountPercent / 100)
-                      )
-                    : (() => {
-                        // Если цена уже содержит символ рубля, проверяем её формат
-                        if (
-                          typeof pkg.price === "string" &&
-                          pkg.price.includes("₽")
-                        ) {
-                          const numericPrice = parseFloat(
-                            pkg.price.replace(/[^\d.,]/g, "").replace(",", ".")
-                          );
-                          return formatPrice(numericPrice);
-                        }
-                        // Иначе парсим как число и форматируем
-                        const numericPrice = parseFloat(pkg.price.toString());
-                        return formatPrice(numericPrice);
-                      })()}
+                  {(() => {
+                    // Сначала определяем финальную цену
+                    let finalPrice = 0;
+
+                    if (
+                      hasDiscountPercent &&
+                      pkg.discountPercent &&
+                      pkg.discountPercent !== 0 &&
+                      pkg.originalPriceRub > 0
+                    ) {
+                      finalPrice =
+                        pkg.originalPriceRub * (1 - pkg.discountPercent / 100);
+                    } else {
+                      // Если цена уже содержит символ рубля, проверяем её формат
+                      if (
+                        typeof pkg.price === "string" &&
+                        pkg.price.includes("₽")
+                      ) {
+                        finalPrice = parseFloat(
+                          pkg.price.replace(/[^\d.,]/g, "").replace(",", ".")
+                        );
+                      } else {
+                        finalPrice = parseFloat(pkg.price.toString());
+                      }
+                    }
+
+                    // Если цена 0 или NaN, не показываем её
+                    if (!finalPrice || finalPrice <= 0 || isNaN(finalPrice)) {
+                      return "";
+                    }
+
+                    return formatPrice(finalPrice);
+                  })()}
                 </div>
               </div>
               {/* Популярный бейдж для пакетов со скидкой */}
