@@ -119,6 +119,17 @@ export function DiamondPackages({
     return price % 1 === 0 ? `${price.toFixed(0)} ₽` : `${price.toFixed(2)} ₽`;
   };
 
+  // Функция для проверки и скрытия нулевых значений
+  const hideZeroValues = (value: any): boolean => {
+    if (value === 0 || value === "0" || value === null || value === undefined) {
+      return false; // не показывать
+    }
+    if (typeof value === "string" && value.trim() === "0") {
+      return false; // не показывать
+    }
+    return true; // показывать
+  };
+
   const handlePackageSelect = (id: number) => {
     console.log("Package selected:", id);
     onSelect(id);
@@ -219,6 +230,11 @@ export function DiamondPackages({
     <div className="px-4 py-1 md:px-0">
       <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-3 md:gap-3 lg:gap-4">
         {displayedPackages.map((pkg, index) => {
+          // СОЗДАЕМ ЧИСТУЮ КОПИЮ ПАКЕТА БЕЗ НУЛЕВЫХ ЗНАЧЕНИЙ
+          const cleanPkg = Object.fromEntries(
+            Object.entries(pkg).filter(([key, value]) => hideZeroValues(value))
+          ) as Package;
+
           const isSelected = selectedId === pkg.id;
           const hasDiscountPercent =
             pkg.discountPercent &&
@@ -226,16 +242,16 @@ export function DiamondPackages({
             pkg.discountPercent !== 0;
           const hasDiscount = pkg.discount && pkg.discount > 0;
 
-          // Debug: логируем ВСЕ данные пакетов
-          console.log(`Package ${index} FULL DATA:`, pkg);
-          console.log(`Package ${index} FILTERED:`, {
-            id: pkg.id,
-            amount: pkg.amount,
-            price: pkg.price,
-            originalPriceRub: pkg.originalPriceRub,
-            discountPercent: pkg.discountPercent,
-            hasDiscountPercent,
-          });
+          // Debug: логируем данные пакетов
+          console.log(`Package ${index} ORIGINAL:`, pkg);
+          console.log(`Package ${index} CLEANED:`, cleanPkg);
+
+          const zeroFields = Object.entries(pkg).filter(
+            ([key, value]) => !hideZeroValues(value)
+          );
+          if (zeroFields.length > 0) {
+            console.log(`Package ${index} HIDDEN ZERO FIELDS:`, zeroFields);
+          }
 
           return (
             <div
@@ -372,6 +388,46 @@ export function DiamondPackages({
                   })()}
                 </div>
               </div>
+
+              {/* Дополнительные поля - показываем только ненулевые */}
+              {(() => {
+                const extraFields = Object.entries(pkg).filter(
+                  ([key, value]) => {
+                    // Исключаем основные поля
+                    if (
+                      [
+                        "id",
+                        "amount",
+                        "price",
+                        "originalPriceRub",
+                        "type",
+                        "sku",
+                        "discountPercent",
+                        "isPopular",
+                        "bonus",
+                        "isDiscounted",
+                      ].includes(key)
+                    ) {
+                      return false;
+                    }
+                    return hideZeroValues(value);
+                  }
+                );
+
+                return (
+                  extraFields.length > 0 && (
+                    <div className="flex flex-col gap-1 mt-2">
+                      {extraFields.map(([key, value]) => (
+                        <div key={key} className="text-[10px] text-gray-500">
+                          <span className="font-medium">{key}:</span>{" "}
+                          {String(value)}
+                        </div>
+                      ))}
+                    </div>
+                  )
+                );
+              })()}
+
               {/* Популярный бейдж для пакетов со скидкой */}
               {hasDiscountPercent && pkg.discountPercent !== 0 && (
                 <div className="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-[8px] md:text-[9px] font-bold px-2 py-1 rounded-full shadow-md transform rotate-12">
