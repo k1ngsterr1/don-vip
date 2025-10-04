@@ -915,7 +915,22 @@ export function OrderBlock({
         customPrice !== null)) &&
     userId.trim() !== "" &&
     (!game.isServerRequired || serverId.trim() !== "") &&
-    isUserIdValid;
+    isUserIdValid &&
+    selectedPaymentMethod !== null;
+
+  // Debug: логируем состояние формы
+  console.log("Form validation state:", {
+    selectedCurrency,
+    isCustomAmountSelected,
+    customAmount,
+    customPrice,
+    userId: userId.trim(),
+    isServerRequired: game.isServerRequired,
+    serverId: serverId.trim(),
+    isUserIdValid,
+    selectedPaymentMethod,
+    isFormValid,
+  });
 
   // Get user identifier from various sources
   const getUserIdentifier = (): string | null => {
@@ -1049,12 +1064,20 @@ export function OrderBlock({
   };
 
   const handleSubmitOrder = async () => {
+    console.log("=== handleSubmitOrder clicked ===");
+    console.log("isFormValid:", isFormValid);
+    console.log("selectedCurrency:", selectedCurrency);
+    console.log("selectedPaymentMethod:", selectedPaymentMethod);
+
     setError("");
 
     if (!isFormValid || !selectedCurrency) {
+      console.log("Form validation FAILED");
       setError("Please fill in all required fields");
       return;
     }
+
+    console.log("Form validation PASSED, proceeding...");
 
     // Get user identifier from various sources
     const userIdentifier = getUserIdentifier();
@@ -1182,7 +1205,7 @@ export function OrderBlock({
         <button
           className={cn(
             "w-[180px] py-3 px-3 rounded-full text-white font-medium transition-colors shadow-lg",
-            isFormValid ? "bg-[#aaaaab] hover:bg-gray-600" : "bg-gray-400"
+            isFormValid ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-400"
           )}
           disabled={!isFormValid || isLoading}
           onClick={handleSubmitOrder}
