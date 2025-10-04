@@ -1043,20 +1043,40 @@ export function OrderBlock({
     }
 
     // Calculate prices for both RUB and converted currency
-    const originalPriceRub = selectedCurrency.originalPriceRub;
+    let originalPriceRub = selectedCurrency.originalPriceRub;
+
+    // ПРИМЕНЯЕМ СКИДКУ ПАКЕТА ЕСЛИ ЕСТЬ
+    if (
+      selectedCurrency.discountPercent &&
+      selectedCurrency.discountPercent > 0
+    ) {
+      const packageDiscountAmount =
+        (originalPriceRub * selectedCurrency.discountPercent) / 100;
+      originalPriceRub = Math.max(0, originalPriceRub - packageDiscountAmount);
+      console.log("🎯 Package discount applied:", {
+        originalPrice: selectedCurrency.originalPriceRub,
+        discountPercent: selectedCurrency.discountPercent,
+        discountAmount: packageDiscountAmount,
+        priceAfterDiscount: originalPriceRub,
+      });
+    }
+
     const originalPriceConverted =
       currentCurrency.code === "RUB"
         ? originalPriceRub
         : originalPriceRub * currentCurrency.rate;
 
-    // Calculate discount in RUB
-    const discountAmountRub =
+    // Calculate ADDITIONAL coupon discount in RUB (применяется поверх скидки пакета)
+    const couponDiscountAmountRub =
       couponInfo?.type === "percentage"
         ? (originalPriceRub * appliedDiscount) / 100
         : appliedDiscount;
 
     // Calculate final prices
-    const finalPriceRub = Math.max(0, originalPriceRub - discountAmountRub);
+    const finalPriceRub = Math.max(
+      0,
+      originalPriceRub - couponDiscountAmountRub
+    );
     const finalPriceConverted =
       currentCurrency.code === "RUB"
         ? finalPriceRub
@@ -1064,6 +1084,17 @@ export function OrderBlock({
 
     // Use converted price for the order (what the user actually pays)
     const formattedPrice = finalPriceConverted.toFixed(2);
+
+    console.log("💰 Final price calculation:", {
+      originalPriceRub: selectedCurrency.originalPriceRub,
+      packageDiscountPercent: selectedCurrency.discountPercent,
+      priceAfterPackageDiscount: originalPriceRub,
+      couponDiscount: couponDiscountAmountRub,
+      finalPriceRub,
+      finalPriceConverted,
+      formattedPrice,
+      currency: currentCurrency.code,
+    });
 
     const orderData: CreateOrderDto = {
       identifier: identifier,
