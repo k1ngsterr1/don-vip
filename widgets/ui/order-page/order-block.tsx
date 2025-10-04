@@ -1134,11 +1134,11 @@ export function OrderBlock({
 
       <div data-step="user-id" className="px-4 md:px-0">
         {/* Saved Accounts Quick Select */}
-        <SavedAccountsQuickSelect
+        {/* <SavedAccountsQuickSelect
           gameId={game.id}
           onAccountSelect={handleSavedAccountSelect}
           className="mb-4"
-        />
+        /> */}
 
         <UserIdForm
           apiGame={product?.smile_api_game}
@@ -1282,11 +1282,11 @@ export function OrderBlock({
               id="desktop-user-id-section"
             >
               {/* Saved Accounts Quick Select for Desktop */}
-              <SavedAccountsQuickSelect
+              {/* <SavedAccountsQuickSelect
                 gameId={game.id}
                 onAccountSelect={handleSavedAccountSelect}
                 className="mb-6"
-              />
+              /> */}
 
               <UserIdForm
                 apiGame={product?.smile_api_game}
