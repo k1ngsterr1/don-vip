@@ -1385,7 +1385,7 @@ export function OrderBlock({
               />
 
               {/* Custom Amount Selector for desktop */}
-              {showCustomAmountSelector && (
+              {/* {showCustomAmountSelector && (
                 <div className="mt-6">
                   <CustomAmountSelector
                     packages={currencyOptions}
@@ -1396,7 +1396,7 @@ export function OrderBlock({
                     onReset={handleCustomAmountReset}
                   />
                 </div>
-              )}
+              )} */}
             </div>
             <div
               className="p-6 border-b   border-gray-100"
