@@ -279,13 +279,20 @@ export function DiamondPackages({
                 </div>
                 {(() => {
                   const shouldShowDiscount =
-                    hasDiscountPercent && pkg.discountPercent != 0;
+                    hasDiscountPercent &&
+                    pkg.discountPercent &&
+                    pkg.discountPercent !== 0 &&
+                    pkg.discountPercent > 0;
                   console.log(`Package ${pkg.id} discount logic:`, {
                     discountPercent: pkg.discountPercent,
                     hasDiscountPercent,
-                    notZero: pkg.discountPercent != 0,
+                    notZero: pkg.discountPercent !== 0,
+                    greaterThanZero: pkg.discountPercent
+                      ? pkg.discountPercent > 0
+                      : false,
                     shouldShow: shouldShowDiscount,
                     originalPriceRub: pkg.originalPriceRub,
+                    price: pkg.price,
                   });
 
                   return (
@@ -301,7 +308,7 @@ export function DiamondPackages({
               {/* Цена - всегда показываем */}
               <div className="flex flex-col">
                 {hasDiscountPercent &&
-                  pkg.discountPercent != 0 &&
+                  pkg.discountPercent !== 0 &&
                   pkg.originalPriceRub > 0 && (
                     <div className="text-[10px] md:text-[11px] text-gray-400 line-through mb-0.5">
                       {formatPrice(pkg.originalPriceRub)}
@@ -323,6 +330,7 @@ export function DiamondPackages({
                       hasDiscountPercent &&
                       pkg.discountPercent &&
                       pkg.discountPercent !== 0 &&
+                      pkg.discountPercent > 0 &&
                       pkg.originalPriceRub > 0
                     ) {
                       finalPrice =
@@ -342,10 +350,23 @@ export function DiamondPackages({
                     }
 
                     // Если цена 0 или NaN, не показываем её
-                    if (!finalPrice || finalPrice <= 0 || isNaN(finalPrice)) {
+                    if (
+                      !finalPrice ||
+                      finalPrice <= 0 ||
+                      isNaN(finalPrice) ||
+                      finalPrice === 0
+                    ) {
+                      console.log(
+                        `Package ${pkg.id}: Hiding price because finalPrice=${finalPrice}`
+                      );
                       return "";
                     }
 
+                    console.log(
+                      `Package ${pkg.id}: Showing price ${formatPrice(
+                        finalPrice
+                      )}`
+                    );
                     return formatPrice(finalPrice);
                   })()}
                 </div>
