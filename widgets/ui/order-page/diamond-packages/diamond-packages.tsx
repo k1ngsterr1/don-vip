@@ -69,7 +69,6 @@ export function DiamondPackages({
       discount: "СКИДКА",
       popular: "Популярный",
       customAmount: "Свое значение",
-      forResellers: "Для перепродавцов",
     },
     en: {
       selectPackage: "Select Package",
@@ -79,7 +78,6 @@ export function DiamondPackages({
       discount: "DISCOUNT",
       popular: "Popular",
       customAmount: "Custom Amount",
-      forResellers: "For resellers",
     },
   };
 
@@ -361,9 +359,6 @@ export function DiamondPackages({
               <div className="text-2xl mb-1">💎</div>
               <div className="text-[13px] md:text-[14px] font-semibold text-blue-600 leading-tight mb-1">
                 {t.customAmount}
-              </div>
-              <div className="text-[10px] md:text-[11px] text-blue-500">
-                {t.forResellers}
               </div>
             </div>
           </div>

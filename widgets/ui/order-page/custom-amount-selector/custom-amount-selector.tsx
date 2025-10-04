@@ -143,9 +143,6 @@ export function CustomAmountSelector({
           <h3 className="text-lg font-semibold text-gray-800">
             {translations.title}
           </h3>
-          <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-            {translations.forResellers}
-          </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
