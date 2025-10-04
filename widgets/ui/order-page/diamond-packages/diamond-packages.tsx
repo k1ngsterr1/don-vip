@@ -277,7 +277,7 @@ export function DiamondPackages({
                       : "icon generation"
                     : currencyName}
                 </div>
-                {hasDiscountPercent && pkg.discountPercent !== 0 && (
+                {hasDiscountPercent && pkg.discountPercent != 0 && (
                   <span className="bg-gradient-to-r from-red-500 to-red-600 text-white text-[10px] md:text-[11px] font-bold px-2 py-0.5 rounded-full shadow-sm">
                     -{pkg.discountPercent}%
                   </span>
@@ -287,7 +287,7 @@ export function DiamondPackages({
               {/* Цена - всегда показываем */}
               <div className="flex flex-col">
                 {hasDiscountPercent &&
-                  pkg.discountPercent !== 0 &&
+                  pkg.discountPercent != 0 &&
                   pkg.originalPriceRub > 0 && (
                     <div className="text-[10px] md:text-[11px] text-gray-400 line-through mb-0.5">
                       {formatPrice(pkg.originalPriceRub)}
