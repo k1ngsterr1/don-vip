@@ -5,11 +5,16 @@ import { cn } from "@/shared/utils/cn";
 import { useState, useEffect, useRef } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Diamond } from "lucide-react";
+import { Diamond, AlertTriangle, CheckCircle, Loader } from "lucide-react";
 import Link from "next/link";
 import { Banner } from "./banner/banner";
 import { OrderSummary } from "./order-summary/order-summary";
-import { UserIdForm } from "./user-id-form/user-id-form";
+import { CustomTooltip } from "@/shared/ui/tooltip/tooltip";
+import { CustomAlert } from "./alert/alert";
+import QuestionIcon from "@/shared/icons/question-icon";
+import { useValidateBigoUser } from "@/entities/bigo/hooks/use-validate-bigo";
+import { useValidateUser } from "@/entities/user/hooks/use-validate-user";
+import { useDebounce } from "@/shared/hooks/use-debounce";
 import { useCreateOrder } from "@/entities/order/hooks/use-create-order";
 import type { CreateOrderDto } from "@/entities/order/model/types";
 import { useProductWithHardcoded } from "@/entities/product/hooks/queries/use-product-with-hardcoded";
@@ -130,6 +135,38 @@ export function OrderBlock({
   const [activeTab, setActiveTab] = useState<
     "instruction" | "reviews" | "description" | "faq"
   >("instruction");
+
+  // Встроенные состояния для User ID формы
+  const [userIdInput, setUserIdInput] = useState("");
+  const [serverIdInput, setServerIdInput] = useState("");
+  const [showSpaceWarning, setShowSpaceWarning] = useState(false);
+  const [spaceWarningField, setSpaceWarningField] = useState<
+    "userId" | "serverId"
+  >("userId");
+  const [showIdPrefixWarning, setShowIdPrefixWarning] = useState(false);
+  const [showSpecialCharsWarning, setShowSpecialCharsWarning] = useState(false);
+  const [validationResult, setValidationResult] = useState<{
+    isValid: boolean;
+    username?: string;
+    vipStatus?: string;
+    errorMessage?: string;
+  } | null>(null);
+  const [hasValidated, setHasValidated] = useState(false);
+
+  // Hooks для валидации
+  const {
+    validateUser,
+    isValidating,
+    error: validationError,
+  } = useValidateBigoUser();
+  const {
+    mutate: validateDonatbankUser,
+    isPending: isValidatingDonatbank,
+    error: donatbankValidationError,
+  } = useValidateUser();
+
+  // Debounced user ID for validation
+  const debouncedUserId = useDebounce(userIdInput, 1000);
 
   // Функция для получения моковых отзывов в зависимости от локали и игры
   const getMockReviews = () => {
@@ -564,34 +601,208 @@ export function OrderBlock({
     }
   };
 
-  // Обработчик изменения User ID
-  const handleUserIdChange = (value: string) => {
-    console.log("🔄 User ID changed:", `"${value}"`);
-    setUserId(value);
+  // Встроенные функции для обработки User ID формы
+  const isPubgMobile =
+    product?.smile_api_game === "pubgmobile" ||
+    product?.smile_api_game === "PUBG";
+  const isDonatBank =
+    product?.type === "DonatBank" ||
+    product?.type === "Smile" ||
+    (product?.smile_api_game && product?.type !== "Bigo" && !isPubgMobile);
+  const isBigo = product?.type === "Bigo";
+  const needsEmail = product?.requireEmail || isPubgMobile;
+  const isServerRequired =
+    product?.requireServer ||
+    product?.isServerRequired ||
+    game?.isServerRequired;
 
-    // Если ID достаточно длинный и выбран пакет, автоматически переходим к оплате
-    if (value.trim().length >= 4 && selectedAmount !== null) {
-      // Для игр требующих сервер, проверяем что сервер ID тоже введен
+  const errorMessages = {
+    en: {
+      spaceWarning:
+        "Spaces are not allowed and have been automatically removed.",
+      idValid: "ID is valid",
+      idNotFound: "ID not found",
+      userNotFound: "User not found",
+      username: "Username",
+      validating: "Validating...",
+    },
+    ru: {
+      spaceWarning: "Пробелы не допускаются и были автоматически удалены.",
+      idValid: "ID действителен",
+      idNotFound: "ID не найден",
+      userNotFound: "Пользователь не найден",
+      username: "Пользователь",
+      validating: "Проверка...",
+    },
+  };
+
+  const isEmail = (value: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+
+  const getTranslation = (key: keyof typeof errorMessages.en) => {
+    if (locale === "ru") {
+      return errorMessages.ru[key];
+    }
+    return errorMessages.en[key];
+  };
+
+  const handleSpaceDetection = (
+    value: string,
+    field: "userId" | "serverId"
+  ) => {
+    if (value.includes(" ")) {
+      setSpaceWarningField(field);
+      setShowSpaceWarning(true);
+      return value.replace(/\s/g, ""); // Remove all spaces
+    }
+    return value;
+  };
+
+  const handleSpecialCharsDetection = (value: string) => {
+    const allowedCharsRegex = isPubgMobile
+      ? /^[a-zA-Z0-9._@-]*$/
+      : /^[a-zA-Z0-9._]*$/;
+    if (!allowedCharsRegex.test(value)) {
+      setShowSpecialCharsWarning(true);
+      const cleanValue = isPubgMobile
+        ? value.replace(/[^a-zA-Z0-9._@-]/g, "")
+        : value.replace(/[^a-zA-Z0-9._]/g, "");
+      setTimeout(() => setShowSpecialCharsWarning(false), 3000);
+      return cleanValue;
+    }
+    return value;
+  };
+
+  const handleUserIdInputChange = (value: string) => {
+    // Валидация: запретить ввод "ID:" в начале или в любом месте
+    if (value.toLowerCase().includes("id:")) {
+      setShowIdPrefixWarning(true);
+      value = value.replace(/id:/gi, "");
+      setTimeout(() => setShowIdPrefixWarning(false), 3000);
+    }
+
+    const cleanValueFromSpecialChars = handleSpecialCharsDetection(value);
+    const cleanValue = handleSpaceDetection(
+      cleanValueFromSpecialChars,
+      "userId"
+    );
+    setUserIdInput(cleanValue);
+    setUserId(cleanValue); // Синхронизируем с основным состоянием
+
+    // Сохраняем в localStorage
+    if (cleanValue.trim() !== "") {
+      localStorage.setItem("currentUserId", cleanValue.trim());
+      console.log("💾 Saved to localStorage:", cleanValue.trim());
+    } else {
+      localStorage.removeItem("currentUserId");
+      console.log("🗑️ Removed from localStorage");
+    }
+
+    // Reset validation when ID changes
+    if ((isBigo || isDonatBank) && hasValidated) {
+      setHasValidated(false);
+      setValidationResult(null);
+      setIsUserIdValid(false);
+    }
+
+    // Auto-scroll logic
+    if (cleanValue.trim().length >= 4 && selectedAmount !== null) {
       if (game?.isServerRequired && serverId.trim() === "") {
-        return; // Не переходим если сервер ID не введен
+        return;
       }
-
       scrollToPaymentSection();
     }
   };
 
-  // Обработчик изменения Server ID
-  const handleServerIdChange = (value: string) => {
-    setServerId(value);
-
-    // Если все поля заполнены и выбран пакет, автоматически переходим к оплате
-    if (
-      value.trim().length >= 1 &&
-      userId.trim().length >= 4 &&
-      selectedAmount !== null
-    ) {
-      scrollToPaymentSection();
+  const handleServerIdInputChange = (value: string) => {
+    if (value.toLowerCase().includes("id:")) {
+      setShowIdPrefixWarning(true);
+      value = value.replace(/id:/gi, "");
+      setTimeout(() => setShowIdPrefixWarning(false), 3000);
     }
+
+    const cleanValueFromSpecialChars = handleSpecialCharsDetection(value);
+    const cleanValue = handleSpaceDetection(
+      cleanValueFromSpecialChars,
+      "serverId"
+    );
+    setServerIdInput(cleanValue);
+    setServerId(cleanValue);
+
+    // Reset validation when server ID changes
+    if (isDonatBank && hasValidated) {
+      setHasValidated(false);
+      setValidationResult(null);
+      setIsUserIdValid(false);
+    }
+  };
+
+  const handleValidateUserId = async (valueToValidate?: string) => {
+    const targetValue = valueToValidate || userIdInput.trim();
+    if (!targetValue) return;
+
+    if (isBigo) {
+      try {
+        const result = await validateUser(targetValue);
+        setValidationResult(result);
+        setHasValidated(true);
+        setIsUserIdValid(result.isValid);
+      } catch (error) {
+        const errorResult = {
+          isValid: false,
+          errorMessage:
+            validationError ||
+            (locale === "ru" ? "Ошибка валидации" : "Validation error"),
+        };
+        setValidationResult(errorResult);
+        setHasValidated(true);
+        setIsUserIdValid(false);
+      }
+      return;
+    }
+
+    if (isDonatBank && gameSlug) {
+      try {
+        validateDonatbankUser(
+          { userId: targetValue, gameId: gameSlug, zoneId: serverId },
+          {
+            onSuccess: (result) => {
+              const validationResultFormatted = {
+                isValid: result.validated,
+                username: result.nickname || undefined,
+                errorMessage: result.validated ? undefined : result.message,
+              };
+              setValidationResult(validationResultFormatted);
+              setHasValidated(true);
+              setIsUserIdValid(result.validated);
+            },
+            onError: () => {
+              const errorResult = {
+                isValid: false,
+                errorMessage:
+                  locale === "ru"
+                    ? "Ошибка валидации пользователя"
+                    : "User validation error",
+              };
+              setValidationResult(errorResult);
+              setHasValidated(true);
+              setIsUserIdValid(false);
+            },
+          }
+        );
+      } catch (error) {
+        console.error("Donatbank validation catch error:", error);
+      }
+    }
+  };
+
+  // Старые обработчики для совместимости
+  const handleUserIdChange = (value: string) => {
+    handleUserIdInputChange(value);
+  };
+
+  const handleServerIdChange = (value: string) => {
+    handleServerIdInputChange(value);
   };
 
   // Обработчик выбора сохраненного аккаунта
@@ -852,6 +1063,92 @@ export function OrderBlock({
   }, [product, currentCurrency]);
 
   // Removed saved game data loading from cookies
+
+  // Инициализация из localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const currentUserId = localStorage.getItem("currentUserId");
+      if (currentUserId && currentUserId.trim() !== "") {
+        console.log("🔄 Loading from localStorage:", currentUserId.trim());
+        setUserIdInput(currentUserId.trim());
+        setUserId(currentUserId.trim());
+      }
+    }
+  }, []);
+
+  // Валидация на основе debounced значения
+  useEffect(() => {
+    if (isBigo && debouncedUserId.trim().length >= 4) {
+      handleValidateUserId(debouncedUserId.trim());
+    } else if (isDonatBank && debouncedUserId.trim().length >= 4) {
+      handleValidateUserId(debouncedUserId.trim());
+    } else if (isPubgMobile) {
+      const emailValid = isEmail(debouncedUserId);
+      setValidationResult({
+        isValid: emailValid,
+        username: emailValid ? "Email format valid" : undefined,
+        errorMessage: emailValid ? undefined : "Invalid email format",
+      });
+      setHasValidated(true);
+      setIsUserIdValid(emailValid);
+    } else if ((isBigo || isDonatBank) && debouncedUserId.trim().length < 4) {
+      setHasValidated(false);
+      setValidationResult(null);
+      setIsUserIdValid(false);
+    }
+  }, [
+    debouncedUserId,
+    serverIdInput,
+    isBigo,
+    isPubgMobile,
+    isDonatBank,
+    gameSlug,
+  ]);
+
+  // Обработка валидации для всех типов продуктов
+  useEffect(() => {
+    if (isBigo || isDonatBank) {
+      const isValidLength = userIdInput.trim().length >= 4;
+      if (isValidLength) {
+        setHasValidated(true);
+        setValidationResult({
+          isValid: true,
+          username: userIdInput.trim(),
+          errorMessage: undefined,
+        });
+      } else {
+        setHasValidated(false);
+        setValidationResult(null);
+      }
+      setIsUserIdValid(isValidLength);
+    } else if (isPubgMobile) {
+      const emailValid = isEmail(userIdInput);
+      setIsUserIdValid(emailValid);
+    } else {
+      const isValidLength = userIdInput.trim().length >= 4;
+      setIsUserIdValid(isValidLength);
+    }
+  }, [userIdInput, isBigo, isDonatBank, isPubgMobile]);
+
+  // Периодическая синхронизация с localStorage
+  useEffect(() => {
+    const syncWithLocalStorage = () => {
+      if (typeof window !== "undefined") {
+        const currentUserId = localStorage.getItem("currentUserId") || "";
+        const currentInputValue = userIdInput.trim();
+        if (currentUserId !== currentInputValue) {
+          console.log("🔄 Sync: localStorage -> input:", {
+            localStorage: `"${currentUserId}"`,
+            input: `"${currentInputValue}"`,
+          });
+          setUserIdInput(currentUserId);
+          setUserId(currentUserId);
+        }
+      }
+    };
+    const interval = setInterval(syncWithLocalStorage, 100);
+    return () => clearInterval(interval);
+  }, [userIdInput]);
 
   // Автоматически выбираем метод оплаты по умолчанию
   useEffect(() => {
@@ -1226,24 +1523,229 @@ export function OrderBlock({
           className="mb-4"
         /> */}
 
-        <UserIdForm
-          apiGame={product?.smile_api_game}
-          productType={product?.type}
-          gameData={game}
-          gameId={gameSlug}
-          productRequirements={{
-            isServerRequired: product?.isServerRequired,
-            requireUserId: product?.requireUserId,
-            requireServer: product?.requireServer,
-            requireEmail: product?.requireEmail,
-            requireUID: product?.requireUID,
-          }}
-          userId={userId}
-          serverId={serverId}
-          onUserIdChange={handleUserIdChange}
-          onServerIdChange={handleServerIdChange}
-          onValidationChange={handleUserIdValidation}
-        />
+        {/* Встроенная User ID форма */}
+        <div className="">
+          <div className="flex items-center mt-4 mb-4">
+            <h2 className="text-base md:text-lg font-bold text-gray-800">
+              2.{" "}
+              {needsEmail
+                ? isServerRequired
+                  ? locale === "ru"
+                    ? "Введите ваш Email и ID сервера"
+                    : "Enter your Email and Server ID"
+                  : locale === "ru"
+                  ? "Введите ваш Email"
+                  : "Enter your Email"
+                : isServerRequired
+                ? t("user.enterIdAndServer")
+                : product?.requireUID
+                ? locale === "ru"
+                  ? "Введите ваш User ID и UID"
+                  : "Enter your User ID and UID"
+                : t("user.enterIdNoPrefix")}
+            </h2>
+            <CustomTooltip
+              content={
+                <div className="p-1">
+                  {isServerRequired
+                    ? t("user.tooltipTextWithServer", {
+                        defaultValue:
+                          "Enter your user ID and server ID to proceed with the order. Both fields are required for proper identification.",
+                      })
+                    : t("user.tooltipTextWithoutServer", {
+                        defaultValue:
+                          "Enter your user ID to proceed with the order. Make sure to provide the correct ID as shown in the instructions below.",
+                      })}
+                </div>
+              }
+              position="top"
+              delay={300}
+            >
+              <QuestionIcon className="ml-2" />
+            </CustomTooltip>
+          </div>
+          <div className="space-y-3">
+            {!isServerRequired && (
+              <div className="relative">
+                {!needsEmail && (
+                  <div className="absolute left-3 font-roboto font-black text-black text-[13px] top-1/2 transform -translate-y-1/2 text-sm">
+                    {t("user.idPrefix")}
+                  </div>
+                )}
+                <input
+                  type={needsEmail ? "email" : "text"}
+                  placeholder={
+                    needsEmail
+                      ? t("user.userEmailPlaceholder")
+                      : t("user.userIdPlaceholder")
+                  }
+                  value={userIdInput}
+                  onChange={(e) => {
+                    console.log("🎯 Input onChange triggered:", e.target.value);
+                    handleUserIdInputChange(e.target.value);
+                  }}
+                  className={`w-full p-3 ${needsEmail ? "pl-3" : "pl-10"} ${
+                    isBigo || isDonatBank ? "pr-10" : ""
+                  } border rounded-lg ${
+                    hasValidated && validationResult
+                      ? validationResult.isValid
+                        ? "border-green-500 bg-green-50"
+                        : "border-red-500 bg-red-50"
+                      : "border-gray-200"
+                  }`}
+                />
+                {(isBigo || isDonatBank) && (
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                    {(isValidating || isValidatingDonatbank) && (
+                      <div className="flex items-center">
+                        <Loader className="w-5 h-5 animate-spin text-blue-500" />
+                        <span className="ml-1 text-xs text-blue-500">
+                          {getTranslation("validating")}
+                        </span>
+                      </div>
+                    )}
+                    {hasValidated &&
+                      validationResult &&
+                      !(isValidating || isValidatingDonatbank) && (
+                        <>
+                          {validationResult.isValid ? (
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                          ) : (
+                            <AlertTriangle className="w-5 h-5 text-red-500" />
+                          )}
+                        </>
+                      )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {isServerRequired ? (
+              <>
+                <div className="relative">
+                  <input
+                    type={needsEmail ? "email" : "text"}
+                    placeholder={
+                      needsEmail
+                        ? t("user.userEmailPlaceholder")
+                        : t("user.userIdPlaceholder")
+                    }
+                    value={userIdInput}
+                    onChange={(e) => handleUserIdInputChange(e.target.value)}
+                    className={`w-full p-3 ${
+                      isBigo || isDonatBank ? "pr-10" : ""
+                    } border rounded-lg ${
+                      hasValidated && validationResult
+                        ? validationResult.isValid
+                          ? "border-green-500 bg-green-50"
+                          : "border-red-500 bg-red-50"
+                        : "border-gray-200"
+                    }`}
+                  />
+                  {(isBigo || isDonatBank) && (
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                      {(isValidating || isValidatingDonatbank) && (
+                        <div className="flex items-center">
+                          <Loader className="w-5 h-5 animate-spin text-blue-500" />
+                          <span className="ml-1 text-xs text-blue-500">
+                            {getTranslation("validating")}
+                          </span>
+                        </div>
+                      )}
+                      {hasValidated &&
+                        validationResult &&
+                        !(isValidating || isValidatingDonatbank) && (
+                          <>
+                            {validationResult.isValid ? (
+                              <CheckCircle className="w-5 h-5 text-green-500" />
+                            ) : (
+                              <AlertTriangle className="w-5 h-5 text-red-500" />
+                            )}
+                          </>
+                        )}
+                    </div>
+                  )}
+                </div>
+                <div className="relative">
+                  {isPubgMobile ? (
+                    <select
+                      value={serverIdInput}
+                      onChange={(e) =>
+                        handleServerIdInputChange(e.target.value)
+                      }
+                      className="w-full p-3 border border-gray-200 rounded-lg bg-white"
+                    >
+                      <option value="">
+                        {t("user.selectServer") || "Выберите сервер"}
+                      </option>
+                      <option value="Asia">Asia</option>
+                      <option value="Europe">Europe</option>
+                      <option value="North America">North America</option>
+                      <option value="South America">South America</option>
+                      <option value="Middle East">Middle East</option>
+                      <option value="Korea/Japan">Korea/Japan</option>
+                    </select>
+                  ) : (
+                    <>
+                      <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        (
+                      </div>
+                      <input
+                        type="text"
+                        placeholder={t("user.userServerPlaceholder")}
+                        value={serverIdInput}
+                        onChange={(e) =>
+                          handleServerIdInputChange(e.target.value)
+                        }
+                        className="w-full p-3 px-8 border border-gray-200 rounded-lg text-center"
+                      />
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        )
+                      </div>
+                    </>
+                  )}
+                </div>
+              </>
+            ) : null}
+          </div>
+
+          {/* Validation Result */}
+          {(isBigo || isDonatBank || isPubgMobile) &&
+            hasValidated &&
+            validationResult && (
+              <div
+                className={`mt-3 p-3 rounded-lg border ${
+                  validationResult.isValid
+                    ? "bg-green-50 border-green-200"
+                    : "bg-red-50 border-red-200"
+                }`}
+              >
+                <div
+                  className={`flex items-center ${
+                    validationResult.isValid ? "text-green-700" : "text-red-700"
+                  }`}
+                >
+                  {validationResult.isValid ? (
+                    <CheckCircle size={16} className="mr-2" />
+                  ) : (
+                    <AlertTriangle size={16} className="mr-2" />
+                  )}
+                  <span className="font-medium">
+                    {validationResult.isValid
+                      ? getTranslation("idValid")
+                      : getTranslation("idNotFound")}
+                  </span>
+                </div>
+                {!validationResult.isValid && validationResult.errorMessage && (
+                  <div className="mt-1 text-sm text-red-600">
+                    {isPubgMobile
+                      ? validationResult.errorMessage
+                      : getTranslation("userNotFound")}
+                  </div>
+                )}
+              </div>
+            )}
+        </div>
       </div>
 
       {/* Payment Method Selector */}
@@ -1381,24 +1883,239 @@ export function OrderBlock({
                 className="mb-6"
               /> */}
 
-              <UserIdForm
-                apiGame={product?.smile_api_game}
-                productType={product?.type}
-                gameData={game}
-                gameId={gameSlug}
-                productRequirements={{
-                  isServerRequired: product?.isServerRequired,
-                  requireUserId: product?.requireUserId,
-                  requireServer: product?.requireServer,
-                  requireEmail: product?.requireEmail,
-                  requireUID: product?.requireUID,
-                }}
-                userId={userId}
-                serverId={serverId}
-                onUserIdChange={handleUserIdChange}
-                onServerIdChange={handleServerIdChange}
-                onValidationChange={handleUserIdValidation}
-              />
+              {/* Встроенная User ID форма */}
+              <div className="">
+                <div className="flex items-center mt-4 mb-4">
+                  <h2 className="text-base md:text-lg font-bold text-gray-800">
+                    2.{" "}
+                    {needsEmail
+                      ? isServerRequired
+                        ? locale === "ru"
+                          ? "Введите ваш Email и ID сервера"
+                          : "Enter your Email and Server ID"
+                        : locale === "ru"
+                        ? "Введите ваш Email"
+                        : "Enter your Email"
+                      : isServerRequired
+                      ? t("user.enterIdAndServer")
+                      : product?.requireUID
+                      ? locale === "ru"
+                        ? "Введите ваш User ID и UID"
+                        : "Enter your User ID and UID"
+                      : t("user.enterIdNoPrefix")}
+                  </h2>
+                  <CustomTooltip
+                    content={
+                      <div className="p-1">
+                        {isServerRequired
+                          ? t("user.tooltipTextWithServer", {
+                              defaultValue:
+                                "Enter your user ID and server ID to proceed with the order. Both fields are required for proper identification.",
+                            })
+                          : t("user.tooltipTextWithoutServer", {
+                              defaultValue:
+                                "Enter your user ID to proceed with the order. Make sure to provide the correct ID as shown in the instructions below.",
+                            })}
+                      </div>
+                    }
+                    position="top"
+                    delay={300}
+                  >
+                    <QuestionIcon className="ml-2" />
+                  </CustomTooltip>
+                </div>
+                <div className="space-y-3">
+                  {!isServerRequired && (
+                    <div className="relative">
+                      {!needsEmail && (
+                        <div className="absolute left-3 font-roboto font-black text-black text-[13px] top-1/2 transform -translate-y-1/2 text-sm">
+                          {t("user.idPrefix")}
+                        </div>
+                      )}
+                      <input
+                        type={needsEmail ? "email" : "text"}
+                        placeholder={
+                          needsEmail
+                            ? t("user.userEmailPlaceholder")
+                            : t("user.userIdPlaceholder")
+                        }
+                        value={userIdInput}
+                        onChange={(e) => {
+                          console.log(
+                            "🎯 Input onChange triggered:",
+                            e.target.value
+                          );
+                          handleUserIdInputChange(e.target.value);
+                        }}
+                        className={`w-full p-3 ${
+                          needsEmail ? "pl-3" : "pl-10"
+                        } ${
+                          isBigo || isDonatBank ? "pr-10" : ""
+                        } border rounded-lg ${
+                          hasValidated && validationResult
+                            ? validationResult.isValid
+                              ? "border-green-500 bg-green-50"
+                              : "border-red-500 bg-red-50"
+                            : "border-gray-200"
+                        }`}
+                      />
+                      {(isBigo || isDonatBank) && (
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                          {(isValidating || isValidatingDonatbank) && (
+                            <div className="flex items-center">
+                              <Loader className="w-5 h-5 animate-spin text-blue-500" />
+                              <span className="ml-1 text-xs text-blue-500">
+                                {getTranslation("validating")}
+                              </span>
+                            </div>
+                          )}
+                          {hasValidated &&
+                            validationResult &&
+                            !(isValidating || isValidatingDonatbank) && (
+                              <>
+                                {validationResult.isValid ? (
+                                  <CheckCircle className="w-5 h-5 text-green-500" />
+                                ) : (
+                                  <AlertTriangle className="w-5 h-5 text-red-500" />
+                                )}
+                              </>
+                            )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {isServerRequired ? (
+                    <>
+                      <div className="relative">
+                        <input
+                          type={needsEmail ? "email" : "text"}
+                          placeholder={
+                            needsEmail
+                              ? t("user.userEmailPlaceholder")
+                              : t("user.userIdPlaceholder")
+                          }
+                          value={userIdInput}
+                          onChange={(e) =>
+                            handleUserIdInputChange(e.target.value)
+                          }
+                          className={`w-full p-3 ${
+                            isBigo || isDonatBank ? "pr-10" : ""
+                          } border rounded-lg ${
+                            hasValidated && validationResult
+                              ? validationResult.isValid
+                                ? "border-green-500 bg-green-50"
+                                : "border-red-500 bg-red-50"
+                              : "border-gray-200"
+                          }`}
+                        />
+                        {(isBigo || isDonatBank) && (
+                          <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                            {(isValidating || isValidatingDonatbank) && (
+                              <div className="flex items-center">
+                                <Loader className="w-5 h-5 animate-spin text-blue-500" />
+                                <span className="ml-1 text-xs text-blue-500">
+                                  {getTranslation("validating")}
+                                </span>
+                              </div>
+                            )}
+                            {hasValidated &&
+                              validationResult &&
+                              !(isValidating || isValidatingDonatbank) && (
+                                <>
+                                  {validationResult.isValid ? (
+                                    <CheckCircle className="w-5 h-5 text-green-500" />
+                                  ) : (
+                                    <AlertTriangle className="w-5 h-5 text-red-500" />
+                                  )}
+                                </>
+                              )}
+                          </div>
+                        )}
+                      </div>
+                      <div className="relative">
+                        {isPubgMobile ? (
+                          <select
+                            value={serverIdInput}
+                            onChange={(e) =>
+                              handleServerIdInputChange(e.target.value)
+                            }
+                            className="w-full p-3 border border-gray-200 rounded-lg bg-white"
+                          >
+                            <option value="">
+                              {t("user.selectServer") || "Выберите сервер"}
+                            </option>
+                            <option value="Asia">Asia</option>
+                            <option value="Europe">Europe</option>
+                            <option value="North America">North America</option>
+                            <option value="South America">South America</option>
+                            <option value="Middle East">Middle East</option>
+                            <option value="Korea/Japan">Korea/Japan</option>
+                          </select>
+                        ) : (
+                          <>
+                            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                              (
+                            </div>
+                            <input
+                              type="text"
+                              placeholder={t("user.userServerPlaceholder")}
+                              value={serverIdInput}
+                              onChange={(e) =>
+                                handleServerIdInputChange(e.target.value)
+                              }
+                              className="w-full p-3 px-8 border border-gray-200 rounded-lg text-center"
+                            />
+                            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                              )
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </>
+                  ) : null}
+                </div>
+
+                {/* Validation Result */}
+                {(isBigo || isDonatBank || isPubgMobile) &&
+                  hasValidated &&
+                  validationResult && (
+                    <div
+                      className={`mt-3 p-3 rounded-lg border ${
+                        validationResult.isValid
+                          ? "bg-green-50 border-green-200"
+                          : "bg-red-50 border-red-200"
+                      }`}
+                    >
+                      <div
+                        className={`flex items-center ${
+                          validationResult.isValid
+                            ? "text-green-700"
+                            : "text-red-700"
+                        }`}
+                      >
+                        {validationResult.isValid ? (
+                          <CheckCircle size={16} className="mr-2" />
+                        ) : (
+                          <AlertTriangle size={16} className="mr-2" />
+                        )}
+                        <span className="font-medium">
+                          {validationResult.isValid
+                            ? getTranslation("idValid")
+                            : getTranslation("idNotFound")}
+                        </span>
+                      </div>
+                      {!validationResult.isValid &&
+                        validationResult.errorMessage && (
+                          <div className="mt-1 text-sm text-red-600">
+                            {isPubgMobile
+                              ? validationResult.errorMessage
+                              : getTranslation("userNotFound")}
+                          </div>
+                        )}
+                    </div>
+                  )}
+              </div>
             </div>
             {/* PaymentMethodSelector is now shown for all currencies in enhanced mode */}
             <div className="p-6" data-step="payment">
@@ -1520,6 +2237,118 @@ export function OrderBlock({
         }}
         onSubmit={handleGuestAuthSubmit}
         isLoading={isLoading}
+      />
+
+      {/* Alert Components */}
+      <CustomAlert
+        isOpen={showSpaceWarning}
+        onClose={() => setShowSpaceWarning(false)}
+        message={
+          <div className="space-y-2">
+            <div className="flex items-center text-amber-600">
+              <AlertTriangle size={16} className="mr-2" />
+              <span className="font-medium">
+                {locale === "ru" ? "Предупреждение" : "Warning"}
+              </span>
+            </div>
+            <div className="text-sm">
+              {locale === "en" && (
+                <div className="mb-1">🇺🇸 {errorMessages.en.spaceWarning}</div>
+              )}
+              {locale === "ru" && <div>🇷🇺 {errorMessages.ru.spaceWarning}</div>}
+              {locale !== "en" && locale !== "ru" && (
+                <>
+                  <div className="mb-1">🇺🇸 {errorMessages.en.spaceWarning}</div>
+                  <div>🇷🇺 {errorMessages.ru.spaceWarning}</div>
+                </>
+              )}
+            </div>
+          </div>
+        }
+      />
+
+      <CustomAlert
+        isOpen={showIdPrefixWarning}
+        onClose={() => setShowIdPrefixWarning(false)}
+        message={
+          <div className="space-y-2">
+            <div className="flex items-center text-amber-600">
+              <AlertTriangle size={16} className="mr-2" />
+              <span className="font-medium">
+                {locale === "ru" ? "Предупреждение" : "Warning"}
+              </span>
+            </div>
+            <div className="text-sm">
+              {locale === "en" && (
+                <div className="mb-1">
+                  🇺🇸 Please don't include "ID:" in your User ID. Just enter the
+                  numbers.
+                </div>
+              )}
+              {locale === "ru" && (
+                <div>
+                  🇷🇺 Пожалуйста, не включайте "ID:" в ваш User ID. Введите
+                  только цифры.
+                </div>
+              )}
+              {locale !== "en" && locale !== "ru" && (
+                <>
+                  <div className="mb-1">
+                    🇺🇸 Please don't include "ID:" in your User ID. Just enter
+                    the numbers.
+                  </div>
+                  <div>
+                    🇷🇺 Пожалуйста, не включайте "ID:" в ваш User ID. Введите
+                    только цифры.
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        }
+      />
+
+      <CustomAlert
+        isOpen={showSpecialCharsWarning}
+        onClose={() => setShowSpecialCharsWarning(false)}
+        message={
+          <div className="space-y-2">
+            <div className="flex items-center text-amber-600">
+              <AlertTriangle size={16} className="mr-2" />
+              <span className="font-medium">
+                {locale === "ru" ? "Предупреждение" : "Warning"}
+              </span>
+            </div>
+            <div className="text-sm">
+              {locale === "en" && (
+                <div className="mb-1">
+                  🇺🇸 Only English letters, numbers, dot (.) and underscore (_)
+                  are allowed{isPubgMobile ? ", plus @ and - for email" : ""}.
+                </div>
+              )}
+              {locale === "ru" && (
+                <div>
+                  🇷🇺 Разрешены только английские буквы, цифры, точка (.) и
+                  нижнее подчеркивание (_)
+                  {isPubgMobile ? ", плюс @ и - для email" : ""}.
+                </div>
+              )}
+              {locale !== "en" && locale !== "ru" && (
+                <>
+                  <div className="mb-1">
+                    🇺🇸 Only English letters, numbers, dot (.) and underscore (_)
+                    are allowed{isPubgMobile ? ", plus @ and - for email" : ""}.
+                  </div>
+                  <div>
+                    🇷🇺 Разрешены только английские буквы, цифры, точка (.) и
+                    нижнее подчеркивание (_)
+                    {isPubgMobile ? ", плюс @ и - для email" : ""}.
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        }
       />
     </>
   );
