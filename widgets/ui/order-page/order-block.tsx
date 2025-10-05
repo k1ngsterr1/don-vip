@@ -889,11 +889,11 @@ export function OrderBlock({
   const customAmountValid =
     isCustomAmountSelected && customAmount !== null && customPrice !== null;
   const amountSelectionValid = packageSelected || customAmountValid;
-  // УБИРАЕМ ПРОВЕРКУ НА ПУСТОЙ USER ID - ВСЕГДА TRUE
-  const userIdFilled = true; // userId.trim() !== "";
+  // Проверяем, что User ID не пустой
+  const userIdFilled = userId.trim() !== "";
   const serverIdValid = !game.isServerRequired || serverId.trim() !== "";
-  // УБИРАЕМ ПРОВЕРКУ ВАЛИДАЦИИ USER ID - ВСЕГДА TRUE
-  const userIdValidationPassed = true; // isUserIdValid;
+  // Проверяем валидность User ID
+  const userIdValidationPassed = isUserIdValid;
   const paymentMethodSelected =
     selectedPaymentMethod !== null && selectedPaymentMethod !== "";
 
@@ -922,7 +922,7 @@ export function OrderBlock({
     trimmed: `"${userId.trim()}"`,
     length: userId.trim().length,
     result: userIdFilled,
-    status: userIdFilled ? "✅ VALID (FORCED)" : "❌ INVALID",
+    status: userIdFilled ? "✅ VALID" : "❌ INVALID",
   });
 
   console.log("3. Server ID:", {
@@ -937,7 +937,7 @@ export function OrderBlock({
   console.log("4. User ID Validation:", {
     isUserIdValid,
     userIdValidationPassed,
-    status: userIdValidationPassed ? "✅ VALID (FORCED)" : "❌ INVALID",
+    status: userIdValidationPassed ? "✅ VALID" : "❌ INVALID",
   });
 
   console.log("5. Payment Method:", {
