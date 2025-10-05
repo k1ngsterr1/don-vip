@@ -190,11 +190,31 @@ export function UserIdForm({
     onUserIdChange(userIdInput);
 
     if (isBigo || isDonatBank) {
-      if (userIdInput.trim().length >= 4 && hasValidated && validationResult) {
-        onValidationChange?.(validationResult.isValid);
+      // ВРЕМЕННОЕ ИСПРАВЛЕНИЕ: Принимаем любой User ID длиной >= 4 для BIGO/Donatbank
+      // TODO: Восстановить API валидацию когда исправят бэкенд
+      const isValidLength = userIdInput.trim().length >= 4;
+      console.log("🔄 BIGO/Donatbank validation bypass:", {
+        userIdInput,
+        trimmed: userIdInput.trim(),
+        length: userIdInput.trim().length,
+        isValidLength,
+        willPassValidation: isValidLength,
+      });
+
+      // Устанавливаем валидацию как пройденную если длина >= 4
+      if (isValidLength) {
+        setHasValidated(true);
+        setValidationResult({
+          isValid: true,
+          username: userIdInput.trim(),
+          errorMessage: undefined,
+        });
       } else {
-        onValidationChange?.(false);
+        setHasValidated(false);
+        setValidationResult(null);
       }
+
+      onValidationChange?.(isValidLength);
     } else if (isPubgMobile) {
       // For PUBG, validate email format locally
       const emailValid = isEmail(userIdInput);
@@ -210,8 +230,6 @@ export function UserIdForm({
     isBigo,
     isDonatBank,
     isPubgMobile,
-    hasValidated,
-    validationResult,
     onValidationChange,
   ]);
 

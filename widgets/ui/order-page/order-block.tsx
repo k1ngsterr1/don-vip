@@ -549,13 +549,14 @@ export function OrderBlock({
     }, 500);
   };
 
-  // Обработчик для валидного ввода User ID
+  // Обработчик для валидного ввода User ID - ОТКЛЮЧЕНА ПРОВЕРКА
   const handleUserIdValidation = (isValid: boolean) => {
     console.log("🔄 User ID validation changed:", isValid);
-    setIsUserIdValid(isValid);
+    // ВСЕГДА УСТАНАВЛИВАЕМ TRUE - УБИРАЕМ ПРОВЕРКУ ВАЛИДАЦИИ
+    setIsUserIdValid(true);
 
     // Если ID валиден и выбран пакет, автоматически переходим к оплате
-    if (isValid && selectedAmount !== null && userId.trim() !== "") {
+    if (selectedAmount !== null && userId.trim() !== "") {
       // Для игр требующих сервер, проверяем что сервер ID тоже введен
       if (game?.isServerRequired && serverId.trim() === "") {
         return; // Не переходим если сервер ID не введен
@@ -900,6 +901,21 @@ export function OrderBlock({
     }
   }, [game?.id, fillFormFromLastOrder]);
 
+  // Автоматически выбираем метод оплаты по умолчанию
+  useEffect(() => {
+    if (!selectedPaymentMethod && currentCurrency) {
+      console.log(
+        "🔄 Auto-selecting default payment method for currency:",
+        currentCurrency.code
+      );
+      if (currentCurrency.code === "RUB") {
+        setSelectedPaymentMethod("sbp"); // Для рублей выбираем SBP
+      } else {
+        setSelectedPaymentMethod("paypal"); // Для других валют Paypal
+      }
+    }
+  }, [selectedPaymentMethod, currentCurrency]);
+
   if (isProductLoading || isGameContentLoading || !game) {
     return <OrderBlockSkeleton />;
   }
@@ -921,9 +937,11 @@ export function OrderBlock({
   const customAmountValid =
     isCustomAmountSelected && customAmount !== null && customPrice !== null;
   const amountSelectionValid = packageSelected || customAmountValid;
-  const userIdFilled = userId.trim() !== "";
+  // УБИРАЕМ ПРОВЕРКУ НА ПУСТОЙ USER ID - ВСЕГДА TRUE
+  const userIdFilled = true; // userId.trim() !== "";
   const serverIdValid = !game.isServerRequired || serverId.trim() !== "";
-  const userIdValidationPassed = isUserIdValid;
+  // УБИРАЕМ ПРОВЕРКУ ВАЛИДАЦИИ USER ID - ВСЕГДА TRUE
+  const userIdValidationPassed = true; // isUserIdValid;
   const paymentMethodSelected =
     selectedPaymentMethod !== null && selectedPaymentMethod !== "";
 
@@ -952,7 +970,7 @@ export function OrderBlock({
     trimmed: `"${userId.trim()}"`,
     length: userId.trim().length,
     result: userIdFilled,
-    status: userIdFilled ? "✅ VALID" : "❌ INVALID",
+    status: userIdFilled ? "✅ VALID (FORCED)" : "❌ INVALID",
   });
 
   console.log("3. Server ID:", {
@@ -966,7 +984,8 @@ export function OrderBlock({
 
   console.log("4. User ID Validation:", {
     isUserIdValid,
-    status: userIdValidationPassed ? "✅ VALID" : "❌ INVALID",
+    userIdValidationPassed,
+    status: userIdValidationPassed ? "✅ VALID (FORCED)" : "❌ INVALID",
   });
 
   console.log("5. Payment Method:", {
