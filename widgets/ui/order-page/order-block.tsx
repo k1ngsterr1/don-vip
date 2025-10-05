@@ -18,8 +18,6 @@ import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useGetMe } from "@/entities/auth/hooks/use-auth";
 import { GuestAuthPopup } from "@/entities/order/ui/guest-user-popup";
 import { useCurrency } from "@/entities/currency/hooks/use-currency";
-import { useOrderCookies } from "@/shared/hooks/use-order-cookies";
-import { SavedAccountsQuickSelect } from "./saved-accounts-quick-select/saved-accounts-quick-select";
 import { DiamondPackages } from "./diamond-packages/diamond-packages";
 import { CustomAmountSelector } from "./custom-amount-selector/custom-amount-selector";
 import { ReviewsSection } from "./reviews-section/reviews-section";
@@ -571,17 +569,6 @@ export function OrderBlock({
     console.log("🔄 User ID changed:", `"${value}"`);
     setUserId(value);
 
-    // Save game data to cookies when user enters valid ID
-    if (value.trim().length >= 4 && game?.id) {
-      saveGameData({
-        gameId: game.id,
-        accountId: value.trim(),
-        serverId: serverId || undefined,
-        gameName: game.name,
-        lastUsed: Date.now(),
-      });
-    }
-
     // Если ID достаточно длинный и выбран пакет, автоматически переходим к оплате
     if (value.trim().length >= 4 && selectedAmount !== null) {
       // Для игр требующих сервер, проверяем что сервер ID тоже введен
@@ -596,17 +583,6 @@ export function OrderBlock({
   // Обработчик изменения Server ID
   const handleServerIdChange = (value: string) => {
     setServerId(value);
-
-    // Save game data to cookies when user enters server ID
-    if (value.trim().length >= 1 && userId.trim().length >= 4 && game?.id) {
-      saveGameData({
-        gameId: game.id,
-        accountId: userId.trim(),
-        serverId: value.trim(),
-        gameName: game.name,
-        lastUsed: Date.now(),
-      });
-    }
 
     // Если все поля заполнены и выбран пакет, автоматически переходим к оплате
     if (
@@ -623,17 +599,6 @@ export function OrderBlock({
     setUserId(accountId);
     if (serverId) {
       setServerId(serverId);
-    }
-
-    // Update saved data timestamp
-    if (game?.id) {
-      saveGameData({
-        gameId: game.id,
-        accountId: accountId,
-        serverId: serverId,
-        gameName: game.name,
-        lastUsed: Date.now(),
-      });
     }
 
     // Auto-scroll to payment if package is selected
@@ -677,8 +642,6 @@ export function OrderBlock({
 
   const { user: authUser, isGuestAuth } = useAuthStore();
   const { data: me } = useGetMe();
-  const { fillFormFromLastOrder, getGameData, saveGameData } =
-    useOrderCookies();
   const searchParams = useSearchParams();
 
   // Проверяем статус платежа при возврате с PayMaster или других платежных провайдеров
@@ -888,18 +851,7 @@ export function OrderBlock({
     }
   }, [product, currentCurrency]);
 
-  // Load saved game data from cookies when game changes
-  useEffect(() => {
-    if (game?.id) {
-      const savedData = fillFormFromLastOrder(game.id);
-      if (savedData.hasData) {
-        setUserId(savedData.accountId);
-        if (savedData.serverId) {
-          setServerId(savedData.serverId);
-        }
-      }
-    }
-  }, [game?.id, fillFormFromLastOrder]);
+  // Removed saved game data loading from cookies
 
   // Автоматически выбираем метод оплаты по умолчанию
   useEffect(() => {
