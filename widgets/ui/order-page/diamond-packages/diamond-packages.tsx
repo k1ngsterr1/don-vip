@@ -40,30 +40,11 @@ export function DiamondPackages({
 }: DiamondPackagesProps) {
   const locale = useLocale();
   const { selectedCurrency } = useCurrency();
-  const [showAll, setShowAll] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Отслеживаем размер экрана
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    // Проверяем при монтировании
-    checkScreenSize();
-
-    // Добавляем слушатель изменения размера
-    window.addEventListener("resize", checkScreenSize);
-
-    return () => window.removeEventListener("resize", checkScreenSize);
-  }, []);
 
   // Хардкодные переводы
   const translations = {
     ru: {
       selectPackage: "Выберите пакет",
-      showAll: "Показать все",
-      hide: "Скрыть",
       bonus: "бонус",
       discount: "СКИДКА",
       popular: "Популярный",
@@ -71,8 +52,6 @@ export function DiamondPackages({
     },
     en: {
       selectPackage: "Select Package",
-      showAll: "Show All",
-      hide: "Hide",
       bonus: "bonus",
       discount: "DISCOUNT",
       popular: "Popular",
@@ -83,12 +62,9 @@ export function DiamondPackages({
   const t =
     translations[locale as keyof typeof translations] || translations.ru;
 
-  // На мобильных показываем только первые 6 пакетов, если не нажали "Показать все"
-  // На PC показываем все пакеты сразу
-  const MOBILE_VISIBLE_COUNT = 6;
-  const displayedPackages =
-    isMobile && !showAll ? packages.slice(0, MOBILE_VISIBLE_COUNT) : packages;
-  const hasMorePackages = isMobile && packages.length > MOBILE_VISIBLE_COUNT;
+  // Показываем все пакеты сразу на всех устройствах
+  const displayedPackages = packages;
+  const hasMorePackages = false;
 
   // Функция для получения fallback emoji в зависимости от типа валюты
   const getFallbackEmoji = (currencyName: string) => {
@@ -517,18 +493,6 @@ export function DiamondPackages({
           </div>
         )}
       </div>
-
-      {/* Show all button - только для мобильных устройств если есть скрытые пакеты */}
-      {hasMorePackages && (
-        <div className="mt-5 mb-5 text-center md:hidden">
-          <button
-            onClick={() => setShowAll(!showAll)}
-            className="bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 font-medium text-sm px-6 py-3 rounded-lg border border-blue-200 hover:border-blue-300 transition-all duration-200 shadow-sm hover:shadow-md"
-          >
-            {showAll ? t.hide : t.showAll}
-          </button>
-        </div>
-      )}
     </div>
   );
 }

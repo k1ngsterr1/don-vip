@@ -652,7 +652,7 @@ export function DesignServicesOrderBlock() {
       </div>
 
       {/* Custom Amount Selector for mobile */}
-      <CustomAmountSelector
+      {/* <CustomAmountSelector
         packages={designServices.map((service) => ({
           id: service.id,
           amount: 1,
@@ -666,7 +666,7 @@ export function DesignServicesOrderBlock() {
         currencyImage=""
         isActive={isCustomAmountSelected}
         onReset={handleResetCustomAmount}
-      />
+      /> */}
 
       {/* User Details Form */}
       <div data-step="user-details" className="px-4 mt-8">
@@ -873,7 +873,7 @@ export function DesignServicesOrderBlock() {
               </div>
 
               {/* Custom Amount Selector for desktop */}
-              <div className="mt-6">
+              {/* <div className="mt-6">
                 <CustomAmountSelector
                   packages={designServices.map((service) => ({
                     id: service.id,
@@ -889,7 +889,7 @@ export function DesignServicesOrderBlock() {
                   isActive={isCustomAmountSelected}
                   onReset={handleResetCustomAmount}
                 />
-              </div>
+              </div> */}
             </div>
 
             <div

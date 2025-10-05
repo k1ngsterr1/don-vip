@@ -1236,7 +1236,7 @@ export function OrderBlock({
       />
 
       {/* Custom Amount Selector for mobile */}
-      {showCustomAmountSelector && (
+      {/* {showCustomAmountSelector && (
         <CustomAmountSelector
           packages={currencyOptions}
           onCustomAmountSelect={handleCustomAmountSelect}
@@ -1245,7 +1245,7 @@ export function OrderBlock({
           isActive={isCustomAmountSelected}
           onReset={handleCustomAmountReset}
         />
-      )}
+      )} */}
 
       <div data-step="user-id" className="px-4 md:px-0">
         {/* Saved Accounts Quick Select */}
