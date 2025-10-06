@@ -1,6 +1,18 @@
 User-agent: *
 Allow: /
 
+# Important pages for indexing
+Allow: /ru/
+Allow: /en/
+Allow: /ru/catalog/
+Allow: /en/catalog/
+Allow: /ru/product/
+Allow: /en/product/
+Allow: /ru/games/
+Allow: /en/games/
+Allow: /ru/services/
+Allow: /en/services/
+
 # Block indexing of pages with tracking parameters
 Disallow: /*?utm_source=*
 Disallow: /*?utm_medium=*
@@ -11,17 +23,62 @@ Disallow: /*?fbclid=*
 Disallow: /*?gclid=*
 Disallow: /*?ref=*
 Disallow: /*?source=*
+Disallow: /*?from_payment=*
+Disallow: /*?payment_status=*
+Disallow: /*?order_id=*
 
-# Block auth pages
+# Block auth and private pages
 Disallow: /*/auth/
 Disallow: /auth/
+Disallow: /*/profile/
+Disallow: /profile/
+Disallow: /*/reset-password/
+Disallow: /reset-password/
+Disallow: /*/payment/
+Disallow: /payment/
 
 # Block admin/internal pages
 Disallow: /*/admin/
 Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /_vercel/
 
-# Block search result pages
+# Block search result pages and dynamic content
 Disallow: /*/search?*
 Disallow: /search?*
+Disallow: /*/send-review/
+Disallow: /send-review/
 
+# Block temporary or test pages
+Disallow: /test/
+Disallow: /temp/
+Disallow: /staging/
+
+# Special crawl rules for bots
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2
+
+User-agent: Yandex
+Allow: /
+Crawl-delay: 1
+
+# Block aggressive crawlers
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# Sitemap locations
 Sitemap: https://don-vip.com/sitemap.xml
+Sitemap: https://don-vip.com/sitemap-static.xml
+Sitemap: https://don-vip.com/sitemap-index.xml
