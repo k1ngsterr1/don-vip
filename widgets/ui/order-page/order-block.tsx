@@ -23,6 +23,8 @@ import { useAuthStore } from "@/entities/auth/store/auth.store";
 import { useGetMe } from "@/entities/auth/hooks/use-auth";
 import { GuestAuthPopup } from "@/entities/order/ui/guest-user-popup";
 import { useCurrency } from "@/entities/currency/hooks/use-currency";
+import { useOrderCookies } from "@/shared/hooks/use-order-cookies";
+import { SavedAccountsQuickSelect } from "./saved-accounts-quick-select/saved-accounts-quick-select";
 import { DiamondPackages } from "./diamond-packages/diamond-packages";
 import { CustomAmountSelector } from "./custom-amount-selector/custom-amount-selector";
 import { ReviewsSection } from "./reviews-section/reviews-section";
@@ -698,6 +700,17 @@ export function OrderBlock({
       console.log("🗑️ Removed from localStorage");
     }
 
+    // Save game data to cookies when user enters valid ID
+    if (cleanValue.trim().length >= 4 && game?.id) {
+      saveGameData({
+        gameId: game.id,
+        accountId: cleanValue.trim(),
+        serverId: serverId || undefined,
+        gameName: game.name,
+        lastUsed: Date.now(),
+      });
+    }
+
     // Reset validation when ID changes
     if ((isBigo || isDonatBank) && hasValidated) {
       setHasValidated(false);
@@ -734,6 +747,21 @@ export function OrderBlock({
       setHasValidated(false);
       setValidationResult(null);
       setIsUserIdValid(false);
+    }
+
+    // Save game data to cookies when user enters server ID
+    if (
+      cleanValue.trim().length >= 1 &&
+      userId.trim().length >= 4 &&
+      game?.id
+    ) {
+      saveGameData({
+        gameId: game.id,
+        accountId: userId.trim(),
+        serverId: cleanValue.trim(),
+        gameName: game.name,
+        lastUsed: Date.now(),
+      });
     }
   };
 
@@ -812,6 +840,17 @@ export function OrderBlock({
       setServerId(serverId);
     }
 
+    // Update saved data timestamp
+    if (game?.id) {
+      saveGameData({
+        gameId: game.id,
+        accountId: accountId,
+        serverId: serverId,
+        gameName: game.name,
+        lastUsed: Date.now(),
+      });
+    }
+
     // Auto-scroll to payment if package is selected
     if (selectedAmount !== null) {
       // Check if server is required and provided
@@ -853,6 +892,8 @@ export function OrderBlock({
 
   const { user: authUser, isGuestAuth } = useAuthStore();
   const { data: me } = useGetMe();
+  const { fillFormFromLastOrder, getGameData, saveGameData } =
+    useOrderCookies();
   const searchParams = useSearchParams();
 
   // Проверяем статус платежа при возврате с PayMaster или других платежных провайдеров
@@ -1062,7 +1103,18 @@ export function OrderBlock({
     }
   }, [product, currentCurrency]);
 
-  // Removed saved game data loading from cookies
+  // Load saved game data from cookies when game changes
+  useEffect(() => {
+    if (game?.id) {
+      const savedData = fillFormFromLastOrder(game.id);
+      if (savedData.hasData) {
+        setUserId(savedData.accountId);
+        if (savedData.serverId) {
+          setServerId(savedData.serverId);
+        }
+      }
+    }
+  }, [game?.id, fillFormFromLastOrder]);
 
   // Инициализация из localStorage
   useEffect(() => {
@@ -1517,11 +1569,11 @@ export function OrderBlock({
 
       <div data-step="user-id" className="px-4 md:px-0">
         {/* Saved Accounts Quick Select */}
-        {/* <SavedAccountsQuickSelect
+        <SavedAccountsQuickSelect
           gameId={game.id}
           onAccountSelect={handleSavedAccountSelect}
           className="mb-4"
-        /> */}
+        />
 
         {/* Встроенная User ID форма */}
         <div className="">
@@ -1877,11 +1929,11 @@ export function OrderBlock({
               id="desktop-user-id-section"
             >
               {/* Saved Accounts Quick Select for Desktop */}
-              {/* <SavedAccountsQuickSelect
+              <SavedAccountsQuickSelect
                 gameId={game.id}
                 onAccountSelect={handleSavedAccountSelect}
                 className="mb-6"
-              /> */}
+              />
 
               {/* Встроенная User ID форма */}
               <div className="">
