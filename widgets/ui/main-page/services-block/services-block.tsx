@@ -5,10 +5,11 @@ import { useProducts } from "@/entities/product/hooks/queries/use-products";
 import CardsIcon from "@/shared/icons/cards-icon";
 import SectionTitle from "@/shared/ui/section-title/section-title";
 import { Skeleton } from "@/shared/ui/skeleton/skeleton";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 export const ServicesBlock = () => {
   const t = useTranslations();
+  const locale = useLocale();
   const { data: productsData, isLoading, isError } = useProducts();
 
   const bigoProducts =
@@ -52,7 +53,7 @@ export const ServicesBlock = () => {
               key={product.id}
               title={product.name}
               image={product.image || "/diverse-group-playing-board-game.png"}
-              href={`/product/${product.id}`}
+              href={`/product/${locale}/${product.id}`}
               hasGem={false}
               gemColor=""
               badge=""
