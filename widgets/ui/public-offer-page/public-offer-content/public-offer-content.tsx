@@ -130,6 +130,50 @@ export default function PublicOfferContent() {
         </p>
         {/* Paragraphs 6.3 to 6.9 are missing in the original, assuming they are part of the contact block */}
         <div className="mt-6 bg-gray-50 p-6 rounded-lg border border-gray-100">
+          <h3 className="font-medium text-gray-800 mb-4">
+            Информация о компании / Company Information
+          </h3>
+
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <p className="text-gray-700 mb-2">
+                <span className="font-medium">Директор / Director:</span> Davit
+                Aslanyan
+              </p>
+              <p className="text-gray-700 mb-2">
+                <span className="font-medium">Компания / Company:</span> DMME HK
+                LIMITED
+              </p>
+              <p className="text-gray-700 mb-2">
+                <span className="font-medium">
+                  Рег. номер компании / Company Reg. No.:
+                </span>{" "}
+                77196171
+              </p>
+            </div>
+            <div>
+              <p className="text-gray-700 mb-2">
+                <span className="font-medium">
+                  Бизнес рег. номер / Business Reg. No.:
+                </span>{" "}
+                77196171-000-10-24-9
+              </p>
+              <p className="text-gray-700 mb-2">
+                <span className="font-medium">Страна / Country:</span> Hong Kong
+              </p>
+              <p className="text-gray-700 mb-2">
+                <span className="font-medium">Город / City:</span> Hong Kong
+              </p>
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <p className="text-gray-700">
+              <span className="font-medium">Адрес / Address:</span> 8/F., China
+              Hong Kong Tower, 8-12 Hennessy Road, Wan Chai, Hong Kong
+            </p>
+          </div>
+
           <h3 className="font-medium text-gray-800 mb-3">
             {i18n("sections.other.contactInfo")}
           </h3>
