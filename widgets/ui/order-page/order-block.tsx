@@ -5,7 +5,16 @@ import { cn } from "@/shared/utils/cn";
 import { useState, useEffect, useRef } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Diamond, AlertTriangle, CheckCircle, Loader } from "lucide-react";
+import {
+  Diamond,
+  AlertTriangle,
+  CheckCircle,
+  Loader,
+  Clock,
+  User,
+  Server,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import { Banner } from "./banner/banner";
 import { OrderSummary } from "./order-summary/order-summary";
@@ -24,7 +33,7 @@ import { useGetMe } from "@/entities/auth/hooks/use-auth";
 import { GuestAuthPopup } from "@/entities/order/ui/guest-user-popup";
 import { useCurrency } from "@/entities/currency/hooks/use-currency";
 import { useOrderCookies } from "@/shared/hooks/use-order-cookies";
-import { SavedAccountsQuickSelect } from "./saved-accounts-quick-select/saved-accounts-quick-select";
+
 import { DiamondPackages } from "./diamond-packages/diamond-packages";
 import { CustomAmountSelector } from "./custom-amount-selector/custom-amount-selector";
 import { ReviewsSection } from "./reviews-section/reviews-section";
@@ -154,6 +163,9 @@ export function OrderBlock({
     errorMessage?: string;
   } | null>(null);
   const [hasValidated, setHasValidated] = useState(false);
+
+  // Встроенные состояния для SavedAccountsQuickSelect
+  const [isAccountsExpanded, setIsAccountsExpanded] = useState(false);
 
   // Hooks для валидации
   const {
@@ -1568,11 +1580,80 @@ export function OrderBlock({
 
       <div data-step="user-id" className="px-4 md:px-0">
         {/* Saved Accounts Quick Select */}
-        <SavedAccountsQuickSelect
-          gameId={game.id}
-          onAccountSelect={handleSavedAccountSelect}
-          className="mb-4"
-        />
+        {/* Встроенный SavedAccountsQuickSelect */}
+        {(() => {
+          const savedAccounts =
+            typeof window !== "undefined"
+              ? JSON.parse(
+                  localStorage.getItem("savedAccounts") || "[]"
+                ).filter((account: any) => account.gameId === game.id)
+              : [];
+
+          if (savedAccounts.length === 0) return null;
+
+          const visibleAccounts = isAccountsExpanded
+            ? savedAccounts
+            : savedAccounts.slice(0, 3);
+
+          return (
+            <div className="bg-gray-800/30 rounded-lg p-4 mb-4 border border-gray-700/50">
+              <div className="flex items-center gap-2 mb-3">
+                <Clock className="w-4 h-4 text-gray-400" />
+                <span className="text-sm text-gray-300 font-medium">
+                  {locale === "ru" ? "Недавние аккаунты" : "Recent Accounts"}
+                </span>
+              </div>
+
+              <div className="grid gap-2">
+                {visibleAccounts.map((account: any, index: number) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-3 p-3 bg-gray-700/50 rounded-lg hover:bg-gray-700 transition-colors group cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <div className="p-2 bg-blue-500/20 rounded-lg">
+                        <User className="w-4 h-4 text-blue-400" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-white truncate">
+                          ID: {account.userId}
+                        </div>
+                        <div className="text-xs text-gray-400 flex items-center gap-1">
+                          <Server className="w-3 h-3" />
+                          {locale === "ru" ? "Сервер" : "Server"}:{" "}
+                          {account.serverId || "N/A"}
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        handleSavedAccountSelect(account);
+                      }}
+                      className="px-3 py-1.5 text-xs bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors whitespace-nowrap"
+                    >
+                      {locale === "ru" ? "Выбрать" : "Select"}
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {savedAccounts.length > 3 && (
+                <button
+                  onClick={() => setIsAccountsExpanded(!isAccountsExpanded)}
+                  className="w-full mt-3 px-3 py-2 text-sm text-gray-400 hover:text-white border border-gray-600 hover:border-gray-500 rounded-lg transition-colors"
+                >
+                  {isAccountsExpanded
+                    ? locale === "ru"
+                      ? "Скрыть"
+                      : "Hide"
+                    : `${locale === "ru" ? "Показать все" : "Show all"} (${
+                        savedAccounts.length
+                      })`}
+                </button>
+              )}
+            </div>
+          );
+        })()}
 
         {/* Встроенная User ID форма */}
         <div className="">
@@ -1928,11 +2009,84 @@ export function OrderBlock({
               id="desktop-user-id-section"
             >
               {/* Saved Accounts Quick Select for Desktop */}
-              <SavedAccountsQuickSelect
-                gameId={game.id}
-                onAccountSelect={handleSavedAccountSelect}
-                className="mb-6"
-              />
+              {/* Встроенный SavedAccountsQuickSelect для Desktop */}
+              {(() => {
+                const savedAccounts =
+                  typeof window !== "undefined"
+                    ? JSON.parse(
+                        localStorage.getItem("savedAccounts") || "[]"
+                      ).filter((account: any) => account.gameId === game.id)
+                    : [];
+
+                if (savedAccounts.length === 0) return null;
+
+                const visibleAccounts = isAccountsExpanded
+                  ? savedAccounts
+                  : savedAccounts.slice(0, 3);
+
+                return (
+                  <div className="bg-gray-800/30 rounded-lg p-6 mb-6 border border-gray-700/50">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Clock className="w-5 h-5 text-gray-400" />
+                      <span className="text-gray-300 font-medium">
+                        {locale === "ru"
+                          ? "Недавние аккаунты"
+                          : "Recent Accounts"}
+                      </span>
+                    </div>
+
+                    <div className="grid gap-3">
+                      {visibleAccounts.map((account: any, index: number) => (
+                        <div
+                          key={index}
+                          className="flex items-center gap-4 p-4 bg-gray-700/50 rounded-lg hover:bg-gray-700 transition-colors group"
+                        >
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <div className="p-3 bg-blue-500/20 rounded-lg">
+                              <User className="w-5 h-5 text-blue-400" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="font-medium text-white mb-1">
+                                ID: {account.userId}
+                              </div>
+                              <div className="text-sm text-gray-400 flex items-center gap-1">
+                                <Server className="w-4 h-4" />
+                                {locale === "ru" ? "Сервер" : "Server"}:{" "}
+                                {account.serverId || "N/A"}
+                              </div>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => {
+                              handleSavedAccountSelect(account);
+                            }}
+                            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors whitespace-nowrap"
+                          >
+                            {locale === "ru" ? "Выбрать" : "Select"}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+
+                    {savedAccounts.length > 3 && (
+                      <button
+                        onClick={() =>
+                          setIsAccountsExpanded(!isAccountsExpanded)
+                        }
+                        className="w-full mt-4 px-4 py-3 text-gray-400 hover:text-white border border-gray-600 hover:border-gray-500 rounded-lg transition-colors"
+                      >
+                        {isAccountsExpanded
+                          ? locale === "ru"
+                            ? "Скрыть"
+                            : "Hide"
+                          : `${
+                              locale === "ru" ? "Показать все" : "Show all"
+                            } (${savedAccounts.length})`}
+                      </button>
+                    )}
+                  </div>
+                );
+              })()}
 
               {/* Встроенная User ID форма */}
               <div className="">
