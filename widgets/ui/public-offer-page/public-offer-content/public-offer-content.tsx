@@ -59,23 +59,6 @@ export default function PublicOfferContent() {
               </p>
               <p className="text-gray-700">e-mail: support@don-vip.com.</p>
             </div>
-            <div className="bg-green-50 p-4 rounded-lg">
-              <p className="text-gray-700 mb-2">
-                <strong>
-                  {locale === "ru"
-                    ? "ИП Асланян Давид Арменович"
-                    : "IE Aslanyan David Armenovich"}
-                </strong>
-                ,{" "}
-                {locale === "ru"
-                  ? "действующий в соответствии с законодательством Российской Федерации,"
-                  : "operating in accordance with the legislation of the Russian Federation,"}
-              </p>
-              <p className="text-gray-700 mb-1">
-                {locale === "ru" ? "ИНН" : "INN"} <strong>250822605454</strong>,
-              </p>
-              <p className="text-gray-700">e-mail: hoyakap@gmail.com.</p>
-            </div>
           </div>
 
           <div>
@@ -500,37 +483,6 @@ export default function PublicOfferContent() {
                   className="text-blue-600 hover:underline"
                 >
                   support@don-vip.com
-                </a>
-              </p>
-              <p>
-                <strong>{locale === "ru" ? "Веб-сайт" : "Website"}:</strong>{" "}
-                <a
-                  href="https://don-vip.com"
-                  className="text-blue-600 hover:underline"
-                >
-                  https://don-vip.com
-                </a>
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-green-50 p-6 rounded-lg">
-            <h3 className="font-bold text-gray-800 mb-3 text-lg">
-              {locale === "ru"
-                ? "ИП Асланян Давид Арменович"
-                : "IE Aslanyan David Armenovich"}
-            </h3>
-            <div className="space-y-2 text-gray-700">
-              <p>
-                <strong>{locale === "ru" ? "ИНН" : "INN"}:</strong> 250822605454
-              </p>
-              <p>
-                <strong>E-mail:</strong>{" "}
-                <a
-                  href="mailto:hoyakap@gmail.com"
-                  className="text-blue-600 hover:underline"
-                >
-                  hoyakap@gmail.com
                 </a>
               </p>
               <p>

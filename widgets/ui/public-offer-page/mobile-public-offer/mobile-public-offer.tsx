@@ -70,26 +70,6 @@ export default function MobilePublicOffer() {
                   e-mail: support@don-vip.com.
                 </p>
               </div>
-              <div className="bg-green-50 p-3 rounded-lg">
-                <p className="text-[12px] text-gray-700 mb-1">
-                  <strong>
-                    {locale === "ru"
-                      ? "ИП Асланян Давид Арменович"
-                      : "IE Aslanyan David Armenovich"}
-                  </strong>
-                  ,{" "}
-                  {locale === "ru"
-                    ? "действующий в соответствии с законодательством Российской Федерации,"
-                    : "operating in accordance with the legislation of the Russian Federation,"}
-                </p>
-                <p className="text-[12px] text-gray-700 mb-1">
-                  {locale === "ru" ? "ИНН" : "INN"}{" "}
-                  <strong>250822605454</strong>,
-                </p>
-                <p className="text-[12px] text-gray-700">
-                  e-mail: hoyakap@gmail.com.
-                </p>
-              </div>
             </div>
 
             <p className="text-[12px]">
@@ -286,20 +266,6 @@ export default function MobilePublicOffer() {
                   ? "Оплата осуществляется в безналичной форме через платёжных партнёров."
                   : "Payment is made in non-cash form through payment partners."}
               </p>
-              <div className="bg-yellow-50 p-3 rounded-lg">
-                <p className="text-[11px] text-gray-700 mb-1">
-                  •{" "}
-                  {locale === "ru"
-                    ? "Для покупателей из РФ и СНГ расчёты могут производиться через ИП Асланян Давид Арменович."
-                    : "For buyers from RF and CIS, settlements may be made through IE Aslanyan David Armenovich."}
-                </p>
-                <p className="text-[11px] text-gray-700">
-                  •{" "}
-                  {locale === "ru"
-                    ? "Для международных покупателей — через DMME HK LIMITED."
-                    : "For international buyers — through DMME HK LIMITED."}
-                </p>
-              </div>
             </div>
 
             <p className="text-[12px]">
@@ -472,38 +438,6 @@ export default function MobilePublicOffer() {
                     className="text-blue-600 hover:underline"
                   >
                     support@don-vip.com
-                  </a>
-                </p>
-                <p>
-                  <strong>{locale === "ru" ? "Веб-сайт" : "Website"}:</strong>{" "}
-                  <a
-                    href="https://don-vip.com"
-                    className="text-blue-600 hover:underline"
-                  >
-                    https://don-vip.com
-                  </a>
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-green-50 p-4 rounded-lg">
-              <h3 className="font-bold text-gray-800 mb-2 text-[13px]">
-                {locale === "ru"
-                  ? "ИП Асланян Давид Арменович"
-                  : "IE Aslanyan David Armenovich"}
-              </h3>
-              <div className="space-y-1 text-[11px] text-gray-700">
-                <p>
-                  <strong>{locale === "ru" ? "ИНН" : "INN"}:</strong>{" "}
-                  250822605454
-                </p>
-                <p>
-                  <strong>E-mail:</strong>{" "}
-                  <a
-                    href="mailto:hoyakap@gmail.com"
-                    className="text-blue-600 hover:underline"
-                  >
-                    hoyakap@gmail.com
                   </a>
                 </p>
                 <p>
