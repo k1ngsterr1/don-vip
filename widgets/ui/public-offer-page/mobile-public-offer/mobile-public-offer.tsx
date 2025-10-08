@@ -363,6 +363,66 @@ export default function MobilePublicOffer() {
                 ? "Покупатель обязуется тщательно проверять корректность указанных данных перед оплатой. В случае ошибки ответственность за возможные убытки полностью возлагается на Покупателя."
                 : "The Buyer undertakes to carefully check the correctness of the specified data before payment. In case of error, responsibility for possible losses is entirely borne by the Buyer."}
             </p>
+
+            <div className="bg-yellow-50 p-3 rounded-lg">
+              <p className="text-yellow-800 text-[12px] mb-3">
+                <strong>5.6.</strong>{" "}
+                {locale === "ru"
+                  ? "Если по каким-либо причинам Покупатель решил отказаться от исполнения договора о выполнении работ (оказании услуг), он вправе сделать это в соответствии с Законом РФ «О защите прав потребителей» от 07.02.1992 № 2300-1."
+                  : "If for any reason the Buyer decides to refuse the execution of the contract for work (service provision), they have the right to do so in accordance with the Russian Federation Law 'On Consumer Rights Protection' dated 07.02.1992 No. 2300-1."}
+              </p>
+              
+              <p className="text-yellow-800 text-[12px] mb-3">
+                {locale === "ru"
+                  ? "Потребитель вправе расторгнуть договор о выполнении работы (оказании услуги) в любое время, уплатив Исполнителю часть цены пропорционально части выполненной работы (оказанной услуги) до получения уведомления о расторжении договора, а также возместив Исполнителю расходы, понесённые до этого момента в целях исполнения договора, если они не входят в указанную часть цены."
+                  : "The Consumer has the right to terminate the contract for work (service provision) at any time by paying the Contractor part of the price proportional to the part of the work performed (service provided) before receiving notification of contract termination, as well as reimbursing the Contractor for expenses incurred up to that point for contract execution, if they are not included in the specified part of the price."}
+              </p>
+
+              <p className="text-yellow-800 text-[12px] mb-2">
+                {locale === "ru"
+                  ? "Потребитель при обнаружении недостатков оказанной услуги вправе по своему выбору потребовать:"
+                  : "Upon discovering defects in the service provided, the Consumer has the right to choose to demand:"}
+              </p>
+              
+              <ul className="text-yellow-800 text-[12px] mb-3 ml-3 space-y-1">
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>
+                    {locale === "ru"
+                      ? "безвозмездного устранения недостатков;"
+                      : "free elimination of defects;"}
+                  </span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>
+                    {locale === "ru"
+                      ? "соответствующего уменьшения цены;"
+                      : "corresponding price reduction;"}
+                  </span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>
+                    {locale === "ru"
+                      ? "возмещения понесённых им расходов по устранению недостатков своими силами или третьими лицами."
+                      : "compensation for expenses incurred to eliminate defects by their own means or through third parties."}
+                  </span>
+                </li>
+              </ul>
+
+              <p className="text-yellow-800 text-[12px] mb-3">
+                {locale === "ru"
+                  ? "Потребитель вправе предъявлять требования, связанные с недостатками оказанной услуги, если они обнаружены в течение гарантийного срока, а при его отсутствии — в разумный срок, но не позднее двух лет со дня принятия услуги."
+                  : "The Consumer has the right to make claims related to defects in the service provided if they are discovered within the warranty period, and in its absence - within a reasonable time, but no later than two years from the date of service acceptance."}
+              </p>
+
+              <p className="text-yellow-800 text-[12px]">
+                {locale === "ru"
+                  ? "При отказе от исполнения договора Потребитель имеет право на возврат уплаченных денежных сумм, а также вправе требовать полного возмещения убытков, причинённых недостатками выполненной работы (оказанной услуги). Исполнитель несёт ответственность за недостатки услуги, если Потребитель докажет, что они возникли до её принятия или по причинам, существовавшим до этого момента."
+                  : "Upon refusal to execute the contract, the Consumer has the right to return paid amounts, as well as the right to demand full compensation for damages caused by defects in the work performed (service provided). The Contractor is responsible for service defects if the Consumer proves that they arose before its acceptance or due to reasons existing before that moment."}
+              </p>
+            </div>
           </div>
         </div>
 
