@@ -371,7 +371,7 @@ export default function MobilePublicOffer() {
                   ? "Если по каким-либо причинам Покупатель решил отказаться от исполнения договора о выполнении работ (оказании услуг), он вправе сделать это в соответствии с Законом РФ «О защите прав потребителей» от 07.02.1992 № 2300-1."
                   : "If for any reason the Buyer decides to refuse the execution of the contract for work (service provision), they have the right to do so in accordance with the Russian Federation Law 'On Consumer Rights Protection' dated 07.02.1992 No. 2300-1."}
               </p>
-              
+
               <p className="text-yellow-800 text-[12px] mb-3">
                 {locale === "ru"
                   ? "Потребитель вправе расторгнуть договор о выполнении работы (оказании услуги) в любое время, уплатив Исполнителю часть цены пропорционально части выполненной работы (оказанной услуги) до получения уведомления о расторжении договора, а также возместив Исполнителю расходы, понесённые до этого момента в целях исполнения договора, если они не входят в указанную часть цены."
@@ -383,7 +383,7 @@ export default function MobilePublicOffer() {
                   ? "Потребитель при обнаружении недостатков оказанной услуги вправе по своему выбору потребовать:"
                   : "Upon discovering defects in the service provided, the Consumer has the right to choose to demand:"}
               </p>
-              
+
               <ul className="text-yellow-800 text-[12px] mb-3 ml-3 space-y-1">
                 <li className="flex items-start">
                   <span className="mr-2">•</span>
