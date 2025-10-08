@@ -301,20 +301,6 @@ export default function PublicOfferContent() {
                 ? "Оплата осуществляется в безналичной форме через платёжных партнёров."
                 : "Payment is made in non-cash form through payment partners."}
             </p>
-            <div className="bg-yellow-50 p-4 rounded-lg">
-              <p className="text-gray-700 mb-1">
-                •{" "}
-                {locale === "ru"
-                  ? "Для покупателей из РФ и СНГ расчёты могут производиться через ИП Асланян Давид Арменович."
-                  : "For buyers from RF and CIS, settlements may be made through IE Aslanyan David Armenovich."}
-              </p>
-              <p className="text-gray-700">
-                •{" "}
-                {locale === "ru"
-                  ? "Для международных покупателей — через DMME HK LIMITED."
-                  : "For international buyers — through DMME HK LIMITED."}
-              </p>
-            </div>
           </div>
 
           <div>
@@ -342,6 +328,30 @@ export default function PublicOfferContent() {
                 ? "После оплаты Покупатель получает электронное подтверждение (чек, квитанцию или электронное уведомление)."
                 : "After payment, the Buyer receives electronic confirmation (receipt, voucher or electronic notification)."}
             </p>
+          </div>
+
+          <div>
+            <p className="text-gray-700 mb-2">
+              <strong>4.6.</strong>{" "}
+              {locale === "ru" ? "Порядок расчётов:" : "Payment procedure:"}
+            </p>
+            <p className="text-gray-700 ml-4">
+              {locale === "ru"
+                ? "Платежи принимаются в зависимости от региона покупателя следующим образом:"
+                : "Payments are accepted depending on the buyer's region as follows:"}
+            </p>
+            <ul className="list-disc ml-8 mt-2 space-y-2">
+              <li className="text-gray-700">
+                {locale === "ru"
+                  ? "Покупатели, осуществляющие оплату из Российской Федерации и стран СНГ, проводят оплату через уполномоченного платёжного партнёра, действующего на основании соответствующих договорных отношений с DMME HK LIMITED."
+                  : "Buyers making payments from the Russian Federation and CIS countries make payments through an authorized payment partner acting on the basis of relevant contractual relationships with DMME HK LIMITED."}
+              </li>
+              <li className="text-gray-700">
+                {locale === "ru"
+                  ? "Покупатели из других стран осуществляют оплату напрямую в пользу DMME HK LIMITED, зарегистрированной в соответствии с законодательством Гонконга (регистрационный номер: 77196171)."
+                  : "Buyers from other countries make payments directly in favor of DMME HK LIMITED, registered in accordance with Hong Kong law (registration number: 77196171)."}
+              </li>
+            </ul>
           </div>
         </div>
       </div>
