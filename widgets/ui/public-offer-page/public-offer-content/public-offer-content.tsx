@@ -51,13 +51,13 @@ export default function PublicOfferContent() {
               <p className="text-gray-700">e-mail: support@don-vip.com.</p>
             </div>
             <div className="bg-green-50 p-4 rounded-lg">
-              <p className="text-gray-700 mb-2">
+              {/* <p className="text-gray-700 mb-2">
                 <strong>ИП Асланян Давид Арменович</strong>, действующий в
                 соответствии с законодательством Российской Федерации,
               </p>
               <p className="text-gray-700 mb-1">
                 ИНН <strong>250822605454</strong>,
-              </p>
+              </p> */}
               <p className="text-gray-700">e-mail: hoyakap@gmail.com.</p>
             </div>
           </div>
