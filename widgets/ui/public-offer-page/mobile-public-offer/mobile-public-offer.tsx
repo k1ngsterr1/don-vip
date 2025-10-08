@@ -22,8 +22,8 @@ export default function MobilePublicOffer() {
         <div className="pb-4 border-b border-gray-200">
           <p className="leading-relaxed">
             {locale === "ru"
-              ? "Настоящая Публичная оферта является официальным предложением DMME HK LIMITED (регистрационный номер 77196171, Гонконг) и ИП Асланян Давид Арменович (ИНН 250822605454, Россия) заключить договор купли-продажи цифровых (виртуальных) товаров с любым физическим лицом (Покупателем) на условиях, изложенных ниже."
-              : "This Public Offer is an official proposal by DMME HK LIMITED (registration number 77196171, Hong Kong) and IP Aslanyan David Armenovich (INN 250822605454, Russia) to enter into a purchase and sale agreement for digital (virtual) goods with any individual (Buyer) under the terms set forth below."}
+              ? "Настоящая Публичная оферта является официальным предложением DMME HK LIMITED (регистрационный номер 77196171, Гонконг)."
+              : "This Public Offer is an official proposal by DMME HK LIMITED (registration number 77196171, Hong Kong)."}
           </p>
           <p className="leading-relaxed mt-3">
             {locale === "ru"

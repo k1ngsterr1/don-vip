@@ -10,8 +10,8 @@ export default function PublicOfferContent() {
       <div className="mb-8 pb-6 border-b border-gray-100">
         <p className="text-gray-700 leading-relaxed">
           {locale === "ru"
-            ? "Настоящая Публичная оферта является официальным предложением DMME HK LIMITED (регистрационный номер 77196171, Гонконг) и ИП Асланян Давид Арменович (ИНН 250822605454, Россия) заключить договор купли-продажи цифровых (виртуальных) товаров с любым физическим лицом (Покупателем) на условиях, изложенных ниже."
-            : "This Public Offer is an official proposal by DMME HK LIMITED (registration number 77196171, Hong Kong) and IP Aslanyan David Armenovich (INN 250822605454, Russia) to enter into a purchase and sale agreement for digital (virtual) goods with any individual (Buyer) under the terms set forth below."}
+            ? "Настоящая Публичная оферта является официальным предложением DMME HK LIMITED (регистрационный номер 77196171, Гонконг)."
+            : "This Public Offer is an official proposal by DMME HK LIMITED (registration number 77196171, Hong Kong)."}
         </p>
         <p className="text-gray-700 leading-relaxed mt-4">
           {locale === "ru"
@@ -396,6 +396,60 @@ export default function PublicOfferContent() {
               {locale === "ru"
                 ? "Покупатель обязуется тщательно проверять корректность указанных данных перед оплатой. В случае ошибки ответственность за возможные убытки полностью возлагается на Покупателя."
                 : "The Buyer undertakes to carefully check the correctness of the specified data before payment. In case of error, responsibility for possible losses is entirely borne by the Buyer."}
+            </p>
+          </div>
+
+          <div className="bg-yellow-50 p-4 rounded-lg">
+            <p className="text-yellow-800 mb-4">
+              <strong>5.6.</strong>{" "}
+              {locale === "ru"
+                ? "Если по каким-либо причинам Покупатель решил отказаться от исполнения договора о выполнении работ (оказании услуг), он вправе сделать это в соответствии с Законом РФ «О защите прав потребителей» от 07.02.1992 № 2300-1."
+                : "If for any reason the Buyer decides to refuse the execution of the contract for work (service provision), they have the right to do so in accordance with the Russian Federation Law 'On Consumer Rights Protection' dated 07.02.1992 No. 2300-1."}
+            </p>
+
+            <p className="text-yellow-800 mb-4">
+              {locale === "ru"
+                ? "Потребитель вправе расторгнуть договор о выполнении работы (оказании услуги) в любое время, уплатив Исполнителю часть цены пропорционально части выполненной работы (оказанной услуги) до получения уведомления о расторжении договора, а также возместив Исполнителю расходы, понесённые до этого момента в целях исполнения договора, если они не входят в указанную часть цены."
+                : "The Consumer has the right to terminate the contract for work (service provision) at any time by paying the Contractor part of the price proportional to the part of the work performed (service provided) before receiving notification of contract termination, as well as reimbursing the Contractor for expenses incurred up to that point for contract execution, if they are not included in the specified part of the price."}
+            </p>
+
+            <p className="text-yellow-800 mb-2">
+              {locale === "ru"
+                ? "Потребитель при обнаружении недостатков оказанной услуги вправе по своему выбору потребовать:"
+                : "Upon discovering defects in the service provided, the Consumer has the right to choose to demand:"}
+            </p>
+
+            <ul className="text-yellow-800 mb-4 ml-4 space-y-1">
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                {locale === "ru"
+                  ? "безвозмездного устранения недостатков;"
+                  : "free elimination of defects;"}
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                {locale === "ru"
+                  ? "соответствующего уменьшения цены;"
+                  : "corresponding price reduction;"}
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                {locale === "ru"
+                  ? "возмещения понесённых им расходов по устранению недостатков своими силами или третьими лицами."
+                  : "compensation for expenses incurred to eliminate defects by their own means or through third parties."}
+              </li>
+            </ul>
+
+            <p className="text-yellow-800 mb-4">
+              {locale === "ru"
+                ? "Потребитель вправе предъявлять требования, связанные с недостатками оказанной услуги, если они обнаружены в течение гарантийного срока, а при его отсутствии — в разумный срок, но не позднее двух лет со дня принятия услуги."
+                : "The Consumer has the right to make claims related to defects in the service provided if they are discovered within the warranty period, and in its absence - within a reasonable time, but no later than two years from the date of service acceptance."}
+            </p>
+
+            <p className="text-yellow-800">
+              {locale === "ru"
+                ? "При отказе от исполнения договора Потребитель имеет право на возврат уплаченных денежных сумм, а также вправе требовать полного возмещения убытков, причинённых недостатками выполненной работы (оказанной услуги). Исполнитель несёт ответственность за недостатки услуги, если Потребитель докажет, что они возникли до её принятия или по причинам, существовавшим до этого момента."
+                : "Upon refusal to execute the contract, the Consumer has the right to return paid amounts, as well as the right to demand full compensation for damages caused by defects in the work performed (service provided). The Contractor is responsible for service defects if the Consumer proves that they arose before its acceptance or due to reasons existing before that moment."}
             </p>
           </div>
         </div>
