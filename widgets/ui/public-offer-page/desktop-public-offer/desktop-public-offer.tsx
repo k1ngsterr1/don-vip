@@ -47,11 +47,6 @@ export default function DesktopPublicOffer() {
         </div>
         <div className="lg:w-3/4">
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 lg:p-8">
-            <div className="mb-8 pb-8 border-b border-gray-100">
-              <p className="text-gray-700 leading-relaxed">
-                {i18n("introText")}
-              </p>
-            </div>
             <PublicOfferContent />
             <PublicOfferContactFooter />
           </div>
