@@ -592,15 +592,14 @@ export function OrderBlock({
     // ВСЕГДА УСТАНАВЛИВАЕМ TRUE - УБИРАЕМ ПРОВЕРКУ ВАЛИДАЦИИ
     setIsUserIdValid(true);
 
-    // Если ID валиден и выбран пакет, автоматически переходим к оплате
-    if (selectedAmount !== null && userId.trim() !== "") {
-      // Для игр требующих сервер, проверяем что сервер ID тоже введен
-      if (game?.isServerRequired && serverId.trim() === "") {
-        return; // Не переходим если сервер ID не введен
-      }
-
-      scrollToPaymentSection();
-    }
+    // Убираем автоматический переход к оплате после ввода ID
+    // if (selectedAmount !== null && userId.trim() !== "") {
+    //   // Для игр требующих сервер, проверяем что сервер ID тоже введен
+    //   if (game?.isServerRequired && serverId.trim() === "") {
+    //     return; // Не переходим если сервер ID не введен
+    //   }
+    //   scrollToPaymentSection();
+    // }
   };
 
   // Встроенные функции для обработки User ID формы
@@ -718,13 +717,13 @@ export function OrderBlock({
       setIsUserIdValid(false);
     }
 
-    // Auto-scroll logic
-    if (cleanValue.trim().length >= 4 && selectedAmount !== null) {
-      if (game?.isServerRequired && serverId.trim() === "") {
-        return;
-      }
-      scrollToPaymentSection();
-    }
+    // Убираем автоматический переход к оплате после ввода ID
+    // if (cleanValue.trim().length >= 4 && selectedAmount !== null) {
+    //   if (game?.isServerRequired && serverId.trim() === "") {
+    //     return;
+    //   }
+    //   scrollToPaymentSection();
+    // }
   };
 
   const handleServerIdInputChange = (value: string) => {
@@ -851,13 +850,13 @@ export function OrderBlock({
       });
     }
 
-    // Auto-scroll to payment if package is selected
-    if (selectedAmount !== null) {
-      // Check if server is required and provided
-      if (!game?.isServerRequired || serverId) {
-        setTimeout(() => scrollToPaymentSection(), 300);
-      }
-    }
+    // Убираем автоматический переход к оплате после выбора пакета
+    // if (selectedAmount !== null) {
+    //   // Check if server is required and provided
+    //   if (!game?.isServerRequired || serverId) {
+    //     setTimeout(() => scrollToPaymentSection(), 300);
+    //   }
+    // }
   };
 
   // Убираем автоматическое переключение на pagsmile_checkout
