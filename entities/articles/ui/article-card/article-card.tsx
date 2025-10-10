@@ -54,7 +54,7 @@ export const ArticleCard = ({ article, className = "" }: ArticleCardProps) => {
   return (
     <Link href={`/${locale}/articles/${article.slug}`}>
       <article className={`group cursor-pointer ${className}`}>
-        <div className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-300 hover:shadow-lg dark:hover:shadow-blue-500/10">
+        <div className="bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-blue-500 transition-all duration-300 hover:shadow-lg">
           {/* Featured Image */}
           {article.featured_image && (
             <div className="relative h-48 overflow-hidden">
@@ -91,17 +91,17 @@ export const ArticleCard = ({ article, className = "" }: ArticleCardProps) => {
             )}
 
             {/* Title */}
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
               {article.title}
             </h3>
 
             {/* Excerpt */}
-            <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-4 line-clamp-3">
+            <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">
               {getExcerpt()}
             </p>
 
             {/* Meta */}
-            <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+            <div className="flex items-center justify-between text-xs text-gray-500">
               <div className="flex items-center gap-4">
                 {article.author && (
                   <span>
@@ -111,7 +111,7 @@ export const ArticleCard = ({ article, className = "" }: ArticleCardProps) => {
                 <span>{formatDate(article.created_at)}</span>
               </div>
 
-              <div className="flex items-center gap-1 text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="flex items-center gap-1 text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity">
                 <span className="text-sm">Читать</span>
                 <svg
                   className="w-4 h-4"

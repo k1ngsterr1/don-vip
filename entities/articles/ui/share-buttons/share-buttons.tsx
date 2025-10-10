@@ -38,7 +38,7 @@ export const ShareButtons = ({ title, url, locale }: ShareButtonsProps) => {
 
   return (
     <div className="flex items-center gap-3">
-      <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+      <span className="text-sm font-medium text-gray-600">
         {locale === "ru" ? "Поделиться:" : "Share:"}
       </span>
 
@@ -100,7 +100,7 @@ export const ShareButtons = ({ title, url, locale }: ShareButtonsProps) => {
         className={`flex items-center justify-center w-10 h-10 rounded-full transition-all ${
           copied
             ? "bg-green-500 text-white"
-            : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
+            : "bg-gray-200 text-gray-600 hover:bg-gray-300"
         }`}
         title={locale === "ru" ? "Скопировать ссылку" : "Copy link"}
       >

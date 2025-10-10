@@ -99,7 +99,7 @@ export default function ArticlesPage() {
   const pagination = articlesData?.pagination;
 
   return (
-    <div className="min-h-screen bg-gray-50 ">
+    <div className="min-h-screen bg-white">
       <ContentWrapper>
         <div className="w-full max-w-[1680px] py-8">
           {/* Header */}
@@ -122,7 +122,7 @@ export default function ArticlesPage() {
               }
               title={locale === "ru" ? "Статьи" : "Articles"}
             />
-            <p className="text-gray-600 dark:text-gray-300 mt-2 max-w-2xl mx-auto">
+            <p className="text-gray-600 mt-2 max-w-2xl mx-auto">
               {locale === "ru"
                 ? "Полезные статьи, гайды и новости о играх и наших сервисах"
                 : "Useful articles, guides and news about games and our services"}
@@ -139,7 +139,7 @@ export default function ArticlesPage() {
                 }
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
-                className="w-full px-4 py-3 pl-12 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                className="w-full px-4 py-3 pl-12 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               />
               <svg
                 className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"

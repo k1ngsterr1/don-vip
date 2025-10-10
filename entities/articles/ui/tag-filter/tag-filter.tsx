@@ -38,7 +38,7 @@ export const TagFilter = ({
           "border hover:scale-105 active:scale-95",
           !selectedTag
             ? "bg-blue-600 text-white border-blue-600 shadow-lg"
-            : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400"
+            : "bg-white text-gray-700 border-gray-300 hover:border-blue-500"
         )}
       >
         {locale === "ru" ? "Все статьи" : "All Articles"}
@@ -54,7 +54,7 @@ export const TagFilter = ({
             "border hover:scale-105 active:scale-95",
             selectedTag === tag.slug
               ? "text-white border-2 shadow-lg"
-              : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-opacity-60"
+              : "bg-white text-gray-700 border-gray-300 hover:border-opacity-60"
           )}
           style={
             selectedTag === tag.slug

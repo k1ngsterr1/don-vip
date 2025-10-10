@@ -31,14 +31,14 @@ export function RelatedArticles({
   if (isLoading) {
     return (
       <div className="mt-16">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">
+        <h2 className="text-2xl font-bold text-gray-900 mb-8">
           {locale === "ru" ? "Похожие статьи" : "Related Articles"}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 3 }).map((_, i) => (
             <div
               key={i}
-              className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700"
+              className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200"
             >
               <Skeleton className="h-40 w-full rounded-xl mb-4" />
               <Skeleton className="h-6 w-3/4 mb-2" />
@@ -57,7 +57,7 @@ export function RelatedArticles({
 
   return (
     <div className="mt-16">
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">
+      <h2 className="text-2xl font-bold text-gray-900 mb-8">
         {locale === "ru" ? "Похожие статьи" : "Related Articles"}
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
