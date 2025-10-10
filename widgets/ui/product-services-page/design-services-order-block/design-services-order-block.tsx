@@ -259,6 +259,19 @@ export function DesignServicesOrderBlock() {
   >("instruction");
   const [error, setError] = useState("");
 
+  // Все остальные хуки должны быть здесь
+  const { user: authUser } = useAuthStore();
+  const { data: me } = useGetMe();
+  const {
+    createOrder,
+    isLoading,
+    isProcessingPayment,
+    error: orderError,
+    setError: setOrderError,
+  } = useCreateOrder(selectedPaymentMethod, "RUB");
+
+  const identifierCollected = useRef(false);
+
   // Функция для получения актуальной цены услуги
   const getServicePrice = (service: DesignService) => {
     if (apiPrices && apiPrices[service.titleKey]) {
@@ -402,19 +415,6 @@ export function DesignServicesOrderBlock() {
   const formatPrice = (price: number) => {
     return `${price.toLocaleString()} ${t.rub}`;
   };
-
-  const { user: authUser } = useAuthStore();
-  const { data: me } = useGetMe();
-
-  const {
-    createOrder,
-    isLoading,
-    isProcessingPayment,
-    error: orderError,
-    setError: setOrderError,
-  } = useCreateOrder(selectedPaymentMethod, "RUB");
-
-  const identifierCollected = useRef(false);
 
   // Get user identifier from various sources
   const getUserIdentifier = (): string | null => {
