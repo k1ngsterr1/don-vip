@@ -37,6 +37,7 @@ import {
   getDesignServiceNameByPrice,
   isDesignServicePrice,
 } from "@/shared/utils/design-service-names";
+import { useDesignServicesPrices } from "@/entities/design-services/hooks/use-design-services";
 
 interface DesignService {
   id: number;
@@ -248,11 +249,35 @@ export function DesignServicesOrderBlock() {
   const [userName, setUserName] = useState("");
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
   const [showGuestAuthPopup, setShowGuestAuthPopup] = useState(false);
+
+  // Загружаем цены из API
+  const { data: apiPrices, isLoading: pricesLoading } =
+    useDesignServicesPrices();
   const [guestIdentifier, setGuestIdentifier] = useState("");
   const [activeTab, setActiveTab] = useState<
     "instruction" | "reviews" | "description" | "faq"
   >("instruction");
   const [error, setError] = useState("");
+
+  // Функция для получения актуальной цены услуги
+  const getServicePrice = (service: DesignService) => {
+    if (apiPrices && apiPrices[service.titleKey]) {
+      return apiPrices[service.titleKey];
+    }
+    // Возвращаем дефолтную цену если API еще не загрузилось
+    return service.price;
+  };
+
+  // Обновляем услуги с актуальными ценами
+  const servicesWithActualPrices = designServices.map((service) => ({
+    ...service,
+    price: getServicePrice(service),
+  }));
+
+  // Показываем загрузку пока цены не загрузились
+  if (pricesLoading) {
+    return <OrderBlockSkeleton />;
+  }
 
   // Хардкодные переводы
   const translations = {
@@ -370,7 +395,7 @@ export function DesignServicesOrderBlock() {
     currencyName: "RUB",
   };
 
-  const selectedServiceData = designServices.find(
+  const selectedServiceData = servicesWithActualPrices.find(
     (service) => service.id === selectedService
   );
 
@@ -606,7 +631,7 @@ export function DesignServicesOrderBlock() {
       {/* Service Packages for mobile */}
       <div className="px-4">
         <div className="grid grid-cols-1 gap-4">
-          {designServices.map((service) => (
+          {servicesWithActualPrices.map((service) => (
             <div
               key={service.id}
               className={cn(
@@ -653,7 +678,7 @@ export function DesignServicesOrderBlock() {
 
       {/* Custom Amount Selector for mobile */}
       {/* <CustomAmountSelector
-        packages={designServices.map((service) => ({
+        packages={servicesWithActualPrices.map((service) => ({
           id: service.id,
           amount: 1,
           price: service.price.toString(),
@@ -809,7 +834,7 @@ export function DesignServicesOrderBlock() {
                 {t.selectService}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {designServices.map((service) => (
+                {servicesWithActualPrices.map((service) => (
                   <div
                     key={service.id}
                     className={cn(
@@ -875,7 +900,7 @@ export function DesignServicesOrderBlock() {
               {/* Custom Amount Selector for desktop */}
               {/* <div className="mt-6">
                 <CustomAmountSelector
-                  packages={designServices.map((service) => ({
+                  packages={servicesWithActualPrices.map((service) => ({
                     id: service.id,
                     amount: 1,
                     price: service.price.toString(),
