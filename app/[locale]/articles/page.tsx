@@ -99,7 +99,7 @@ export default function ArticlesPage() {
   const pagination = articlesData?.pagination;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 ">
       <ContentWrapper>
         <div className="w-full max-w-[1680px] py-8">
           {/* Header */}
