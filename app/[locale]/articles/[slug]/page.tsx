@@ -70,7 +70,7 @@ export default function ArticlePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-white">
         <ContentWrapper>
           <div className="w-full max-w-4xl mx-auto py-8">
             {/* Back Button Skeleton */}
@@ -105,15 +105,15 @@ export default function ArticlePage() {
 
   if (error || !article) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-white">
         <ContentWrapper>
           <div className="w-full max-w-4xl mx-auto py-8">
             <div className="text-center py-16">
               <div className="text-red-500 text-6xl mb-4">📄</div>
-              <div className="text-gray-600 dark:text-gray-300 text-xl font-medium mb-2">
+              <div className="text-gray-600 text-xl font-medium mb-2">
                 {locale === "ru" ? "Статья не найдена" : "Article not found"}
               </div>
-              <p className="text-gray-500 dark:text-gray-400 mb-6">
+              <p className="text-gray-500 mb-6">
                 {locale === "ru"
                   ? "Возможно, статья была удалена или перемещена"
                   : "The article may have been deleted or moved"}
@@ -145,7 +145,7 @@ export default function ArticlePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-white">
       <ContentWrapper>
         <div className="w-full max-w-4xl mx-auto py-8">
           {/* Breadcrumb */}
@@ -165,7 +165,7 @@ export default function ArticlePage() {
           {/* Back Button */}
           <Link
             href={`/${locale}/articles`}
-            className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors mb-6 group"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors mb-6 group"
           >
             <svg
               className="w-4 h-4 group-hover:-translate-x-1 transition-transform"
@@ -184,7 +184,7 @@ export default function ArticlePage() {
           </Link>
 
           {/* Article Header */}
-          <article className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-200 dark:border-gray-700">
+          <article className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200">
             {/* Tags */}
             {article.tags && article.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4">
@@ -208,19 +208,19 @@ export default function ArticlePage() {
             )}
 
             {/* Title */}
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">
               {article.title}
             </h1>
 
             {/* Excerpt */}
             {article.excerpt && (
-              <p className="text-lg text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+              <p className="text-lg text-gray-600 mb-6 leading-relaxed">
                 {article.excerpt}
               </p>
             )}
 
             {/* Meta */}
-            <div className="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400 mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center gap-6 text-sm text-gray-500 mb-8 pb-8 border-b border-gray-200">
               {article.author && (
                 <div className="flex items-center gap-2">
                   <svg
@@ -295,12 +295,12 @@ export default function ArticlePage() {
 
             {/* Content */}
             <div
-              className="prose prose-lg dark:prose-invert max-w-none prose-headings:text-gray-900 dark:prose-headings:text-white prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-strong:text-gray-900 dark:prose-strong:text-white"
+              className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-blue-600 prose-strong:text-gray-900"
               dangerouslySetInnerHTML={{ __html: article.content }}
             />
 
             {/* Share Buttons */}
-            <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+            <div className="mt-8 pt-8 border-t border-gray-200">
               <ShareButtons
                 title={article.title}
                 url={
