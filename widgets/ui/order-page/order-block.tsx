@@ -1367,7 +1367,7 @@ export function OrderBlock({
     setCouponInfo(couponData);
   };
 
-  const submitOrderWithIdentifier = (identifier: string) => {
+  const submitOrderWithIdentifier = async (identifier: string) => {
     if (!isFormValid || !selectedCurrency) {
       setError("Please fill in all required fields");
       return;
@@ -1440,50 +1440,50 @@ export function OrderBlock({
       coupon_code: couponInfo?.code || undefined,
     };
 
-    createOrder(orderData)
-      .then((response: any) => {
-        if (
-          selectedPaymentMethod === "tbank" &&
-          currentCurrency.code === "RUB"
-        ) {
-          // Формируем название пакета для чека
-          const priceInRub = Math.round(finalPriceRub); // Округляем до целого числа
-          let packageName: string;
+    try {
+      const response = await createOrder(orderData);
 
-          if (isDesignServicePrice(priceInRub)) {
-            // Если цена соответствует дизайнерской услуге, используем её название
-            packageName = getDesignServiceNameByPrice(priceInRub, locale);
-          } else {
-            // Иначе используем стандартное название с количеством и валютой
-            packageName = `${selectedCurrency.amount} ${game.currencyName}`;
-          }
+      if (selectedPaymentMethod === "tbank" && currentCurrency.code === "RUB") {
+        // Формируем название пакета для чека
+        const priceInRub = Math.round(finalPriceRub); // Округляем до целого числа
+        let packageName: string;
 
-          const params = new URLSearchParams({
-            orderId: response.id,
-            amount: selectedCurrency.amount.toString(),
-            price: formattedPrice, // Changed from numericPrice to formattedPrice (discounted price)
-            currencyName: game.currencyName,
-            gameName: game.name,
-            packageName: packageName,
-            userId: userId,
-            userIdDB: userIdDB,
-            serverId: game.isServerRequired ? serverId : "",
-          });
+        // Проверяем асинхронно, является ли цена дизайнерской услугой
+        const isDesignService = await isDesignServicePrice(priceInRub);
 
-          window.location.href = `/t-bank?${params.toString()}`;
+        if (isDesignService) {
+          // Если цена соответствует дизайнерской услуге, используем её название
+          packageName = await getDesignServiceNameByPrice(priceInRub, locale);
         } else {
-          // Handle other payment methods here
-          console.log(
-            "Order created successfully for non-RUB currency:",
-            response
-          );
-          // You can redirect to a different payment processor or show success message
+          // Иначе используем стандартное название с количеством и валютой
+          packageName = `${selectedCurrency.amount} ${game.currencyName}`;
         }
-      })
-      .catch((err) => {
-        console.error("❌ Order creation failed:", err);
-        setError("Failed to create order. Please try again.");
-      });
+
+        const params = new URLSearchParams({
+          orderId: response.id.toString(),
+          amount: selectedCurrency.amount.toString(),
+          price: formattedPrice, // Changed from numericPrice to formattedPrice (discounted price)
+          currencyName: game.currencyName,
+          gameName: game.name,
+          packageName: packageName,
+          userId: userId,
+          userIdDB: userIdDB,
+          serverId: game.isServerRequired ? serverId : "",
+        });
+
+        window.location.href = `/t-bank?${params.toString()}`;
+      } else {
+        // Handle other payment methods here
+        console.log(
+          "Order created successfully for non-RUB currency:",
+          response
+        );
+        // You can redirect to a different payment processor or show success message
+      }
+    } catch (err) {
+      console.error("❌ Order creation failed:", err);
+      setError("Failed to create order. Please try again.");
+    }
   };
 
   const handleSubmitOrder = async () => {
@@ -1522,16 +1522,16 @@ export function OrderBlock({
       return;
     }
 
-    submitOrderWithIdentifier(finalIdentifier);
+    await submitOrderWithIdentifier(finalIdentifier);
   };
 
-  const handleGuestAuthSubmit = (identifier: string) => {
+  const handleGuestAuthSubmit = async (identifier: string) => {
     setGuestIdentifier(identifier);
     setShowGuestAuthPopup(false);
     identifierCollected.current = true;
 
     // Submit the order with the collected identifier
-    submitOrderWithIdentifier(identifier);
+    await submitOrderWithIdentifier(identifier);
   };
 
   const mobileVersion = (
