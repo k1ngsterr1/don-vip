@@ -48,11 +48,13 @@ export interface UserPaymentMethodsResponse {
 export interface PaymentMethodByCurrency {
   id: number;
   name: string;
+  code?: string; // Payment method code for Moneta
   methodCode: string;
   country: string;
   currency: string;
   icon: string;
   isActive: boolean;
+  isMoneta?: boolean; // Flag to identify Moneta payment methods
   sortOrder: number;
   description?: string | null;
 }

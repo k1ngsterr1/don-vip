@@ -69,7 +69,7 @@ const getIconSrc = (icon: StaticImageData | string): string => {
 interface PaymentMethodSelectorProps {
   enhanced?: boolean;
   selectedMethod?: string;
-  onSelect?: (method: string) => void;
+  onSelect?: (method: string, isMoneta?: boolean, code?: string) => void;
   currentCurrency?: string; // Add currency prop
   region?: string; // Add region prop
   amount?: number; // Add amount prop for filtering
@@ -84,6 +84,8 @@ interface FrontendPaymentMethod {
   icon: StaticImageData | string; // Allow both StaticImageData and string URLs
   descriptionKey?: string;
   description?: string | null; // Добавляем description из API
+  isMoneta?: boolean; // Flag for Moneta payment methods
+  code?: string; // Payment method code for Moneta
 }
 
 export function PaymentMethodSelector({
@@ -251,6 +253,8 @@ export function PaymentMethodSelector({
         apiName: method.name,
         icon: finalIcon,
         description: method.description, // Добавляем поле description из API
+        isMoneta: method.isMoneta || false, // Add Moneta flag
+        code: method.code, // Add payment method code
       };
     });
   }
@@ -346,7 +350,8 @@ export function PaymentMethodSelector({
   // Автоматический выбор первого доступного метода оплаты
   useEffect(() => {
     if (!isLoading && availablePaymentMethods.length > 0) {
-      const firstMethodId = availablePaymentMethods[0].id;
+      const firstMethod = availablePaymentMethods[0];
+      const firstMethodId = firstMethod.id;
 
       // Автоматически выбираем первый метод если:
       // 1. Нет выбранного метода (пустая строка, null, undefined)
@@ -365,10 +370,12 @@ export function PaymentMethodSelector({
           availableMethodsCount: availablePaymentMethods.length,
           isSelectedMethodAvailable,
           shouldAutoSelect,
+          isMoneta: firstMethod.isMoneta,
+          code: firstMethod.code,
         });
         // Используем setTimeout чтобы гарантировать, что состояние обновится
         setTimeout(() => {
-          onSelect(firstMethodId);
+          onSelect(firstMethodId, firstMethod.isMoneta, firstMethod.code);
         }, 0);
       }
     }
@@ -422,12 +429,12 @@ export function PaymentMethodSelector({
               ? "bg-blue-500/5 border-blue-500" // Original: bg-blue/5 border-blue. Adjusted blue intensity for visibility.
               : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
           }`}
-          onClick={() => onSelect(method.id)}
+          onClick={() => onSelect(method.id, method.isMoneta, method.code)}
           role="radio"
           aria-checked={method.id === selectedMethod}
           tabIndex={0}
           onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") onSelect(method.id);
+            if (e.key === "Enter" || e.key === " ") onSelect(method.id, method.isMoneta, method.code);
           }}
         >
           <div className="w-10 h-10 rounded-md flex items-center justify-center mr-4 bg-gray-100">

@@ -6,6 +6,8 @@ import {
   DonatBankBalanceResponse,
   PagsmileCheckoutDto,
   PagsmileCheckoutResponse,
+  MonetaCreatePayinDto,
+  MonetaPayinResponse,
 } from "../model/types";
 
 /**
@@ -46,6 +48,19 @@ export const paymentApi = {
   ): Promise<DonatBankBalanceResponse> => {
     const response = await apiClient.post<DonatBankBalanceResponse>(
       "/payment/donatbank/balance",
+      data
+    );
+    return response.data;
+  },
+
+  /**
+   * Create a new payment via Moneta
+   */
+  createMonetaPayin: async (
+    data: MonetaCreatePayinDto
+  ): Promise<MonetaPayinResponse> => {
+    const response = await apiClient.post<MonetaPayinResponse>(
+      "/payment/moneta/payin",
       data
     );
     return response.data;

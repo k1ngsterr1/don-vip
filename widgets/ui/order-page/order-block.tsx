@@ -131,11 +131,15 @@ export function OrderBlock({
   const [userId, setUserId] = useState("");
   const [serverId, setServerId] = useState("");
   const [selectedPaymentMethod, setSelectedPaymentMethodState] = useState("");
+  const [isMonetaPayment, setIsMonetaPayment] = useState(false);
+  const [monetaMethodCode, setMonetaMethodCode] = useState<string | undefined>(undefined);
 
   // Обертка для логирования изменений способа оплаты
-  const setSelectedPaymentMethod = (method: string) => {
-    console.log("🔄 Payment method changed:", `"${method}"`);
+  const setSelectedPaymentMethod = (method: string, isMoneta: boolean = false, code?: string) => {
+    console.log("🔄 Payment method changed:", `"${method}"`, { isMoneta, code });
     setSelectedPaymentMethodState(method);
+    setIsMonetaPayment(isMoneta);
+    setMonetaMethodCode(code);
   };
   const [showGuestAuthPopup, setShowGuestAuthPopup] = useState(false);
   const [guestIdentifier, setGuestIdentifier] = useState("");
@@ -876,7 +880,12 @@ export function OrderBlock({
     isGuestUser,
     needsIdentifier,
     shouldUsePagsmileCheckout,
-  } = useCreateOrder(selectedPaymentMethod, currentCurrency.code);
+  } = useCreateOrder(
+    selectedPaymentMethod, 
+    currentCurrency.code, 
+    isMonetaPayment,
+    monetaMethodCode
+  );
 
   const { user: authUser, isGuestAuth } = useAuthStore();
   const { data: me } = useGetMe();

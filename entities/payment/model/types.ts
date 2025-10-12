@@ -39,6 +39,19 @@ export interface PagsmilePayinResponse {
   payment_method: string;
 }
 
+export interface MonetaCreatePayinDto {
+  amount: string;
+  order_id: number;
+  user_id?: number;
+  method?: string; // Payment method code from payment_methods table
+  description?: string;
+}
+
+export interface MonetaPayinResponse {
+  paymentUrl: string;
+  transactionId: string;
+}
+
 export interface PagsmileNotificationDto {
   id: string;
   type: string;
@@ -66,11 +79,12 @@ export interface DonatBankBalanceResponse {
   created_at: string;
 }
 
-export type PaymentMethod = "card" | "tbank" | "qiwi" | "donatbank";
+export type PaymentMethod = "card" | "tbank" | "qiwi" | "donatbank" | "moneta";
 
 export const PAYMENT_METHOD_MAPPING: Record<string, string> = {
   card: "credit_card",
   tbank: "bank_transfer",
   qiwi: "qiwi_wallet",
   donatbank: "donatbank",
+  moneta: "moneta",
 };

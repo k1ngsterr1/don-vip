@@ -10,6 +10,8 @@ import type {
   PagsmileCreatePayinDto,
   PagsmileCheckoutDto,
   PagsmileCheckoutResponse,
+  MonetaCreatePayinDto,
+  MonetaPayinResponse,
 } from "@/entities/payment/model/types";
 import { paymentApi } from "@/entities/payment/api/payment.api";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
@@ -34,7 +36,9 @@ function isSafariBrowser(): boolean {
  */
 export function useCreateOrder(
   paymentMethod: string,
-  currency: string = "RUB"
+  currency: string = "RUB",
+  isMonetaMethod: boolean = false,
+  monetaMethodCode?: string
 ) {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -199,6 +203,39 @@ export function useCreateOrder(
     },
   });
 
+  // 💰 Moneta payment mutation
+  const monetaMutation = useMutation({
+    mutationFn: (monetaData: MonetaCreatePayinDto) => {
+      const userId = resolveUserId();
+
+      const monetaDataWithUser = {
+        ...monetaData,
+        user_id: userId ? Number.parseInt(userId, 10) : undefined,
+      };
+
+      return paymentApi.createMonetaPayin(monetaDataWithUser);
+    },
+
+    onSuccess: (monetaData: MonetaPayinResponse) => {
+      setIsProcessingPayment(false);
+
+      if (monetaData.paymentUrl) {
+        window.location.href = monetaData.paymentUrl;
+      } else {
+        setError("Failed to get payment URL from Moneta");
+      }
+    },
+
+    onError: (err: any) => {
+      setIsProcessingPayment(false);
+      setError(
+        err?.response?.data?.message ||
+          err?.message ||
+          "Moneta payment processing failed. Please try again."
+      );
+    },
+  });
+
   // Return the exact payment method selected by user
   const mapPaymentMethodToPagsmile = (method: string): string => {
     // Возвращаем точно тот метод, который выбрал пользователь
@@ -208,6 +245,22 @@ export function useCreateOrder(
   // ⏳ Trigger payment after successful order
   const processPayment = (orderId: string, orderData: CreateOrderDto) => {
     setIsProcessingPayment(true);
+
+    // Check if this is a Moneta payment method
+    if (isMonetaMethod) {
+      const monetaData: MonetaCreatePayinDto = {
+        order_id: Number.parseInt(orderId, 10),
+        amount:
+          typeof orderData.price === "string"
+            ? orderData.price
+            : orderData.price.toFixed(2),
+        method: monetaMethodCode, // Use the code field from payment method
+        description: `Order #${orderId}`,
+      };
+
+      monetaMutation.mutate(monetaData);
+      return;
+    }
 
     if (shouldUsePagsmileCheckout) {
       // Use Pagsmile checkout for non-RUB currencies
@@ -269,12 +322,16 @@ export function useCreateOrder(
     isProcessingPayment,
     isSuccess:
       orderMutation.isSuccess &&
-      (shouldUsePagsmileCheckout
+      (isMonetaMethod
+        ? monetaMutation.isSuccess
+        : shouldUsePagsmileCheckout
         ? checkoutMutation.isSuccess
         : paymentMutation.isSuccess),
     isError:
       orderMutation.isError ||
-      (shouldUsePagsmileCheckout
+      (isMonetaMethod
+        ? monetaMutation.isError
+        : shouldUsePagsmileCheckout
         ? checkoutMutation.isError
         : paymentMutation.isError),
     error,
