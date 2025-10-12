@@ -2,7 +2,7 @@ export interface CreateOrderDto {
   identifier?: string;
   user_id?: string | number;
   game_id: number;
-  currency_id: number;
+  currency_id: number; // -1 для кастомных заказов
   amount: number;
   price: number | string;
   payment_method: string;

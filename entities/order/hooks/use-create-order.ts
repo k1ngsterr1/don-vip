@@ -82,7 +82,7 @@ export function useCreateOrder(
       const apiOrderData = {
         identifier: orderData.identifier,
         product_id: orderData.game_id,
-        item_id: orderData.currency_id,
+        item_id: orderData.currency_id === -1 ? 0 : orderData.currency_id, // Для кастомных заказов используем 0
         payment: orderData.payment_method,
         account_id: orderData.user_game_id,
         server_id: orderData.server_id,
