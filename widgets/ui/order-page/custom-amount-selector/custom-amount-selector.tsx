@@ -62,11 +62,27 @@ export function CustomAmountSelector({
   // Проверяем, является ли валюта алмазами
   const isDiamondCurrency =
     currencyName.toLowerCase().includes("diamond") ||
-    currencyName.toLowerCase().includes("алмаз");
+    currencyName.toLowerCase().includes("алмаз") ||
+    currencyName.toLowerCase().includes("diamonds") ||
+    currencyName.toLowerCase().includes("алмазы");
+
+  // Логирование для отладки
+  console.log("CustomAmountSelector Debug:", {
+    currencyName,
+    isDiamondCurrency,
+    selectedCurrency: selectedCurrency?.code,
+  });
 
   // Получаем цену алмаза с бэкенда только если это алмазная валюта
   const { data: diamondPriceData, isLoading: isDiamondPriceLoading } =
     useDiamondPrice(selectedCurrency?.code || "RUB");
+
+  // Логирование данных с бэкенда
+  console.log("Diamond Price Data:", {
+    diamondPriceData,
+    isDiamondPriceLoading,
+    isDiamondCurrency,
+  });
 
   // Вычисляем цену за единицу
   useEffect(() => {

@@ -1548,7 +1548,7 @@ export function OrderBlock({
         <CustomAmountSelector
           packages={currencyOptions}
           onCustomAmountSelect={handleCustomAmountSelect}
-          currencyName={currentCurrency.code}
+          currencyName={game?.currencyName || currentCurrency.code}
           currencyImage={game.currencyImage}
           isActive={isCustomAmountSelected}
           onReset={handleCustomAmountReset}
@@ -1972,7 +1972,7 @@ export function OrderBlock({
                   <CustomAmountSelector
                     packages={currencyOptions}
                     onCustomAmountSelect={handleCustomAmountSelect}
-                    currencyName={currentCurrency.code}
+                    currencyName={game?.currencyName || currentCurrency.code}
                     currencyImage={game.currencyImage}
                     isActive={isCustomAmountSelected}
                     onReset={handleCustomAmountReset}
