@@ -6,16 +6,13 @@ import { useState, useEffect, useRef } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  Diamond,
   AlertTriangle,
   CheckCircle,
   Loader,
   Clock,
   User,
   Server,
-  X,
 } from "lucide-react";
-import Link from "next/link";
 import { Banner } from "./banner/banner";
 import { OrderSummary } from "./order-summary/order-summary";
 import { CustomTooltip } from "@/shared/ui/tooltip/tooltip";
@@ -861,27 +858,7 @@ export function OrderBlock({
         lastUsed: Date.now(),
       });
     }
-
-    // Убираем автоматический переход к оплате после выбора пакета
-    // if (selectedAmount !== null) {
-    //   // Check if server is required and provided
-    //   if (!game?.isServerRequired || serverId) {
-    //     setTimeout(() => scrollToPaymentSection(), 300);
-    //   }
-    // }
   };
-
-  // Убираем автоматическое переключение на pagsmile_checkout
-  // чтобы пользователь мог выбирать конкретные методы оплаты
-  // useEffect(() => {
-  //   if (currentCurrency.code !== "RUB") {
-  //     // For non-RUB currencies, use a generic payment method for Pagsmile checkout
-  //     setSelectedPaymentMethod("pagsmile_checkout");
-  //   } else if (selectedPaymentMethod === "pagsmile_checkout") {
-  //     // If switching back to RUB, reset to default RUB method
-  //     setSelectedPaymentMethod("tbank");
-  //   }
-  // }, [currentCurrency.code]);
 
   const [couponCode, setCouponCode] = useState("");
   const [appliedDiscount, setAppliedDiscount] = useState<number>(0);
@@ -1567,7 +1544,7 @@ export function OrderBlock({
       />
 
       {/* Custom Amount Selector for mobile */}
-      {/* {showCustomAmountSelector && (
+      {showCustomAmountSelector && (
         <CustomAmountSelector
           packages={currencyOptions}
           onCustomAmountSelect={handleCustomAmountSelect}
@@ -1576,7 +1553,7 @@ export function OrderBlock({
           isActive={isCustomAmountSelected}
           onReset={handleCustomAmountReset}
         />
-      )} */}
+      )}
 
       <div data-step="user-id" className="px-4 md:px-0">
         {/* Saved Accounts Quick Select */}
