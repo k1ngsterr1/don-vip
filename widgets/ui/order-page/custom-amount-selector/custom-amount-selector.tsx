@@ -5,6 +5,7 @@ import { useLocale } from "next-intl";
 import { useState, useEffect } from "react";
 import { CurrencyIcon } from "@/shared/ui/currency-icon";
 import { useCurrency } from "@/entities/currency/hooks/use-currency";
+import { useDiamondPrice } from "@/entities/diamond-price/hooks/use-diamond-price";
 
 interface Package {
   id: number;
@@ -58,10 +59,37 @@ export function CustomAmountSelector({
   const [calculatedPrice, setCalculatedPrice] = useState<number | null>(null);
   const [pricePerUnit, setPricePerUnit] = useState<number | null>(null);
 
-  // Вычисляем среднюю цену за единицу на основе существующих пакетов
+  // Проверяем, является ли валюта алмазами
+  const isDiamondCurrency =
+    currencyName.toLowerCase().includes("diamond") ||
+    currencyName.toLowerCase().includes("алмаз");
+
+  // Получаем цену алмаза с бэкенда только если это алмазная валюта
+  const { data: diamondPriceData, isLoading: isDiamondPriceLoading } =
+    useDiamondPrice(selectedCurrency?.code || "RUB");
+
+  // Вычисляем цену за единицу
   useEffect(() => {
-    if (packages.length > 0 && selectedCurrency) {
-      // Берем несколько средних пакетов для расчета средней цены
+    if (!selectedCurrency) return;
+
+    if (isDiamondCurrency) {
+      // Для алмазов используем цену с бэкенда
+      if (diamondPriceData && !isDiamondPriceLoading) {
+        const backendPricePerDiamond = diamondPriceData.price_per_diamond;
+
+        // Конвертируем цену в выбранную валюту
+        const priceInSelectedCurrency =
+          selectedCurrency.code === "RUB"
+            ? backendPricePerDiamond
+            : backendPricePerDiamond * selectedCurrency.rate;
+
+        setPricePerUnit(priceInSelectedCurrency);
+      } else if (isDiamondPriceLoading) {
+        // Пока загружается цена с бэкенда, очищаем pricePerUnit
+        setPricePerUnit(null);
+      }
+    } else if (packages.length > 0) {
+      // Для других валют используем расчет на основе пакетов
       const middlePackages = packages
         .slice()
         .sort((a, b) => a.amount - b.amount)
@@ -80,7 +108,13 @@ export function CustomAmountSelector({
         setPricePerUnit(averagePrice);
       }
     }
-  }, [packages, selectedCurrency]);
+  }, [
+    packages,
+    selectedCurrency,
+    isDiamondCurrency,
+    diamondPriceData,
+    isDiamondPriceLoading,
+  ]);
 
   // Функция для получения fallback emoji в зависимости от типа валюты
   const getFallbackEmoji = (currencyName: string) => {
@@ -113,11 +147,18 @@ export function CustomAmountSelector({
     if (customAmount && calculatedPrice && pricePerUnit && selectedCurrency) {
       const amount = parseInt(customAmount);
       if (amount > 0) {
-        // Конвертируем цену обратно в рубли для заказа
-        const priceInRub =
-          selectedCurrency.code === "RUB"
-            ? calculatedPrice
-            : calculatedPrice / selectedCurrency.rate;
+        let priceInRub: number;
+
+        if (isDiamondCurrency && diamondPriceData) {
+          // Для алмазов используем точную цену с бэкенда в рублях
+          priceInRub = amount * diamondPriceData.price_per_diamond;
+        } else {
+          // Для других валют конвертируем цену обратно в рубли
+          priceInRub =
+            selectedCurrency.code === "RUB"
+              ? calculatedPrice
+              : calculatedPrice / selectedCurrency.rate;
+        }
 
         onCustomAmountSelect(amount, priceInRub);
       }
@@ -171,10 +212,20 @@ export function CustomAmountSelector({
           </div>
 
           <div className="flex flex-col justify-end">
+            {isDiamondPriceLoading && isDiamondCurrency && (
+              <div className="text-sm text-gray-500 mb-2">
+                Загружается цена с сервера...
+              </div>
+            )}
             {pricePerUnit && selectedCurrency && (
               <div className="text-sm text-gray-600 mb-2">
                 {translations.pricePerUnit}: {pricePerUnit.toFixed(4)}{" "}
                 {selectedCurrency.symbol}
+                {isDiamondCurrency && (
+                  <span className="text-xs text-blue-600 ml-1">
+                    (с сервера)
+                  </span>
+                )}
               </div>
             )}
             {calculatedPrice && selectedCurrency && (
@@ -189,15 +240,23 @@ export function CustomAmountSelector({
         <div className="flex gap-3 mt-4">
           <button
             onClick={handleCalculate}
-            disabled={!customAmount || !calculatedPrice}
+            disabled={
+              !customAmount ||
+              !calculatedPrice ||
+              (isDiamondCurrency && isDiamondPriceLoading)
+            }
             className={cn(
               "flex-1 py-2 px-4 rounded-lg font-medium transition-all",
-              customAmount && calculatedPrice
+              customAmount &&
+                calculatedPrice &&
+                !(isDiamondCurrency && isDiamondPriceLoading)
                 ? "bg-blue-600 hover:bg-blue-700 text-white"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed"
             )}
           >
-            {translations.calculate}
+            {isDiamondCurrency && isDiamondPriceLoading
+              ? "Загрузка..."
+              : translations.calculate}
           </button>
 
           {isActive && (
