@@ -196,9 +196,7 @@ export function PaymentMethodSelector({
     isLoading: currencyMethodsLoading,
     error: currencyMethodsError,
     refetch: refetchCurrencyMethods,
-  } = usePaymentMethodsByCurrency(
-    isClient ? activeCurrency : undefined
-  );
+  } = usePaymentMethodsByCurrency(isClient ? activeCurrency : undefined);
 
   // Define frontend payment methods with a mapping to API names
   const allPaymentMethods: FrontendPaymentMethod[] = [
@@ -240,7 +238,10 @@ export function PaymentMethodSelector({
 
     // Then add API methods (including Moneta methods) if available
     if (methodsByCurrency && methodsByCurrency.methods.length > 0) {
-      console.log("Adding RUB API methods (Moneta):", methodsByCurrency.methods);
+      console.log(
+        "Adding RUB API methods (Moneta):",
+        methodsByCurrency.methods
+      );
       const apiMethods = methodsByCurrency.methods.map((method, index) => {
         const iconUrl = getIconUrl(method.icon);
         const fallbackIcon = getPaymentMethodIconSrc("card", method.name);
