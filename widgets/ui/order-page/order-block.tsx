@@ -132,11 +132,20 @@ export function OrderBlock({
   const [serverId, setServerId] = useState("");
   const [selectedPaymentMethod, setSelectedPaymentMethodState] = useState("");
   const [isMonetaPayment, setIsMonetaPayment] = useState(false);
-  const [monetaMethodCode, setMonetaMethodCode] = useState<string | undefined>(undefined);
+  const [monetaMethodCode, setMonetaMethodCode] = useState<string | undefined>(
+    undefined
+  );
 
   // Обертка для логирования изменений способа оплаты
-  const setSelectedPaymentMethod = (method: string, isMoneta: boolean = false, code?: string) => {
-    console.log("🔄 Payment method changed:", `"${method}"`, { isMoneta, code });
+  const setSelectedPaymentMethod = (
+    method: string,
+    isMoneta: boolean = false,
+    code?: string
+  ) => {
+    console.log("🔄 Payment method changed:", `"${method}"`, {
+      isMoneta,
+      code,
+    });
     setSelectedPaymentMethodState(method);
     setIsMonetaPayment(isMoneta);
     setMonetaMethodCode(code);
@@ -881,8 +890,8 @@ export function OrderBlock({
     needsIdentifier,
     shouldUsePagsmileCheckout,
   } = useCreateOrder(
-    selectedPaymentMethod, 
-    currentCurrency.code, 
+    selectedPaymentMethod,
+    currentCurrency.code,
     isMonetaPayment,
     monetaMethodCode
   );

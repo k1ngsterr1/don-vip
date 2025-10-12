@@ -434,7 +434,8 @@ export function PaymentMethodSelector({
           aria-checked={method.id === selectedMethod}
           tabIndex={0}
           onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") onSelect(method.id, method.isMoneta, method.code);
+            if (e.key === "Enter" || e.key === " ")
+              onSelect(method.id, method.isMoneta, method.code);
           }}
         >
           <div className="w-10 h-10 rounded-md flex items-center justify-center mr-4 bg-gray-100">
