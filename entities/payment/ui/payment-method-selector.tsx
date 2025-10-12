@@ -190,14 +190,14 @@ export function PaymentMethodSelector({
     refetch: refetchUserMethods,
   } = useUserPaymentMethods();
 
-  // Get currency-specific payment methods only for non-RUB currencies
+  // Get currency-specific payment methods for all currencies (including RUB for Moneta methods)
   const {
     methodsByCurrency,
     isLoading: currencyMethodsLoading,
     error: currencyMethodsError,
     refetch: refetchCurrencyMethods,
   } = usePaymentMethodsByCurrency(
-    isClient && activeCurrency !== "RUB" ? activeCurrency : undefined
+    isClient ? activeCurrency : undefined
   );
 
   // Define frontend payment methods with a mapping to API names
@@ -230,12 +230,34 @@ export function PaymentMethodSelector({
   // Determine available payment methods with currency-specific logic
   let availablePaymentMethods: FrontendPaymentMethod[] = [];
 
-  // For RUB currency: Use local methods (SBP, T-Bank) with bank filtering
+  // For RUB currency: Combine local methods (SBP, T-Bank) with API methods (Moneta)
   if (activeCurrency === "RUB") {
-    const filteredPaymentMethods = allPaymentMethods.filter((method) =>
+    // First add filtered local methods (SBP, T-Bank)
+    const filteredLocalMethods = allPaymentMethods.filter((method) =>
       activeApiBankNames.includes(method.apiName)
     );
-    availablePaymentMethods = filteredPaymentMethods;
+    availablePaymentMethods = [...filteredLocalMethods];
+
+    // Then add API methods (including Moneta methods) if available
+    if (methodsByCurrency && methodsByCurrency.methods.length > 0) {
+      console.log("Adding RUB API methods (Moneta):", methodsByCurrency.methods);
+      const apiMethods = methodsByCurrency.methods.map((method, index) => {
+        const iconUrl = getIconUrl(method.icon);
+        const fallbackIcon = getPaymentMethodIconSrc("card", method.name);
+        const finalIcon = iconUrl || fallbackIcon;
+
+        return {
+          id: method.methodCode || method.name || `method-${index}`,
+          translationKey: method.name,
+          apiName: method.name,
+          icon: finalIcon,
+          description: method.description,
+          isMoneta: method.isMoneta || false,
+          code: method.code,
+        };
+      });
+      availablePaymentMethods = [...availablePaymentMethods, ...apiMethods];
+    }
   }
   // For non-RUB currencies: Use API methods
   else if (methodsByCurrency && methodsByCurrency.methods.length > 0) {
@@ -301,17 +323,17 @@ export function PaymentMethodSelector({
     banksLoading ||
     methodsLoading ||
     (useUserMethods && userMethodsLoading) ||
-    (activeCurrency !== "RUB" && currencyMethodsLoading);
+    currencyMethodsLoading;
   const error =
     banksError ||
     methodsError ||
     (useUserMethods && userMethodsError) ||
-    (activeCurrency !== "RUB" && currencyMethodsError);
+    currencyMethodsError;
 
-  // Refetch methods when currency changes (only for non-RUB currencies)
+  // Refetch methods when currency changes (for all currencies including RUB)
   useEffect(() => {
-    if (activeCurrency && activeCurrency !== "RUB") {
-      console.log("Refetching methods for non-RUB currency:", activeCurrency);
+    if (activeCurrency) {
+      console.log("Refetching methods for currency:", activeCurrency);
       refetchCurrencyMethods(activeCurrency);
     }
   }, [activeCurrency, refetchCurrencyMethods]);
