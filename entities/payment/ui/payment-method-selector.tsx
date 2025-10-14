@@ -213,12 +213,12 @@ export function PaymentMethodSelector({
       icon: tbankIcon,
       descriptionKey: "tbankDescription",
     },
-    {
-      id: "card",
-      translationKey: "methods.card",
-      apiName: "Card",
-      icon: mastercardIcon,
-    },
+    // {
+    //   id: "card",
+    //   translationKey: "methods.card",
+    //   apiName: "Card",
+    //   icon: mastercardIcon,
+    // },
     // Add other payment methods here if needed
   ];
 
