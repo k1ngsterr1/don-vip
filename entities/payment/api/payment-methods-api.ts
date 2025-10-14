@@ -160,26 +160,15 @@ export class PaymentMethodsApi {
       );
       return response.data;
     } catch (error: any) {
-      // Если эндпоинт не найден (404), возвращаем fallback данные
+      // Если эндпоинт не найден (404), возвращаем пустой массив методов
       if (error?.response?.status === 404) {
         console.warn(
-          `Payment methods for currency ${currency} not found, using fallback`
+          `Payment methods for currency ${currency} not found, returning empty methods array`
         );
         return {
           currency: currency,
-          totalMethods: 1,
-          methods: [
-            {
-              id: 1,
-              name: "pagsmile_checkout",
-              methodCode: "pagsmile_checkout",
-              country: "Global",
-              currency: currency,
-              icon: "",
-              isActive: true,
-              sortOrder: 1,
-            },
-          ],
+          totalMethods: 0,
+          methods: [],
         };
       }
       throw new Error(extractErrorMessage(error));
