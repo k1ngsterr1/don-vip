@@ -47,12 +47,12 @@ export function PaymentMethodSelector({
       apiName: "SBP",
       icon: sbpIcon,
     },
-    {
-      id: "card",
-      translationKey: "methods.card",
-      apiName: "Card",
-      icon: mastercardIcon,
-    },
+    // {
+    //   id: "card",
+    //   translationKey: "methods.card",
+    //   apiName: "Card",
+    //   icon: mastercardIcon,
+    // },
     // Add other payment methods here if needed
   ];
 
