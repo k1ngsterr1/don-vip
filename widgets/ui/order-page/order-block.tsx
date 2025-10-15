@@ -1065,6 +1065,7 @@ export function OrderBlock({
             originalPriceRub: priceInRub, // Keep original RUB price for order
             type: item.type,
             sku: item.sku,
+            isActive: item.isActive !== false, // Включаем поле isActive, по умолчанию true
           };
 
           // Добавляем ТОЛЬКО поля которые действительно существуют и не равны 0
@@ -1080,9 +1081,14 @@ export function OrderBlock({
           // Добавляем ЛЮБЫЕ другие поля из item, но ТОЛЬКО если они не равны 0
           Object.keys(item).forEach((key) => {
             if (
-              !["price", "amount", "type", "sku", "discountPercent"].includes(
-                key
-              )
+              ![
+                "price",
+                "amount",
+                "type",
+                "sku",
+                "discountPercent",
+                "isActive",
+              ].includes(key)
             ) {
               const value = item[key];
               if (

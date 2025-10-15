@@ -11,4 +11,5 @@ export interface CurrencyOption {
   isDiscounted?: boolean;
   isPopular?: boolean;
   bonus?: number;
+  isActive?: boolean;
 }

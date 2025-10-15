@@ -74,71 +74,75 @@ export function CurrencySelector({
         {i18n("title")}
       </h2>
       <div className="grid grid-cols-2 gap-3">
-        {options.map((item) => (
-          <button
-            key={item.id}
-            className={cn(
-              "bg-[#EEEFF3] shadow-md p-3 rounded-lg flex flex-col items-start relative overflow-hidden",
-              selectedId === item.id && "ring-1 ring-gray-300",
-              updatingId === item.id && "opacity-70"
-            )}
-            onClick={() => handleSelect(item.id)}
-            disabled={isUpdating}
-          >
-            {selectedId === item.id && updatingId !== item.id && (
-              <div className="absolute top-0 right-0 w-[50px] h-[50px] overflow-hidden">
-                <div className="absolute top-0 right-0 w-0 h-0 border-t-[50px] border-t-green-500 border-l-[50px] border-l-transparent"></div>
-                <Check
-                  className="absolute top-2 right-2 text-white"
-                  size={16}
-                />
-              </div>
-            )}
-            {updatingId === item.id && (
-              <div className="absolute top-2 right-2">
-                <Loader2 className="text-blue animate-spin" size={16} />
-              </div>
-            )}
-            {item.isDiscounted && item.discountPercent ? (
-              <div className="flex flex-col">
-                <span className="text-gray-500 line-through text-sm">
-                  {item.originalPriceRub.toFixed(2)} руб
-                </span>
-                <span className="text-red-600 font-bold text-lg">
-                  {(
-                    item.originalPriceRub *
-                    (1 - item.discountPercent / 100)
-                  ).toFixed(2)}{" "}
-                  руб
-                </span>
-              </div>
-            ) : (
-              <span className="text-dark font-bold text-lg">{item.price}</span>
-            )}
-            <span className="text-sm text-gray-600">
-              {getDisplayName(item)}
-            </span>
-            <div className="flex items-center justify-between w-full mt-1">
-              {currencyImage ? (
-                <CurrencyIcon
-                  src={currencyImage || "/placeholder.svg"}
-                  width={30}
-                  height={30}
-                  alt={i18n("currencyIconAlt", { currencyName })}
-                  className="object-contain w-8 h-8"
-                />
-              ) : (
-                <Image
-                  src="/diamond.webp"
-                  width={30}
-                  height={30}
-                  alt={i18n("currencyIconAlt", { currencyName })}
-                  className="object-contain"
-                />
+        {options
+          .filter((item) => item.isActive !== false)
+          .map((item) => (
+            <button
+              key={item.id}
+              className={cn(
+                "bg-[#EEEFF3] shadow-md p-3 rounded-lg flex flex-col items-start relative overflow-hidden",
+                selectedId === item.id && "ring-1 ring-gray-300",
+                updatingId === item.id && "opacity-70"
               )}
-            </div>
-          </button>
-        ))}
+              onClick={() => handleSelect(item.id)}
+              disabled={isUpdating}
+            >
+              {selectedId === item.id && updatingId !== item.id && (
+                <div className="absolute top-0 right-0 w-[50px] h-[50px] overflow-hidden">
+                  <div className="absolute top-0 right-0 w-0 h-0 border-t-[50px] border-t-green-500 border-l-[50px] border-l-transparent"></div>
+                  <Check
+                    className="absolute top-2 right-2 text-white"
+                    size={16}
+                  />
+                </div>
+              )}
+              {updatingId === item.id && (
+                <div className="absolute top-2 right-2">
+                  <Loader2 className="text-blue animate-spin" size={16} />
+                </div>
+              )}
+              {item.isDiscounted && item.discountPercent ? (
+                <div className="flex flex-col">
+                  <span className="text-gray-500 line-through text-sm">
+                    {item.originalPriceRub.toFixed(2)} руб
+                  </span>
+                  <span className="text-red-600 font-bold text-lg">
+                    {(
+                      item.originalPriceRub *
+                      (1 - item.discountPercent / 100)
+                    ).toFixed(2)}{" "}
+                    руб
+                  </span>
+                </div>
+              ) : (
+                <span className="text-dark font-bold text-lg">
+                  {item.price}
+                </span>
+              )}
+              <span className="text-sm text-gray-600">
+                {getDisplayName(item)}
+              </span>
+              <div className="flex items-center justify-between w-full mt-1">
+                {currencyImage ? (
+                  <CurrencyIcon
+                    src={currencyImage || "/placeholder.svg"}
+                    width={30}
+                    height={30}
+                    alt={i18n("currencyIconAlt", { currencyName })}
+                    className="object-contain w-8 h-8"
+                  />
+                ) : (
+                  <Image
+                    src="/diamond.webp"
+                    width={30}
+                    height={30}
+                    alt={i18n("currencyIconAlt", { currencyName })}
+                    className="object-contain"
+                  />
+                )}
+              </div>
+            </button>
+          ))}
       </div>
     </div>
   );
@@ -146,73 +150,75 @@ export function CurrencySelector({
   const desktopSelector = (
     <div className={enhanced ? "" : "hidden"}>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-        {options.map((item) => (
-          <button
-            key={item.id}
-            className={cn(
-              "bg-white border border-gray-200 p-4 rounded-lg flex flex-col items-start relative overflow-hidden transition-all",
-              selectedId === item.id
-                ? "ring-2 ring-blue shadow-md"
-                : "hover:border-blue/30 hover:shadow-sm",
-              updatingId === item.id && "opacity-70"
-            )}
-            onClick={() => handleSelect(item.id)}
-            disabled={isUpdating}
-          >
-            {selectedId === item.id && updatingId !== item.id && (
-              <div className="absolute top-3 right-3 w-6 h-6 bg-blue rounded-full flex items-center justify-center">
-                <Check className="text-white" size={14} />
-              </div>
-            )}
-            {updatingId === item.id && (
-              <div className="absolute top-3 right-3">
-                <Loader2 className="text-blue animate-spin" size={16} />
-              </div>
-            )}
-            <div className="flex items-center mb-2">
-              {currencyImage ? (
-                <>
-                  <CurrencyIcon
-                    src={currencyImage || "/placeholder.svg"}
+        {options
+          .filter((item) => item.isActive !== false)
+          .map((item) => (
+            <button
+              key={item.id}
+              className={cn(
+                "bg-white border border-gray-200 p-4 rounded-lg flex flex-col items-start relative overflow-hidden transition-all",
+                selectedId === item.id
+                  ? "ring-2 ring-blue shadow-md"
+                  : "hover:border-blue/30 hover:shadow-sm",
+                updatingId === item.id && "opacity-70"
+              )}
+              onClick={() => handleSelect(item.id)}
+              disabled={isUpdating}
+            >
+              {selectedId === item.id && updatingId !== item.id && (
+                <div className="absolute top-3 right-3 w-6 h-6 bg-blue rounded-full flex items-center justify-center">
+                  <Check className="text-white" size={14} />
+                </div>
+              )}
+              {updatingId === item.id && (
+                <div className="absolute top-3 right-3">
+                  <Loader2 className="text-blue animate-spin" size={16} />
+                </div>
+              )}
+              <div className="flex items-center mb-2">
+                {currencyImage ? (
+                  <>
+                    <CurrencyIcon
+                      src={currencyImage || "/placeholder.svg"}
+                      width={36}
+                      height={36}
+                      alt={i18n("currencyIconAlt", { currencyName })}
+                      className="object-contain mr-2 w-9 h-9"
+                    />
+                    <span className="text-sm text-gray-600">
+                      {getDisplayName(item)}
+                    </span>
+                  </>
+                ) : (
+                  <Image
+                    src="/diamond.webp"
                     width={36}
                     height={36}
                     alt={i18n("currencyIconAlt", { currencyName })}
-                    className="object-contain mr-2 w-9 h-9"
+                    className="object-contain mr-2"
                   />
-                  <span className="text-sm text-gray-600">
-                    {getDisplayName(item)}
-                  </span>
-                </>
-              ) : (
-                <Image
-                  src="/diamond.webp"
-                  width={36}
-                  height={36}
-                  alt={i18n("currencyIconAlt", { currencyName })}
-                  className="object-contain mr-2"
-                />
-              )}
-            </div>
-            {item.isDiscounted && item.discountPercent ? (
-              <div className="flex flex-col">
-                <span className="text-gray-500 line-through text-lg">
-                  {item.originalPriceRub.toFixed(2)} руб
-                </span>
-                <span className="text-red-600 text-2xl font-bold">
-                  {(
-                    item.originalPriceRub *
-                    (1 - item.discountPercent / 100)
-                  ).toFixed(2)}{" "}
-                  руб
-                </span>
+                )}
               </div>
-            ) : (
-              <span className="text-2xl font-bold text-gray-900">
-                {item.price}
-              </span>
-            )}
-          </button>
-        ))}
+              {item.isDiscounted && item.discountPercent ? (
+                <div className="flex flex-col">
+                  <span className="text-gray-500 line-through text-lg">
+                    {item.originalPriceRub.toFixed(2)} руб
+                  </span>
+                  <span className="text-red-600 text-2xl font-bold">
+                    {(
+                      item.originalPriceRub *
+                      (1 - item.discountPercent / 100)
+                    ).toFixed(2)}{" "}
+                    руб
+                  </span>
+                </div>
+              ) : (
+                <span className="text-2xl font-bold text-gray-900">
+                  {item.price}
+                </span>
+              )}
+            </button>
+          ))}
       </div>
     </div>
   );
