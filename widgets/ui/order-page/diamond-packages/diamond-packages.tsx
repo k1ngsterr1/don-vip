@@ -13,6 +13,7 @@ interface Package {
   originalPriceRub: number;
   type: string;
   sku: string;
+  isActive?: boolean;
   // ВСЕ остальные поля опциональные и будут добавлены только если они НЕ равны 0
   [key: string]: any;
 }
@@ -62,8 +63,21 @@ export function DiamondPackages({
   const t =
     translations[locale as keyof typeof translations] || translations.ru;
 
-  // Показываем все пакеты сразу на всех устройствах
-  const displayedPackages = packages;
+  // Фильтруем только активные пакеты (isActive !== false)
+  const activePackages = packages.filter((pkg) => {
+    const isActive = pkg.isActive !== false;
+    console.log(
+      `Package ${pkg.id} (${pkg.amount} ${pkg.type}): isActive=${pkg.isActive}, showing=${isActive}`
+    );
+    return isActive;
+  });
+
+  console.log(
+    `Total packages: ${packages.length}, Active packages: ${activePackages.length}`
+  );
+
+  // Показываем все активные пакеты сразу на всех устройствах
+  const displayedPackages = activePackages;
   const hasMorePackages = false;
 
   // Функция для получения fallback emoji в зависимости от типа валюты
