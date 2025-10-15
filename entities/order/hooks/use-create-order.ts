@@ -92,9 +92,7 @@ export function useCreateOrder(
         server_id: orderData.server_id,
         coupon_code: orderData.coupon_code || undefined,
         user_id:
-          userId && userId.trim() !== ""
-            ? Number.parseInt(userId, 10)
-            : undefined,
+          userId && userId.trim() !== "" ? Number.parseInt(userId, 10) : null, // Явно устанавливаем null вместо undefined
       };
 
       return orderApi.createOrder(apiOrderData as any);
