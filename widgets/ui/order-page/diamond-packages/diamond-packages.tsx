@@ -487,25 +487,6 @@ export function DiamondPackages({
             </div>
           );
         })}
-
-        {/* Custom Amount Button - добавляем как отдельную карточку в grid */}
-        {showCustomAmountButton && onCustomAmountClick && (
-          <div
-            onClick={onCustomAmountClick}
-            className={cn(
-              "relative rounded-xl p-3 cursor-pointer transition-all duration-200 border-2 min-h-[80px] flex flex-col justify-center items-center",
-              "border-dashed border-blue-400 bg-gradient-to-br from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100",
-              "hover:border-blue-500 transform hover:scale-[1.02]"
-            )}
-          >
-            <div className="flex flex-col items-center justify-center text-center">
-              <div className="text-2xl mb-1">💎</div>
-              <div className="text-[13px] md:text-[14px] font-semibold text-blue-600 leading-tight mb-1">
-                {t.customAmount}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
