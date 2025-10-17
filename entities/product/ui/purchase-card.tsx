@@ -103,13 +103,26 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
   const handleRepeatOrder = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent card expansion
 
-    // Navigate to product page if gameId or gameName is available
+    // Navigate directly to order page with gameId
     if (gameId) {
-      router.push(`/${locale}/product/${gameId}`);
+      // Add query parameters to prefill the order form
+      const params = new URLSearchParams({
+        userId: playerId,
+        ...(serverId && { serverId: serverId }),
+        amount: diamonds.toString(),
+      });
+      router.push(`/${locale}/product/${gameId}?${params.toString()}`);
     } else if (gameName) {
       // Use gameName as fallback identifier
+      const params = new URLSearchParams({
+        userId: playerId,
+        ...(serverId && { serverId: serverId }),
+        amount: diamonds.toString(),
+      });
       router.push(
-        `/${locale}/product/${gameName.toLowerCase().replace(/\s+/g, "-")}`
+        `/${locale}/product/${gameName
+          .toLowerCase()
+          .replace(/\s+/g, "-")}?${params.toString()}`
       );
     } else {
       // Fallback to the original repeat order logic if no product identifier available
