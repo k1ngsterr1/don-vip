@@ -6,6 +6,7 @@ export interface DiamondPrice {
   price_per_diamond: number;
   currency: string;
   is_active: boolean;
+  custom_amount_enabled: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -37,6 +38,7 @@ export const diamondPriceApi = {
         price_per_diamond: 1, // 1 рубль за алмаз как fallback
         currency: currency,
         is_active: true,
+        custom_amount_enabled: true,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };

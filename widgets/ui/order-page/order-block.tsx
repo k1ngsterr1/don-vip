@@ -46,6 +46,7 @@ import {
   getDesignServiceNameByPrice,
   isDesignServicePrice,
 } from "@/shared/utils/design-service-names";
+import { useDiamondPrice } from "@/entities/diamond-price/hooks/use-diamond-price";
 
 interface OrderBlockProps {
   gameSlug: number;
@@ -118,6 +119,9 @@ export function OrderBlock({
     getGameIdFromSlug(gameSlug)
   );
   const { selectedCurrency: currentCurrency } = useCurrency();
+  const { data: diamondPriceData } = useDiamondPrice(
+    currentCurrency?.code || "RUB"
+  );
   const [userIdDB, setUserIdDB] = useState("");
   const [game, setGame] = useState<GameData | null>(null);
   const [currencyOptions, setCurrencyOptions] = useState<CurrencyOption[]>([]);
@@ -1564,7 +1568,7 @@ export function OrderBlock({
         currencyImage={game.currencyImage}
         productId={gameSlug}
         onCustomAmountClick={handleCustomAmountShow}
-        showCustomAmountButton={true}
+        showCustomAmountButton={diamondPriceData?.custom_amount_enabled ?? true}
       />
 
       {/* Custom Amount Selector for mobile */}
@@ -1987,7 +1991,9 @@ export function OrderBlock({
                 currencyImage={game.currencyImage}
                 productId={gameSlug}
                 onCustomAmountClick={handleCustomAmountShow}
-                showCustomAmountButton={true}
+                showCustomAmountButton={
+                  diamondPriceData?.custom_amount_enabled ?? true
+                }
               />
 
               {/* Custom Amount Selector for desktop */}
