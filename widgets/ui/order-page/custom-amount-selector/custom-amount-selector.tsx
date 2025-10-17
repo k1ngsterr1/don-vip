@@ -235,13 +235,8 @@ export function CustomAmountSelector({
             )}
             {pricePerUnit && selectedCurrency && (
               <div className="text-sm text-gray-600 mb-2">
-                {translations.pricePerUnit}: {pricePerUnit.toFixed(4)}{" "}
+                {translations.pricePerUnit}: {pricePerUnit.toFixed(1)}{" "}
                 {selectedCurrency.symbol}
-                {isDiamondCurrency && (
-                  <span className="text-xs text-blue-600 ml-1">
-                    (с сервера)
-                  </span>
-                )}
               </div>
             )}
             {calculatedPrice && selectedCurrency && (
