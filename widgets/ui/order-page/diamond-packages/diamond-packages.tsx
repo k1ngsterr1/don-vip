@@ -451,10 +451,7 @@ export function DiamondPackages({
                   extraFields.length > 0 && (
                     <div className="flex flex-col gap-1 mt-2">
                       {extraFields.map(([key, value]) => (
-                        <div key={key} className="text-[10px] text-gray-500">
-                          <span className="font-medium">{key}:</span>{" "}
-                          {String(value)}
-                        </div>
+                        <></>
                       ))}
                     </div>
                   )
