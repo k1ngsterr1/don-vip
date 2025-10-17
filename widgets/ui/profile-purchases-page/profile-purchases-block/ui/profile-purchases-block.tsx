@@ -46,8 +46,8 @@ export default function PurchaseProfileBlock() {
             <PurchaseCard
               key={purchase.id}
               {...purchase}
-              gameId={purchase.game_id} // Map game_id to gameId
-              gameName={purchase.game?.name || purchase.gameName} // Map game name if available
+              gameId={purchase.product?.id} // Map product.id to gameId
+              gameName={purchase.product?.name || purchase.productName} // Map product name if available
             />
           ))}
         </div>

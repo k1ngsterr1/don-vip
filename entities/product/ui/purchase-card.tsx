@@ -7,7 +7,6 @@ import { useState } from "react";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { CurrencyIcon } from "@/shared/ui/currency-icon";
-import { useRepeatOrder } from "@/entities/order/hooks/use-repeat-order";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 
 export interface PurchaseCardProps {
@@ -41,7 +40,7 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
   const locale = useLocale();
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
-  const { mutate: repeatOrder, isPending: isRepeating } = useRepeatOrder();
+  const [isNavigating, setIsNavigating] = useState(false);
   const { user, isAuthenticated } = useAuthStore();
 
   // Translation helper function
@@ -102,6 +101,7 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
 
   const handleRepeatOrder = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent card expansion
+    setIsNavigating(true);
 
     // Navigate directly to order page with gameId
     if (gameId) {
@@ -125,11 +125,11 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
           .replace(/\s+/g, "-")}?${params.toString()}`
       );
     } else {
-      // Fallback to the original repeat order logic if no product identifier available
+      // Log warning if no product identifier is available
       console.warn(
-        "No gameId or gameName provided for repeat order, falling back to original logic"
+        "No gameId or gameName provided for repeat order. Cannot navigate to product page."
       );
-      repeatOrder(id);
+      setIsNavigating(false);
     }
   };
 
@@ -381,14 +381,14 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
               {isAuthenticated && (
                 <button
                   onClick={handleRepeatOrder}
-                  disabled={isRepeating}
+                  disabled={isNavigating}
                   className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg transition-colors text-sm font-medium"
                 >
                   <RotateCcw
                     size={16}
-                    className={isRepeating ? "animate-spin" : ""}
+                    className={isNavigating ? "animate-spin" : ""}
                   />
-                  {isRepeating ? getText("repeating") : getText("repeatOrder")}
+                  {isNavigating ? getText("repeating") : getText("repeatOrder")}
                 </button>
               )}
             </div>
