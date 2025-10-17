@@ -6,6 +6,7 @@ import { Suspense } from "react";
 
 type Props = {
   params: any;
+  searchParams: any;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -79,13 +80,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function OrderPageRoute({ params }: Props) {
+export default async function OrderPageRoute({ params, searchParams }: Props) {
   const { game } = await params;
   const gameId = parseInt(game, 10);
+  const resolvedSearchParams = await searchParams;
 
   return (
     <Suspense fallback={<OrderPageSkeleton />}>
-      <OrderBlock gameSlug={gameId} />
+      <OrderBlock gameSlug={gameId} prefillData={resolvedSearchParams} />
     </Suspense>
   );
 }

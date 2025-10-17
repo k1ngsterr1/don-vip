@@ -51,6 +51,11 @@ import { useDiamondPrice } from "@/entities/diamond-price/hooks/use-diamond-pric
 interface OrderBlockProps {
   gameSlug: number;
   initialExpandInfo?: boolean;
+  prefillData?: {
+    userId?: string;
+    serverId?: string;
+    amount?: string;
+  };
 }
 
 interface GameData {
@@ -79,6 +84,7 @@ interface CurrencyOption {
 export function OrderBlock({
   gameSlug,
   initialExpandInfo = false, // Used to initialize showInfo state
+  prefillData,
 }: OrderBlockProps) {
   const t = useTranslations("orderBlock");
   const locale = useLocale();
@@ -1000,6 +1006,29 @@ export function OrderBlock({
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [isProcessingPayment, setError]);
+
+  // Автозаполнение формы данными из URL (prefillData)
+  useEffect(() => {
+    if (prefillData) {
+      if (prefillData.userId) {
+        setUserIdInput(prefillData.userId);
+        setUserId(prefillData.userId);
+      }
+      if (prefillData.serverId) {
+        setServerIdInput(prefillData.serverId);
+        setServerId(prefillData.serverId);
+      }
+      if (prefillData.amount && currencyOptions.length > 0) {
+        // Найти пакет с соответствующим количеством
+        const matchingPackage = currencyOptions.find(
+          (pkg) => pkg.amount.toString() === prefillData.amount
+        );
+        if (matchingPackage) {
+          setSelectedAmount(matchingPackage.id);
+        }
+      }
+    }
+  }, [prefillData, currencyOptions]);
 
   useEffect(() => {
     const local_user = localStorage.getItem("userId");
