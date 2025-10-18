@@ -82,11 +82,14 @@ export function useCreateOrder(
         throw new Error("Identifier (email or phone) is required");
       }
 
+      // Проверяем, является ли это кастомным заказом
+      const isCustomOrder = orderData.currency_id === -1;
+
       // Map frontend fields to backend API fields - INCLUDE IDENTIFIER AND COUPON CODE
-      const apiOrderData = {
+      const apiOrderData: any = {
         identifier: orderData.identifier,
         product_id: orderData.game_id,
-        item_id: orderData.currency_id === -1 ? 0 : orderData.currency_id, // Для кастомных заказов используем 0
+        item_id: isCustomOrder ? 0 : orderData.currency_id, // Для кастомных заказов используем 0
         payment: orderData.payment_method,
         account_id: orderData.user_game_id,
         server_id: orderData.server_id,
@@ -94,6 +97,17 @@ export function useCreateOrder(
         user_id:
           userId && userId.trim() !== "" ? Number.parseInt(userId, 10) : null, // Явно устанавливаем null вместо undefined
       };
+
+      // Для кастомных заказов добавляем custom_amount и custom_price
+      if (isCustomOrder) {
+        apiOrderData.custom_amount = orderData.amount;
+        apiOrderData.custom_price =
+          typeof orderData.price === "string"
+            ? parseFloat(orderData.price)
+            : orderData.price;
+      }
+
+      console.log("📦 Creating order with data:", apiOrderData);
 
       return orderApi.createOrder(apiOrderData as any);
     },
