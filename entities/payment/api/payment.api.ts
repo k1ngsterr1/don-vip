@@ -8,6 +8,8 @@ import {
   PagsmileCheckoutResponse,
   MonetaCreatePayinDto,
   MonetaPayinResponse,
+  DukPayCreatePayinDto,
+  DukPayPayinResponse,
 } from "../model/types";
 
 /**
@@ -61,6 +63,19 @@ export const paymentApi = {
   ): Promise<MonetaPayinResponse> => {
     const response = await apiClient.post<MonetaPayinResponse>(
       "/payment/moneta/payin",
+      data
+    );
+    return response.data;
+  },
+
+  /**
+   * Create a new payment via DukPay
+   */
+  createDukPayPayin: async (
+    data: DukPayCreatePayinDto
+  ): Promise<DukPayPayinResponse> => {
+    const response = await apiClient.post<DukPayPayinResponse>(
+      "/payment/dukpay/payin",
       data
     );
     return response.data;

@@ -145,20 +145,28 @@ export function OrderBlock({
   const [monetaMethodCode, setMonetaMethodCode] = useState<string | undefined>(
     undefined
   );
+  const [isDukPayPayment, setIsDukPayPayment] = useState(false);
+  const [dukPayMethodCode, setDukPayMethodCode] = useState<string | undefined>(
+    undefined
+  );
 
   // Обертка для логирования изменений способа оплаты
   const setSelectedPaymentMethod = (
     method: string,
     isMoneta: boolean = false,
-    code?: string
+    code?: string,
+    isDukPay: boolean = false
   ) => {
     console.log("🔄 Payment method changed:", `"${method}"`, {
       isMoneta,
+      isDukPay,
       code,
     });
     setSelectedPaymentMethodState(method);
     setIsMonetaPayment(isMoneta);
     setMonetaMethodCode(code);
+    setIsDukPayPayment(isDukPay);
+    setDukPayMethodCode(code);
   };
   const [showGuestAuthPopup, setShowGuestAuthPopup] = useState(false);
   const [guestIdentifier, setGuestIdentifier] = useState("");
@@ -903,7 +911,9 @@ export function OrderBlock({
     selectedPaymentMethod,
     currentCurrency.code,
     isMonetaPayment,
-    monetaMethodCode
+    monetaMethodCode,
+    isDukPayPayment,
+    dukPayMethodCode
   );
 
   const { user: authUser, isGuestAuth } = useAuthStore();

@@ -69,7 +69,12 @@ const getIconSrc = (icon: StaticImageData | string): string => {
 interface PaymentMethodSelectorProps {
   enhanced?: boolean;
   selectedMethod?: string;
-  onSelect?: (method: string, isMoneta?: boolean, code?: string) => void;
+  onSelect?: (
+    method: string,
+    isMoneta?: boolean,
+    code?: string,
+    isDukPay?: boolean
+  ) => void;
   currentCurrency?: string; // Add currency prop
   region?: string; // Add region prop
   amount?: number; // Add amount prop for filtering
@@ -85,7 +90,8 @@ interface FrontendPaymentMethod {
   descriptionKey?: string;
   description?: string | null; // Добавляем description из API
   isMoneta?: boolean; // Flag for Moneta payment methods
-  code?: string; // Payment method code for Moneta
+  isDukPay?: boolean; // Flag for DukPay payment methods
+  code?: string; // Payment method code for Moneta/DukPay
 }
 
 export function PaymentMethodSelector({
@@ -254,6 +260,7 @@ export function PaymentMethodSelector({
           icon: finalIcon,
           description: method.description,
           isMoneta: method.isMoneta || false,
+          isDukPay: method.isDukPay || false,
           code: method.code,
         };
       });
@@ -277,6 +284,7 @@ export function PaymentMethodSelector({
         icon: finalIcon,
         description: method.description, // Добавляем поле description из API
         isMoneta: method.isMoneta || false, // Add Moneta flag
+        isDukPay: method.isDukPay || false, // Add DukPay flag
         code: method.code, // Add payment method code
       };
     });
@@ -394,11 +402,17 @@ export function PaymentMethodSelector({
           isSelectedMethodAvailable,
           shouldAutoSelect,
           isMoneta: firstMethod.isMoneta,
+          isDukPay: firstMethod.isDukPay,
           code: firstMethod.code,
         });
         // Используем setTimeout чтобы гарантировать, что состояние обновится
         setTimeout(() => {
-          onSelect(firstMethodId, firstMethod.isMoneta, firstMethod.code);
+          onSelect(
+            firstMethodId,
+            firstMethod.isMoneta,
+            firstMethod.code,
+            firstMethod.isDukPay
+          );
         }, 0);
       }
     }
@@ -452,13 +466,20 @@ export function PaymentMethodSelector({
               ? "bg-blue-500/5 border-blue-500" // Original: bg-blue/5 border-blue. Adjusted blue intensity for visibility.
               : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
           }`}
-          onClick={() => onSelect(method.id, method.isMoneta, method.code)}
+          onClick={() =>
+            onSelect(method.id, method.isMoneta, method.code, method.isDukPay)
+          }
           role="radio"
           aria-checked={method.id === selectedMethod}
           tabIndex={0}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ")
-              onSelect(method.id, method.isMoneta, method.code);
+              onSelect(
+                method.id,
+                method.isMoneta,
+                method.code,
+                method.isDukPay
+              );
           }}
         >
           <div className="w-10 h-10 rounded-md flex items-center justify-center mr-4 bg-gray-100">

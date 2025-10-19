@@ -52,6 +52,20 @@ export interface MonetaPayinResponse {
   transactionId: string;
 }
 
+export interface DukPayCreatePayinDto {
+  amount: string;
+  order_id: number;
+  user_id?: number;
+  country: "RUS" | "AED";
+  paymentMethod: "BANK_CARD" | "YOOMONEY" | "SBER_PAY";
+  currency: "RUB";
+  description?: string;
+}
+
+export interface DukPayPayinResponse {
+  checkoutUrl: string;
+}
+
 export interface PagsmileNotificationDto {
   id: string;
   type: string;

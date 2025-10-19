@@ -12,6 +12,8 @@ import type {
   PagsmileCheckoutResponse,
   MonetaCreatePayinDto,
   MonetaPayinResponse,
+  DukPayCreatePayinDto,
+  DukPayPayinResponse,
 } from "@/entities/payment/model/types";
 import { paymentApi } from "@/entities/payment/api/payment.api";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
@@ -38,7 +40,9 @@ export function useCreateOrder(
   paymentMethod: string,
   currency: string = "RUB",
   isMonetaMethod: boolean = false,
-  monetaMethodCode?: string
+  monetaMethodCode?: string,
+  isDukPayMethod: boolean = false,
+  dukPayMethodCode?: string
 ) {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -248,6 +252,39 @@ export function useCreateOrder(
     },
   });
 
+  // 💰 DukPay payment mutation
+  const dukPayMutation = useMutation({
+    mutationFn: (dukPayData: DukPayCreatePayinDto) => {
+      const userId = resolveUserId();
+
+      const dukPayDataWithUser = {
+        ...dukPayData,
+        user_id: userId ? Number.parseInt(userId, 10) : undefined,
+      };
+
+      return paymentApi.createDukPayPayin(dukPayDataWithUser);
+    },
+
+    onSuccess: (dukPayData: DukPayPayinResponse) => {
+      setIsProcessingPayment(false);
+
+      if (dukPayData.checkoutUrl) {
+        window.location.href = dukPayData.checkoutUrl;
+      } else {
+        setError("Failed to get checkout URL from DukPay");
+      }
+    },
+
+    onError: (err: any) => {
+      setIsProcessingPayment(false);
+      setError(
+        err?.response?.data?.message ||
+          err?.message ||
+          "DukPay payment processing failed. Please try again."
+      );
+    },
+  });
+
   // Return the exact payment method selected by user
   const mapPaymentMethodToPagsmile = (method: string): string => {
     // Возвращаем точно тот метод, который выбрал пользователь
@@ -257,6 +294,40 @@ export function useCreateOrder(
   // ⏳ Trigger payment after successful order
   const processPayment = (orderId: string, orderData: CreateOrderDto) => {
     setIsProcessingPayment(true);
+
+    // Check if this is a DukPay payment method
+    if (isDukPayMethod) {
+      // Map payment method code to DukPay payment method
+      const getDukPayMethod = (
+        code?: string
+      ): "BANK_CARD" | "YOOMONEY" | "SBER_PAY" => {
+        if (!code) return "BANK_CARD";
+
+        const upperCode = code.toUpperCase();
+        if (upperCode.includes("YOOMONEY") || upperCode.includes("YOOMONEY")) {
+          return "YOOMONEY";
+        }
+        if (upperCode.includes("SBER") || upperCode.includes("SBERPAY")) {
+          return "SBER_PAY";
+        }
+        return "BANK_CARD";
+      };
+
+      const dukPayData: DukPayCreatePayinDto = {
+        order_id: Number.parseInt(orderId, 10),
+        amount:
+          typeof orderData.price === "string"
+            ? orderData.price
+            : orderData.price.toFixed(2),
+        country: "RUS",
+        paymentMethod: getDukPayMethod(dukPayMethodCode),
+        currency: "RUB",
+        description: `Order #${orderId}`,
+      };
+
+      dukPayMutation.mutate(dukPayData);
+      return;
+    }
 
     // Check if this is a Moneta payment method
     if (isMonetaMethod) {
@@ -334,14 +405,18 @@ export function useCreateOrder(
     isProcessingPayment,
     isSuccess:
       orderMutation.isSuccess &&
-      (isMonetaMethod
+      (isDukPayMethod
+        ? dukPayMutation.isSuccess
+        : isMonetaMethod
         ? monetaMutation.isSuccess
         : shouldUsePagsmileCheckout
         ? checkoutMutation.isSuccess
         : paymentMutation.isSuccess),
     isError:
       orderMutation.isError ||
-      (isMonetaMethod
+      (isDukPayMethod
+        ? dukPayMutation.isError
+        : isMonetaMethod
         ? monetaMutation.isError
         : shouldUsePagsmileCheckout
         ? checkoutMutation.isError
