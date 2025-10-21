@@ -1019,27 +1019,61 @@ export function OrderBlock({
 
   // Автозаполнение формы данными из URL (prefillData)
   useEffect(() => {
+    console.log("🔍 OrderBlock получил prefillData:", prefillData);
     if (prefillData) {
       if (prefillData.userId) {
-        setUserIdInput(prefillData.userId);
-        setUserId(prefillData.userId);
+        console.log("✅ Заполняем userId:", prefillData.userId);
+        // Используем handleUserIdInputChange для правильной обработки
+        handleUserIdInputChange(prefillData.userId);
+
+        // Принудительно повторяем через небольшую задержку
+        setTimeout(() => {
+          console.log(
+            "🔄 Принудительная установка userId:",
+            prefillData.userId
+          );
+          handleUserIdInputChange(prefillData.userId || "");
+        }, 200);
+
+        // И еще раз через большую задержку на случай, если компонент еще не готов
+        setTimeout(() => {
+          console.log("🔄 Финальная установка userId:", prefillData.userId);
+          handleUserIdInputChange(prefillData.userId || "");
+        }, 500);
       }
       if (prefillData.serverId) {
+        console.log("✅ Заполняем serverId:", prefillData.serverId);
         setServerIdInput(prefillData.serverId);
         setServerId(prefillData.serverId);
+
+        // Принудительно повторяем через задержку
+        setTimeout(() => {
+          console.log("🔄 Повторная установка serverId:", prefillData.serverId);
+          setServerIdInput(prefillData.serverId || "");
+          setServerId(prefillData.serverId || "");
+        }, 200);
       }
       if (prefillData.amount && currencyOptions.length > 0) {
+        console.log("✅ Ищем пакет с amount:", prefillData.amount);
         // Найти пакет с соответствующим количеством
         const matchingPackage = currencyOptions.find(
           (pkg) => pkg.amount.toString() === prefillData.amount
         );
         if (matchingPackage) {
+          console.log("✅ Найден пакет:", matchingPackage);
           setSelectedAmount(matchingPackage.id);
+
+          // Принудительно устанавливаем выбранный пакет
+          setTimeout(() => {
+            console.log("🔄 Повторная установка пакета:", matchingPackage);
+            setSelectedAmount(matchingPackage.id);
+          }, 200);
+        } else {
+          console.log("❌ Пакет не найден для amount:", prefillData.amount);
         }
       }
     }
   }, [prefillData, currencyOptions]);
-
   useEffect(() => {
     const local_user = localStorage.getItem("userId");
     if (local_user && local_user.trim() !== "") {
