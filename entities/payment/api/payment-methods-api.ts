@@ -48,11 +48,11 @@ export interface UserPaymentMethodsResponse {
 export interface PaymentMethodByCurrency {
   id: number;
   name: string;
-  code?: string; // Payment method code for Moneta/DukPay
+  code?: string | null; // Payment method code for Moneta/DukPay
   methodCode: string;
   country: string;
   currency: string;
-  icon: string;
+  icon: string | null;
   isActive: boolean;
   isMoneta?: boolean; // Flag to identify Moneta payment methods
   isDukPay?: boolean; // Flag to identify DukPay payment methods
@@ -159,7 +159,21 @@ export class PaymentMethodsApi {
       const response = await apiClient.get<PaymentMethodsByCurrencyResponse>(
         `/payment/methods/by-currency/${currency}`
       );
-      return response.data;
+      
+      // Filter out invalid methods (those without required properties)
+      const validMethods = response.data.methods.filter(method => {
+        const hasRequiredFields = method.name && method.methodCode;
+        if (!hasRequiredFields) {
+          console.warn('Filtering out invalid payment method:', method);
+        }
+        return hasRequiredFields;
+      });
+      
+      return {
+        ...response.data,
+        methods: validMethods,
+        totalMethods: validMethods.length,
+      };
     } catch (error: any) {
       // Если эндпоинт не найден (404), возвращаем пустой массив методов
       if (error?.response?.status === 404) {
