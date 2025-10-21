@@ -251,9 +251,10 @@ export function PaymentMethodSelector({
       const apiMethods = methodsByCurrency.methods.map((method, index) => {
         // Ensure all required properties are defined with fallbacks
         const methodName = method.name ?? `Payment Method ${index + 1}`;
-        const methodCode = method.methodCode ?? method.code ?? `method-${index}`;
+        const methodCode =
+          method.methodCode ?? method.code ?? `method-${index}`;
         const methodIcon = method.icon ?? null;
-        
+
         const iconUrl = getIconUrl(methodIcon);
         const fallbackIcon = getPaymentMethodIconSrc("card", methodName);
         const finalIcon = iconUrl || fallbackIcon;
@@ -277,12 +278,12 @@ export function PaymentMethodSelector({
     console.log("Processing methodsByCurrency:", methodsByCurrency.methods);
     availablePaymentMethods = methodsByCurrency.methods.map((method, index) => {
       console.log(`Processing method ${index}:`, method);
-      
+
       // Ensure all required properties are defined with fallbacks
       const methodName = method.name ?? `Payment Method ${index + 1}`;
       const methodCode = method.methodCode ?? method.code ?? `method-${index}`;
       const methodIcon = method.icon ?? null;
-      
+
       const iconUrl = getIconUrl(methodIcon);
       const fallbackIcon = getPaymentMethodIconSrc("card", methodName);
       const finalIcon = iconUrl || fallbackIcon;

@@ -159,16 +159,16 @@ export class PaymentMethodsApi {
       const response = await apiClient.get<PaymentMethodsByCurrencyResponse>(
         `/payment/methods/by-currency/${currency}`
       );
-      
+
       // Filter out invalid methods (those without required properties)
-      const validMethods = response.data.methods.filter(method => {
+      const validMethods = response.data.methods.filter((method) => {
         const hasRequiredFields = method.name && method.methodCode;
         if (!hasRequiredFields) {
-          console.warn('Filtering out invalid payment method:', method);
+          console.warn("Filtering out invalid payment method:", method);
         }
         return hasRequiredFields;
       });
-      
+
       return {
         ...response.data,
         methods: validMethods,
