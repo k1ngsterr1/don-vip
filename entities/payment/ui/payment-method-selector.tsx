@@ -72,7 +72,7 @@ interface PaymentMethodSelectorProps {
   onSelect?: (
     method: string,
     isMoneta?: boolean,
-    code?: string | null,
+    code?: string,
     isDukPay?: boolean
   ) => void;
   currentCurrency?: string; // Add currency prop
@@ -91,7 +91,7 @@ interface FrontendPaymentMethod {
   description?: string | null; // Добавляем description из API
   isMoneta?: boolean; // Flag for Moneta payment methods
   isDukPay?: boolean; // Flag for DukPay payment methods
-  code?: string | null; // Payment method code for Moneta/DukPay
+  code?: string; // Payment method code for Moneta/DukPay
 }
 
 export function PaymentMethodSelector({
@@ -137,12 +137,12 @@ export function PaymentMethodSelector({
 
   // Function to get appropriate icon for payment method
   const getPaymentMethodIcon = (
-    methodType?: string | null,
-    methodName?: string | null
+    methodType: string,
+    methodName: string
   ): StaticImageData => {
     // Добавляем проверки на undefined/null
-    const safeMethodType = methodType?.toString() ?? "";
-    const safeMethodName = methodName?.toString() ?? "";
+    const safeMethodType = methodType || "";
+    const safeMethodName = methodName || "";
 
     const lowerType = safeMethodType.toLowerCase();
     const lowerName = safeMethodName.toLowerCase();
@@ -163,8 +163,8 @@ export function PaymentMethodSelector({
 
   // Function to get icon src as string for API methods
   const getPaymentMethodIconSrc = (
-    methodType?: string | null,
-    methodName?: string | null
+    methodType: string,
+    methodName: string
   ): string => {
     const icon = getPaymentMethodIcon(methodType, methodName);
     return getIconSrc(icon);
@@ -249,24 +249,18 @@ export function PaymentMethodSelector({
         methodsByCurrency.methods
       );
       const apiMethods = methodsByCurrency.methods.map((method, index) => {
-        // Ensure all required properties are defined with fallbacks
-        const methodName = method.name ?? `Payment Method ${index + 1}`;
-        const methodCode =
-          method.methodCode ?? method.code ?? `method-${index}`;
-        const methodIcon = method.icon ?? null;
-
-        const iconUrl = getIconUrl(methodIcon);
-        const fallbackIcon = getPaymentMethodIconSrc("card", methodName);
+        const iconUrl = getIconUrl(method.icon);
+        const fallbackIcon = getPaymentMethodIconSrc("card", method.name);
         const finalIcon = iconUrl || fallbackIcon;
 
         return {
-          id: methodCode,
-          translationKey: methodName,
-          apiName: methodName,
+          id: method.methodCode || method.name || `method-${index}`,
+          translationKey: method.name,
+          apiName: method.name,
           icon: finalIcon,
-          description: method.description ?? undefined,
-          isMoneta: method.isMoneta ?? false,
-          isDukPay: method.isDukPay ?? false,
+          description: method.description,
+          isMoneta: method.isMoneta || false,
+          isDukPay: method.isDukPay || false,
           code: method.code,
         };
       });
@@ -278,25 +272,19 @@ export function PaymentMethodSelector({
     console.log("Processing methodsByCurrency:", methodsByCurrency.methods);
     availablePaymentMethods = methodsByCurrency.methods.map((method, index) => {
       console.log(`Processing method ${index}:`, method);
-
-      // Ensure all required properties are defined with fallbacks
-      const methodName = method.name ?? `Payment Method ${index + 1}`;
-      const methodCode = method.methodCode ?? method.code ?? `method-${index}`;
-      const methodIcon = method.icon ?? null;
-
-      const iconUrl = getIconUrl(methodIcon);
-      const fallbackIcon = getPaymentMethodIconSrc("card", methodName);
+      const iconUrl = getIconUrl(method.icon);
+      const fallbackIcon = getPaymentMethodIconSrc("card", method.name);
       const finalIcon = iconUrl || fallbackIcon;
-      console.log(`Final icon for ${methodName}:`, finalIcon);
+      console.log(`Final icon for ${method.name}:`, finalIcon);
 
       return {
-        id: methodCode,
-        translationKey: methodName, // Используем название из API напрямую, без переводов
-        apiName: methodName,
+        id: method.methodCode || method.name || `method-${index}`,
+        translationKey: method.name, // Используем название из API напрямую, без переводов
+        apiName: method.name,
         icon: finalIcon,
-        description: method.description ?? undefined, // Добавляем поле description из API
-        isMoneta: method.isMoneta ?? false, // Add Moneta flag
-        isDukPay: method.isDukPay ?? false, // Add DukPay flag
+        description: method.description, // Добавляем поле description из API
+        isMoneta: method.isMoneta || false, // Add Moneta flag
+        isDukPay: method.isDukPay || false, // Add DukPay flag
         code: method.code, // Add payment method code
       };
     });
@@ -305,7 +293,7 @@ export function PaymentMethodSelector({
   else if (useUserMethods && userMethods) {
     availablePaymentMethods = userMethods.methods.map((methodName) => {
       // Добавляем проверку на undefined/null
-      const safeMethodName = methodName?.toString() ?? "Unknown Method";
+      const safeMethodName = methodName || "";
 
       const frontendMethod = allPaymentMethods.find(
         (fm) =>
