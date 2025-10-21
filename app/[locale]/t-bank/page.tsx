@@ -180,7 +180,7 @@ export default function TBankPaymentPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="max-w-6xl mx-auto px-4 py-12 md:py-16">
+      <div className="max-w-6xl mx-auto px-4 py-12 md:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-lg border border-[#6798de]/20 p-6 mb-6">
@@ -259,7 +259,7 @@ export default function TBankPaymentPage() {
           </div>
         </div>
         <PaymentFooter />
-      </main>
+      </div>
     </div>
   );
 }

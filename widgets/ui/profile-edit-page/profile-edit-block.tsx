@@ -105,7 +105,7 @@ export function ProfileEditClient() {
   }
 
   return (
-    <main className="px-4 md:px-8 lg:px-0 md:max-w-4xl md:mx-auto md:py-8">
+    <div className="px-4 md:px-8 lg:px-0 md:max-w-4xl md:mx-auto md:py-8">
       <div className="md:bg-white md:shadow-md md:rounded-xl md:p-8 md:border md:border-gray-100">
         <div className="md:flex md:items-start">
           <div className="md:w-1/3 md:pr-8 md:border-r md:border-gray-100">
@@ -127,6 +127,6 @@ export function ProfileEditClient() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

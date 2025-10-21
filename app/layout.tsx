@@ -109,7 +109,7 @@ export default async function LocaleLayout({
           w-full
         `}
       >
-        <main>{children}</main>
+        <div>{children}</div>
       </body>
     </html>
   );

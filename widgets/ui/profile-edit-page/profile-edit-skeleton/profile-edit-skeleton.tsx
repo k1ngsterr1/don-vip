@@ -2,7 +2,7 @@ import { Skeleton } from "@/shared/ui/skeleton/skeleton";
 
 export function ProfileEditSkeleton() {
   return (
-    <main className="px-4 md:px-8 lg:px-0 md:max-w-4xl md:mx-auto md:py-8">
+    <div className="px-4 md:px-8 lg:px-0 md:max-w-4xl md:mx-auto md:py-8">
       {/* Desktop background decorative elements - only visible on desktop */}
       <div className="hidden md:block absolute top-0 right-0 w-1/3 h-64 bg-blue-50 opacity-50 -z-10"></div>
       <div className="hidden md:block absolute top-64 left-0 w-1/4 h-96 bg-blue-50 opacity-50 -z-10"></div>
@@ -92,6 +92,6 @@ export function ProfileEditSkeleton() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

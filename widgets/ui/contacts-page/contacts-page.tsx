@@ -43,7 +43,7 @@ export const ContactsPageBlock = () => {
     legalTranslations.ru;
 
   return (
-    <main className="min-h-[60vh]">
+    <div className="min-h-[60vh]">
       <Link href="/" className="text-blue text-[15px] mt-[28px] py-2 block">
         {t("back")}
       </Link>
@@ -160,6 +160,6 @@ export const ContactsPageBlock = () => {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 };

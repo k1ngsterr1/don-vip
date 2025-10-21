@@ -157,7 +157,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ClientLayout>
             <HeaderWrapper />
-            <main>{children}</main>
+            <div>{children}</div>
             <BottomTab />
             <FooterWrapper />
           </ClientLayout>
