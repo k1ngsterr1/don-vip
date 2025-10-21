@@ -154,7 +154,7 @@ export function OrderBlock({
   const setSelectedPaymentMethod = (
     method: string,
     isMoneta: boolean = false,
-    code?: string,
+    code?: string | null,
     isDukPay: boolean = false
   ) => {
     console.log("🔄 Payment method changed:", `"${method}"`, {
@@ -164,9 +164,9 @@ export function OrderBlock({
     });
     setSelectedPaymentMethodState(method);
     setIsMonetaPayment(isMoneta);
-    setMonetaMethodCode(code);
+    setMonetaMethodCode(code ?? undefined);
     setIsDukPayPayment(isDukPay);
-    setDukPayMethodCode(code);
+    setDukPayMethodCode(code ?? undefined);
   };
   const [showGuestAuthPopup, setShowGuestAuthPopup] = useState(false);
   const [guestIdentifier, setGuestIdentifier] = useState("");
