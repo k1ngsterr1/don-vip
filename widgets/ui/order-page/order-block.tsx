@@ -1373,6 +1373,7 @@ export function OrderBlock({
     serverIdValid &&
     userIdValidationPassed &&
     paymentMethodSelected;
+  // Telegram проверка опциональна, не блокирует заказ
 
   // ДЕТАЛЬНЫЕ ЛОГИ ВАЛИДАЦИИ ФОРМЫ
   console.log("=== FORM VALIDATION DEBUG ===");
@@ -1956,7 +1957,10 @@ export function OrderBlock({
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <span className="text-blue-600 font-medium">
-                  📱 Проверка подписки в Telegram
+                  📱{" "}
+                  {locale === "ru"
+                    ? "Проверка подписки в Telegram"
+                    : "Telegram Channel Subscription Check"}
                 </span>
                 {telegramMembershipValid && (
                   <CheckCircle className="w-5 h-5 text-green-500" />
@@ -1966,20 +1970,31 @@ export function OrderBlock({
                 onClick={() => setShowTelegramCheck(!showTelegramCheck)}
                 className="text-blue-600 text-sm font-medium hover:text-blue-700"
               >
-                {showTelegramCheck ? "Скрыть" : "Проверить"}
+                {showTelegramCheck
+                  ? locale === "ru"
+                    ? "Скрыть"
+                    : "Hide"
+                  : locale === "ru"
+                  ? "Проверить"
+                  : "Check"}
               </button>
             </div>
 
             {showTelegramCheck && (
               <div className="space-y-3">
                 <div className="text-sm text-blue-700 mb-2">
-                  Для получения скидки подпишитесь на наш Telegram канал и
-                  введите ваш username:
+                  {locale === "ru"
+                    ? "Для получения скидки подпишитесь на наш Telegram канал и введите ваш username:"
+                    : "To get a discount, subscribe to our Telegram channel and enter your username:"}
                 </div>
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    placeholder="@ваш_telegram_username"
+                    placeholder={
+                      locale === "ru"
+                        ? "@ваш_telegram_username"
+                        : "@your_telegram_username"
+                    }
                     value={telegramUsername}
                     onChange={(e) => setTelegramUsername(e.target.value)}
                     className="flex-1 px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -1992,10 +2007,12 @@ export function OrderBlock({
                     {isTelegramLoading ? (
                       <>
                         <Loader className="w-4 h-4 animate-spin" />
-                        Проверяем...
+                        {locale === "ru" ? "Проверяем..." : "Checking..."}
                       </>
-                    ) : (
+                    ) : locale === "ru" ? (
                       "Проверить"
+                    ) : (
+                      "Check"
                     )}
                   </button>
                 </div>
@@ -2023,21 +2040,28 @@ export function OrderBlock({
                       )}
                       <span className="font-medium">
                         {telegramResult.isMember
-                          ? "✅ Вы подписаны на канал! Скидка будет применена."
-                          : "❌ Вы не подписаны на канал. Подпишитесь для получения скидки."}
+                          ? locale === "ru"
+                            ? "✅ Вы подписаны на канал! Скидка будет применена."
+                            : "✅ You are subscribed to the channel! Discount will be applied."
+                          : locale === "ru"
+                          ? "❌ Вы не подписаны на канал. Подпишитесь для получения скидки."
+                          : "❌ You are not subscribed to the channel. Subscribe to get a discount."}
                       </span>
                     </div>
                     {telegramResult.error && (
                       <div className="mt-2 text-sm text-red-600">
-                        Ошибка: {telegramResult.error}
+                        {locale === "ru" ? "Ошибка: " : "Error: "}
+                        {telegramResult.error}
                       </div>
                     )}
                   </div>
                 )}
 
                 <div className="text-xs text-blue-600">
-                  💡 Подсказка: Убедитесь что ваш профиль Telegram не скрыт от
-                  поиска
+                  💡{" "}
+                  {locale === "ru"
+                    ? "Подсказка: Убедитесь что ваш профиль Telegram не скрыт от поиска"
+                    : "Tip: Make sure your Telegram profile is not hidden from search"}
                 </div>
               </div>
             )}
