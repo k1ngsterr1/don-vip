@@ -30,6 +30,7 @@ import { useGetMe } from "@/entities/auth/hooks/use-auth";
 import { GuestAuthPopup } from "@/entities/order/ui/guest-user-popup";
 import { useCurrency } from "@/entities/currency/hooks/use-currency";
 import { useOrderCookies } from "@/shared/hooks/use-order-cookies";
+import { useTelegramMembership } from "@/shared/hooks/use-telegram-membership";
 
 import { DiamondPackages } from "./diamond-packages/diamond-packages";
 import { CustomAmountSelector } from "./custom-amount-selector/custom-amount-selector";
@@ -192,6 +193,11 @@ export function OrderBlock({
   } | null>(null);
   const [hasValidated, setHasValidated] = useState(false);
 
+  // Состояния для проверки Telegram канала
+  const [telegramUsername, setTelegramUsername] = useState("");
+  const [showTelegramCheck, setShowTelegramCheck] = useState(false);
+  const [telegramMembershipValid, setTelegramMembershipValid] = useState(false);
+
   // Встроенные состояния для SavedAccountsQuickSelect
   const [isAccountsExpanded, setIsAccountsExpanded] = useState(false);
 
@@ -209,6 +215,13 @@ export function OrderBlock({
 
   // Debounced user ID for validation
   const debouncedUserId = useDebounce(userIdInput, 1000);
+
+  // Telegram membership hook
+  const {
+    checkMembership,
+    isLoading: isTelegramLoading,
+    result: telegramResult,
+  } = useTelegramMembership();
 
   // Функция для получения моковых отзывов в зависимости от локали и игры
   const getMockReviews = () => {
@@ -640,6 +653,25 @@ export function OrderBlock({
     //   }
     //   scrollToPaymentSection();
     // }
+  };
+
+  // Функция для проверки участия в Telegram канале
+  const handleTelegramCheck = async () => {
+    if (!telegramUsername.trim()) return;
+
+    try {
+      const result = await checkMembership(telegramUsername);
+      setTelegramMembershipValid(result.isMember);
+
+      if (result.isMember) {
+        console.log("✅ User is a member of the Telegram channel");
+      } else {
+        console.log("❌ User is not a member of the Telegram channel");
+      }
+    } catch (error) {
+      console.error("Telegram check error:", error);
+      setTelegramMembershipValid(false);
+    }
   };
 
   // Встроенные функции для обработки User ID формы
@@ -1917,6 +1949,98 @@ export function OrderBlock({
                 </div>
               </>
             ) : null}
+          </div>
+
+          {/* Telegram Channel Check */}
+          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <span className="text-blue-600 font-medium">
+                  📱 Проверка подписки в Telegram
+                </span>
+                {telegramMembershipValid && (
+                  <CheckCircle className="w-5 h-5 text-green-500" />
+                )}
+              </div>
+              <button
+                onClick={() => setShowTelegramCheck(!showTelegramCheck)}
+                className="text-blue-600 text-sm font-medium hover:text-blue-700"
+              >
+                {showTelegramCheck ? "Скрыть" : "Проверить"}
+              </button>
+            </div>
+
+            {showTelegramCheck && (
+              <div className="space-y-3">
+                <div className="text-sm text-blue-700 mb-2">
+                  Для получения скидки подпишитесь на наш Telegram канал и
+                  введите ваш username:
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="@ваш_telegram_username"
+                    value={telegramUsername}
+                    onChange={(e) => setTelegramUsername(e.target.value)}
+                    className="flex-1 px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  <button
+                    onClick={handleTelegramCheck}
+                    disabled={!telegramUsername.trim() || isTelegramLoading}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    {isTelegramLoading ? (
+                      <>
+                        <Loader className="w-4 h-4 animate-spin" />
+                        Проверяем...
+                      </>
+                    ) : (
+                      "Проверить"
+                    )}
+                  </button>
+                </div>
+
+                {/* Результат проверки */}
+                {telegramResult && (
+                  <div
+                    className={`p-3 rounded-lg ${
+                      telegramResult.isMember
+                        ? "bg-green-50 border border-green-200"
+                        : "bg-red-50 border border-red-200"
+                    }`}
+                  >
+                    <div
+                      className={`flex items-center ${
+                        telegramResult.isMember
+                          ? "text-green-700"
+                          : "text-red-700"
+                      }`}
+                    >
+                      {telegramResult.isMember ? (
+                        <CheckCircle size={16} className="mr-2" />
+                      ) : (
+                        <AlertTriangle size={16} className="mr-2" />
+                      )}
+                      <span className="font-medium">
+                        {telegramResult.isMember
+                          ? "✅ Вы подписаны на канал! Скидка будет применена."
+                          : "❌ Вы не подписаны на канал. Подпишитесь для получения скидки."}
+                      </span>
+                    </div>
+                    {telegramResult.error && (
+                      <div className="mt-2 text-sm text-red-600">
+                        Ошибка: {telegramResult.error}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <div className="text-xs text-blue-600">
+                  💡 Подсказка: Убедитесь что ваш профиль Telegram не скрыт от
+                  поиска
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Validation Result */}
