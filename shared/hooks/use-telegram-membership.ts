@@ -1,12 +1,8 @@
 import { useState } from "react";
-
-interface TelegramMembershipResult {
-  isMember: boolean;
-  status?: string;
-  username?: string;
-  userId?: number;
-  error?: string;
-}
+import {
+  telegramApi,
+  type TelegramMembershipResult,
+} from "@/entities/telegram/api/telegram.api";
 
 export function useTelegramMembership() {
   const [isLoading, setIsLoading] = useState(false);
@@ -19,15 +15,7 @@ export function useTelegramMembership() {
     setResult(null);
 
     try {
-      const response = await fetch("/api/telegram/check-membership", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username }),
-      });
-
-      const data = await response.json();
+      const data = await telegramApi.checkMembership(username);
       setResult(data);
       return data;
     } catch (error) {
