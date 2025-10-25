@@ -151,9 +151,9 @@ export function OrderBlock({
     undefined
   );
   const [isPay4GamePayment, setIsPay4GamePayment] = useState(false);
-  const [pay4GameMethodCode, setPay4GameMethodCode] = useState<string | undefined>(
-    undefined
-  );
+  const [pay4GameMethodCode, setPay4GameMethodCode] = useState<
+    string | undefined
+  >(undefined);
 
   // Обертка для логирования изменений способа оплаты - Memoized для предотвращения лишних рендеров
   const setSelectedPaymentMethod = useCallback(
@@ -181,7 +181,7 @@ export function OrderBlock({
     },
     [selectedPaymentMethod]
   );
-  
+
   const [showGuestAuthPopup, setShowGuestAuthPopup] = useState(false);
   const [guestIdentifier, setGuestIdentifier] = useState("");
   const [isUserIdValid, setIsUserIdValid] = useState(true); // Добавляем состояние для валидности User ID

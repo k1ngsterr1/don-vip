@@ -236,39 +236,70 @@ export function PaymentMethodSelector({
   // Determine available payment methods with currency-specific logic
   let availablePaymentMethods: FrontendPaymentMethod[] = [];
 
-  // For RUB currency: Combine local methods (SBP, T-Bank) with API methods (Moneta)
+  // For RUB currency: Combine local methods (SBP, T-Bank) with API methods (Moneta) - WITH DEDUPLICATION
   if (activeCurrency === "RUB") {
     // First add filtered local methods (SBP, T-Bank)
     const filteredLocalMethods = allPaymentMethods.filter((method) =>
       activeApiBankNames.includes(method.apiName)
     );
+    
+    console.log("🏦 Filtered local methods:", filteredLocalMethods.map(m => ({ id: m.id, apiName: m.apiName })));
+    
     availablePaymentMethods = [...filteredLocalMethods];
 
-    // Then add API methods (including Moneta methods) if available
+    // Then add API methods (including Moneta methods) if available - SKIP DUPLICATES
     if (methodsByCurrency && methodsByCurrency.methods.length > 0) {
       console.log(
-        "Adding RUB API methods (Moneta):",
+        "🌐 Adding RUB API methods (Moneta/DukPay/Pay4Game):",
         methodsByCurrency.methods
       );
-      const apiMethods = methodsByCurrency.methods.map((method, index) => {
-        const iconUrl = getIconUrl(method.icon);
-        const fallbackIcon = getPaymentMethodIconSrc("card", method.name);
-        const finalIcon = iconUrl || fallbackIcon;
+      
+      // Create a Set of existing method names/IDs to avoid duplicates
+      const existingMethodIds = new Set(availablePaymentMethods.map(m => m.id.toLowerCase()));
+      const existingMethodNames = new Set(availablePaymentMethods.map(m => m.apiName.toLowerCase()));
+      
+      console.log("🔍 Existing method IDs:", Array.from(existingMethodIds));
+      console.log("🔍 Existing method names:", Array.from(existingMethodNames));
+      
+      const apiMethods = methodsByCurrency.methods
+        .filter((method) => {
+          // Skip if method already exists by ID or name
+          const methodId = (method.methodCode || method.name || "").toLowerCase();
+          const methodName = (method.name || "").toLowerCase();
+          
+          const isDuplicate = existingMethodIds.has(methodId) || 
+                             existingMethodNames.has(methodName) ||
+                             existingMethodNames.has(methodId);
+          
+          if (isDuplicate) {
+            console.log(`⚠️ Skipping duplicate method: "${method.name}" (ID: ${method.methodCode})`);
+          }
+          
+          return !isDuplicate;
+        })
+        .map((method, index) => {
+          const iconUrl = getIconUrl(method.icon);
+          const fallbackIcon = getPaymentMethodIconSrc("card", method.name);
+          const finalIcon = iconUrl || fallbackIcon;
 
-        return {
-          id: method.methodCode || method.name || `method-${index}`,
-          translationKey: method.name,
-          apiName: method.name,
-          icon: finalIcon,
-          description: method.description,
-          isMoneta: method.isMoneta || false,
-          isDukPay: method.isDukPay || false,
-          isPay4Game: method.isPay4Game || false,
-          code: method.code,
-        };
-      });
+          return {
+            id: method.methodCode || method.name || `method-${index}`,
+            translationKey: method.name,
+            apiName: method.name,
+            icon: finalIcon,
+            description: method.description,
+            isMoneta: method.isMoneta || false,
+            isDukPay: method.isDukPay || false,
+            isPay4Game: method.isPay4Game || false,
+            code: method.code,
+          };
+        });
+      
+      console.log("✅ Unique API methods to add:", apiMethods.map(m => ({ id: m.id, apiName: m.apiName })));
       availablePaymentMethods = [...availablePaymentMethods, ...apiMethods];
     }
+    
+    console.log("📋 Final available methods for RUB:", availablePaymentMethods.map(m => ({ id: m.id, apiName: m.apiName })));
   }
   // For non-RUB currencies: Use API methods
   else if (methodsByCurrency && methodsByCurrency.methods.length > 0) {
@@ -461,18 +492,43 @@ export function PaymentMethodSelector({
     );
   }
 
+  // 🔥 AGGRESSIVE FINAL DEDUPLICATION - Remove any duplicates based on ID
+  const uniquePaymentMethods = availablePaymentMethods.reduce((acc, method) => {
+    const isDuplicate = acc.some(
+      (existing) => 
+        existing.id === method.id || 
+        existing.id.toLowerCase() === method.id.toLowerCase() ||
+        (existing.apiName && method.apiName && existing.apiName.toLowerCase() === method.apiName.toLowerCase())
+    );
+    
+    if (!isDuplicate) {
+      acc.push(method);
+    } else {
+      console.log(`🗑️ Removing final duplicate: "${method.id}" (apiName: ${method.apiName})`);
+    }
+    
+    return acc;
+  }, [] as FrontendPaymentMethod[]);
+  
+  console.log("🎯 Final unique payment methods:", uniquePaymentMethods.map(m => ({ id: m.id, apiName: m.apiName })));
+
   const paymentMethodSelectorContent = (
     <div className="space-y-3">
-      {availablePaymentMethods.map((method) => {
-        const isSelected = selectedMethod && method.id === selectedMethod;
+      {uniquePaymentMethods.map((method) => {
+        // Strict comparison with type checking and normalization
+        const normalizedMethodId = method.id?.toLowerCase() || "";
+        const normalizedSelectedMethod = selectedMethod?.toLowerCase() || "";
+        const isSelected = normalizedSelectedMethod !== "" && normalizedMethodId === normalizedSelectedMethod;
+        
         console.log(`🎨 Rendering payment method "${method.id}":`, {
           methodId: method.id,
+          normalizedMethodId,
           methodIdType: typeof method.id,
           selectedMethod,
+          normalizedSelectedMethod,
           selectedMethodType: typeof selectedMethod,
           isSelected,
-          strictMatch: method.id === selectedMethod,
-          looseMatch: method.id == selectedMethod,
+          comparisonResult: normalizedMethodId === normalizedSelectedMethod,
         });
 
         return (
@@ -485,7 +541,13 @@ export function PaymentMethodSelector({
             }`}
             onClick={() => {
               console.log(`🖱️ Payment method clicked: "${method.id}"`);
-              onSelect(method.id, method.isMoneta, method.code, method.isDukPay, method.isPay4Game);
+              onSelect(
+                method.id,
+                method.isMoneta,
+                method.code,
+                method.isDukPay,
+                method.isPay4Game
+              );
             }}
             role="radio"
             aria-checked={!!isSelected}
