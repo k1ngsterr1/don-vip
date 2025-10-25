@@ -362,6 +362,7 @@ export function PaymentMethodSelector({
       activeBanksResponse: activeBanksResponse?.data,
       isLoading,
       error,
+      selectedMethod,
     });
   }, [
     currentCurrency,
@@ -376,9 +377,18 @@ export function PaymentMethodSelector({
     activeBanksResponse,
     isLoading,
     error,
+    selectedMethod,
   ]);
 
-  // Автоматический выбор первого доступного метода оплаты
+  // Track selectedMethod changes
+  useEffect(() => {
+    console.log("🔄 selectedMethod prop changed:", {
+      newValue: selectedMethod,
+      type: typeof selectedMethod,
+    });
+  }, [selectedMethod]);
+
+  // Автоматический выбор первого доступного метода оплаты - ОБЪЕДИНЕННАЯ ЛОГИКА
   useEffect(() => {
     if (!isLoading && availablePaymentMethods.length > 0) {
       const firstMethod = availablePaymentMethods[0];
@@ -405,27 +415,16 @@ export function PaymentMethodSelector({
           isDukPay: firstMethod.isDukPay,
           code: firstMethod.code,
         });
-        // Используем setTimeout чтобы гарантировать, что состояние обновится
-        setTimeout(() => {
-          onSelect(
-            firstMethodId,
-            firstMethod.isMoneta,
-            firstMethod.code,
-            firstMethod.isDukPay
-          );
-        }, 0);
+        // Вызываем onSelect напрямую без setTimeout
+        onSelect(
+          firstMethodId,
+          firstMethod.isMoneta,
+          firstMethod.code,
+          firstMethod.isDukPay
+        );
       }
     }
-  }, [availablePaymentMethods, isLoading, selectedMethod, onSelect]);
-
-  // Дополнительный эффект для принудительного автовыбора
-  useEffect(() => {
-    if (!isLoading && availablePaymentMethods.length > 0 && !selectedMethod) {
-      const firstMethodId = availablePaymentMethods[0].id;
-      console.log("Force auto-selecting first payment method:", firstMethodId);
-      onSelect(firstMethodId);
-    }
-  }, [availablePaymentMethods, isLoading, selectedMethod, onSelect]);
+  }, [availablePaymentMethods, isLoading, selectedMethod]); // Убираем onSelect из зависимостей
 
   if (isLoading) {
     return (
@@ -458,31 +457,40 @@ export function PaymentMethodSelector({
 
   const paymentMethodSelectorContent = (
     <div className="space-y-3">
-      {availablePaymentMethods.map((method) => (
-        <div
-          key={method.id}
-          className={`border rounded-lg p-4 flex items-center cursor-pointer transition-all ${
-            method.id === selectedMethod
-              ? "bg-blue-500/5 border-blue-500" // Original: bg-blue/5 border-blue. Adjusted blue intensity for visibility.
-              : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
-          }`}
-          onClick={() =>
-            onSelect(method.id, method.isMoneta, method.code, method.isDukPay)
-          }
-          role="radio"
-          aria-checked={method.id === selectedMethod}
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ")
-              onSelect(
-                method.id,
-                method.isMoneta,
-                method.code,
-                method.isDukPay
-              );
-          }}
-        >
-          <div className="w-10 h-10 rounded-md flex items-center justify-center mr-4 bg-gray-100">
+      {availablePaymentMethods.map((method) => {
+        const isSelected = method.id === selectedMethod;
+        console.log(`🎨 Rendering payment method "${method.id}":`, {
+          methodId: method.id,
+          selectedMethod,
+          isSelected,
+          match: method.id === selectedMethod,
+        });
+        
+        return (
+          <div
+            key={method.id}
+            className={`border rounded-lg p-4 flex items-center cursor-pointer transition-all ${
+              isSelected
+                ? "bg-blue-500/5 border-blue-500"
+                : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+            }`}
+            onClick={() =>
+              onSelect(method.id, method.isMoneta, method.code, method.isDukPay)
+            }
+            role="radio"
+            aria-checked={isSelected}
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ")
+                onSelect(
+                  method.id,
+                  method.isMoneta,
+                  method.code,
+                  method.isDukPay
+                );
+            }}
+          >
+            <div className="w-10 h-10 rounded-md flex items-center justify-center mr-4 bg-gray-100">
             <Image
               src={(() => {
                 const iconSrc = getIconSrc(method.icon) || "/placeholder.svg";
@@ -538,12 +546,13 @@ export function PaymentMethodSelector({
             )}
           </div>
           <div className="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
-            {method.id === selectedMethod && (
-              <div className="w-3 h-3 rounded-full bg-blue-500"></div> // Original: bg-blue. Adjusted to bg-blue-500 for consistency.
+            {isSelected && (
+              <div className="w-3 h-3 rounded-full bg-blue-500"></div>
             )}
           </div>
         </div>
-      ))}
+      );
+    })}
     </div>
   );
 
