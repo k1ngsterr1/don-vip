@@ -73,7 +73,8 @@ interface PaymentMethodSelectorProps {
     method: string,
     isMoneta?: boolean,
     code?: string,
-    isDukPay?: boolean
+    isDukPay?: boolean,
+    isPay4Game?: boolean
   ) => void;
   currentCurrency?: string; // Add currency prop
   region?: string; // Add region prop
@@ -91,7 +92,8 @@ interface FrontendPaymentMethod {
   description?: string | null; // Добавляем description из API
   isMoneta?: boolean; // Flag for Moneta payment methods
   isDukPay?: boolean; // Flag for DukPay payment methods
-  code?: string; // Payment method code for Moneta/DukPay
+  isPay4Game?: boolean; // Flag for Pay4Game payment methods
+  code?: string; // Payment method code for Moneta/DukPay/Pay4Game
 }
 
 export function PaymentMethodSelector({
@@ -261,6 +263,7 @@ export function PaymentMethodSelector({
           description: method.description,
           isMoneta: method.isMoneta || false,
           isDukPay: method.isDukPay || false,
+          isPay4Game: method.isPay4Game || false,
           code: method.code,
         };
       });
@@ -285,6 +288,7 @@ export function PaymentMethodSelector({
         description: method.description, // Добавляем поле description из API
         isMoneta: method.isMoneta || false, // Add Moneta flag
         isDukPay: method.isDukPay || false, // Add DukPay flag
+        isPay4Game: method.isPay4Game || false, // Add Pay4Game flag
         code: method.code, // Add payment method code
       };
     });
@@ -413,6 +417,7 @@ export function PaymentMethodSelector({
           shouldAutoSelect,
           isMoneta: firstMethod.isMoneta,
           isDukPay: firstMethod.isDukPay,
+          isPay4Game: firstMethod.isPay4Game,
           code: firstMethod.code,
         });
         // Вызываем onSelect напрямую без setTimeout
@@ -420,7 +425,8 @@ export function PaymentMethodSelector({
           firstMethodId,
           firstMethod.isMoneta,
           firstMethod.code,
-          firstMethod.isDukPay
+          firstMethod.isDukPay,
+          firstMethod.isPay4Game
         );
       }
     }
@@ -458,14 +464,17 @@ export function PaymentMethodSelector({
   const paymentMethodSelectorContent = (
     <div className="space-y-3">
       {availablePaymentMethods.map((method) => {
-        const isSelected = method.id === selectedMethod;
+        const isSelected = selectedMethod && method.id === selectedMethod;
         console.log(`🎨 Rendering payment method "${method.id}":`, {
           methodId: method.id,
+          methodIdType: typeof method.id,
           selectedMethod,
+          selectedMethodType: typeof selectedMethod,
           isSelected,
-          match: method.id === selectedMethod,
+          strictMatch: method.id === selectedMethod,
+          looseMatch: method.id == selectedMethod,
         });
-        
+
         return (
           <div
             key={method.id}
@@ -474,11 +483,12 @@ export function PaymentMethodSelector({
                 ? "bg-blue-500/5 border-blue-500"
                 : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
             }`}
-            onClick={() =>
-              onSelect(method.id, method.isMoneta, method.code, method.isDukPay)
-            }
+            onClick={() => {
+              console.log(`🖱️ Payment method clicked: "${method.id}"`);
+              onSelect(method.id, method.isMoneta, method.code, method.isDukPay, method.isPay4Game);
+            }}
             role="radio"
-            aria-checked={isSelected}
+            aria-checked={!!isSelected}
             tabIndex={0}
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ")
@@ -486,73 +496,79 @@ export function PaymentMethodSelector({
                   method.id,
                   method.isMoneta,
                   method.code,
-                  method.isDukPay
+                  method.isDukPay,
+                  method.isPay4Game
                 );
             }}
           >
             <div className="w-10 h-10 rounded-md flex items-center justify-center mr-4 bg-gray-100">
-            <Image
-              src={(() => {
-                const iconSrc = getIconSrc(method.icon) || "/placeholder.svg";
-                console.log(`Image src for ${method.translationKey}:`, iconSrc);
-                return iconSrc;
-              })()}
-              width={24}
-              height={24}
-              alt={
-                method.translationKey.startsWith("methods.")
-                  ? i18n(method.translationKey)
-                  : method.translationKey
-              }
-              onLoad={() =>
-                console.log(
-                  `✅ Image loaded successfully for ${method.translationKey}`
-                )
-              }
-              onError={(e) => {
-                console.error(
-                  `❌ Image failed to load for ${method.translationKey}:`,
-                  e
-                );
-                console.error("Failed src:", getIconSrc(method.icon));
-                // Fallback test with regular img tag
-                if (typeof window !== "undefined") {
-                  const testImg = document.createElement("img");
-                  testImg.onload = () =>
-                    console.log("✅ Regular img tag loaded successfully");
-                  testImg.onerror = () =>
-                    console.error("❌ Regular img tag also failed");
-                  testImg.src = getIconSrc(method.icon);
+              <Image
+                src={(() => {
+                  const iconSrc = getIconSrc(method.icon) || "/placeholder.svg";
+                  console.log(
+                    `Image src for ${method.translationKey}:`,
+                    iconSrc
+                  );
+                  return iconSrc;
+                })()}
+                width={24}
+                height={24}
+                alt={
+                  method.translationKey.startsWith("methods.")
+                    ? i18n(method.translationKey)
+                    : method.translationKey
                 }
-              }}
-              unoptimized={true}
-            />
+                onLoad={() =>
+                  console.log(
+                    `✅ Image loaded successfully for ${method.translationKey}`
+                  )
+                }
+                onError={(e) => {
+                  console.error(
+                    `❌ Image failed to load for ${method.translationKey}:`,
+                    e
+                  );
+                  console.error("Failed src:", getIconSrc(method.icon));
+                  // Fallback test with regular img tag
+                  if (typeof window !== "undefined") {
+                    const testImg = document.createElement("img");
+                    testImg.onload = () =>
+                      console.log("✅ Regular img tag loaded successfully");
+                    testImg.onerror = () =>
+                      console.error("❌ Regular img tag also failed");
+                    testImg.src = getIconSrc(method.icon);
+                  }
+                }}
+                unoptimized={true}
+              />
+            </div>
+            <div className="flex-1">
+              <span className="font-medium text-gray-800">
+                {method.translationKey.startsWith("methods.")
+                  ? i18n(method.translationKey)
+                  : method.translationKey}
+              </span>
+              {/* Показываем описание из API если есть */}
+              {method.description && (
+                <p className="text-xs text-gray-500 mt-1">
+                  {method.description}
+                </p>
+              )}
+              {/* Показываем описание из переводов если есть и нет description из API */}
+              {!method.description && method.descriptionKey && (
+                <p className="text-xs text-gray-500 mt-1">
+                  {i18n(method.descriptionKey)}
+                </p>
+              )}
+            </div>
+            <div className="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
+              {isSelected && (
+                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+              )}
+            </div>
           </div>
-          <div className="flex-1">
-            <span className="font-medium text-gray-800">
-              {method.translationKey.startsWith("methods.")
-                ? i18n(method.translationKey)
-                : method.translationKey}
-            </span>
-            {/* Показываем описание из API если есть */}
-            {method.description && (
-              <p className="text-xs text-gray-500 mt-1">{method.description}</p>
-            )}
-            {/* Показываем описание из переводов если есть и нет description из API */}
-            {!method.description && method.descriptionKey && (
-              <p className="text-xs text-gray-500 mt-1">
-                {i18n(method.descriptionKey)}
-              </p>
-            )}
-          </div>
-          <div className="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
-            {isSelected && (
-              <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-            )}
-          </div>
-        </div>
-      );
-    })}
+        );
+      })}
     </div>
   );
 

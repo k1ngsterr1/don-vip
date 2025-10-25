@@ -2,7 +2,7 @@
 
 import { PaymentMethodSelector } from "@/entities/payment/ui/payment-method-selector";
 import { cn } from "@/shared/utils/cn";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -150,25 +150,38 @@ export function OrderBlock({
   const [dukPayMethodCode, setDukPayMethodCode] = useState<string | undefined>(
     undefined
   );
+  const [isPay4GamePayment, setIsPay4GamePayment] = useState(false);
+  const [pay4GameMethodCode, setPay4GameMethodCode] = useState<string | undefined>(
+    undefined
+  );
 
-  // Обертка для логирования изменений способа оплаты
-  const setSelectedPaymentMethod = (
-    method: string,
-    isMoneta: boolean = false,
-    code?: string,
-    isDukPay: boolean = false
-  ) => {
-    console.log("🔄 Payment method changed:", `"${method}"`, {
-      isMoneta,
-      isDukPay,
-      code,
-    });
-    setSelectedPaymentMethodState(method);
-    setIsMonetaPayment(isMoneta);
-    setMonetaMethodCode(code);
-    setIsDukPayPayment(isDukPay);
-    setDukPayMethodCode(code);
-  };
+  // Обертка для логирования изменений способа оплаты - Memoized для предотвращения лишних рендеров
+  const setSelectedPaymentMethod = useCallback(
+    (
+      method: string,
+      isMoneta: boolean = false,
+      code?: string,
+      isDukPay: boolean = false,
+      isPay4Game: boolean = false
+    ) => {
+      console.log("🔄 Payment method changed:", `"${method}"`, {
+        isMoneta,
+        isDukPay,
+        isPay4Game,
+        code,
+        previousMethod: selectedPaymentMethod,
+      });
+      setSelectedPaymentMethodState(method);
+      setIsMonetaPayment(isMoneta);
+      setMonetaMethodCode(code);
+      setIsDukPayPayment(isDukPay);
+      setDukPayMethodCode(code);
+      setIsPay4GamePayment(isPay4Game);
+      setPay4GameMethodCode(code);
+    },
+    [selectedPaymentMethod]
+  );
+  
   const [showGuestAuthPopup, setShowGuestAuthPopup] = useState(false);
   const [guestIdentifier, setGuestIdentifier] = useState("");
   const [isUserIdValid, setIsUserIdValid] = useState(true); // Добавляем состояние для валидности User ID
@@ -945,7 +958,9 @@ export function OrderBlock({
     isMonetaPayment,
     monetaMethodCode,
     isDukPayPayment,
-    dukPayMethodCode
+    dukPayMethodCode,
+    isPay4GamePayment,
+    pay4GameMethodCode
   );
 
   const { user: authUser, isGuestAuth } = useAuthStore();
