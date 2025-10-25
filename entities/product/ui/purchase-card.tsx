@@ -43,6 +43,19 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
   const [isNavigating, setIsNavigating] = useState(false);
   const { user, isAuthenticated } = useAuthStore();
 
+  // Диагностика данных при рендере (только при разработке)
+  if (process.env.NODE_ENV === "development") {
+    console.log("🛒 PurchaseCard props:", {
+      id,
+      playerId,
+      serverId,
+      diamonds,
+      gameId,
+      gameName,
+      isAuthenticated,
+    });
+  }
+
   // Translation helper function
   const getText = (key: string) => {
     const translations: Record<string, { ru: string; en: string }> = {
@@ -103,6 +116,14 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
     e.stopPropagation(); // Prevent card expansion
     setIsNavigating(true);
 
+    console.log("🔄 Повторение заказа:", {
+      playerId,
+      serverId,
+      diamonds,
+      gameId,
+      gameName,
+    });
+
     // Navigate directly to order page with gameId
     if (gameId) {
       // Add query parameters to prefill the order form
@@ -111,7 +132,19 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
         ...(serverId && { serverId: serverId }),
         amount: diamonds.toString(),
       });
-      router.push(`/${locale}/product/${gameId}?${params.toString()}`);
+      const url = `/${locale}/product/${gameId}?${params.toString()}`;
+      console.log("📍 Перенаправление на URL:", url);
+
+      try {
+        router.push(url);
+        // Сбрасываем состояние через небольшую задержку после начала навигации
+        setTimeout(() => {
+          setIsNavigating(false);
+        }, 1000);
+      } catch (error) {
+        console.error("Ошибка навигации:", error);
+        setIsNavigating(false);
+      }
     } else if (gameName) {
       // Use gameName as fallback identifier
       const params = new URLSearchParams({
@@ -119,11 +152,21 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
         ...(serverId && { serverId: serverId }),
         amount: diamonds.toString(),
       });
-      router.push(
-        `/${locale}/product/${gameName
-          .toLowerCase()
-          .replace(/\s+/g, "-")}?${params.toString()}`
-      );
+      const url = `/${locale}/product/${gameName
+        .toLowerCase()
+        .replace(/\s+/g, "-")}?${params.toString()}`;
+      console.log("📍 Перенаправление на URL (по имени):", url);
+
+      try {
+        router.push(url);
+        // Сбрасываем состояние через небольшую задержку после начала навигации
+        setTimeout(() => {
+          setIsNavigating(false);
+        }, 1000);
+      } catch (error) {
+        console.error("Ошибка навигации:", error);
+        setIsNavigating(false);
+      }
     } else {
       // Log warning if no product identifier is available
       console.warn(
@@ -379,17 +422,42 @@ export const PurchaseCard: React.FC<PurchaseCardProps> = ({
                 {formatPrice(price)}
               </div>
               {isAuthenticated && (
-                <button
-                  onClick={handleRepeatOrder}
-                  disabled={isNavigating}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg transition-colors text-sm font-medium"
-                >
-                  <RotateCcw
-                    size={16}
-                    className={isNavigating ? "animate-spin" : ""}
-                  />
-                  {isNavigating ? getText("repeating") : getText("repeatOrder")}
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleRepeatOrder}
+                    disabled={isNavigating}
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg transition-colors text-sm font-medium"
+                  >
+                    <RotateCcw
+                      size={16}
+                      className={isNavigating ? "animate-spin" : ""}
+                    />
+                    {isNavigating
+                      ? getText("repeating")
+                      : getText("repeatOrder")}
+                  </button>
+
+                  {/* Тестовая кнопка для отладки (только в dev режиме) */}
+                  {process.env.NODE_ENV === "development" && (
+                    <button
+                      onClick={() => {
+                        console.log("🧪 Тест данных заказа:", {
+                          playerId,
+                          serverId,
+                          diamonds,
+                          gameId,
+                          gameName,
+                          url: gameId
+                            ? `/${locale}/product/${gameId}?userId=${playerId}&serverId=${serverId}&amount=${diamonds}`
+                            : "нет gameId",
+                        });
+                      }}
+                      className="px-2 py-1 bg-gray-500 text-white text-xs rounded"
+                    >
+                      🧪 Test
+                    </button>
+                  )}
+                </div>
               )}
             </div>
           </div>
