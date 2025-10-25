@@ -242,39 +242,101 @@ export function PaymentMethodSelector({
     const filteredLocalMethods = allPaymentMethods.filter((method) =>
       activeApiBankNames.includes(method.apiName)
     );
-    
-    console.log("🏦 Filtered local methods:", filteredLocalMethods.map(m => ({ id: m.id, apiName: m.apiName })));
-    
+
+    console.log(
+      "🏦 Filtered local methods:",
+      filteredLocalMethods.map((m) => ({ id: m.id, apiName: m.apiName }))
+    );
+
     availablePaymentMethods = [...filteredLocalMethods];
 
     // Then add API methods (including Moneta methods) if available - SKIP DUPLICATES
     if (methodsByCurrency && methodsByCurrency.methods.length > 0) {
       console.log(
+        "🌐 Raw API methods received:",
+        methodsByCurrency.methods.map(m => ({
+          name: m.name,
+          methodCode: m.methodCode,
+          isMoneta: m.isMoneta,
+          isDukPay: m.isDukPay,
+          isPay4Game: m.isPay4Game,
+          code: m.code,
+        }))
+      );
+      
+      console.log(
         "🌐 Adding RUB API methods (Moneta/DukPay/Pay4Game):",
         methodsByCurrency.methods
       );
-      
+
       // Create a Set of existing method names/IDs to avoid duplicates
-      const existingMethodIds = new Set(availablePaymentMethods.map(m => m.id.toLowerCase()));
-      const existingMethodNames = new Set(availablePaymentMethods.map(m => m.apiName.toLowerCase()));
-      
+      const existingMethodIds = new Set(
+        availablePaymentMethods.map((m) => m.id.toLowerCase())
+      );
+      const existingMethodNames = new Set(
+        availablePaymentMethods.map((m) => m.apiName.toLowerCase())
+      );
+
       console.log("🔍 Existing method IDs:", Array.from(existingMethodIds));
       console.log("🔍 Existing method names:", Array.from(existingMethodNames));
-      
+
       const apiMethods = methodsByCurrency.methods
         .filter((method) => {
           // Skip if method already exists by ID or name
-          const methodId = (method.methodCode || method.name || "").toLowerCase();
+          const methodId = (
+            method.methodCode ||
+            method.name ||
+            ""
+          ).toLowerCase();
           const methodName = (method.name || "").toLowerCase();
+
+          // Check for exact duplicates
+          const isDuplicateById = existingMethodIds.has(methodId);
+          const isDuplicateByName = existingMethodNames.has(methodName);
+          const isDuplicateByIdInName = existingMethodNames.has(methodId);
           
-          const isDuplicate = existingMethodIds.has(methodId) || 
-                             existingMethodNames.has(methodName) ||
-                             existingMethodNames.has(methodId);
+          // Also check for SBP/СБП variations (treat them as the same)
+          const isSbpVariant = (name: string) => {
+            const lower = name.toLowerCase();
+            return lower.includes('sbp') || 
+                   lower.includes('сбп') || 
+                   lower.includes('система') ||
+                   lower === 'sbp' ||
+                   lower === 'сбп';
+          };
           
+          const isDuplicateSbp = isSbpVariant(methodName) && 
+                                 Array.from(existingMethodNames).some(isSbpVariant);
+
+          const isDuplicate = isDuplicateById || 
+                             isDuplicateByName || 
+                             isDuplicateByIdInName ||
+                             isDuplicateSbp;
+
           if (isDuplicate) {
-            console.log(`⚠️ Skipping duplicate method: "${method.name}" (ID: ${method.methodCode})`);
+            console.log(
+              `⚠️ Skipping duplicate method: "${method.name}" (ID: ${method.methodCode})`,
+              {
+                isDuplicateById,
+                isDuplicateByName,
+                isDuplicateByIdInName,
+                isDuplicateSbp,
+                isMoneta: method.isMoneta,
+                isDukPay: method.isDukPay,
+                isPay4Game: method.isPay4Game,
+              }
+            );
+          } else {
+            console.log(
+              `✅ Adding unique method: "${method.name}" (ID: ${method.methodCode})`,
+              {
+                isMoneta: method.isMoneta,
+                isDukPay: method.isDukPay,
+                isPay4Game: method.isPay4Game,
+              }
+            );
           }
-          
+
           return !isDuplicate;
         })
         .map((method, index) => {
@@ -294,12 +356,18 @@ export function PaymentMethodSelector({
             code: method.code,
           };
         });
-      
-      console.log("✅ Unique API methods to add:", apiMethods.map(m => ({ id: m.id, apiName: m.apiName })));
+
+      console.log(
+        "✅ Unique API methods to add:",
+        apiMethods.map((m) => ({ id: m.id, apiName: m.apiName }))
+      );
       availablePaymentMethods = [...availablePaymentMethods, ...apiMethods];
     }
-    
-    console.log("📋 Final available methods for RUB:", availablePaymentMethods.map(m => ({ id: m.id, apiName: m.apiName })));
+
+    console.log(
+      "📋 Final available methods for RUB:",
+      availablePaymentMethods.map((m) => ({ id: m.id, apiName: m.apiName }))
+    );
   }
   // For non-RUB currencies: Use API methods
   else if (methodsByCurrency && methodsByCurrency.methods.length > 0) {
@@ -495,22 +563,29 @@ export function PaymentMethodSelector({
   // 🔥 AGGRESSIVE FINAL DEDUPLICATION - Remove any duplicates based on ID
   const uniquePaymentMethods = availablePaymentMethods.reduce((acc, method) => {
     const isDuplicate = acc.some(
-      (existing) => 
-        existing.id === method.id || 
+      (existing) =>
+        existing.id === method.id ||
         existing.id.toLowerCase() === method.id.toLowerCase() ||
-        (existing.apiName && method.apiName && existing.apiName.toLowerCase() === method.apiName.toLowerCase())
+        (existing.apiName &&
+          method.apiName &&
+          existing.apiName.toLowerCase() === method.apiName.toLowerCase())
     );
-    
+
     if (!isDuplicate) {
       acc.push(method);
     } else {
-      console.log(`🗑️ Removing final duplicate: "${method.id}" (apiName: ${method.apiName})`);
+      console.log(
+        `🗑️ Removing final duplicate: "${method.id}" (apiName: ${method.apiName})`
+      );
     }
-    
+
     return acc;
   }, [] as FrontendPaymentMethod[]);
-  
-  console.log("🎯 Final unique payment methods:", uniquePaymentMethods.map(m => ({ id: m.id, apiName: m.apiName })));
+
+  console.log(
+    "🎯 Final unique payment methods:",
+    uniquePaymentMethods.map((m) => ({ id: m.id, apiName: m.apiName }))
+  );
 
   const paymentMethodSelectorContent = (
     <div className="space-y-3">
@@ -518,8 +593,10 @@ export function PaymentMethodSelector({
         // Strict comparison with type checking and normalization
         const normalizedMethodId = method.id?.toLowerCase() || "";
         const normalizedSelectedMethod = selectedMethod?.toLowerCase() || "";
-        const isSelected = normalizedSelectedMethod !== "" && normalizedMethodId === normalizedSelectedMethod;
-        
+        const isSelected =
+          normalizedSelectedMethod !== "" &&
+          normalizedMethodId === normalizedSelectedMethod;
+
         console.log(`🎨 Rendering payment method "${method.id}":`, {
           methodId: method.id,
           normalizedMethodId,
@@ -540,7 +617,14 @@ export function PaymentMethodSelector({
                 : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
             }`}
             onClick={() => {
-              console.log(`🖱️ Payment method clicked: "${method.id}"`);
+              console.log(`🖱️ Payment method clicked: "${method.id}"`, {
+                id: method.id,
+                apiName: method.apiName,
+                isMoneta: method.isMoneta,
+                isDukPay: method.isDukPay,
+                isPay4Game: method.isPay4Game,
+                code: method.code,
+              });
               onSelect(
                 method.id,
                 method.isMoneta,
