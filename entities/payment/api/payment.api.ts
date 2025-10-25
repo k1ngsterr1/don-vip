@@ -10,6 +10,8 @@ import {
   MonetaPayinResponse,
   DukPayCreatePayinDto,
   DukPayPayinResponse,
+  Pay4GameCreatePaymentDto,
+  Pay4GamePaymentResponse,
 } from "../model/types";
 
 /**
@@ -76,6 +78,19 @@ export const paymentApi = {
   ): Promise<DukPayPayinResponse> => {
     const response = await apiClient.post<DukPayPayinResponse>(
       "/payment/dukpay/payin",
+      data
+    );
+    return response.data;
+  },
+
+  /**
+   * Create a new payment via Pay4Game
+   */
+  createPay4GamePayment: async (
+    data: Pay4GameCreatePaymentDto
+  ): Promise<Pay4GamePaymentResponse> => {
+    const response = await apiClient.post<Pay4GamePaymentResponse>(
+      "/payment/pay4game/create",
       data
     );
     return response.data;

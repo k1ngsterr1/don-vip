@@ -14,6 +14,8 @@ import type {
   MonetaPayinResponse,
   DukPayCreatePayinDto,
   DukPayPayinResponse,
+  Pay4GameCreatePaymentDto,
+  Pay4GamePaymentResponse,
 } from "@/entities/payment/model/types";
 import { paymentApi } from "@/entities/payment/api/payment.api";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
@@ -42,7 +44,9 @@ export function useCreateOrder(
   isMonetaMethod: boolean = false,
   monetaMethodCode?: string,
   isDukPayMethod: boolean = false,
-  dukPayMethodCode?: string
+  dukPayMethodCode?: string,
+  isPay4GameMethod: boolean = false,
+  pay4GameMethodCode?: string
 ) {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -285,6 +289,39 @@ export function useCreateOrder(
     },
   });
 
+  // 💰 Pay4Game payment mutation
+  const pay4GameMutation = useMutation({
+    mutationFn: (pay4GameData: Pay4GameCreatePaymentDto) => {
+      const userId = resolveUserId();
+
+      const pay4GameDataWithUser = {
+        ...pay4GameData,
+        user_id: userId ? Number.parseInt(userId, 10) : undefined,
+      };
+
+      return paymentApi.createPay4GamePayment(pay4GameDataWithUser);
+    },
+
+    onSuccess: (pay4GameData: Pay4GamePaymentResponse) => {
+      setIsProcessingPayment(false);
+
+      if (pay4GameData.url) {
+        window.location.href = pay4GameData.url;
+      } else {
+        setError("Failed to get payment URL from Pay4Game");
+      }
+    },
+
+    onError: (err: any) => {
+      setIsProcessingPayment(false);
+      setError(
+        err?.response?.data?.message ||
+          err?.message ||
+          "Pay4Game payment processing failed. Please try again."
+      );
+    },
+  });
+
   // Return the exact payment method selected by user
   const mapPaymentMethodToPagsmile = (method: string): string => {
     // Возвращаем точно тот метод, который выбрал пользователь
@@ -294,6 +331,46 @@ export function useCreateOrder(
   // ⏳ Trigger payment after successful order
   const processPayment = (orderId: string, orderData: CreateOrderDto) => {
     setIsProcessingPayment(true);
+
+    // Check if this is a Pay4Game payment method
+    if (isPay4GameMethod) {
+      const identifier =
+        orderData.identifier || getUserIdentifier() || "customer@don-vip.com";
+
+      // Map payment method code to Pay4Game method
+      const getPay4GameMethod = (code?: string): string => {
+        if (!code) return "sbp";
+
+        const lowerCode = code.toLowerCase();
+        if (lowerCode.includes("card")) return "card";
+        if (lowerCode.includes("sberpay") || lowerCode.includes("sber"))
+          return "sberpay";
+        return "sbp"; // Default to SBP
+      };
+
+      // Map payment method code to SBP type (qr or url)
+      const getSbpType = (code?: string): string => {
+        if (!code) return "qr";
+        const lowerCode = code.toLowerCase();
+        if (lowerCode.includes("url")) return "url";
+        return "qr"; // Default to QR
+      };
+
+      const pay4GameData: Pay4GameCreatePaymentDto = {
+        order_id: Number.parseInt(orderId, 10),
+        amount:
+          typeof orderData.price === "string"
+            ? orderData.price
+            : orderData.price.toFixed(2),
+        email: identifier.includes("@") ? identifier : `customer@don-vip.com`,
+        method: getPay4GameMethod(pay4GameMethodCode),
+        sbp_type: getSbpType(pay4GameMethodCode),
+        description: `Order #${orderId}`,
+      };
+
+      pay4GameMutation.mutate(pay4GameData);
+      return;
+    }
 
     // Check if this is a DukPay payment method
     if (isDukPayMethod) {
@@ -405,7 +482,9 @@ export function useCreateOrder(
     isProcessingPayment,
     isSuccess:
       orderMutation.isSuccess &&
-      (isDukPayMethod
+      (isPay4GameMethod
+        ? pay4GameMutation.isSuccess
+        : isDukPayMethod
         ? dukPayMutation.isSuccess
         : isMonetaMethod
         ? monetaMutation.isSuccess
@@ -414,7 +493,9 @@ export function useCreateOrder(
         : paymentMutation.isSuccess),
     isError:
       orderMutation.isError ||
-      (isDukPayMethod
+      (isPay4GameMethod
+        ? pay4GameMutation.isError
+        : isDukPayMethod
         ? dukPayMutation.isError
         : isMonetaMethod
         ? monetaMutation.isError

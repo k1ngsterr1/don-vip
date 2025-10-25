@@ -56,6 +56,7 @@ export interface PaymentMethodByCurrency {
   isActive: boolean;
   isMoneta?: boolean; // Flag to identify Moneta payment methods
   isDukPay?: boolean; // Flag to identify DukPay payment methods
+  isPay4Game?: boolean; // Flag to identify Pay4Game payment methods
   sortOrder: number;
   description?: string | null;
 }

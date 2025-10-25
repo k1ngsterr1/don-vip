@@ -66,6 +66,23 @@ export interface DukPayPayinResponse {
   checkoutUrl: string;
 }
 
+export interface Pay4GameCreatePaymentDto {
+  amount: string;
+  order_id: number;
+  user_id?: number;
+  email: string;
+  method?: string;
+  sbp_type?: string;
+  description?: string;
+}
+
+export interface Pay4GamePaymentResponse {
+  success: boolean;
+  uuid?: string;
+  url?: string;
+  invoice_id: string;
+}
+
 export interface PagsmileNotificationDto {
   id: string;
   type: string;
