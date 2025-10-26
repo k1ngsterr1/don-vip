@@ -93,6 +93,7 @@ interface FrontendPaymentMethod {
   isMoneta?: boolean; // Flag for Moneta payment methods
   isDukPay?: boolean; // Flag for DukPay payment methods
   isPay4Game?: boolean; // Flag for Pay4Game payment methods
+  isPagsmile?: boolean; // Flag for Pagsmile payment methods
   code?: string; // Payment method code for Moneta/DukPay/Pay4Game
 }
 
@@ -209,10 +210,11 @@ export function PaymentMethodSelector({
   // Define frontend payment methods with a mapping to API names
   const allPaymentMethods: FrontendPaymentMethod[] = [
     {
-      id: "sbp",
+      id: "sbp_pagsmile", // Changed to distinguish from Pay4Game SBP
       translationKey: "methods.sbp",
       apiName: "SBP",
       icon: sbpIcon,
+      isPagsmile: true, // Mark as Pagsmile method
     },
     {
       id: "tbank",
@@ -254,7 +256,7 @@ export function PaymentMethodSelector({
     if (methodsByCurrency && methodsByCurrency.methods.length > 0) {
       console.log(
         "🌐 Raw API methods received:",
-        methodsByCurrency.methods.map(m => ({
+        methodsByCurrency.methods.map((m) => ({
           name: m.name,
           methodCode: m.methodCode,
           isMoneta: m.isMoneta,
@@ -263,7 +265,7 @@ export function PaymentMethodSelector({
           code: m.code,
         }))
       );
-      
+
       console.log(
         "🌐 Adding RUB API methods (Moneta/DukPay/Pay4Game):",
         methodsByCurrency.methods
@@ -294,24 +296,40 @@ export function PaymentMethodSelector({
           const isDuplicateById = existingMethodIds.has(methodId);
           const isDuplicateByName = existingMethodNames.has(methodName);
           const isDuplicateByIdInName = existingMethodNames.has(methodId);
-          
-          // Also check for SBP/СБП variations (treat them as the same)
+
+          // 🔥 IMPORTANT: Don't treat Pay4Game/DukPay/Moneta SBP as duplicates of Pagsmile SBP
+          // They should coexist as different payment methods
           const isSbpVariant = (name: string) => {
             const lower = name.toLowerCase();
-            return lower.includes('sbp') || 
-                   lower.includes('сбп') || 
-                   lower.includes('система') ||
-                   lower === 'sbp' ||
-                   lower === 'сбп';
+            return (
+              lower.includes("sbp") ||
+              lower.includes("сбп") ||
+              lower.includes("система") ||
+              lower === "sbp" ||
+              lower === "сбп"
+            );
           };
-          
-          const isDuplicateSbp = isSbpVariant(methodName) && 
-                                 Array.from(existingMethodNames).some(isSbpVariant);
 
-          const isDuplicate = isDuplicateById || 
-                             isDuplicateByName || 
-                             isDuplicateByIdInName ||
-                             isDuplicateSbp;
+          // Only consider it a duplicate SBP if:
+          // 1. Both are SBP variants
+          // 2. Both are from the same provider (Pay4Game, DukPay, Moneta, or Pagsmile)
+          const isDuplicateSbp = isSbpVariant(methodName) && 
+            Array.from(availablePaymentMethods).some(existing => {
+              const existingIsSbp = isSbpVariant(existing.apiName);
+              const sameProvider = 
+                (method.isPay4Game && existing.isPay4Game) ||
+                (method.isDukPay && existing.isDukPay) ||
+                (method.isMoneta && existing.isMoneta) ||
+                (!method.isPay4Game && !method.isDukPay && !method.isMoneta && existing.isPagsmile);
+              
+              return existingIsSbp && sameProvider;
+            });
+
+          const isDuplicate =
+            isDuplicateById ||
+            isDuplicateByName ||
+            isDuplicateByIdInName ||
+            isDuplicateSbp;
 
           if (isDuplicate) {
             console.log(
@@ -560,22 +578,57 @@ export function PaymentMethodSelector({
     );
   }
 
-  // 🔥 AGGRESSIVE FINAL DEDUPLICATION - Remove any duplicates based on ID
+  // 🔥 AGGRESSIVE FINAL DEDUPLICATION - Remove duplicates but keep different providers
   const uniquePaymentMethods = availablePaymentMethods.reduce((acc, method) => {
-    const isDuplicate = acc.some(
-      (existing) =>
-        existing.id === method.id ||
-        existing.id.toLowerCase() === method.id.toLowerCase() ||
-        (existing.apiName &&
-          method.apiName &&
-          existing.apiName.toLowerCase() === method.apiName.toLowerCase())
-    );
+    // Helper to check if method is SBP variant
+    const isSbpVariant = (name: string) => {
+      const lower = name.toLowerCase();
+      return (
+        lower.includes("sbp") ||
+        lower.includes("сбп") ||
+        lower === "sbp" ||
+        lower === "сбп"
+      );
+    };
+
+    const isDuplicate = acc.some((existing) => {
+      // Exact ID match (case-insensitive)
+      if (existing.id.toLowerCase() === method.id.toLowerCase()) {
+        return true;
+      }
+
+      // For SBP variants, only consider duplicate if from same provider
+      if (isSbpVariant(method.apiName) && isSbpVariant(existing.apiName)) {
+        const sameProvider =
+          (method.isPay4Game && existing.isPay4Game) ||
+          (method.isDukPay && existing.isDukPay) ||
+          (method.isMoneta && existing.isMoneta) ||
+          (method.isPagsmile && existing.isPagsmile) ||
+          // If both don't have provider flags, treat as same
+          (!method.isPay4Game && !method.isDukPay && !method.isMoneta && !method.isPagsmile &&
+           !existing.isPay4Game && !existing.isDukPay && !existing.isMoneta && !existing.isPagsmile);
+        
+        return sameProvider;
+      }
+
+      // For non-SBP methods, check API name match
+      if (
+        existing.apiName &&
+        method.apiName &&
+        existing.apiName.toLowerCase() === method.apiName.toLowerCase() &&
+        !isSbpVariant(method.apiName)
+      ) {
+        return true;
+      }
+
+      return false;
+    });
 
     if (!isDuplicate) {
       acc.push(method);
     } else {
       console.log(
-        `🗑️ Removing final duplicate: "${method.id}" (apiName: ${method.apiName})`
+        `🗑️ Removing final duplicate: "${method.id}" (apiName: ${method.apiName}, isPay4Game: ${method.isPay4Game}, isDukPay: ${method.isDukPay}, isMoneta: ${method.isMoneta}, isPagsmile: ${method.isPagsmile})`
       );
     }
 
