@@ -313,15 +313,19 @@ export function PaymentMethodSelector({
           // Only consider it a duplicate SBP if:
           // 1. Both are SBP variants
           // 2. Both are from the same provider (Pay4Game, DukPay, Moneta, or Pagsmile)
-          const isDuplicateSbp = isSbpVariant(methodName) && 
-            Array.from(availablePaymentMethods).some(existing => {
+          const isDuplicateSbp =
+            isSbpVariant(methodName) &&
+            Array.from(availablePaymentMethods).some((existing) => {
               const existingIsSbp = isSbpVariant(existing.apiName);
-              const sameProvider = 
+              const sameProvider =
                 (method.isPay4Game && existing.isPay4Game) ||
                 (method.isDukPay && existing.isDukPay) ||
                 (method.isMoneta && existing.isMoneta) ||
-                (!method.isPay4Game && !method.isDukPay && !method.isMoneta && existing.isPagsmile);
-              
+                (!method.isPay4Game &&
+                  !method.isDukPay &&
+                  !method.isMoneta &&
+                  existing.isPagsmile);
+
               return existingIsSbp && sameProvider;
             });
 
@@ -605,9 +609,15 @@ export function PaymentMethodSelector({
           (method.isMoneta && existing.isMoneta) ||
           (method.isPagsmile && existing.isPagsmile) ||
           // If both don't have provider flags, treat as same
-          (!method.isPay4Game && !method.isDukPay && !method.isMoneta && !method.isPagsmile &&
-           !existing.isPay4Game && !existing.isDukPay && !existing.isMoneta && !existing.isPagsmile);
-        
+          (!method.isPay4Game &&
+            !method.isDukPay &&
+            !method.isMoneta &&
+            !method.isPagsmile &&
+            !existing.isPay4Game &&
+            !existing.isDukPay &&
+            !existing.isMoneta &&
+            !existing.isPagsmile);
+
         return sameProvider;
       }
 
