@@ -458,7 +458,7 @@ export function useCreateOrder(
           typeof orderData.price === "string"
             ? orderData.price
             : orderData.price.toFixed(2),
-        name: orderData.payment_method === "sbp" ? "SBP" : "Card",
+        name: orderData.payment_method === "sbp" || orderData.payment_method === "sbp_pagsmile" ? "SBP" : "Card",
       };
 
       paymentMutation.mutate(paymentData);

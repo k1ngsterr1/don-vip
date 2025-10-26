@@ -1346,7 +1346,7 @@ export function OrderBlock({
         currentCurrency.code
       );
       if (currentCurrency.code === "RUB") {
-        setSelectedPaymentMethod("sbp"); // Для рублей выбираем SBP
+        setSelectedPaymentMethod("sbp_pagsmile"); // Для рублей выбираем Pagsmile SBP
       } else {
         setSelectedPaymentMethod("paypal"); // Для других валют Paypal
       }
