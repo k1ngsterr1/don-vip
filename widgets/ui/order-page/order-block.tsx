@@ -1346,7 +1346,9 @@ export function OrderBlock({
         currentCurrency.code
       );
       if (currentCurrency.code === "RUB") {
-        setSelectedPaymentMethod("sbp_pagsmile"); // Для рублей выбираем Pagsmile SBP
+        // Не выбираем автоматически, пусть пользователь выбирает сам
+        // из всех доступных методов (включая несколько SBP)
+        console.log("💡 Letting user choose from all available RUB methods");
       } else {
         setSelectedPaymentMethod("paypal"); // Для других валют Paypal
       }
@@ -1553,6 +1555,35 @@ export function OrderBlock({
       currency: currentCurrency.code,
     });
 
+    // Извлекаем правильный код метода оплаты для API
+    // Если ID содержит суффикс провайдера, используем оригинальный код
+    const getPaymentMethodForApi = (methodId: string): string => {
+      // Убираем суффиксы провайдеров и внутренние ID
+      let cleanMethod = methodId;
+
+      // Убираем суффиксы провайдеров
+      cleanMethod = cleanMethod.replace(/_pay4game$/, "");
+      cleanMethod = cleanMethod.replace(/_dukpay$/, "");
+      cleanMethod = cleanMethod.replace(/_moneta$/, "");
+
+      // Убираем внутренние ID (все после последнего подчеркивания, если это число)
+      const parts = cleanMethod.split("_");
+      if (parts.length > 1) {
+        const lastPart = parts[parts.length - 1];
+        if (/^\d+$/.test(lastPart)) {
+          // Последняя часть - число, убираем её
+          cleanMethod = parts.slice(0, -1).join("_");
+        }
+      }
+
+      console.log(
+        `🔄 Payment method conversion: "${methodId}" -> "${cleanMethod}"`
+      );
+      return cleanMethod;
+    };
+
+    const paymentMethodForApi = getPaymentMethodForApi(selectedPaymentMethod);
+
     const orderData: CreateOrderDto = {
       identifier: identifier,
       game_id: game.id,
@@ -1560,7 +1591,7 @@ export function OrderBlock({
       currency_id: selectedCurrency.id,
       amount: selectedCurrency.amount,
       price: formattedPrice,
-      payment_method: selectedPaymentMethod,
+      payment_method: paymentMethodForApi,
       user_game_id: !userId || userId.trim() === "" ? "unknown" : userId,
       server_id: game.isServerRequired ? serverId : undefined,
       coupon_code: couponInfo?.code || undefined,
@@ -1569,7 +1600,7 @@ export function OrderBlock({
     try {
       const response = await createOrder(orderData);
 
-      if (selectedPaymentMethod === "tbank" && currentCurrency.code === "RUB") {
+      if (paymentMethodForApi === "tbank" && currentCurrency.code === "RUB") {
         // Формируем название пакета для чека
         const priceInRub = Math.round(finalPriceRub); // Округляем до целого числа
         let packageName: string;

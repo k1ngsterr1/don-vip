@@ -95,6 +95,7 @@ interface FrontendPaymentMethod {
   isPay4Game?: boolean; // Flag for Pay4Game payment methods
   isPagsmile?: boolean; // Flag for Pagsmile payment methods
   code?: string; // Payment method code for Moneta/DukPay/Pay4Game
+  providerId?: number; // Оригинальный ID метода из API для использования в вызовах
 }
 
 export function PaymentMethodSelector({
@@ -315,90 +316,43 @@ export function PaymentMethodSelector({
 
       const apiMethods = methodsByCurrency.methods
         .filter((method) => {
-          // Skip if method already exists by ID or name
-          const methodId = (
-            method.methodCode ||
-            method.name ||
-            ""
-          ).toLowerCase();
-          const methodName = (method.name || "").toLowerCase();
+          // 🔥 УБИРАЕМ ВСЮ ЛОГИКУ ДЕДУПЛИКАЦИИ
+          // Показываем ВСЕ методы из API, даже если у них одинаковый код
+          // Это позволит отображать несколько SBP от разных провайдеров
 
-          // Check for exact duplicates
-          const isDuplicateById = existingMethodIds.has(methodId);
-          const isDuplicateByName = existingMethodNames.has(methodName);
-          const isDuplicateByIdInName = existingMethodNames.has(methodId);
+          console.log(
+            `✅ Adding ALL API methods without deduplication: "${method.name}" (ID: ${method.methodCode})`,
+            {
+              isMoneta: method.isMoneta,
+              isDukPay: method.isDukPay,
+              isPay4Game: method.isPay4Game,
+            }
+          );
 
-          // 🔥 IMPORTANT: Don't treat Pay4Game/DukPay/Moneta SBP as duplicates of Pagsmile SBP
-          // They should coexist as different payment methods
-          const isSbpVariant = (name: string) => {
-            const lower = name.toLowerCase();
-            return (
-              lower.includes("sbp") ||
-              lower.includes("сбп") ||
-              lower.includes("система") ||
-              lower === "sbp" ||
-              lower === "сбп"
-            );
-          };
-
-          // Only consider it a duplicate SBP if:
-          // 1. Both are SBP variants
-          // 2. Both are from the same provider (Pay4Game, DukPay, Moneta, or Pagsmile)
-          const isDuplicateSbp =
-            isSbpVariant(methodName) &&
-            Array.from(availablePaymentMethods).some((existing) => {
-              const existingIsSbp = isSbpVariant(existing.apiName);
-              const sameProvider =
-                (method.isPay4Game && existing.isPay4Game) ||
-                (method.isDukPay && existing.isDukPay) ||
-                (method.isMoneta && existing.isMoneta) ||
-                (!method.isPay4Game &&
-                  !method.isDukPay &&
-                  !method.isMoneta &&
-                  existing.isPagsmile);
-
-              return existingIsSbp && sameProvider;
-            });
-
-          const isDuplicate =
-            isDuplicateById ||
-            isDuplicateByName ||
-            isDuplicateByIdInName ||
-            isDuplicateSbp;
-
-          if (isDuplicate) {
-            console.log(
-              `⚠️ Skipping duplicate method: "${method.name}" (ID: ${method.methodCode})`,
-              {
-                isDuplicateById,
-                isDuplicateByName,
-                isDuplicateByIdInName,
-                isDuplicateSbp,
-                isMoneta: method.isMoneta,
-                isDukPay: method.isDukPay,
-                isPay4Game: method.isPay4Game,
-              }
-            );
-          } else {
-            console.log(
-              `✅ Adding unique method: "${method.name}" (ID: ${method.methodCode})`,
-              {
-                isMoneta: method.isMoneta,
-                isDukPay: method.isDukPay,
-                isPay4Game: method.isPay4Game,
-              }
-            );
-          }
-
-          return !isDuplicate;
+          return true; // Показываем ВСЕ методы из API
         })
         .map((method, index) => {
           const iconUrl = getIconUrl(method.icon);
           const fallbackIcon = getPaymentMethodIconSrc("card", method.name);
           const finalIcon = iconUrl || fallbackIcon;
 
+          // Создаем уникальный ID для каждого метода, включая провайдера
+          let uniqueId = method.methodCode || method.name || `method-${index}`;
+
+          // Добавляем суффикс провайдера для уникальности
+          if (method.isPay4Game) {
+            uniqueId = `${uniqueId}_pay4game`;
+          } else if (method.isDukPay) {
+            uniqueId = `${uniqueId}_dukpay`;
+          } else if (method.isMoneta) {
+            uniqueId = `${uniqueId}_moneta`;
+          }
+
+          // Добавляем внутренний ID для дополнительной уникальности
+          uniqueId = `${uniqueId}_${method.id}`;
+
           return {
-            id: method.methodCode || method.name || `method-${index}`,
+            id: uniqueId,
             translationKey: method.name,
             apiName: method.name,
             icon: finalIcon,
@@ -407,6 +361,7 @@ export function PaymentMethodSelector({
             isDukPay: method.isDukPay || false,
             isPay4Game: method.isPay4Game || false,
             code: method.code,
+            providerId: method.id, // Сохраняем оригинальный ID для использования в API вызовах
           };
         });
 
@@ -787,6 +742,16 @@ export function PaymentMethodSelector({
                 {method.translationKey.startsWith("methods.")
                   ? i18n(method.translationKey)
                   : method.translationKey}
+                {/* Добавляем бейдж провайдера для различения */}
+                {(method.isPay4Game || method.isDukPay || method.isMoneta) && (
+                  <span className="ml-2 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-md">
+                    {method.isPay4Game
+                      ? "Pay4Game"
+                      : method.isDukPay
+                      ? "DukPay"
+                      : "Moneta"}
+                  </span>
+                )}
               </span>
               {/* Показываем описание из API если есть */}
               {method.description && (
