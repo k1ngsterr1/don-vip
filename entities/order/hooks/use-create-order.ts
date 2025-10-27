@@ -334,8 +334,26 @@ export function useCreateOrder(
 
     // Check if this is a Pay4Game payment method
     if (isPay4GameMethod) {
-      const identifier =
-        orderData.identifier || getUserIdentifier() || "customer@don-vip.com";
+      const identifier = orderData.identifier || getUserIdentifier();
+
+      // Ensure we have an identifier
+      if (!identifier) {
+        setError("Identifier (email or phone number) is required for payment");
+        setIsProcessingPayment(false);
+        return;
+      }
+
+      // Format identifier as email
+      // If it's already an email, use it as is
+      // If it's a phone number, format it as +phonenumber@don-vip.com
+      const formatIdentifierAsEmail = (id: string): string => {
+        if (id.includes("@")) {
+          // Already an email
+          return id;
+        }
+        // It's a phone number - format as +phonenumber@don-vip.com
+        return `${id}@don-vip.com`;
+      };
 
       // Map payment method code to Pay4Game method
       const getPay4GameMethod = (code?: string): string => {
@@ -362,7 +380,7 @@ export function useCreateOrder(
           typeof orderData.price === "string"
             ? orderData.price
             : orderData.price.toFixed(2),
-        email: identifier.includes("@") ? identifier : `customer@don-vip.com`,
+        email: formatIdentifierAsEmail(identifier),
         method: getPay4GameMethod(pay4GameMethodCode),
         sbp_type: getSbpType(pay4GameMethodCode),
         description: `Order #${orderId}`,
