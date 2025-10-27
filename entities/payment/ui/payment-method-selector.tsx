@@ -654,42 +654,12 @@ export function PaymentMethodSelector({
     );
   }
 
-  // 🔥 AGGRESSIVE FINAL DEDUPLICATION - Remove duplicates and show only ONE SBP method
+  // 🔥 FINAL DEDUPLICATION - Remove exact duplicates but allow different provider variants
   const uniquePaymentMethods = availablePaymentMethods.reduce((acc, method) => {
-    // Helper to check if method is SBP variant
-    const isSbpVariant = (name: string) => {
-      const lower = name.toLowerCase();
-      return (
-        lower.includes("sbp") ||
-        lower.includes("сбп") ||
-        lower === "sbp" ||
-        lower === "сбп" ||
-        lower.includes("система бп") ||
-        lower.includes("система быстрых платежей")
-      );
-    };
-
     const isDuplicate = acc.some((existing) => {
-      // Exact ID match (case-insensitive)
+      // Exact ID match (case-insensitive) - this is the ONLY strict duplicate check
       if (existing.id.toLowerCase() === method.id.toLowerCase()) {
-        return true;
-      }
-
-      // 🔥 NEW LOGIC: Treat ALL SBP variants as duplicates - show only the first one
-      if (isSbpVariant(method.apiName) && isSbpVariant(existing.apiName)) {
-        console.log(
-          `🗑️ Removing SBP duplicate: "${method.apiName}" (already have "${existing.apiName}")`
-        );
-        return true; // Always treat SBP variants as duplicates
-      }
-
-      // For non-SBP methods, check API name match
-      if (
-        existing.apiName &&
-        method.apiName &&
-        existing.apiName.toLowerCase() === method.apiName.toLowerCase() &&
-        !isSbpVariant(method.apiName)
-      ) {
+        console.log(`🗑️ Removing exact duplicate by ID: "${method.id}"`);
         return true;
       }
 
