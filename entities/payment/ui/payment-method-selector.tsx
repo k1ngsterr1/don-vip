@@ -270,7 +270,34 @@ export function PaymentMethodSelector({
           return false;
         }
 
-        return activeApiBankNames.includes(method.apiName);
+        // Check if method matches any active bank (with SBP normalization)
+        return activeApiBankNames.some((bankName) => {
+          // Normalize both bank name and method name for SBP comparison
+          const normalizedBankName = bankName.toLowerCase();
+          const normalizedMethodName = method.apiName.toLowerCase();
+
+          // Special handling for SBP variants - but ONLY if API doesn't have SBP
+          if (
+            !apiHasSbp && // Only allow local SBP if API doesn't provide SBP
+            ((normalizedBankName === "sbp" &&
+              (normalizedMethodName === "сбп" ||
+                normalizedMethodName === "sbp")) ||
+              (normalizedMethodName === "sbp" &&
+                (normalizedBankName === "сбп" || normalizedBankName === "sbp")))
+          ) {
+            return true;
+          }
+
+          // Exact match for other methods (non-SBP)
+          if (
+            !normalizedMethodName.includes("sbp") &&
+            !normalizedMethodName.includes("сбп")
+          ) {
+            return bankName === method.apiName;
+          }
+
+          return false;
+        });
       });
 
       console.log(
@@ -433,11 +460,63 @@ export function PaymentMethodSelector({
   }
   // Priority 4: Fallback to predefined methods with bank filtering (legacy for RUB)
   else {
+    // Check if API has SBP methods (same logic as main flow)
+    const apiHasSbp = methodsByCurrency?.methods?.some((method) => {
+      const lower = method.name.toLowerCase();
+      return (
+        lower.includes("sbp") ||
+        lower.includes("сбп") ||
+        lower === "sbp" ||
+        lower === "сбп" ||
+        lower.includes("система бп") ||
+        lower.includes("система быстрых платежей")
+      );
+    });
+
     // Only show local methods if we have API data about active banks
     if (activeBanksResponse?.data && activeApiBankNames.length > 0) {
-      const filteredPaymentMethods = allPaymentMethods.filter((method) =>
-        activeApiBankNames.includes(method.apiName)
-      );
+      const filteredPaymentMethods = allPaymentMethods.filter((method) => {
+        const isLocalSbp =
+          method.isPagsmile &&
+          (method.apiName.toLowerCase().includes("sbp") ||
+            method.apiName.toLowerCase().includes("сбп"));
+
+        // Exclude local SBP if API has SBP (same as main flow)
+        if (isLocalSbp && apiHasSbp) {
+          console.log(
+            "🚫 Hiding hardcoded SBP in fallback because API provides SBP"
+          );
+          return false;
+        }
+
+        return activeApiBankNames.some((bankName) => {
+          // Normalize both bank name and method name for SBP comparison
+          const normalizedBankName = bankName.toLowerCase();
+          const normalizedMethodName = method.apiName.toLowerCase();
+
+          // Special handling for SBP variants - but ONLY if API doesn't have SBP
+          if (
+            !apiHasSbp && // Only allow local SBP if API doesn't provide SBP
+            ((normalizedBankName === "sbp" &&
+              (normalizedMethodName === "сбп" ||
+                normalizedMethodName === "sbp")) ||
+              (normalizedMethodName === "sbp" &&
+                (normalizedBankName === "сбп" || normalizedBankName === "sbp")))
+          ) {
+            return true;
+          }
+
+          // Exact match for other methods (non-SBP)
+          if (
+            !normalizedMethodName.includes("sbp") &&
+            !normalizedMethodName.includes("сбп")
+          ) {
+            return bankName === method.apiName;
+          }
+
+          return false;
+        });
+      });
       availablePaymentMethods = filteredPaymentMethods;
       console.log("🔄 Using fallback local methods with bank filtering");
     } else {
