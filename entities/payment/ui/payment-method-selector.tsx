@@ -1,7 +1,7 @@
 "use client";
 
 import Image, { type StaticImageData } from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import tbankIcon from "@/assets/T-Bank.webp";
 import mastercardIcon from "@/assets/mastercard.webp";
 import visaIcon from "@/assets/visa.webp";
@@ -95,6 +95,7 @@ interface FrontendPaymentMethod {
   isPay4Game?: boolean; // Flag for Pay4Game payment methods
   isPagsmile?: boolean; // Flag for Pagsmile payment methods
   code?: string; // Payment method code for Moneta/DukPay/Pay4Game
+  providerId?: number; // Оригинальный ID метода из API для использования в вызовах
 }
 
 export function PaymentMethodSelector({
@@ -108,6 +109,7 @@ export function PaymentMethodSelector({
   useCurrencyMethods = false, // Default to false for backward compatibility
 }: PaymentMethodSelectorProps) {
   const i18n = useTranslations("PaymentMethodSelector");
+  const locale = useLocale();
 
   // State for actual currency being used (from localStorage or prop)
   const [activeCurrency, setActiveCurrency] = useState<string>(currentCurrency);
@@ -212,7 +214,7 @@ export function PaymentMethodSelector({
     {
       id: "sbp_pagsmile", // Changed to distinguish from Pay4Game SBP
       translationKey: "methods.sbp",
-      apiName: "SBP",
+      apiName: locale === "ru" ? "СБП" : "SBP",
       icon: sbpIcon,
       isPagsmile: true, // Mark as Pagsmile method
     },
@@ -240,17 +242,42 @@ export function PaymentMethodSelector({
 
   // For RUB currency: Combine local methods (SBP, T-Bank) with API methods (Moneta) - WITH DEDUPLICATION
   if (activeCurrency === "RUB") {
-    // First add filtered local methods (SBP, T-Bank)
-    const filteredLocalMethods = allPaymentMethods.filter((method) =>
-      activeApiBankNames.includes(method.apiName)
-    );
+    // Only add local methods if we have successful API response with active banks
+    if (activeBanksResponse?.data && activeApiBankNames.length > 0) {
+      // Filter local methods - SHOW ALL including SBP
+      const filteredLocalMethods = allPaymentMethods.filter((method) => {
+        // Check if method matches any active bank (with SBP normalization)
+        return activeApiBankNames.some((bankName) => {
+          // Normalize both bank name and method name for SBP comparison
+          const normalizedBankName = bankName.toLowerCase();
+          const normalizedMethodName = method.apiName.toLowerCase();
 
-    console.log(
-      "🏦 Filtered local methods:",
-      filteredLocalMethods.map((m) => ({ id: m.id, apiName: m.apiName }))
-    );
+          // Special handling for SBP variants
+          if (
+            (normalizedBankName === "sbp" &&
+              (normalizedMethodName === "сбп" ||
+                normalizedMethodName === "sbp")) ||
+            (normalizedMethodName === "sbp" &&
+              (normalizedBankName === "сбп" || normalizedBankName === "sbp"))
+          ) {
+            return true;
+          }
 
-    availablePaymentMethods = [...filteredLocalMethods];
+          // Exact match for other methods
+          return bankName === method.apiName;
+        });
+      });
+
+      console.log(
+        "🏦 Filtered local methods:",
+        filteredLocalMethods.map((m) => ({ id: m.id, apiName: m.apiName }))
+      );
+
+      availablePaymentMethods = [...filteredLocalMethods];
+    } else {
+      console.log("🚫 No active banks data, skipping local methods");
+      availablePaymentMethods = [];
+    }
 
     // Then add API methods (including Moneta methods) if available - SKIP DUPLICATES
     if (methodsByCurrency && methodsByCurrency.methods.length > 0) {
@@ -284,90 +311,43 @@ export function PaymentMethodSelector({
 
       const apiMethods = methodsByCurrency.methods
         .filter((method) => {
-          // Skip if method already exists by ID or name
-          const methodId = (
-            method.methodCode ||
-            method.name ||
-            ""
-          ).toLowerCase();
-          const methodName = (method.name || "").toLowerCase();
+          // 🔥 УБИРАЕМ ВСЮ ЛОГИКУ ДЕДУПЛИКАЦИИ
+          // Показываем ВСЕ методы из API, даже если у них одинаковый код
+          // Это позволит отображать несколько SBP от разных провайдеров
 
-          // Check for exact duplicates
-          const isDuplicateById = existingMethodIds.has(methodId);
-          const isDuplicateByName = existingMethodNames.has(methodName);
-          const isDuplicateByIdInName = existingMethodNames.has(methodId);
+          console.log(
+            `✅ Adding ALL API methods without deduplication: "${method.name}" (ID: ${method.methodCode})`,
+            {
+              isMoneta: method.isMoneta,
+              isDukPay: method.isDukPay,
+              isPay4Game: method.isPay4Game,
+            }
+          );
 
-          // 🔥 IMPORTANT: Don't treat Pay4Game/DukPay/Moneta SBP as duplicates of Pagsmile SBP
-          // They should coexist as different payment methods
-          const isSbpVariant = (name: string) => {
-            const lower = name.toLowerCase();
-            return (
-              lower.includes("sbp") ||
-              lower.includes("сбп") ||
-              lower.includes("система") ||
-              lower === "sbp" ||
-              lower === "сбп"
-            );
-          };
-
-          // Only consider it a duplicate SBP if:
-          // 1. Both are SBP variants
-          // 2. Both are from the same provider (Pay4Game, DukPay, Moneta, or Pagsmile)
-          const isDuplicateSbp =
-            isSbpVariant(methodName) &&
-            Array.from(availablePaymentMethods).some((existing) => {
-              const existingIsSbp = isSbpVariant(existing.apiName);
-              const sameProvider =
-                (method.isPay4Game && existing.isPay4Game) ||
-                (method.isDukPay && existing.isDukPay) ||
-                (method.isMoneta && existing.isMoneta) ||
-                (!method.isPay4Game &&
-                  !method.isDukPay &&
-                  !method.isMoneta &&
-                  existing.isPagsmile);
-
-              return existingIsSbp && sameProvider;
-            });
-
-          const isDuplicate =
-            isDuplicateById ||
-            isDuplicateByName ||
-            isDuplicateByIdInName ||
-            isDuplicateSbp;
-
-          if (isDuplicate) {
-            console.log(
-              `⚠️ Skipping duplicate method: "${method.name}" (ID: ${method.methodCode})`,
-              {
-                isDuplicateById,
-                isDuplicateByName,
-                isDuplicateByIdInName,
-                isDuplicateSbp,
-                isMoneta: method.isMoneta,
-                isDukPay: method.isDukPay,
-                isPay4Game: method.isPay4Game,
-              }
-            );
-          } else {
-            console.log(
-              `✅ Adding unique method: "${method.name}" (ID: ${method.methodCode})`,
-              {
-                isMoneta: method.isMoneta,
-                isDukPay: method.isDukPay,
-                isPay4Game: method.isPay4Game,
-              }
-            );
-          }
-
-          return !isDuplicate;
+          return true; // Показываем ВСЕ методы из API
         })
         .map((method, index) => {
           const iconUrl = getIconUrl(method.icon);
           const fallbackIcon = getPaymentMethodIconSrc("card", method.name);
           const finalIcon = iconUrl || fallbackIcon;
 
+          // Создаем уникальный ID для каждого метода, включая провайдера
+          let uniqueId = method.methodCode || method.name || `method-${index}`;
+
+          // Добавляем суффикс провайдера для уникальности
+          if (method.isPay4Game) {
+            uniqueId = `${uniqueId}_pay4game`;
+          } else if (method.isDukPay) {
+            uniqueId = `${uniqueId}_dukpay`;
+          } else if (method.isMoneta) {
+            uniqueId = `${uniqueId}_moneta`;
+          }
+
+          // Добавляем внутренний ID для дополнительной уникальности
+          uniqueId = `${uniqueId}_${method.id}`;
+
           return {
-            id: method.methodCode || method.name || `method-${index}`,
+            id: uniqueId,
             translationKey: method.name,
             apiName: method.name,
             icon: finalIcon,
@@ -376,6 +356,7 @@ export function PaymentMethodSelector({
             isDukPay: method.isDukPay || false,
             isPay4Game: method.isPay4Game || false,
             code: method.code,
+            providerId: method.id, // Сохраняем оригинальный ID для использования в API вызовах
           };
         });
 
@@ -447,10 +428,35 @@ export function PaymentMethodSelector({
   }
   // Priority 4: Fallback to predefined methods with bank filtering (legacy for RUB)
   else {
-    const filteredPaymentMethods = allPaymentMethods.filter((method) =>
-      activeApiBankNames.includes(method.apiName)
-    );
-    availablePaymentMethods = filteredPaymentMethods;
+    // Only show local methods if we have API data about active banks
+    if (activeBanksResponse?.data && activeApiBankNames.length > 0) {
+      const filteredPaymentMethods = allPaymentMethods.filter((method) =>
+        activeApiBankNames.some((bankName) => {
+          // Normalize both bank name and method name for SBP comparison
+          const normalizedBankName = bankName.toLowerCase();
+          const normalizedMethodName = method.apiName.toLowerCase();
+
+          // Special handling for SBP variants
+          if (
+            (normalizedBankName === "sbp" &&
+              (normalizedMethodName === "сбп" ||
+                normalizedMethodName === "sbp")) ||
+            (normalizedMethodName === "sbp" &&
+              (normalizedBankName === "сбп" || normalizedBankName === "sbp"))
+          ) {
+            return true;
+          }
+
+          // Exact match for other methods
+          return bankName === method.apiName;
+        })
+      );
+      availablePaymentMethods = filteredPaymentMethods;
+      console.log("🔄 Using fallback local methods with bank filtering");
+    } else {
+      availablePaymentMethods = [];
+      console.log("🚫 No bank data available, showing empty payment methods");
+    }
   }
 
   const isLoading =
@@ -582,52 +588,12 @@ export function PaymentMethodSelector({
     );
   }
 
-  // 🔥 AGGRESSIVE FINAL DEDUPLICATION - Remove duplicates but keep different providers
+  // 🔥 FINAL DEDUPLICATION - Remove exact duplicates but allow different provider variants
   const uniquePaymentMethods = availablePaymentMethods.reduce((acc, method) => {
-    // Helper to check if method is SBP variant
-    const isSbpVariant = (name: string) => {
-      const lower = name.toLowerCase();
-      return (
-        lower.includes("sbp") ||
-        lower.includes("сбп") ||
-        lower === "sbp" ||
-        lower === "сбп"
-      );
-    };
-
     const isDuplicate = acc.some((existing) => {
-      // Exact ID match (case-insensitive)
+      // Exact ID match (case-insensitive) - this is the ONLY strict duplicate check
       if (existing.id.toLowerCase() === method.id.toLowerCase()) {
-        return true;
-      }
-
-      // For SBP variants, only consider duplicate if from same provider
-      if (isSbpVariant(method.apiName) && isSbpVariant(existing.apiName)) {
-        const sameProvider =
-          (method.isPay4Game && existing.isPay4Game) ||
-          (method.isDukPay && existing.isDukPay) ||
-          (method.isMoneta && existing.isMoneta) ||
-          (method.isPagsmile && existing.isPagsmile) ||
-          // If both don't have provider flags, treat as same
-          (!method.isPay4Game &&
-            !method.isDukPay &&
-            !method.isMoneta &&
-            !method.isPagsmile &&
-            !existing.isPay4Game &&
-            !existing.isDukPay &&
-            !existing.isMoneta &&
-            !existing.isPagsmile);
-
-        return sameProvider;
-      }
-
-      // For non-SBP methods, check API name match
-      if (
-        existing.apiName &&
-        method.apiName &&
-        existing.apiName.toLowerCase() === method.apiName.toLowerCase() &&
-        !isSbpVariant(method.apiName)
-      ) {
+        console.log(`🗑️ Removing exact duplicate by ID: "${method.id}"`);
         return true;
       }
 
@@ -688,6 +654,9 @@ export function PaymentMethodSelector({
                 isPay4Game: method.isPay4Game,
                 code: method.code,
               });
+
+              // Ensure only one payment method can be selected at a time
+              // This is additional protection against multiple selections
               onSelect(
                 method.id,
                 method.isMoneta,
@@ -756,6 +725,16 @@ export function PaymentMethodSelector({
                 {method.translationKey.startsWith("methods.")
                   ? i18n(method.translationKey)
                   : method.translationKey}
+                {/* Добавляем бейдж провайдера для различения */}
+                {(method.isPay4Game || method.isDukPay || method.isMoneta) && (
+                  <span className="ml-2 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-md">
+                    {method.isPay4Game
+                      ? "Pay4Game"
+                      : method.isDukPay
+                      ? "DukPay"
+                      : "Moneta"}
+                  </span>
+                )}
               </span>
               {/* Показываем описание из API если есть */}
               {method.description && (
