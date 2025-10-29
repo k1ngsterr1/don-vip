@@ -1999,7 +1999,7 @@ export function OrderBlock({
           </div>
 
           {/* Telegram Channel Check */}
-          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          {/* <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <span className="text-blue-600 font-medium">
@@ -2064,7 +2064,7 @@ export function OrderBlock({
                 </div>
 
                 {/* Результат проверки */}
-                {telegramResult && (
+          {/* {telegramResult && (
                   <div
                     className={`p-3 rounded-lg ${
                       telegramResult.isMember
@@ -2110,8 +2110,8 @@ export function OrderBlock({
                     : "Tip: Make sure your Telegram profile is not hidden from search"}
                 </div>
               </div>
-            )}
-          </div>
+            )} */}
+          {/* </div> */}
 
           {/* Validation Result */}
           {(isBigo || isDonatBank || isPubgMobile) &&
