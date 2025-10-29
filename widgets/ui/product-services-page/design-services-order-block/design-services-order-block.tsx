@@ -37,18 +37,7 @@ import {
   getDesignServiceNameByPrice,
   isDesignServicePrice,
 } from "@/shared/utils/design-service-names";
-import { useDesignServicesPrices } from "@/entities/design-services/hooks/use-design-services";
-
-interface DesignService {
-  id: number;
-  titleKey: string;
-  descriptionKey: string;
-  icon: React.ReactNode;
-  price: number;
-  features: string[];
-  popular?: boolean;
-  delivery: string;
-}
+import { useDesignServices } from "@/entities/design-services/hooks/use-design-services";
 
 interface ServiceData {
   id: number;
@@ -58,94 +47,66 @@ interface ServiceData {
   currencyName: string;
 }
 
-const designServices: DesignService[] = [
-  {
-    id: 1,
-    titleKey: "miniEdit",
-    descriptionKey: "miniEditDesc",
+// Маппинг для иконок и дополнительных данных по service_key
+const serviceIconsAndFeatures = {
+  miniEdit: {
     icon: <PenTool className="w-8 h-8" />,
-    price: 40,
     features: [
       "Изменение цвета",
       "Редактирование текста",
       "Корректировка размеров",
     ],
     delivery: "1 день",
+    popular: false,
   },
-  {
-    id: 2,
-    titleKey: "basicElement",
-    descriptionKey: "basicElementDesc",
+  basicElement: {
     icon: <Star className="w-8 h-8" />,
-    price: 170,
     features: ["Одна иконка", "Кнопка", "Простой баннер"],
     delivery: "1-2 дня",
+    popular: false,
   },
-  {
-    id: 3,
-    titleKey: "lightBanner",
-    descriptionKey: "lightBannerDesc",
+  lightBanner: {
     icon: <Layout className="w-8 h-8" />,
-    price: 340,
     features: ["Простой баннер", "Карточка товара", "Готовый дизайн"],
     delivery: "2-3 дня",
+    popular: false,
   },
-  {
-    id: 4,
-    titleKey: "socialStart",
-    descriptionKey: "socialStartDesc",
+  socialStart: {
     icon: <Users className="w-8 h-8" />,
-    price: 510,
     features: [
       "Пост для Instagram",
       "Сторис для Telegram",
       "Контент для TikTok",
     ],
     delivery: "2-3 дня",
+    popular: false,
   },
-  {
-    id: 5,
-    titleKey: "logoLight",
-    descriptionKey: "logoLightDesc",
+  logoLight: {
     icon: <Palette className="w-8 h-8" />,
-    price: 850,
     features: ["1-2 варианта логотипа", "Векторные файлы", "Базовые правки"],
     delivery: "3-5 дней",
     popular: true,
   },
-  {
-    id: 6,
-    titleKey: "brandMini",
-    descriptionKey: "brandMiniDesc",
+  brandMini: {
     icon: <Star className="w-8 h-8" />,
-    price: 1700,
     features: ["Логотип", "Цветовая схема", "Шрифты", "Базовый набор"],
     delivery: "5-7 дней",
+    popular: false,
   },
-  {
-    id: 7,
-    titleKey: "webDesignLight",
-    descriptionKey: "webDesignLightDesc",
+  webDesignLight: {
     icon: <Globe className="w-8 h-8" />,
-    price: 2550,
     features: ["1-2 блока сайта", "Главная секция", "Карточка товара"],
     delivery: "7-10 дней",
+    popular: false,
   },
-  {
-    id: 8,
-    titleKey: "businessBanner",
-    descriptionKey: "businessBannerDesc",
+  businessBanner: {
     icon: <Layout className="w-8 h-8" />,
-    price: 3400,
     features: ["3-5 баннеров", "Для сайта и рекламы", "Готовый пакет"],
     delivery: "7-10 дней",
+    popular: false,
   },
-  {
-    id: 9,
-    titleKey: "socialPro",
-    descriptionKey: "socialProDesc",
+  socialPro: {
     icon: <Users className="w-8 h-8" />,
-    price: 5100,
     features: [
       "Аватарка",
       "Баннер",
@@ -153,22 +114,16 @@ const designServices: DesignService[] = [
       "Комплект оформления",
     ],
     delivery: "10-14 дней",
+    popular: false,
   },
-  {
-    id: 10,
-    titleKey: "logoPro",
-    descriptionKey: "logoProDesc",
+  logoPro: {
     icon: <Palette className="w-8 h-8" />,
-    price: 6800,
     features: ["3-4 варианта логотипа", "Исходники", "Премиум качество"],
     delivery: "7-14 дней",
+    popular: false,
   },
-  {
-    id: 11,
-    titleKey: "startupPack",
-    descriptionKey: "startupPackDesc",
+  startupPack: {
     icon: <Zap className="w-8 h-8" />,
-    price: 8500,
     features: [
       "Логотип",
       "Фирменный стиль",
@@ -176,44 +131,32 @@ const designServices: DesignService[] = [
       "Полный комплект",
     ],
     delivery: "14-21 день",
+    popular: false,
   },
-  {
-    id: 12,
-    titleKey: "webDesignLight2",
-    descriptionKey: "webDesignLight2Desc",
+  webDesignLight2: {
     icon: <Globe className="w-8 h-8" />,
-    price: 17000,
     features: ["Полный дизайн лендинга", "До 5 блоков", "Адаптивный дизайн"],
     delivery: "21-30 дней",
+    popular: false,
   },
-  {
-    id: 13,
-    titleKey: "webDesignPro",
-    descriptionKey: "webDesignProDesc",
+  webDesignPro: {
     icon: <Globe className="w-8 h-8" />,
-    price: 25500,
     features: ["Многостраничный сайт", "До 10 страниц", "Полный UI/UX"],
     delivery: "30-45 дней",
+    popular: false,
   },
-  {
-    id: 14,
-    titleKey: "ecommerce",
-    descriptionKey: "ecommerceDesc",
+  ecommerce: {
     icon: <Smartphone className="w-8 h-8" />,
-    price: 34000,
     features: [
       "Дизайн интернет-магазина",
       "UI/UX дизайн",
       "E-commerce платформа",
     ],
     delivery: "45-60 дней",
+    popular: false,
   },
-  {
-    id: 15,
-    titleKey: "brandingPremium",
-    descriptionKey: "brandingPremiumDesc",
+  brandingPremium: {
     icon: <Star className="w-8 h-8" />,
-    price: 42500,
     features: [
       "Фирменный стиль компании",
       "Брендбук",
@@ -221,13 +164,10 @@ const designServices: DesignService[] = [
       "Премиум качество",
     ],
     delivery: "60-90 дней",
+    popular: false,
   },
-  {
-    id: 16,
-    titleKey: "fullDesign",
-    descriptionKey: "fullDesignDesc",
+  fullDesign: {
     icon: <Zap className="w-8 h-8" />,
-    price: 51000,
     features: [
       "Дизайн сайта",
       "Соцсети",
@@ -236,8 +176,9 @@ const designServices: DesignService[] = [
       "Полный пакет",
     ],
     delivery: "90-120 дней",
+    popular: false,
   },
-];
+};
 
 export function DesignServicesOrderBlock() {
   const locale = useLocale();
@@ -250,9 +191,12 @@ export function DesignServicesOrderBlock() {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
   const [showGuestAuthPopup, setShowGuestAuthPopup] = useState(false);
 
-  // Загружаем цены из API
-  const { data: apiPrices, isLoading: pricesLoading } =
-    useDesignServicesPrices();
+  // Загружаем данные из API
+  const {
+    data: apiServices,
+    isLoading: servicesLoading,
+    error: servicesError,
+  } = useDesignServices();
   const [guestIdentifier, setGuestIdentifier] = useState("");
   const [activeTab, setActiveTab] = useState<
     "instruction" | "reviews" | "description" | "faq"
@@ -272,24 +216,45 @@ export function DesignServicesOrderBlock() {
 
   const identifierCollected = useRef(false);
 
-  // Функция для получения актуальной цены услуги
-  const getServicePrice = (service: DesignService) => {
-    if (apiPrices && apiPrices[service.titleKey]) {
-      return apiPrices[service.titleKey];
-    }
-    // Возвращаем дефолтную цену если API еще не загрузилось
-    return service.price;
-  };
+  // Преобразуем данные из API в нужный формат с дополнительной информацией
+  const servicesWithMetadata = apiServices
+    ? apiServices.map((service) => {
+        const metadata =
+          serviceIconsAndFeatures[
+            service.service_key as keyof typeof serviceIconsAndFeatures
+          ];
+        return {
+          ...service,
+          icon: metadata?.icon || <Star className="w-8 h-8" />,
+          features: metadata?.features || [],
+          delivery: metadata?.delivery || "По договоренности",
+          popular: metadata?.popular || false,
+          titleKey: service.service_key,
+          descriptionKey: `${service.service_key}Desc`,
+        };
+      })
+    : [];
 
-  // Обновляем услуги с актуальными ценами
-  const servicesWithActualPrices = designServices.map((service) => ({
-    ...service,
-    price: getServicePrice(service),
-  }));
-
-  // Показываем загрузку пока цены не загрузились
-  if (pricesLoading) {
+  // Показываем загрузку пока данные не загрузились
+  if (servicesLoading) {
     return <OrderBlockSkeleton />;
+  }
+
+  // Показываем ошибку если не удалось загрузить данные
+  if (servicesError || !apiServices) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">Ошибка загрузки услуг</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            Обновить страницу
+          </button>
+        </div>
+      </div>
+    );
   }
 
   // Хардкодные переводы
@@ -408,8 +373,8 @@ export function DesignServicesOrderBlock() {
     currencyName: "RUB",
   };
 
-  const selectedServiceData = servicesWithActualPrices.find(
-    (service) => service.id === selectedService
+  const selectedServiceData = servicesWithMetadata.find(
+    (service: any) => service.id === selectedService
   );
 
   const formatPrice = (price: number) => {
@@ -631,7 +596,7 @@ export function DesignServicesOrderBlock() {
       {/* Service Packages for mobile */}
       <div className="px-4">
         <div className="grid grid-cols-1 gap-4">
-          {servicesWithActualPrices.map((service) => (
+          {servicesWithMetadata.map((service: any) => (
             <div
               key={service.id}
               className={cn(
@@ -656,10 +621,12 @@ export function DesignServicesOrderBlock() {
                 </div>
                 <div className="flex-1">
                   <h3 className="font-semibold text-gray-900 mb-1">
-                    {t[service.titleKey as keyof typeof t]}
+                    {service.title}
                   </h3>
                   <p className="text-sm text-gray-600 mb-2">
-                    {t[service.descriptionKey as keyof typeof t]}
+                    {service.description ||
+                      t[service.descriptionKey as keyof typeof t] ||
+                      ""}
                   </p>
                   <div className="flex items-center justify-between">
                     <span className="text-lg font-bold text-blue-600">
@@ -678,13 +645,13 @@ export function DesignServicesOrderBlock() {
 
       {/* Custom Amount Selector for mobile */}
       {/* <CustomAmountSelector
-        packages={servicesWithActualPrices.map((service) => ({
+        packages={servicesWithMetadata.map((service: any) => ({
           id: service.id,
           amount: 1,
           price: service.price.toString(),
           originalPriceRub: service.price,
           type: "service",
-          sku: service.titleKey,
+          sku: service.service_key,
         }))}
         onCustomAmountSelect={handleCustomAmountSelect}
         currencyName="услуг"
@@ -834,7 +801,7 @@ export function DesignServicesOrderBlock() {
                 {t.selectService}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {servicesWithActualPrices.map((service) => (
+                {servicesWithMetadata.map((service: any) => (
                   <div
                     key={service.id}
                     className={cn(
@@ -859,10 +826,12 @@ export function DesignServicesOrderBlock() {
                       </div>
                       <div className="flex-1">
                         <h3 className="font-semibold text-gray-900 mb-1">
-                          {t[service.titleKey as keyof typeof t]}
+                          {service.title}
                         </h3>
                         <p className="text-sm text-gray-600 mb-2">
-                          {t[service.descriptionKey as keyof typeof t]}
+                          {service.description ||
+                            t[service.descriptionKey as keyof typeof t] ||
+                            ""}
                         </p>
                         <div className="flex items-center justify-between">
                           <span className="text-lg font-bold text-blue-600">
@@ -881,15 +850,17 @@ export function DesignServicesOrderBlock() {
                           {t.features}:
                         </h4>
                         <ul className="space-y-1">
-                          {service.features.map((feature, index) => (
-                            <li
-                              key={index}
-                              className="flex items-center text-xs text-gray-600"
-                            >
-                              <Check className="w-3 h-3 text-green-500 mr-1 flex-shrink-0" />
-                              {feature}
-                            </li>
-                          ))}
+                          {service.features.map(
+                            (feature: string, index: number) => (
+                              <li
+                                key={index}
+                                className="flex items-center text-xs text-gray-600"
+                              >
+                                <Check className="w-3 h-3 text-green-500 mr-1 flex-shrink-0" />
+                                {feature}
+                              </li>
+                            )
+                          )}
                         </ul>
                       </div>
                     )}
@@ -900,13 +871,13 @@ export function DesignServicesOrderBlock() {
               {/* Custom Amount Selector for desktop */}
               {/* <div className="mt-6">
                 <CustomAmountSelector
-                  packages={servicesWithActualPrices.map((service) => ({
+                  packages={servicesWithMetadata.map((service: any) => ({
                     id: service.id,
                     amount: 1,
                     price: service.price.toString(),
                     originalPriceRub: service.price,
                     type: "service",
-                    sku: service.titleKey,
+                    sku: service.service_key,
                   }))}
                   onCustomAmountSelect={handleCustomAmountSelect}
                   currencyName="услуг"
@@ -1045,8 +1016,8 @@ export function DesignServicesOrderBlock() {
                     amount: 1,
                     price: formatPrice(selectedServiceData.price),
                     originalPriceRub: selectedServiceData.price,
-                    type: selectedServiceData.titleKey,
-                    sku: selectedServiceData.titleKey,
+                    type: selectedServiceData.service_key,
+                    sku: selectedServiceData.service_key,
                   }
                 : null
             }
