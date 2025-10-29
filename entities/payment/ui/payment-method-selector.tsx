@@ -726,15 +726,6 @@ export function PaymentMethodSelector({
                   ? i18n(method.translationKey)
                   : method.translationKey}
                 {/* Добавляем бейдж провайдера для различения */}
-                {(method.isPay4Game || method.isDukPay || method.isMoneta) && (
-                  <span className="ml-2 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-md">
-                    {method.isPay4Game
-                      ? "Pay4Game"
-                      : method.isDukPay
-                      ? "DukPay"
-                      : "Moneta"}
-                  </span>
-                )}
               </span>
               {/* Показываем описание из API если есть */}
               {method.description && (
