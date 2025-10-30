@@ -217,23 +217,25 @@ export function DesignServicesOrderBlock() {
   const identifierCollected = useRef(false);
 
   // Преобразуем данные из API в нужный формат с дополнительной информацией
-  const servicesWithMetadata = apiServices
-    ? apiServices.map((service) => {
-        const metadata =
-          serviceIconsAndFeatures[
-            service.service_key as keyof typeof serviceIconsAndFeatures
-          ];
-        return {
-          ...service,
-          icon: metadata?.icon || <Star className="w-8 h-8" />,
-          features: metadata?.features || [],
-          delivery: metadata?.delivery || "По договоренности",
-          popular: metadata?.popular || false,
-          titleKey: service.service_key,
-          descriptionKey: `${service.service_key}Desc`,
-        };
-      })
-    : [];
+  // ВРЕМЕННО СКРЫТО: Все дизайн-услуги скрыты
+  const servicesWithMetadata: any[] = [];
+  // const servicesWithMetadata = apiServices
+  //   ? apiServices.map((service) => {
+  //       const metadata =
+  //         serviceIconsAndFeatures[
+  //           service.service_key as keyof typeof serviceIconsAndFeatures
+  //         ];
+  //       return {
+  //         ...service,
+  //         icon: metadata?.icon || <Star className="w-8 h-8" />,
+  //         features: metadata?.features || [],
+  //         delivery: metadata?.delivery || "По договоренности",
+  //         popular: metadata?.popular || false,
+  //         titleKey: service.service_key,
+  //         descriptionKey: `${service.service_key}Desc`,
+  //       };
+  //     })
+  //   : [];
 
   // Показываем загрузку пока данные не загрузились
   if (servicesLoading) {
@@ -593,55 +595,68 @@ export function DesignServicesOrderBlock() {
         </h2>
       </div>
 
-      {/* Service Packages for mobile */}
-      <div className="px-4">
-        <div className="grid grid-cols-1 gap-4">
-          {servicesWithMetadata.map((service: any) => (
-            <div
-              key={service.id}
-              className={cn(
-                "relative bg-white rounded-xl shadow-sm border-2 p-4 cursor-pointer transition-all duration-200",
-                selectedService === service.id
-                  ? "border-blue-500 bg-blue-50"
-                  : "border-gray-200 hover:border-gray-300"
-              )}
-              onClick={() => handleServiceSelect(service.id)}
-            >
-              {service.popular && (
-                <div className="absolute -top-2 left-4">
-                  <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-medium">
-                    {t.popular}
-                  </span>
-                </div>
-              )}
+      {/* Temporary message - services hidden */}
+      <div className="px-4 mb-6">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <p className="text-yellow-800 text-sm">
+            {locale === "ru"
+              ? "Дизайн-услуги временно недоступны. Мы работаем над улучшением сервиса."
+              : "Design services are temporarily unavailable. We are working on improving the service."}
+          </p>
+        </div>
+      </div>
 
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
-                  {service.icon}
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900 mb-1">
-                    {service.title}
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-2">
-                    {service.description ||
-                      t[service.descriptionKey as keyof typeof t] ||
-                      ""}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold text-blue-600">
-                      {formatPrice(service.price)}
+      {/* Service Packages for mobile - HIDDEN */}
+      {servicesWithMetadata.length > 0 && (
+        <div className="px-4">
+          <div className="grid grid-cols-1 gap-4">
+            {servicesWithMetadata.map((service: any) => (
+              <div
+                key={service.id}
+                className={cn(
+                  "relative bg-white rounded-xl shadow-sm border-2 p-4 cursor-pointer transition-all duration-200",
+                  selectedService === service.id
+                    ? "border-blue-500 bg-blue-50"
+                    : "border-gray-200 hover:border-gray-300"
+                )}
+                onClick={() => handleServiceSelect(service.id)}
+              >
+                {service.popular && (
+                  <div className="absolute -top-2 left-4">
+                    <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+                      {t.popular}
                     </span>
-                    <span className="text-xs text-gray-500">
-                      {service.delivery}
-                    </span>
+                  </div>
+                )}
+
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
+                    {service.icon}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900 mb-1">
+                      {service.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-2">
+                      {service.description ||
+                        t[service.descriptionKey as keyof typeof t] ||
+                        ""}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-lg font-bold text-blue-600">
+                        {formatPrice(service.price)}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        {service.delivery}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Custom Amount Selector for mobile */}
       {/* <CustomAmountSelector
@@ -800,73 +815,87 @@ export function DesignServicesOrderBlock() {
               <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                 {t.selectService}
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {servicesWithMetadata.map((service: any) => (
-                  <div
-                    key={service.id}
-                    className={cn(
-                      "relative bg-white rounded-xl shadow-sm border-2 p-4 cursor-pointer transition-all duration-200",
-                      selectedService === service.id
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200 hover:border-gray-300"
-                    )}
-                    onClick={() => handleServiceSelect(service.id)}
-                  >
-                    {service.popular && (
-                      <div className="absolute -top-2 left-4">
-                        <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-medium">
-                          {t.popular}
-                        </span>
-                      </div>
-                    )}
 
-                    <div className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
-                        {service.icon}
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900 mb-1">
-                          {service.title}
-                        </h3>
-                        <p className="text-sm text-gray-600 mb-2">
-                          {service.description ||
-                            t[service.descriptionKey as keyof typeof t] ||
-                            ""}
-                        </p>
-                        <div className="flex items-center justify-between">
-                          <span className="text-lg font-bold text-blue-600">
-                            {formatPrice(service.price)}
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            {service.delivery}
+              {/* Temporary message - services hidden */}
+              <div className="mb-6">
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <p className="text-yellow-800 text-sm">
+                    {locale === "ru"
+                      ? "Дизайн-услуги временно недоступны. Мы работаем над улучшением сервиса."
+                      : "Design services are temporarily unavailable. We are working on improving the service."}
+                  </p>
+                </div>
+              </div>
+
+              {servicesWithMetadata.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {servicesWithMetadata.map((service: any) => (
+                    <div
+                      key={service.id}
+                      className={cn(
+                        "relative bg-white rounded-xl shadow-sm border-2 p-4 cursor-pointer transition-all duration-200",
+                        selectedService === service.id
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-200 hover:border-gray-300"
+                      )}
+                      onClick={() => handleServiceSelect(service.id)}
+                    >
+                      {service.popular && (
+                        <div className="absolute -top-2 left-4">
+                          <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+                            {t.popular}
                           </span>
                         </div>
-                      </div>
-                    </div>
+                      )}
 
-                    {selectedService === service.id && (
-                      <div className="mt-3 pt-3 border-t border-gray-200">
-                        <h4 className="text-sm font-medium text-gray-700 mb-2">
-                          {t.features}:
-                        </h4>
-                        <ul className="space-y-1">
-                          {service.features.map(
-                            (feature: string, index: number) => (
-                              <li
-                                key={index}
-                                className="flex items-center text-xs text-gray-600"
-                              >
-                                <Check className="w-3 h-3 text-green-500 mr-1 flex-shrink-0" />
-                                {feature}
-                              </li>
-                            )
-                          )}
-                        </ul>
+                      <div className="flex items-start gap-3">
+                        <div className="flex-shrink-0 w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
+                          {service.icon}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-gray-900 mb-1">
+                            {service.title}
+                          </h3>
+                          <p className="text-sm text-gray-600 mb-2">
+                            {service.description ||
+                              t[service.descriptionKey as keyof typeof t] ||
+                              ""}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <span className="text-lg font-bold text-blue-600">
+                              {formatPrice(service.price)}
+                            </span>
+                            <span className="text-xs text-gray-500">
+                              {service.delivery}
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                    )}
-                  </div>
-                ))}
-              </div>
+
+                      {selectedService === service.id && (
+                        <div className="mt-3 pt-3 border-t border-gray-200">
+                          <h4 className="text-sm font-medium text-gray-700 mb-2">
+                            {t.features}:
+                          </h4>
+                          <ul className="space-y-1">
+                            {service.features.map(
+                              (feature: string, index: number) => (
+                                <li
+                                  key={index}
+                                  className="flex items-center text-xs text-gray-600"
+                                >
+                                  <Check className="w-3 h-3 text-green-500 mr-1 flex-shrink-0" />
+                                  {feature}
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
 
               {/* Custom Amount Selector for desktop */}
               {/* <div className="mt-6">
