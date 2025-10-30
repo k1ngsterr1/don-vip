@@ -59,6 +59,9 @@ export interface PaymentMethodByCurrency {
   isPay4Game?: boolean; // Flag to identify Pay4Game payment methods
   sortOrder: number;
   description?: string | null;
+  minAmount?: number; // Minimum payment amount
+  maxAmount?: number; // Maximum payment amount
+  fee?: number; // Payment method commission/fee in percent
 }
 
 export interface PaymentMethodsByCurrencyResponse {
