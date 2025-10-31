@@ -96,6 +96,7 @@ interface FrontendPaymentMethod {
   isPagsmile?: boolean; // Flag for Pagsmile payment methods
   code?: string; // Payment method code for Moneta/DukPay/Pay4Game
   providerId?: number; // Оригинальный ID метода из API для использования в вызовах
+  fee?: number; // Комиссия платежного метода в процентах
 }
 
 export function PaymentMethodSelector({
@@ -298,6 +299,15 @@ export function PaymentMethodSelector({
         methodsByCurrency.methods
       );
 
+      console.log(
+        "🔍 Checking RUB fee values from API:",
+        methodsByCurrency.methods.map((m) => ({
+          name: m.name,
+          fee: m.fee,
+          feeType: typeof m.fee,
+        }))
+      );
+
       // Create a Set of existing method names/IDs to avoid duplicates
       const existingMethodIds = new Set(
         availablePaymentMethods.map((m) => m.id.toLowerCase())
@@ -357,6 +367,7 @@ export function PaymentMethodSelector({
             isPay4Game: method.isPay4Game || false,
             code: method.code,
             providerId: method.id, // Сохраняем оригинальный ID для использования в API вызовах
+            fee: method.fee ? Number(method.fee) : undefined, // Добавляем комиссию
           };
         });
 
@@ -375,8 +386,17 @@ export function PaymentMethodSelector({
   // For non-RUB currencies: Use API methods
   else if (methodsByCurrency && methodsByCurrency.methods.length > 0) {
     console.log("Processing methodsByCurrency:", methodsByCurrency.methods);
+    console.log(
+      "🔍 Checking fee values from API:",
+      methodsByCurrency.methods.map((m) => ({
+        name: m.name,
+        fee: m.fee,
+        feeType: typeof m.fee,
+      }))
+    );
     availablePaymentMethods = methodsByCurrency.methods.map((method, index) => {
       console.log(`Processing method ${index}:`, method);
+      console.log(`Fee for ${method.name}:`, method.fee, typeof method.fee);
       const iconUrl = getIconUrl(method.icon);
       const fallbackIcon = getPaymentMethodIconSrc("card", method.name);
       const finalIcon = iconUrl || fallbackIcon;
@@ -392,6 +412,7 @@ export function PaymentMethodSelector({
         isDukPay: method.isDukPay || false, // Add DukPay flag
         isPay4Game: method.isPay4Game || false, // Add Pay4Game flag
         code: method.code, // Add payment method code
+        fee: method.fee ? Number(method.fee) : undefined, // Добавляем комиссию
       };
     });
   }
@@ -721,12 +742,19 @@ export function PaymentMethodSelector({
               />
             </div>
             <div className="flex-1">
-              <span className="font-medium text-gray-800">
-                {method.translationKey.startsWith("methods.")
-                  ? i18n(method.translationKey)
-                  : method.translationKey}
-                {/* Добавляем бейдж провайдера для различения */}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-gray-800">
+                  {method.translationKey.startsWith("methods.")
+                    ? i18n(method.translationKey)
+                    : method.translationKey}
+                </span>
+                {/* Отображаем комиссию если она есть */}
+                {method.fee !== undefined && method.fee > 0 && (
+                  <span className="text-xs text-gray-600 bg-gray-100 px-2 py-0.5 rounded-md">
+                    {method.fee}% комиссия
+                  </span>
+                )}
+              </div>
               {/* Показываем описание из API если есть */}
               {method.description && (
                 <p className="text-xs text-gray-500 mt-1">

@@ -183,6 +183,15 @@ export function usePaymentMethodsByCurrency(currency?: string) {
           currencyToFetch
         );
         console.log("usePaymentMethodsByCurrency: API response:", response);
+        console.log(
+          "🔍 Fee values in API response:",
+          response.methods.map((m) => ({
+            name: m.name,
+            fee: m.fee,
+            feeType: typeof m.fee,
+            rawMethod: m,
+          }))
+        );
         setMethodsByCurrency(response);
       } catch (err) {
         const errorMessage =
