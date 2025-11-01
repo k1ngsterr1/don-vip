@@ -367,7 +367,10 @@ export function PaymentMethodSelector({
             isPay4Game: method.isPay4Game || false,
             code: method.code,
             providerId: method.id, // Сохраняем оригинальный ID для использования в API вызовах
-            fee: method.fee ? Number(method.fee) : undefined, // Добавляем комиссию
+            fee:
+              method.fee !== undefined && method.fee !== null
+                ? Number(method.fee)
+                : undefined, // Добавляем комиссию, включая 0
           };
         });
 
@@ -412,7 +415,10 @@ export function PaymentMethodSelector({
         isDukPay: method.isDukPay || false, // Add DukPay flag
         isPay4Game: method.isPay4Game || false, // Add Pay4Game flag
         code: method.code, // Add payment method code
-        fee: method.fee ? Number(method.fee) : undefined, // Добавляем комиссию
+        fee:
+          method.fee !== undefined && method.fee !== null
+            ? Number(method.fee)
+            : undefined, // Добавляем комиссию, включая 0
       };
     });
   }
@@ -748,10 +754,17 @@ export function PaymentMethodSelector({
                     ? i18n(method.translationKey)
                     : method.translationKey}
                 </span>
-                {/* Отображаем комиссию если она есть */}
-                {method.fee !== undefined && method.fee > 0 && (
-                  <span className="text-xs text-gray-600 bg-gray-100 px-2 py-0.5 rounded-md">
-                    {method.fee}% комиссия
+                {/* Отображаем комиссию включая 0% */}
+                {method.fee !== undefined && method.fee !== null && (
+                  <span
+                    className={`text-xs px-2 py-0.5 rounded-md ${
+                      method.fee === 0
+                        ? "text-green-700 bg-green-100"
+                        : "text-gray-600 bg-gray-100"
+                    }`}
+                  >
+                    {method.fee}%{" "}
+                    {method.fee === 0 ? "без комиссии" : "комиссия"}
                   </span>
                 )}
               </div>
