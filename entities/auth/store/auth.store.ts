@@ -55,17 +55,24 @@ export const useAuthStore = create<AuthState>()(
         ] = `Bearer ${accessToken}`;
 
         // Save tokens to cookies for persistence across browser sessions
+        // Увеличиваем срок хранения токенов для длительной сессии
         CookieManager.set(COOKIE_NAMES.AUTH_TOKEN, accessToken, {
-          expires: 7, // 7 days
+          expires: 30, // 30 дней (было 7)
           secure: process.env.NODE_ENV === "production",
           sameSite: "lax",
         });
 
         CookieManager.set(COOKIE_NAMES.REFRESH_TOKEN, refreshToken, {
-          expires: 30, // 30 days
+          expires: 90, // 90 дней (было 30)
           secure: process.env.NODE_ENV === "production",
           sameSite: "lax",
         });
+
+        // Также сохраняем в localStorage как backup
+        if (typeof window !== "undefined") {
+          localStorage.setItem("auth_token", accessToken);
+          localStorage.setItem("refresh_token", refreshToken);
+        }
       },
 
       setGuestAuth: (isGuest) => {
@@ -81,6 +88,12 @@ export const useAuthStore = create<AuthState>()(
         // Clear cookies
         CookieManager.remove(COOKIE_NAMES.AUTH_TOKEN);
         CookieManager.remove(COOKIE_NAMES.REFRESH_TOKEN);
+
+        // Clear localStorage backup
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("auth_token");
+          localStorage.removeItem("refresh_token");
+        }
       },
 
       logout: () => {
@@ -99,8 +112,12 @@ export const useAuthStore = create<AuthState>()(
         CookieManager.remove(COOKIE_NAMES.AUTH_TOKEN);
         CookieManager.remove(COOKIE_NAMES.REFRESH_TOKEN);
 
-        // Clear userId from localStorage
-        localStorage.removeItem("userId");
+        // Clear userId and tokens from localStorage
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("userId");
+          localStorage.removeItem("auth_token");
+          localStorage.removeItem("refresh_token");
+        }
       },
 
       getAuthHeader: () => {
@@ -111,6 +128,7 @@ export const useAuthStore = create<AuthState>()(
     {
       name: "auth-storage",
       partialize: (state) => ({
+        user: state.user, // Добавляем user для сохранения
         accessToken: state.accessToken,
         refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
@@ -173,12 +191,22 @@ const initializeAuthFromCookies = () => {
     return;
   }
 
-  // Try to get tokens from cookies
-  const cookieAccessToken = CookieManager.get(COOKIE_NAMES.AUTH_TOKEN);
-  const cookieRefreshToken = CookieManager.get(COOKIE_NAMES.REFRESH_TOKEN);
+  // Try to get tokens from cookies first
+  let cookieAccessToken = CookieManager.get(COOKIE_NAMES.AUTH_TOKEN);
+  let cookieRefreshToken = CookieManager.get(COOKIE_NAMES.REFRESH_TOKEN);
+
+  // If cookies don't have tokens, try localStorage (backup)
+  if (
+    typeof window !== "undefined" &&
+    (!cookieAccessToken || !cookieRefreshToken)
+  ) {
+    cookieAccessToken = cookieAccessToken || localStorage.getItem("auth_token");
+    cookieRefreshToken =
+      cookieRefreshToken || localStorage.getItem("refresh_token");
+  }
 
   if (cookieAccessToken && cookieRefreshToken) {
-    // Set tokens in store from cookies
+    // Set tokens in store from cookies/localStorage
     state.setTokens(cookieAccessToken, cookieRefreshToken);
   }
 };

@@ -123,6 +123,15 @@ export function useCreateOrder(
     onSuccess: (orderData, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.orders.all });
 
+      // 🔐 Сохраняем user_id если он был в заказе
+      if (orderData.user_id && typeof window !== "undefined") {
+        localStorage.setItem("userId", orderData.user_id.toString());
+        console.log(
+          "✅ User ID saved after order creation:",
+          orderData.user_id
+        );
+      }
+
       // Save successful order data to cookies
       saveSuccessfulOrder({
         orderId: orderData.id,
