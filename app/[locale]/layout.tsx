@@ -74,6 +74,7 @@ export async function generateMetadata({
     },
     verification: {
       google: "your-google-verification-code", // Добавьте свой код верификации Google
+      yandex: "73e7e38328756d06", // Яндекс верификация
     },
   };
 }
@@ -98,6 +99,7 @@ export default async function LocaleLayout({
           name="facebook-domain-verification"
           content="z54020mpyq0q2i0f6cpu663i2eqmkr"
         />
+        <meta name="yandex-verification" content="73e7e38328756d06" />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-ZYRR1HX71W"
           strategy="afterInteractive"
