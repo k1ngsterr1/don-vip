@@ -2315,7 +2315,7 @@ export function OrderBlock({
 
               {/* Telegram Subscription Check - Desktop */}
               <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="text-blue-600 font-medium">
                       {locale === "ru"
