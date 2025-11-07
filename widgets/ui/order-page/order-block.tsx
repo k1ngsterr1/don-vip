@@ -2146,12 +2146,6 @@ export function OrderBlock({
                           : "❌ You are not subscribed to the channel. Subscribe to get a discount."}
                       </span>
                     </div>
-                    {telegramResult.error && (
-                      <div className="mt-2 text-sm text-red-600">
-                        {locale === "ru" ? "Ошибка: " : "Error: "}
-                        {telegramResult.error}
-                      </div>
-                    )}
                   </div>
                 )}
 
@@ -2806,12 +2800,6 @@ export function OrderBlock({
                                 : "❌ You are not subscribed to the channel. Subscribe to get a discount."}
                             </span>
                           </div>
-                          {telegramResult.error && (
-                            <div className="mt-2 text-sm text-red-600">
-                              {locale === "ru" ? "Ошибка: " : "Error: "}
-                              {telegramResult.error}
-                            </div>
-                          )}
                         </div>
                       )}
 
