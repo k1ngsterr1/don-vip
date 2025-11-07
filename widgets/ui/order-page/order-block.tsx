@@ -1997,8 +1997,6 @@ export function OrderBlock({
               </>
             ) : null}
           </div>
-
-          {/* Telegram Channel Check */}
           <div className="mt-4 bg-blue-50 border border-blue-200 p-4 rounded-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -2062,9 +2060,18 @@ export function OrderBlock({
                         2.
                       </span>
                       <div>
+                        {locale === "ru" ? "Откройте бота " : "Open the bot "}
+                        <a
+                          href="https://t.me/DonVip_bot"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline font-medium"
+                        >
+                          @DonVip_bot
+                        </a>
                         {locale === "ru"
-                          ? "Откройте бота и отправьте команду /start"
-                          : "Open the bot and send /start command"}
+                          ? " и отправьте команду /start"
+                          : " and send /start command"}
                       </div>
                     </div>
                     <div className="flex items-start gap-2">
@@ -2085,35 +2092,33 @@ export function OrderBlock({
                     ? "Введите ваш Telegram username:"
                     : "Enter your Telegram username:"}
                 </div>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder={
-                      locale === "ru"
-                        ? "@ваш_telegram_username"
-                        : "@your_telegram_username"
-                    }
-                    value={telegramUsername}
-                    onChange={(e) => setTelegramUsername(e.target.value)}
-                    className="flex-1 px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  <button
-                    onClick={handleTelegramCheck}
-                    disabled={!telegramUsername.trim() || isTelegramLoading}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                  >
-                    {isTelegramLoading ? (
-                      <>
-                        <Loader className="w-4 h-4 animate-spin" />
-                        {locale === "ru" ? "Проверяем..." : "Checking..."}
-                      </>
-                    ) : locale === "ru" ? (
-                      "Проверить"
-                    ) : (
-                      "Check"
-                    )}
-                  </button>
-                </div>
+                <input
+                  type="text"
+                  placeholder={
+                    locale === "ru"
+                      ? "@ваш_telegram_username"
+                      : "@your_telegram_username"
+                  }
+                  value={telegramUsername}
+                  onChange={(e) => setTelegramUsername(e.target.value)}
+                  className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+                <button
+                  onClick={handleTelegramCheck}
+                  disabled={!telegramUsername.trim() || isTelegramLoading}
+                  className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-medium"
+                >
+                  {isTelegramLoading ? (
+                    <>
+                      <Loader className="w-5 h-5 animate-spin" />
+                      {locale === "ru" ? "Проверяем..." : "Checking..."}
+                    </>
+                  ) : locale === "ru" ? (
+                    "Проверить"
+                  ) : (
+                    "Check"
+                  )}
+                </button>
 
                 {/* Результат проверки */}
                 {telegramResult && (
@@ -2131,11 +2136,6 @@ export function OrderBlock({
                           : "text-red-700"
                       }`}
                     >
-                      {telegramResult.isMember ? (
-                        <CheckCircle size={16} className="mr-2" />
-                      ) : (
-                        <AlertTriangle size={16} className="mr-2" />
-                      )}
                       <span className="font-medium">
                         {telegramResult.isMember
                           ? locale === "ru"
@@ -2710,8 +2710,19 @@ export function OrderBlock({
                             </span>
                             <div>
                               {locale === "ru"
-                                ? "Откройте бота и отправьте команду /start"
-                                : "Open the bot and send /start command"}
+                                ? "Откройте бота "
+                                : "Open the bot "}
+                              <a
+                                href="https://t.me/DonVip_bot"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:underline font-medium"
+                              >
+                                @DonVip_bot
+                              </a>
+                              {locale === "ru"
+                                ? " и отправьте команду /start"
+                                : " and send /start command"}
                             </div>
                           </div>
                           <div className="flex items-start gap-2">

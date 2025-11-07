@@ -405,10 +405,6 @@ export function CouponForm({
         {/* Show coupon info only when available */}
         {couponInfo && isAvailable && (
           <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-            <div className="flex items-center text-green-700">
-              <Check size={16} className="mr-2" />
-              <span className="font-medium">{msg.couponAppliedSuccess}</span>
-            </div>
             <div className="mt-1 text-sm text-green-600">
               <div className="flex items-center">
                 <Percent size={14} className="mr-1" />
