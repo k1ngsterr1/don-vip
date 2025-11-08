@@ -1727,7 +1727,11 @@ export function OrderBlock({
       {/* Telegram Subscription Check - Mobile */}
       <div className="px-4 mb-4">
         <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
-          <div className="flex items-center justify-between">
+          <div
+            className={`flex items-center justify-between ${
+              showTelegramCheck ? "mb-3" : ""
+            }`}
+          >
             <div className="flex items-center gap-2">
               <span className="text-blue-600 font-medium">
                 {locale === "ru"
@@ -1747,7 +1751,7 @@ export function OrderBlock({
                   ? "Скрыть"
                   : "Hide"
                 : locale === "ru"
-                ? "Проверить"
+                ? "Сделать"
                 : "Check"}
             </button>
           </div>
@@ -1811,13 +1815,6 @@ export function OrderBlock({
                   </div>
                 </div>
               </div>
-
-              <div className="text-xs text-gray-600 p-2 bg-blue-50 rounded-lg">
-                {locale === "ru"
-                  ? "Обратите внимание: скидка 5% применяется только к пакетам до 500 единиц включительно"
-                  : "Note: 5% discount applies only to packages up to 500 units"}
-              </div>
-
               <div className="text-sm text-blue-700 mb-2">
                 {locale === "ru"
                   ? "Введите ваш Telegram username:"
@@ -2315,7 +2312,11 @@ export function OrderBlock({
 
               {/* Telegram Subscription Check - Desktop */}
               <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <div className="flex items-center justify-between">
+                <div
+                  className={`flex items-center justify-between ${
+                    showTelegramCheck ? "mb-3" : ""
+                  }`}
+                >
                   <div className="flex items-center gap-2">
                     <span className="text-blue-600 font-medium">
                       {locale === "ru"
@@ -2335,7 +2336,7 @@ export function OrderBlock({
                         ? "Скрыть"
                         : "Hide"
                       : locale === "ru"
-                      ? "Проверить"
+                      ? "Сделать"
                       : "Check"}
                   </button>
                 </div>
@@ -2401,13 +2402,6 @@ export function OrderBlock({
                         </div>
                       </div>
                     </div>
-
-                    <div className="text-xs text-gray-600 p-2 bg-blue-50 rounded-lg">
-                      {locale === "ru"
-                        ? "Обратите внимание: скидка 5% применяется только к пакетам до 500 единиц включительно"
-                        : "Note: 5% discount applies only to packages up to 500 units"}
-                    </div>
-
                     <div className="text-sm text-blue-700 mb-2">
                       {locale === "ru"
                         ? "Введите ваш Telegram username:"
