@@ -1744,7 +1744,7 @@ export function OrderBlock({
             </div>
             <button
               onClick={() => setShowTelegramCheck(!showTelegramCheck)}
-              className="text-blue-600 text-sm font-medium hover:text-blue-700"
+              className="px-3 py-1.5 border-2 border-blue-600 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 hover:border-blue-700 transition-colors"
             >
               {showTelegramCheck
                 ? locale === "ru"
@@ -2329,7 +2329,7 @@ export function OrderBlock({
                   </div>
                   <button
                     onClick={() => setShowTelegramCheck(!showTelegramCheck)}
-                    className="text-blue-600 text-sm font-medium hover:text-blue-700"
+                    className="px-3 py-1.5 border-2 border-blue-600 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 hover:border-blue-700 transition-colors"
                   >
                     {showTelegramCheck
                       ? locale === "ru"
