@@ -17,6 +17,8 @@ interface OrderSummaryProps {
     type: "percentage" | "fixed";
     description: string;
   } | null;
+  packageDiscount?: number; // Скидка от пакета в процентах
+  telegramDiscount?: number; // Скидка Telegram (5%) в рублях
   isFormValid: boolean;
   userId: string;
   serverId: string;
@@ -29,6 +31,8 @@ export function OrderSummary({
   selectedCurrency,
   appliedDiscount = 0,
   couponInfo,
+  packageDiscount = 0,
+  telegramDiscount = 0,
   isFormValid,
   userId,
   serverId,
@@ -41,23 +45,64 @@ export function OrderSummary({
   const isEmail = (value: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 
-  // Calculate prices
-  const originalPriceRub = selectedCurrency?.originalPriceRub || 0;
-  const originalPriceConverted =
-    currentCurrency.code === "RUB"
-      ? originalPriceRub
-      : originalPriceRub * currentCurrency.rate; // Multiply by rate (how many foreign currency units per 1 RUB)
+  // Calculate prices with all discounts
+  const basePrice = selectedCurrency?.originalPriceRub || 0;
 
-  const discountAmount =
+  // 1. Apply package discount first
+  let priceAfterPackageDiscount = basePrice;
+  if (packageDiscount > 0) {
+    priceAfterPackageDiscount = basePrice * (1 - packageDiscount / 100);
+  }
+
+  // 2. Apply Telegram discount (already calculated in RUB)
+  let priceAfterTelegramDiscount = priceAfterPackageDiscount - telegramDiscount;
+
+  // 3. Apply coupon discount
+  const couponDiscountAmount =
     couponInfo?.type === "percentage"
-      ? (originalPriceRub * appliedDiscount) / 100
+      ? (priceAfterTelegramDiscount * appliedDiscount) / 100
       : appliedDiscount;
-  const finalPriceRub = Math.max(0, originalPriceRub - discountAmount);
+
+  const finalPriceRub = Math.max(
+    0,
+    priceAfterTelegramDiscount - couponDiscountAmount
+  );
+
+  // Convert to selected currency
+  const basePriceConverted =
+    currentCurrency.code === "RUB"
+      ? basePrice
+      : basePrice * currentCurrency.rate;
+
+  const priceAfterPackageDiscountConverted =
+    currentCurrency.code === "RUB"
+      ? priceAfterPackageDiscount
+      : priceAfterPackageDiscount * currentCurrency.rate;
+
+  const telegramDiscountConverted =
+    currentCurrency.code === "RUB"
+      ? telegramDiscount
+      : telegramDiscount * currentCurrency.rate;
+
+  const couponDiscountConverted =
+    currentCurrency.code === "RUB"
+      ? couponDiscountAmount
+      : couponDiscountAmount * currentCurrency.rate;
+
   const finalPriceConverted =
     currentCurrency.code === "RUB"
       ? finalPriceRub
-      : finalPriceRub * currentCurrency.rate; // Multiply by rate (how many foreign currency units per 1 RUB)
-  const hasDiscount = appliedDiscount > 0 && couponInfo;
+      : finalPriceRub * currentCurrency.rate;
+
+  const hasPackageDiscount = packageDiscount > 0;
+  const hasTelegramDiscount = telegramDiscount > 0;
+  const hasCouponDiscount = appliedDiscount > 0 && couponInfo;
+  const hasAnyDiscount =
+    hasPackageDiscount || hasTelegramDiscount || hasCouponDiscount;
+
+  // Calculate total savings
+  const totalSavings = basePrice - finalPriceRub;
+  const totalSavingsConverted = basePriceConverted - finalPriceConverted;
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-100 sticky top-8">
@@ -100,47 +145,78 @@ export function OrderSummary({
                 <span
                   className={cn(
                     "font-medium",
-                    hasDiscount && "line-through text-gray-500"
+                    hasAnyDiscount && "line-through text-gray-500"
                   )}
                 >
-                  {originalPriceConverted.toFixed(2)} {currentCurrency.code}
+                  {basePriceConverted.toFixed(2)} {currentCurrency.code}
                 </span>
               </div>
 
-              {hasDiscount && (
-                <>
-                  <div className="flex justify-between text-green-600">
-                    <div className="flex items-center">
-                      <Percent size={14} className="mr-1" />
-                      <span className="text-sm">
-                        {t("summary.discount") || "Discount"} ({couponInfo.code}
-                        ):
-                      </span>
-                    </div>
-                    <span className="font-medium">
-                      -
-                      {couponInfo.type === "percentage"
-                        ? `${appliedDiscount}%`
-                        : `${(discountAmount * currentCurrency.rate).toFixed(
-                            2
-                          )} ${currentCurrency.code}`}
+              {/* Package Discount */}
+              {hasPackageDiscount && (
+                <div className="flex justify-between text-orange-600">
+                  <div className="flex items-center">
+                    <Percent size={14} className="mr-1" />
+                    <span className="text-sm">
+                      {t("summary.packageDiscount") || "Package discount"}:
                     </span>
                   </div>
-
-                  <div className="border-t pt-2">
-                    <div className="flex justify-between">
-                      <span className="font-semibold text-gray-800">
-                        {t("summary.total") || "Total"}:
-                      </span>
-                      <span className="font-semibold text-lg text-green-600">
-                        {finalPriceConverted.toFixed(2)} {currentCurrency.code}
-                      </span>
-                    </div>
-                  </div>
-                </>
+                  <span className="font-medium">-{packageDiscount}%</span>
+                </div>
               )}
 
-              {!hasDiscount && (
+              {/* Telegram Discount */}
+              {hasTelegramDiscount && (
+                <div className="flex justify-between text-blue-600">
+                  <div className="flex items-center">
+                    <Percent size={14} className="mr-1" />
+                    <span className="text-sm">
+                      {t("summary.telegramDiscount") || "Telegram discount"}{" "}
+                      (5%):
+                    </span>
+                  </div>
+                  <span className="font-medium">
+                    -{telegramDiscountConverted.toFixed(2)}{" "}
+                    {currentCurrency.code}
+                  </span>
+                </div>
+              )}
+
+              {/* Coupon Discount */}
+              {hasCouponDiscount && couponInfo && (
+                <div className="flex justify-between text-green-600">
+                  <div className="flex items-center">
+                    <Percent size={14} className="mr-1" />
+                    <span className="text-sm">
+                      {t("summary.discount") || "Discount"} ({couponInfo.code}):
+                    </span>
+                  </div>
+                  <span className="font-medium">
+                    -
+                    {couponInfo.type === "percentage"
+                      ? `${appliedDiscount}%`
+                      : `${couponDiscountConverted.toFixed(2)} ${
+                          currentCurrency.code
+                        }`}
+                  </span>
+                </div>
+              )}
+
+              {/* Total after all discounts */}
+              {hasAnyDiscount && (
+                <div className="border-t pt-2">
+                  <div className="flex justify-between">
+                    <span className="font-semibold text-gray-800">
+                      {t("summary.total") || "Total"}:
+                    </span>
+                    <span className="font-semibold text-lg text-green-600">
+                      {finalPriceConverted.toFixed(2)} {currentCurrency.code}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {!hasAnyDiscount && (
                 <div className="flex justify-between">
                   <span className="text-gray-600">{t("summary.cost")}:</span>
                   <span className="font-medium">{selectedCurrency.price}</span>
@@ -149,12 +225,12 @@ export function OrderSummary({
             </div>
 
             {/* Savings highlight */}
-            {hasDiscount && (
+            {hasAnyDiscount && (
               <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded-lg">
                 <div className="flex items-center justify-center">
                   <span className="text-sm font-medium text-green-700">
                     🎉 {t("summary.youSave") || "You save"}:{" "}
-                    {discountAmount.toFixed(2)} RUB
+                    {totalSavingsConverted.toFixed(2)} {currentCurrency.code}
                   </span>
                 </div>
               </div>
@@ -202,7 +278,7 @@ export function OrderSummary({
           ) : (
             <span className="flex items-center justify-center">
               {t("summary.buyNow")}
-              {hasDiscount && (
+              {hasAnyDiscount && (
                 <span className="ml-2 text-sm">
                   ({finalPriceConverted.toFixed(2)} {currentCurrency.code})
                 </span>

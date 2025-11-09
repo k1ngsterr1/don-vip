@@ -8,6 +8,8 @@
       "cost": "Стоимость",
       "subtotal": "Промежуточный итог",
       "discount": "Скидка",
+      "packageDiscount": "Скидка пакета",
+      "telegramDiscount": "Скидка Telegram",
       "total": "Итого",
       "youSave": "Вы экономите",
       "userInfo": "Информация пользователя",

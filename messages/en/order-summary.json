@@ -8,6 +8,8 @@
       "cost": "Cost",
       "subtotal": "Subtotal",
       "discount": "Discount",
+      "packageDiscount": "Package discount",
+      "telegramDiscount": "Telegram discount",
       "total": "Total",
       "youSave": "You save",
       "userInfo": "User Information",

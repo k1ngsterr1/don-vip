@@ -2881,6 +2881,14 @@ export function OrderBlock({
             selectedCurrency={selectedCurrency}
             appliedDiscount={appliedDiscount}
             couponInfo={couponInfo}
+            packageDiscount={selectedCurrency?.discountPercent || 0}
+            telegramDiscount={
+              telegramMembershipValid &&
+              selectedCurrency &&
+              selectedCurrency.amount <= 500
+                ? selectedCurrency.originalPriceRub * 0.05
+                : 0
+            }
             isFormValid={isFormValid}
             userId={userId}
             serverId={serverId}
