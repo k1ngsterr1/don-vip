@@ -9,6 +9,14 @@ export interface CreateOrderDto {
   user_game_id: string;
   coupon_code: string;
   server_id?: string;
+
+  // Pricing information with discounts
+  original_price?: number;
+  package_discount?: number;
+  telegram_discount?: number;
+  coupon_discount?: number;
+  final_price?: number;
+  currency?: string;
 }
 
 export interface Order {
@@ -25,6 +33,14 @@ export interface Order {
   status: "pending" | "completed" | "failed";
   created_at: string;
   updated_at: string;
+
+  // Pricing information with discounts
+  original_price?: number;
+  package_discount?: number;
+  telegram_discount?: number;
+  coupon_discount?: number;
+  final_price?: number;
+  currency?: string;
 }
 
 export interface OrdersResponse {

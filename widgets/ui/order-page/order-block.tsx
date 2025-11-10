@@ -1609,6 +1609,15 @@ export function OrderBlock({
       user_game_id: !userId || userId.trim() === "" ? "unknown" : userId,
       server_id: game.isServerRequired ? serverId : undefined,
       coupon_code: couponInfo?.code || undefined,
+
+      // Discount information for admin panel
+      original_price: selectedCurrency.originalPriceRub,
+      package_discount: selectedCurrency.discountPercent || 0,
+      telegram_discount:
+        telegramMembershipValid && selectedCurrency.amount <= 500 ? 5 : 0,
+      coupon_discount: couponDiscountAmountRub,
+      final_price: finalPriceRub,
+      currency: currentCurrency.code,
     };
 
     console.log("📦 Creating order with data:", {
