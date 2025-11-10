@@ -1520,9 +1520,9 @@ export function OrderBlock({
       });
     }
 
-    // ПРИМЕНЯЕМ TELEGRAM СКИДКУ 5% (только для пакетов до 500 единиц)
+    // ПРИМЕНЯЕМ TELEGRAM СКИДКУ 5% (только для пакетов до 300 единиц)
     let telegramDiscountAmount = 0;
-    if (telegramMembershipValid && selectedCurrency.amount <= 500) {
+    if (telegramMembershipValid && selectedCurrency.amount <= 300) {
       telegramDiscountAmount = (originalPriceRub * 5) / 100; // 5% скидка
       originalPriceRub = Math.max(0, originalPriceRub - telegramDiscountAmount);
       console.log("📱 Telegram discount applied (5%):", {
@@ -1560,12 +1560,13 @@ export function OrderBlock({
       originalPriceRub: selectedCurrency.originalPriceRub,
       packageDiscountPercent: selectedCurrency.discountPercent,
       telegramDiscount: telegramDiscountAmount,
-      priceAfterPackageDiscount: originalPriceRub,
+      priceAfterPackageAndTelegram: originalPriceRub,
       couponDiscount: couponDiscountAmountRub,
       finalPriceRub,
       finalPriceConverted,
       formattedPrice,
       currency: currentCurrency.code,
+      summary: `User will pay: ${formattedPrice} ${currentCurrency.code}`,
     });
 
     // Извлекаем правильный код метода оплаты для API
@@ -1603,12 +1604,17 @@ export function OrderBlock({
       user_id: userIdDB,
       currency_id: selectedCurrency.id,
       amount: selectedCurrency.amount,
-      price: formattedPrice,
+      price: formattedPrice, // ✅ ФИНАЛЬНАЯ ЦЕНА СО ВСЕМИ СКИДКАМИ
       payment_method: paymentMethodForApi,
       user_game_id: !userId || userId.trim() === "" ? "unknown" : userId,
       server_id: game.isServerRequired ? serverId : undefined,
       coupon_code: couponInfo?.code || undefined,
     };
+
+    console.log("📦 Creating order with data:", {
+      ...orderData,
+      note: "Price includes ALL discounts (package + telegram + coupon)",
+    });
 
     try {
       const response = await createOrder(orderData);
@@ -1632,13 +1638,19 @@ export function OrderBlock({
         const params = new URLSearchParams({
           orderId: response.id.toString(),
           amount: selectedCurrency.amount.toString(),
-          price: formattedPrice, // Changed from numericPrice to formattedPrice (discounted price)
+          price: formattedPrice, // ✅ ФИНАЛЬНАЯ ЦЕНА СО ВСЕМИ СКИДКАМИ
           currencyName: game.currencyName,
           gameName: game.name,
           packageName: packageName,
           userId: userId,
           userIdDB: userIdDB,
           serverId: game.isServerRequired ? serverId : "",
+        });
+
+        console.log("🏦 Redirecting to T-Bank with params:", {
+          orderId: response.id,
+          price: formattedPrice,
+          note: "User will pay this exact amount (with all discounts applied)",
         });
 
         window.location.href = `/t-bank?${params.toString()}`;
@@ -2885,7 +2897,7 @@ export function OrderBlock({
             telegramDiscount={
               telegramMembershipValid &&
               selectedCurrency &&
-              selectedCurrency.amount <= 500
+              selectedCurrency.amount <= 300
                 ? selectedCurrency.originalPriceRub * 0.05
                 : 0
             }
