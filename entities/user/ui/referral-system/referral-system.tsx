@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Copy, Check, Gift, Users, TrendingUp } from "lucide-react";
 import { Button } from "@/shared/ui/button/button";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { apiClient } from "@/shared/config/apiClient";
 
 interface ReferralStats {
@@ -21,6 +21,7 @@ interface ReferralStats {
 
 export function ReferralSystem() {
   const t = useTranslations("ReferralSystem");
+  const locale = useLocale();
   const [stats, setStats] = useState<ReferralStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -204,7 +205,7 @@ export function ReferralSystem() {
                     +{referral.discount_added}%
                   </p>
                   <p className="text-xs text-gray-500">
-                    {new Date(referral.created_at).toLocaleDateString("ru-RU")}
+                    {new Date(referral.created_at).toLocaleDateString(locale)}
                   </p>
                 </div>
               </div>
