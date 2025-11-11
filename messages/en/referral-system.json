@@ -1,0 +1,24 @@
+{
+  "ReferralSystem": {
+    "title": "Referral System",
+    "description": "Create your referral code and share it with friends. For each friend who makes a purchase, you get 1% discount (up to 20%).",
+    "generateCode": "Generate Referral Code",
+    "generating": "Generating...",
+    "codeGenerated": "Referral code generated!",
+    "generationError": "Error generating code",
+    "codeCopied": "Code copied!",
+    "currentDiscount": "Current Discount",
+    "totalReferrals": "Total Referrals",
+    "totalEarned": "Total Earned",
+    "yourCode": "Your Referral Code",
+    "copy": "Copy",
+    "copied": "Copied",
+    "shareDescription": "Share this code with friends. When they register and make their first order, you get a discount!",
+    "howItWorks": "How it Works",
+    "step1": "Share your referral code with friends",
+    "step2": "Friend registers and uses your code when creating account",
+    "step3": "After friend's first purchase, you get 1% discount on all future orders (up to 20%)",
+    "recentEarnings": "Recent Earnings",
+    "orderAmount": "Order Amount"
+  }
+}

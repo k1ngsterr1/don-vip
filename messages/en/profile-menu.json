@@ -5,6 +5,10 @@
         "label": "Purchases",
         "description": "Your order and purchase history"
       },
+      "referral": {
+        "label": "Referral System",
+        "description": "Invite friends and get discounts"
+      },
       "coupons": {
         "label": "Coupons",
         "description": "Your active coupons and discounts"

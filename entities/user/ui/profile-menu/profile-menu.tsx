@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Gift } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
 import CouponIcon from "@/shared/icons/coupon-icon";
@@ -33,6 +33,13 @@ export function ProfileMenu() {
       href: `/${locale}/profile/${userId}/purchases/`,
       color: "bg-orange", // фон за иконкой
       description: i18n("items.purchases.description"),
+    },
+    {
+      icon: <Gift size={24} color="#fff" />,
+      label: i18n("items.referral.label"),
+      href: `/${locale}/profile/${userId}/referral/`,
+      color: "bg-purple-500",
+      description: i18n("items.referral.description"),
     },
 
     {
