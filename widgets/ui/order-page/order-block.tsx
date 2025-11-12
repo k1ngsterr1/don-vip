@@ -129,6 +129,27 @@ export function OrderBlock({
   const { data: diamondPriceData } = useDiamondPrice(
     currentCurrency?.code || "RUB"
   );
+
+  // Debug: проверяем данные о настройках алмазов
+  useEffect(() => {
+    if (diamondPriceData) {
+      console.log("💎 Diamond Price Data для", currentCurrency?.code, ":", {
+        custom_amount_enabled: diamondPriceData.custom_amount_enabled,
+        price_per_diamond: diamondPriceData.price_per_diamond,
+        currency: diamondPriceData.currency,
+        is_active: diamondPriceData.is_active,
+      });
+      console.log(
+        "🔘 Кнопка 'Свое значение' будет:",
+        diamondPriceData.custom_amount_enabled ? "ПОКАЗАНА ✅" : "СКРЫТА ❌"
+      );
+    } else {
+      console.log(
+        "⚠️ Diamond Price Data не загружена, используется fallback (кнопка показана)"
+      );
+    }
+  }, [diamondPriceData, currentCurrency?.code]);
+
   const [userIdDB, setUserIdDB] = useState("");
   const [game, setGame] = useState<GameData | null>(null);
   const [currencyOptions, setCurrencyOptions] = useState<CurrencyOption[]>([]);
@@ -1917,7 +1938,9 @@ export function OrderBlock({
         currencyImage={game.currencyImage}
         productId={gameSlug}
         onCustomAmountClick={handleCustomAmountShow}
-        showCustomAmountButton={diamondPriceData?.custom_amount_enabled ?? true}
+        showCustomAmountButton={
+          diamondPriceData?.custom_amount_enabled !== false
+        }
       />
 
       {/* Custom Amount Selector for mobile */}
@@ -2510,7 +2533,7 @@ export function OrderBlock({
                 productId={gameSlug}
                 onCustomAmountClick={handleCustomAmountShow}
                 showCustomAmountButton={
-                  diamondPriceData?.custom_amount_enabled ?? true
+                  diamondPriceData?.custom_amount_enabled !== false
                 }
               />
 
