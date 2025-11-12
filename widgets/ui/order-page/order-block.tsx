@@ -1938,9 +1938,7 @@ export function OrderBlock({
         currencyImage={game.currencyImage}
         productId={gameSlug}
         onCustomAmountClick={handleCustomAmountShow}
-        showCustomAmountButton={
-          diamondPriceData?.custom_amount_enabled !== false
-        }
+        showCustomAmountButton={false}
       />
 
       {/* Custom Amount Selector for mobile */}
@@ -2532,9 +2530,7 @@ export function OrderBlock({
                 currencyImage={game.currencyImage}
                 productId={gameSlug}
                 onCustomAmountClick={handleCustomAmountShow}
-                showCustomAmountButton={
-                  diamondPriceData?.custom_amount_enabled !== false
-                }
+                showCustomAmountButton={false}
               />
 
               {/* Custom Amount Selector for desktop */}
