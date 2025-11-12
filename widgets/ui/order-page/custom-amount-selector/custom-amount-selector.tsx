@@ -61,10 +61,10 @@ export function CustomAmountSelector({
 
   // Проверяем, является ли валюта алмазами
   const isDiamondCurrency =
-    currencyName.toLowerCase().includes("diamond") ||
-    currencyName.toLowerCase().includes("алмаз") ||
-    currencyName.toLowerCase().includes("diamonds") ||
-    currencyName.toLowerCase().includes("алмазы");
+    currencyName?.toLowerCase().includes("diamond") ||
+    currencyName?.toLowerCase().includes("алмаз") ||
+    currencyName?.toLowerCase().includes("diamonds") ||
+    currencyName?.toLowerCase().includes("алмазы");
 
   // Логирование для отладки
   console.log("CustomAmountSelector Debug:", {
@@ -134,7 +134,7 @@ export function CustomAmountSelector({
 
   // Функция для получения fallback emoji в зависимости от типа валюты
   const getFallbackEmoji = (currencyName: string) => {
-    const name = currencyName.toLowerCase();
+    const name = currencyName?.toLowerCase() || "";
     if (name.includes("diamond")) return "💎";
     if (name === "uc" || name.includes("uc") || name.includes("coins"))
       return "🪙";
