@@ -10,4 +10,8 @@ export interface User {
   phone?: string;
   email: string;
   socialProvider?: "vk" | "google" | null;
+  referral_discount?: string | number; // Реферальная скидка в процентах
+  referral_code?: string; // Реферальный код пользователя
+  used_referral_code?: string; // Использованный реферальный код
+  referrals_count?: number; // Количество приглашенных пользователей
 }

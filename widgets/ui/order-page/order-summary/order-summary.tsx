@@ -19,6 +19,7 @@ interface OrderSummaryProps {
   } | null;
   packageDiscount?: number; // Скидка от пакета в процентах
   telegramDiscount?: number; // Скидка Telegram (5%) в рублях
+  referralDiscount?: number; // Реферальная скидка в рублях
   isFormValid: boolean;
   userId: string;
   serverId: string;
@@ -33,6 +34,7 @@ export function OrderSummary({
   couponInfo,
   packageDiscount = 0,
   telegramDiscount = 0,
+  referralDiscount = 0,
   isFormValid,
   userId,
   serverId,
@@ -57,15 +59,19 @@ export function OrderSummary({
   // 2. Apply Telegram discount (already calculated in RUB)
   let priceAfterTelegramDiscount = priceAfterPackageDiscount - telegramDiscount;
 
-  // 3. Apply coupon discount
+  // 3. Apply Referral discount (already calculated in RUB)
+  let priceAfterReferralDiscount =
+    priceAfterTelegramDiscount - referralDiscount;
+
+  // 4. Apply coupon discount
   const couponDiscountAmount =
     couponInfo?.type === "percentage"
-      ? (priceAfterTelegramDiscount * appliedDiscount) / 100
+      ? (priceAfterReferralDiscount * appliedDiscount) / 100
       : appliedDiscount;
 
   const finalPriceRub = Math.max(
     0,
-    priceAfterTelegramDiscount - couponDiscountAmount
+    priceAfterReferralDiscount - couponDiscountAmount
   );
 
   // Convert to selected currency
@@ -84,6 +90,11 @@ export function OrderSummary({
       ? telegramDiscount
       : telegramDiscount * currentCurrency.rate;
 
+  const referralDiscountConverted =
+    currentCurrency.code === "RUB"
+      ? referralDiscount
+      : referralDiscount * currentCurrency.rate;
+
   const couponDiscountConverted =
     currentCurrency.code === "RUB"
       ? couponDiscountAmount
@@ -96,9 +107,13 @@ export function OrderSummary({
 
   const hasPackageDiscount = packageDiscount > 0;
   const hasTelegramDiscount = telegramDiscount > 0;
+  const hasReferralDiscount = referralDiscount > 0;
   const hasCouponDiscount = appliedDiscount > 0 && couponInfo;
   const hasAnyDiscount =
-    hasPackageDiscount || hasTelegramDiscount || hasCouponDiscount;
+    hasPackageDiscount ||
+    hasTelegramDiscount ||
+    hasReferralDiscount ||
+    hasCouponDiscount;
 
   // Calculate total savings
   const totalSavings = basePrice - finalPriceRub;
@@ -177,6 +192,22 @@ export function OrderSummary({
                   </div>
                   <span className="font-medium">
                     -{telegramDiscountConverted.toFixed(2)}{" "}
+                    {currentCurrency.code}
+                  </span>
+                </div>
+              )}
+
+              {/* Referral Discount */}
+              {hasReferralDiscount && (
+                <div className="flex justify-between text-purple-600">
+                  <div className="flex items-center">
+                    <Percent size={14} className="mr-1" />
+                    <span className="text-sm">
+                      {t("summary.referralDiscount") || "Referral discount"}:
+                    </span>
+                  </div>
+                  <span className="font-medium">
+                    -{referralDiscountConverted.toFixed(2)}{" "}
                     {currentCurrency.code}
                   </span>
                 </div>

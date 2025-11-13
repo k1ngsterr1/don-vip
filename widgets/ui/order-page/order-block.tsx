@@ -1553,6 +1553,21 @@ export function OrderBlock({
       });
     }
 
+    // ПРИМЕНЯЕМ РЕФЕРАЛЬНУЮ СКИДКУ (индивидуальная для каждого пользователя)
+    let referralDiscountAmount = 0;
+    const userReferralDiscount = me?.referral_discount
+      ? Number(me.referral_discount)
+      : 0;
+    if (userReferralDiscount > 0) {
+      referralDiscountAmount = (originalPriceRub * userReferralDiscount) / 100;
+      originalPriceRub = Math.max(0, originalPriceRub - referralDiscountAmount);
+      console.log("🎁 Referral discount applied:", {
+        discountPercent: userReferralDiscount,
+        discountAmount: referralDiscountAmount,
+        priceAfterReferralDiscount: originalPriceRub,
+      });
+    }
+
     const originalPriceConverted =
       currentCurrency.code === "RUB"
         ? originalPriceRub
@@ -1636,6 +1651,7 @@ export function OrderBlock({
       package_discount: selectedCurrency.discountPercent || 0,
       telegram_discount:
         telegramMembershipValid && selectedCurrency.amount <= 500 ? 5 : 0,
+      referral_discount: userReferralDiscount,
       coupon_discount: couponDiscountAmountRub,
       final_price: finalPriceRub,
       currency: currentCurrency.code,
@@ -1643,7 +1659,7 @@ export function OrderBlock({
 
     console.log("📦 Creating order with data:", {
       ...orderData,
-      note: "Price includes ALL discounts (package + telegram + coupon)",
+      note: "Price includes ALL discounts (package + telegram + referral + coupon)",
     });
 
     try {
@@ -2927,6 +2943,13 @@ export function OrderBlock({
               selectedCurrency &&
               selectedCurrency.amount <= 300
                 ? selectedCurrency.originalPriceRub * 0.05
+                : 0
+            }
+            referralDiscount={
+              me?.referral_discount && selectedCurrency
+                ? (selectedCurrency.originalPriceRub *
+                    Number(me.referral_discount)) /
+                  100
                 : 0
             }
             isFormValid={isFormValid}

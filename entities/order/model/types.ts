@@ -14,6 +14,7 @@ export interface CreateOrderDto {
   original_price?: number;
   package_discount?: number;
   telegram_discount?: number;
+  referral_discount?: number;
   coupon_discount?: number;
   final_price?: number;
   currency?: string;
@@ -38,6 +39,7 @@ export interface Order {
   original_price?: number;
   package_discount?: number;
   telegram_discount?: number;
+  referral_discount?: number;
   coupon_discount?: number;
   final_price?: number;
   currency?: string;
