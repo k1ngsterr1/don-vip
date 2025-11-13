@@ -34,4 +34,5 @@ export interface User {
   referral_code?: string; // Реферальный код пользователя
   used_referral_code?: string; // Использованный реферальный код
   referrals_count?: number; // Количество приглашенных пользователей
+  telegram_discount_used?: boolean; // Использовал ли telegram скидку
 }

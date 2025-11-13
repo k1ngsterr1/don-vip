@@ -1541,16 +1541,25 @@ export function OrderBlock({
       });
     }
 
-    // ПРИМЕНЯЕМ TELEGRAM СКИДКУ 5% (только для пакетов до 300 единиц)
+    // ПРИМЕНЯЕМ TELEGRAM СКИДКУ 5% (только для пакетов до 300 единиц И если еще не использовалась)
     let telegramDiscountAmount = 0;
-    if (telegramMembershipValid && selectedCurrency.amount <= 300) {
+    const canUseTelegramDiscount =
+      telegramMembershipValid &&
+      selectedCurrency.amount <= 300 &&
+      !me?.telegram_discount_used;
+
+    if (canUseTelegramDiscount) {
       telegramDiscountAmount = (originalPriceRub * 5) / 100; // 5% скидка
       originalPriceRub = Math.max(0, originalPriceRub - telegramDiscountAmount);
-      console.log("📱 Telegram discount applied (5%):", {
+      console.log("📱 Telegram discount applied (5%) - FIRST TIME USE:", {
         amount: selectedCurrency.amount,
         discountAmount: telegramDiscountAmount,
         priceAfterTelegramDiscount: originalPriceRub,
       });
+    } else if (me?.telegram_discount_used) {
+      console.log(
+        "📱 Telegram discount NOT applied - already used by this user"
+      );
     }
 
     // ПРИМЕНЯЕМ РЕФЕРАЛЬНУЮ СКИДКУ (индивидуальная для каждого пользователя)
@@ -1649,8 +1658,7 @@ export function OrderBlock({
       // Discount information for admin panel
       original_price: selectedCurrency.originalPriceRub,
       package_discount: selectedCurrency.discountPercent || 0,
-      telegram_discount:
-        telegramMembershipValid && selectedCurrency.amount <= 500 ? 5 : 0,
+      telegram_discount: canUseTelegramDiscount ? 5 : 0,
       referral_discount: userReferralDiscount,
       coupon_discount: couponDiscountAmountRub,
       final_price: finalPriceRub,
@@ -1660,6 +1668,7 @@ export function OrderBlock({
     console.log("📦 Creating order with data:", {
       ...orderData,
       note: "Price includes ALL discounts (package + telegram + referral + coupon)",
+      telegramDiscountUsed: me?.telegram_discount_used,
     });
 
     try {
@@ -2941,7 +2950,8 @@ export function OrderBlock({
             telegramDiscount={
               telegramMembershipValid &&
               selectedCurrency &&
-              selectedCurrency.amount <= 300
+              selectedCurrency.amount <= 300 &&
+              !me?.telegram_discount_used
                 ? selectedCurrency.originalPriceRub * 0.05
                 : 0
             }
