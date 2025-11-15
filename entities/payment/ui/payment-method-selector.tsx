@@ -617,7 +617,16 @@ export function PaymentMethodSelector({
 
   // 🔥 FINAL DEDUPLICATION - Remove exact duplicates but allow different provider variants
   const uniquePaymentMethods = availablePaymentMethods.reduce((acc, method) => {
+    // Skip methods without ID
+    if (!method.id) {
+      console.log("⚠️ Skipping method without ID:", method);
+      return acc;
+    }
+
     const isDuplicate = acc.some((existing) => {
+      // Skip if existing doesn't have ID
+      if (!existing.id) return false;
+
       // Exact ID match (case-insensitive) - this is the ONLY strict duplicate check
       if (existing.id.toLowerCase() === method.id.toLowerCase()) {
         console.log(`🗑️ Removing exact duplicate by ID: "${method.id}"`);
