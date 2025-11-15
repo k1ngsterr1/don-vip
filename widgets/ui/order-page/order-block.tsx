@@ -1687,14 +1687,16 @@ export function OrderBlock({
           packageName = await getDesignServiceNameByPrice(priceInRub, locale);
         } else {
           // Иначе используем стандартное название с количеством и валютой
-          packageName = `${selectedCurrency.amount} ${game.currencyName}`;
+          packageName = `${selectedCurrency.amount} ${
+            game.currencyName || "Diamonds"
+          }`;
         }
 
         const params = new URLSearchParams({
           orderId: response.id.toString(),
           amount: selectedCurrency.amount.toString(),
           price: formattedPrice, // ✅ ФИНАЛЬНАЯ ЦЕНА СО ВСЕМИ СКИДКАМИ
-          currencyName: game.currencyName,
+          currencyName: game.currencyName || "Diamonds",
           gameName: game.name,
           packageName: packageName,
           userId: userId,
