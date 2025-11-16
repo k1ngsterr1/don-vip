@@ -6,6 +6,7 @@ export interface TelegramMembershipResult {
   username?: string;
   userId?: number;
   error?: string;
+  alreadyChecked?: boolean; // Флаг что юзер уже проверял членство ранее
 }
 
 export const telegramApi = {

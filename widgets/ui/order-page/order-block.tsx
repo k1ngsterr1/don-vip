@@ -1889,6 +1889,20 @@ export function OrderBlock({
                   ? "Введите ваш Telegram username:"
                   : "Enter your Telegram username:"}
               </div>
+
+              {/* Предупреждение если юзер уже проверял членство */}
+              {me?.telegram_membership_checked && (
+                <div className="p-3 rounded-lg bg-yellow-50 border border-yellow-200">
+                  <div className="flex items-center text-yellow-700">
+                    <span className="font-medium">
+                      {locale === "ru"
+                        ? "⚠️ Вы уже проверяли членство в Telegram канале. Эта функция доступна только один раз."
+                        : "⚠️ You have already checked your Telegram membership. This feature is available only once."}
+                    </span>
+                  </div>
+                </div>
+              )}
+
               <input
                 type="text"
                 placeholder={
@@ -1898,11 +1912,16 @@ export function OrderBlock({
                 }
                 value={telegramUsername}
                 onChange={(e) => setTelegramUsername(e.target.value)}
-                className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                disabled={me?.telegram_membership_checked}
+                className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
               />
               <button
                 onClick={handleTelegramCheck}
-                disabled={!telegramUsername.trim() || isTelegramLoading}
+                disabled={
+                  !telegramUsername.trim() ||
+                  isTelegramLoading ||
+                  me?.telegram_membership_checked
+                }
                 className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-medium"
               >
                 {isTelegramLoading ? (
@@ -1921,20 +1940,28 @@ export function OrderBlock({
               {telegramResult && (
                 <div
                   className={`p-3 rounded-lg ${
-                    telegramResult.isMember
+                    telegramResult.alreadyChecked
+                      ? "bg-yellow-50 border border-yellow-200"
+                      : telegramResult.isMember
                       ? "bg-green-50 border border-green-200"
                       : "bg-red-50 border border-red-200"
                   }`}
                 >
                   <div
                     className={`flex items-center ${
-                      telegramResult.isMember
+                      telegramResult.alreadyChecked
+                        ? "text-yellow-700"
+                        : telegramResult.isMember
                         ? "text-green-700"
                         : "text-red-700"
                     }`}
                   >
                     <span className="font-medium">
-                      {telegramResult.isMember
+                      {telegramResult.alreadyChecked
+                        ? locale === "ru"
+                          ? "⚠️ Вы уже проверяли членство в Telegram канале ранее. Эта функция доступна только один раз."
+                          : "⚠️ You have already checked your Telegram membership before. This feature is available only once."
+                        : telegramResult.isMember
                         ? locale === "ru"
                           ? "Вы подписаны на канал! Скидка 5% будет применена к пакетам до 500 единиц."
                           : "You are subscribed to the channel! 5% discount will be applied to packages up to 500 units."
@@ -2476,6 +2503,20 @@ export function OrderBlock({
                         ? "Введите ваш Telegram username:"
                         : "Enter your Telegram username:"}
                     </div>
+
+                    {/* Предупреждение если юзер уже проверял членство */}
+                    {me?.telegram_membership_checked && (
+                      <div className="p-3 rounded-lg bg-yellow-50 border border-yellow-200 mb-2">
+                        <div className="flex items-center text-yellow-700">
+                          <span className="font-medium">
+                            {locale === "ru"
+                              ? "⚠️ Вы уже проверяли членство в Telegram канале. Эта функция доступна только один раз."
+                              : "⚠️ You have already checked your Telegram membership. This feature is available only once."}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="flex gap-2">
                       <input
                         type="text"
@@ -2486,11 +2527,16 @@ export function OrderBlock({
                         }
                         value={telegramUsername}
                         onChange={(e) => setTelegramUsername(e.target.value)}
-                        className="flex-1 px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        disabled={me?.telegram_membership_checked}
+                        className="flex-1 px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                       />
                       <button
                         onClick={handleTelegramCheck}
-                        disabled={!telegramUsername.trim() || isTelegramLoading}
+                        disabled={
+                          !telegramUsername.trim() ||
+                          isTelegramLoading ||
+                          me?.telegram_membership_checked
+                        }
                         className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                       >
                         {isTelegramLoading ? (
@@ -2510,25 +2556,35 @@ export function OrderBlock({
                     {telegramResult && (
                       <div
                         className={`p-3 rounded-lg ${
-                          telegramResult.isMember
+                          telegramResult.alreadyChecked
+                            ? "bg-yellow-50 border border-yellow-200"
+                            : telegramResult.isMember
                             ? "bg-green-50 border border-green-200"
                             : "bg-red-50 border border-red-200"
                         }`}
                       >
                         <div
                           className={`flex items-center ${
-                            telegramResult.isMember
+                            telegramResult.alreadyChecked
+                              ? "text-yellow-700"
+                              : telegramResult.isMember
                               ? "text-green-700"
                               : "text-red-700"
                           }`}
                         >
-                          {telegramResult.isMember ? (
+                          {telegramResult.alreadyChecked ? (
+                            <AlertTriangle size={16} className="mr-2" />
+                          ) : telegramResult.isMember ? (
                             <CheckCircle size={16} className="mr-2" />
                           ) : (
                             <AlertTriangle size={16} className="mr-2" />
                           )}
                           <span className="font-medium">
-                            {telegramResult.isMember
+                            {telegramResult.alreadyChecked
+                              ? locale === "ru"
+                                ? "⚠️ Вы уже проверяли членство в Telegram канале ранее. Эта функция доступна только один раз."
+                                : "⚠️ You have already checked your Telegram membership before. This feature is available only once."
+                              : telegramResult.isMember
                               ? locale === "ru"
                                 ? "Вы подписаны на канал! Скидка 5% будет применена к пакетам до 500 единиц."
                                 : "You are subscribed to the channel! 5% discount will be applied to packages up to 500 units."

@@ -35,4 +35,5 @@ export interface User {
   used_referral_code?: string; // Использованный реферальный код
   referrals_count?: number; // Количество приглашенных пользователей
   telegram_discount_used?: boolean; // Использовал ли telegram скидку
+  telegram_membership_checked?: boolean; // Проверял ли юзер членство в telegram канале (только 1 раз)
 }
