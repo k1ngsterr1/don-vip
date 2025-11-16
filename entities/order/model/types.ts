@@ -14,6 +14,7 @@ export interface CreateOrderDto {
   original_price?: number;
   package_discount?: number;
   telegram_discount?: number;
+  has_telegram_discount?: boolean; // Флаг что применена скидка из Telegram
   referral_discount?: number;
   coupon_discount?: number;
   final_price?: number;
@@ -39,6 +40,7 @@ export interface Order {
   original_price?: number;
   package_discount?: number;
   telegram_discount?: number;
+  has_telegram_discount?: boolean; // Флаг что применена скидка из Telegram
   referral_discount?: number;
   coupon_discount?: number;
   final_price?: number;

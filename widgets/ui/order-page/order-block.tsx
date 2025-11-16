@@ -1659,6 +1659,7 @@ export function OrderBlock({
       original_price: selectedCurrency.originalPriceRub,
       package_discount: selectedCurrency.discountPercent || 0,
       telegram_discount: canUseTelegramDiscount ? 5 : 0,
+      has_telegram_discount: canUseTelegramDiscount, // ✅ Флаг что применена скидка из Telegram
       referral_discount: userReferralDiscount,
       coupon_discount: couponDiscountAmountRub,
       final_price: finalPriceRub,
