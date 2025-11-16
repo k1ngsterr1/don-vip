@@ -1896,8 +1896,8 @@ export function OrderBlock({
                   <div className="flex items-center text-yellow-700">
                     <span className="font-medium">
                       {locale === "ru"
-                        ? "⚠️ Вы уже проверяли членство в Telegram канале. Эта функция доступна только один раз."
-                        : "⚠️ You have already checked your Telegram membership. This feature is available only once."}
+                        ? "⚠️ Вы уже использовали эту проверку"
+                        : "⚠️ You already used this check"}
                     </span>
                   </div>
                 </div>
@@ -1959,8 +1959,8 @@ export function OrderBlock({
                     <span className="font-medium">
                       {telegramResult.alreadyChecked
                         ? locale === "ru"
-                          ? "⚠️ Вы уже проверяли членство в Telegram канале ранее. Эта функция доступна только один раз."
-                          : "⚠️ You have already checked your Telegram membership before. This feature is available only once."
+                          ? "⚠️ Вы уже использовали эту проверку"
+                          : "⚠️ You already used this check"
                         : telegramResult.isMember
                         ? locale === "ru"
                           ? "Вы подписаны на канал! Скидка 5% будет применена к пакетам до 500 единиц."
@@ -2510,8 +2510,8 @@ export function OrderBlock({
                         <div className="flex items-center text-yellow-700">
                           <span className="font-medium">
                             {locale === "ru"
-                              ? "⚠️ Вы уже проверяли членство в Telegram канале. Эта функция доступна только один раз."
-                              : "⚠️ You have already checked your Telegram membership. This feature is available only once."}
+                              ? "⚠️ Вы уже использовали эту проверку"
+                              : "⚠️ You already used this check"}
                           </span>
                         </div>
                       </div>
@@ -2582,8 +2582,8 @@ export function OrderBlock({
                           <span className="font-medium">
                             {telegramResult.alreadyChecked
                               ? locale === "ru"
-                                ? "⚠️ Вы уже проверяли членство в Telegram канале ранее. Эта функция доступна только один раз."
-                                : "⚠️ You have already checked your Telegram membership before. This feature is available only once."
+                                ? "⚠️ Вы уже использовали эту проверку"
+                                : "⚠️ You already used this check"
                               : telegramResult.isMember
                               ? locale === "ru"
                                 ? "Вы подписаны на канал! Скидка 5% будет применена к пакетам до 500 единиц."
