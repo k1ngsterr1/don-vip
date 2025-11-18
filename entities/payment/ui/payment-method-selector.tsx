@@ -320,6 +320,16 @@ export function PaymentMethodSelector({
       console.log("🔍 Existing method names:", Array.from(existingMethodNames));
 
       const apiMethods = methodsByCurrency.methods
+        .sort((a, b) => {
+          // Sort by sortOrder first (default to 0 if undefined)
+          const orderA = a.sortOrder ?? 0;
+          const orderB = b.sortOrder ?? 0;
+          if (orderA !== orderB) {
+            return orderA - orderB;
+          }
+          // Then sort by name
+          return a.name.localeCompare(b.name);
+        })
         .filter((method) => {
           // 🔥 УБИРАЕМ ВСЮ ЛОГИКУ ДЕДУПЛИКАЦИИ
           // Показываем ВСЕ методы из API, даже если у них одинаковый код
@@ -397,30 +407,41 @@ export function PaymentMethodSelector({
         feeType: typeof m.fee,
       }))
     );
-    availablePaymentMethods = methodsByCurrency.methods.map((method, index) => {
-      console.log(`Processing method ${index}:`, method);
-      console.log(`Fee for ${method.name}:`, method.fee, typeof method.fee);
-      const iconUrl = getIconUrl(method.icon);
-      const fallbackIcon = getPaymentMethodIconSrc("card", method.name);
-      const finalIcon = iconUrl || fallbackIcon;
-      console.log(`Final icon for ${method.name}:`, finalIcon);
+    availablePaymentMethods = methodsByCurrency.methods
+      .sort((a, b) => {
+        // Sort by sortOrder first (default to 0 if undefined)
+        const orderA = a.sortOrder ?? 0;
+        const orderB = b.sortOrder ?? 0;
+        if (orderA !== orderB) {
+          return orderA - orderB;
+        }
+        // Then sort by name
+        return a.name.localeCompare(b.name);
+      })
+      .map((method, index) => {
+        console.log(`Processing method ${index}:`, method);
+        console.log(`Fee for ${method.name}:`, method.fee, typeof method.fee);
+        const iconUrl = getIconUrl(method.icon);
+        const fallbackIcon = getPaymentMethodIconSrc("card", method.name);
+        const finalIcon = iconUrl || fallbackIcon;
+        console.log(`Final icon for ${method.name}:`, finalIcon);
 
-      return {
-        id: method.methodCode || method.name || `method-${index}`,
-        translationKey: method.name, // Используем название из API напрямую, без переводов
-        apiName: method.name,
-        icon: finalIcon,
-        description: method.description, // Добавляем поле description из API
-        isMoneta: method.isMoneta || false, // Add Moneta flag
-        isDukPay: method.isDukPay || false, // Add DukPay flag
-        isPay4Game: method.isPay4Game || false, // Add Pay4Game flag
-        code: method.code, // Add payment method code
-        fee:
-          method.fee !== undefined && method.fee !== null
-            ? Number(method.fee)
-            : undefined, // Добавляем комиссию, включая 0
-      };
-    });
+        return {
+          id: method.methodCode || method.name || `method-${index}`,
+          translationKey: method.name, // Используем название из API напрямую, без переводов
+          apiName: method.name,
+          icon: finalIcon,
+          description: method.description, // Добавляем поле description из API
+          isMoneta: method.isMoneta || false, // Add Moneta flag
+          isDukPay: method.isDukPay || false, // Add DukPay flag
+          isPay4Game: method.isPay4Game || false, // Add Pay4Game flag
+          code: method.code, // Add payment method code
+          fee:
+            method.fee !== undefined && method.fee !== null
+              ? Number(method.fee)
+              : undefined, // Добавляем комиссию, включая 0
+        };
+      });
   }
   // Priority 2: Use user-specific methods if enabled
   else if (useUserMethods && userMethods) {
