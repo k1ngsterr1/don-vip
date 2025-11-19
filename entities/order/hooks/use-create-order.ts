@@ -372,8 +372,7 @@ export function useCreateOrder(
         if (lowerCode.includes("card")) return "card";
         if (lowerCode.includes("sberpay") || lowerCode.includes("sber"))
           return "sberpay";
-        if (lowerCode.includes("tpay") || lowerCode === "tpay")
-          return "tpay";
+        if (lowerCode.includes("tpay") || lowerCode === "tpay") return "tpay";
         return "sbp"; // Default to SBP
       };
 
