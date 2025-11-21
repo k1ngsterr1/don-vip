@@ -1918,7 +1918,22 @@ export function OrderBlock({
                 type="text"
                 placeholder={locale === "ru" ? "@username" : "@username"}
                 value={telegramUsername}
-                onChange={(e) => setTelegramUsername(e.target.value)}
+                onChange={(e) => {
+                  let value = e.target.value;
+                  // Автоматически добавляем @ в начало, если его нет
+                  if (value && !value.startsWith("@")) {
+                    value = "@" + value;
+                  }
+                  // Разрешаем только буквы, цифры, подчеркивания и @
+                  const sanitizedValue = value.replace(/[^@a-zA-Z0-9_]/g, "");
+                  // Проверяем, что @ только в начале
+                  const parts = sanitizedValue.split("@");
+                  const cleanValue =
+                    parts.length > 0
+                      ? "@" + parts.filter((p) => p).join("")
+                      : "";
+                  setTelegramUsername(cleanValue);
+                }}
                 disabled={me?.telegram_membership_checked}
                 className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
               />
@@ -1926,6 +1941,7 @@ export function OrderBlock({
                 onClick={handleTelegramCheck}
                 disabled={
                   !telegramUsername.trim() ||
+                  telegramUsername.length < 6 ||
                   isTelegramLoading ||
                   me?.telegram_membership_checked
                 }
@@ -2541,7 +2557,25 @@ export function OrderBlock({
                           locale === "ru" ? "@username" : "@username"
                         }
                         value={telegramUsername}
-                        onChange={(e) => setTelegramUsername(e.target.value)}
+                        onChange={(e) => {
+                          let value = e.target.value;
+                          // Автоматически добавляем @ в начало, если его нет
+                          if (value && !value.startsWith("@")) {
+                            value = "@" + value;
+                          }
+                          // Разрешаем только буквы, цифры, подчеркивания и @
+                          const sanitizedValue = value.replace(
+                            /[^@a-zA-Z0-9_]/g,
+                            ""
+                          );
+                          // Проверяем, что @ только в начале
+                          const parts = sanitizedValue.split("@");
+                          const cleanValue =
+                            parts.length > 0
+                              ? "@" + parts.filter((p) => p).join("")
+                              : "";
+                          setTelegramUsername(cleanValue);
+                        }}
                         disabled={me?.telegram_membership_checked}
                         className="flex-1 px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                       />
@@ -2549,6 +2583,7 @@ export function OrderBlock({
                         onClick={handleTelegramCheck}
                         disabled={
                           !telegramUsername.trim() ||
+                          telegramUsername.length < 6 ||
                           isTelegramLoading ||
                           me?.telegram_membership_checked
                         }
