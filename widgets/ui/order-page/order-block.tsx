@@ -1805,7 +1805,7 @@ export function OrderBlock({
             <div className="flex items-center gap-2">
               <span className="text-blue-600 font-medium">
                 {locale === "ru"
-                  ? "Проверка подписки в Telegram"
+                  ? "Скидка на покупку 5%"
                   : "Telegram Channel Subscription Check"}
               </span>
               {telegramMembershipValid && (
@@ -1821,8 +1821,8 @@ export function OrderBlock({
                   ? "Скрыть"
                   : "Hide"
                 : locale === "ru"
-                ? "Сделать"
-                : "Check"}
+                ? "Получить"
+                : "Get"}
             </button>
           </div>
 
@@ -1883,6 +1883,16 @@ export function OrderBlock({
                         : "Enter your Telegram username below"}
                     </div>
                   </div>
+                  <div className="flex items-start gap-2">
+                    <span className="font-semibold text-blue-600 min-w-[20px]">
+                      4.
+                    </span>
+                    <div>
+                      {locale === "ru"
+                        ? "Скидка действует единоразово и на пакеты алмазов до 500"
+                        : "Discount is valid once and for diamond packages up to 500"}
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="text-sm text-blue-700 mb-2">
@@ -1906,11 +1916,7 @@ export function OrderBlock({
 
               <input
                 type="text"
-                placeholder={
-                  locale === "ru"
-                    ? "@ваш_telegram_username"
-                    : "@your_telegram_username"
-                }
+                placeholder={locale === "ru" ? "@username" : "@username"}
                 value={telegramUsername}
                 onChange={(e) => setTelegramUsername(e.target.value)}
                 disabled={me?.telegram_membership_checked}
@@ -2417,7 +2423,7 @@ export function OrderBlock({
                   <div className="flex items-center gap-2">
                     <span className="text-blue-600 font-medium">
                       {locale === "ru"
-                        ? "Проверка подписки в Telegram"
+                        ? "Скидка на покупку 5%"
                         : "Telegram Channel Subscription Check"}
                     </span>
                     {telegramMembershipValid && (
@@ -2433,7 +2439,7 @@ export function OrderBlock({
                         ? "Скрыть"
                         : "Hide"
                       : locale === "ru"
-                      ? "Сделать"
+                      ? "Получить"
                       : "Check"}
                   </button>
                 </div>
@@ -2495,6 +2501,16 @@ export function OrderBlock({
                             {locale === "ru"
                               ? "Введите ваш Telegram username ниже"
                               : "Enter your Telegram username below"}
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <span className="font-semibold text-blue-600 min-w-[20px]">
+                            4.
+                          </span>
+                          <div>
+                            {locale === "ru"
+                              ? "Скидка действует единоразово и на пакеты алмазов до 500"
+                              : "Discount is valid once and for diamond packages up to 500"}
                           </div>
                         </div>
                       </div>
