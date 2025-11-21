@@ -2538,9 +2538,7 @@ export function OrderBlock({
                       <input
                         type="text"
                         placeholder={
-                          locale === "ru"
-                            ? "@ваш_telegram_username"
-                            : "@your_telegram_username"
+                          locale === "ru" ? "@username" : "@username"
                         }
                         value={telegramUsername}
                         onChange={(e) => setTelegramUsername(e.target.value)}
