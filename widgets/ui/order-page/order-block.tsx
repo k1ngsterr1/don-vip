@@ -1937,19 +1937,25 @@ export function OrderBlock({
                 value={telegramUsername}
                 onChange={(e) => {
                   let value = e.target.value;
-                  // Автоматически добавляем @ в начало, если его нет
-                  if (value && !value.startsWith("@")) {
-                    value = "@" + value;
-                  }
                   // Разрешаем только буквы, цифры, подчеркивания и @
                   const sanitizedValue = value.replace(/[^@a-zA-Z0-9_]/g, "");
-                  // Проверяем, что @ только в начале
-                  const parts = sanitizedValue.split("@");
-                  const cleanValue =
-                    parts.length > 0
-                      ? "@" + parts.filter((p) => p).join("")
-                      : "";
-                  setTelegramUsername(cleanValue);
+
+                  // Если поле было пустое и вводится первый символ (не @), автоматически добавляем @
+                  if (
+                    telegramUsername === "" &&
+                    sanitizedValue.length > 0 &&
+                    !sanitizedValue.startsWith("@")
+                  ) {
+                    setTelegramUsername("@" + sanitizedValue);
+                  } else if (sanitizedValue.includes("@")) {
+                    // Если есть @, проверяем что она только в начале
+                    const parts = sanitizedValue.split("@");
+                    const cleanValue = "@" + parts.filter((p) => p).join("");
+                    setTelegramUsername(cleanValue);
+                  } else {
+                    // Во всех остальных случаях просто сохраняем как есть
+                    setTelegramUsername(sanitizedValue);
+                  }
                 }}
                 disabled={me?.telegram_membership_checked}
                 className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -2576,22 +2582,29 @@ export function OrderBlock({
                         value={telegramUsername}
                         onChange={(e) => {
                           let value = e.target.value;
-                          // Автоматически добавляем @ в начало, если его нет
-                          if (value && !value.startsWith("@")) {
-                            value = "@" + value;
-                          }
                           // Разрешаем только буквы, цифры, подчеркивания и @
                           const sanitizedValue = value.replace(
                             /[^@a-zA-Z0-9_]/g,
                             ""
                           );
-                          // Проверяем, что @ только в начале
-                          const parts = sanitizedValue.split("@");
-                          const cleanValue =
-                            parts.length > 0
-                              ? "@" + parts.filter((p) => p).join("")
-                              : "";
-                          setTelegramUsername(cleanValue);
+
+                          // Если поле было пустое и вводится первый символ (не @), автоматически добавляем @
+                          if (
+                            telegramUsername === "" &&
+                            sanitizedValue.length > 0 &&
+                            !sanitizedValue.startsWith("@")
+                          ) {
+                            setTelegramUsername("@" + sanitizedValue);
+                          } else if (sanitizedValue.includes("@")) {
+                            // Если есть @, проверяем что она только в начале
+                            const parts = sanitizedValue.split("@");
+                            const cleanValue =
+                              "@" + parts.filter((p) => p).join("");
+                            setTelegramUsername(cleanValue);
+                          } else {
+                            // Во всех остальных случаях просто сохраняем как есть
+                            setTelegramUsername(sanitizedValue);
+                          }
                         }}
                         disabled={me?.telegram_membership_checked}
                         className="flex-1 px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
