@@ -74,7 +74,8 @@ interface PaymentMethodSelectorProps {
     isMoneta?: boolean,
     code?: string,
     isDukPay?: boolean,
-    isPay4Game?: boolean
+    isPay4Game?: boolean,
+    fee?: number // Add fee parameter
   ) => void;
   currentCurrency?: string; // Add currency prop
   region?: string; // Add region prop
@@ -594,6 +595,7 @@ export function PaymentMethodSelector({
           isDukPay: firstMethod.isDukPay,
           isPay4Game: firstMethod.isPay4Game,
           code: firstMethod.code,
+          fee: firstMethod.fee,
         });
         // Вызываем onSelect напрямую без setTimeout
         onSelect(
@@ -601,7 +603,8 @@ export function PaymentMethodSelector({
           firstMethod.isMoneta,
           firstMethod.code,
           firstMethod.isDukPay,
-          firstMethod.isPay4Game
+          firstMethod.isPay4Game,
+          firstMethod.fee // Pass the fee
         );
       }
     }
@@ -710,6 +713,7 @@ export function PaymentMethodSelector({
                 isDukPay: method.isDukPay,
                 isPay4Game: method.isPay4Game,
                 code: method.code,
+                fee: method.fee,
               });
 
               // Ensure only one payment method can be selected at a time
@@ -719,7 +723,8 @@ export function PaymentMethodSelector({
                 method.isMoneta,
                 method.code,
                 method.isDukPay,
-                method.isPay4Game
+                method.isPay4Game,
+                method.fee // Pass the fee
               );
             }}
             role="radio"
@@ -732,7 +737,8 @@ export function PaymentMethodSelector({
                   method.isMoneta,
                   method.code,
                   method.isDukPay,
-                  method.isPay4Game
+                  method.isPay4Game,
+                  method.fee // Pass the fee
                 );
             }}
           >

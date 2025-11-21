@@ -183,13 +183,15 @@ export function OrderBlock({
       isMoneta: boolean = false,
       code?: string,
       isDukPay: boolean = false,
-      isPay4Game: boolean = false
+      isPay4Game: boolean = false,
+      fee?: number // Add fee parameter
     ) => {
       console.log("🔄 Payment method changed:", `"${method}"`, {
         isMoneta,
         isDukPay,
         isPay4Game,
         code,
+        fee,
         previousMethod: selectedPaymentMethod,
       });
       setSelectedPaymentMethodState(method);
@@ -199,6 +201,8 @@ export function OrderBlock({
       setDukPayMethodCode(code);
       setIsPay4GamePayment(isPay4Game);
       setPay4GameMethodCode(code);
+      setPaymentMethodFee(fee || 0); // Set the fee, default to 0 if not provided
+      console.log("💳 Payment method fee set to:", fee || 0, "%");
     },
     [selectedPaymentMethod]
   );
@@ -960,6 +964,7 @@ export function OrderBlock({
   const [couponCode, setCouponCode] = useState("");
   const [appliedDiscount, setAppliedDiscount] = useState<number>(0);
   const [couponInfo, setCouponInfo] = useState<any>(null);
+  const [paymentMethodFee, setPaymentMethodFee] = useState<number>(0); // Fee percentage (e.g., 2 for 2%)
 
   // Flag to prevent popup from showing twice
   const identifierCollected = useRef(false);
@@ -1588,11 +1593,18 @@ export function OrderBlock({
         ? (originalPriceRub * appliedDiscount) / 100
         : appliedDiscount;
 
-    // Calculate final prices
-    const finalPriceRub = Math.max(
+    // Calculate price after all discounts but before payment method fee
+    const priceAfterDiscounts = Math.max(
       0,
       originalPriceRub - couponDiscountAmountRub
     );
+
+    // Calculate payment method fee amount
+    const paymentMethodFeeAmount =
+      (priceAfterDiscounts * paymentMethodFee) / 100;
+
+    // Calculate final prices WITH payment method fee
+    const finalPriceRub = priceAfterDiscounts + paymentMethodFeeAmount;
     const finalPriceConverted =
       currentCurrency.code === "RUB"
         ? finalPriceRub
@@ -1607,11 +1619,14 @@ export function OrderBlock({
       telegramDiscount: telegramDiscountAmount,
       priceAfterPackageAndTelegram: originalPriceRub,
       couponDiscount: couponDiscountAmountRub,
+      priceAfterDiscounts,
+      paymentMethodFee: `${paymentMethodFee}%`,
+      paymentMethodFeeAmount,
       finalPriceRub,
       finalPriceConverted,
       formattedPrice,
       currency: currentCurrency.code,
-      summary: `User will pay: ${formattedPrice} ${currentCurrency.code}`,
+      summary: `User will pay: ${formattedPrice} ${currentCurrency.code} (including ${paymentMethodFee}% payment fee)`,
     });
 
     // Извлекаем правильный код метода оплаты для API
@@ -1662,6 +1677,8 @@ export function OrderBlock({
       has_telegram_discount: canUseTelegramDiscount, // ✅ Флаг что применена скидка из Telegram
       referral_discount: userReferralDiscount,
       coupon_discount: couponDiscountAmountRub,
+      payment_method_fee: paymentMethodFee, // ✅ Fee percentage
+      payment_method_fee_amount: paymentMethodFeeAmount, // ✅ Fee amount in RUB
       final_price: finalPriceRub,
       currency: currentCurrency.code,
     };
