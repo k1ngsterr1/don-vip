@@ -17,6 +17,8 @@ export interface CreateOrderDto {
   has_telegram_discount?: boolean; // Флаг что применена скидка из Telegram
   referral_discount?: number;
   coupon_discount?: number;
+  payment_method_fee?: number; // Fee percentage (e.g., 2 for 2%)
+  payment_method_fee_amount?: number; // Fee amount in base currency
   final_price?: number;
   currency?: string;
 }
