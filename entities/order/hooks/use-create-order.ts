@@ -104,6 +104,15 @@ export function useCreateOrder(
         coupon_code: orderData.coupon_code || undefined,
         user_id:
           userId && userId.trim() !== "" ? Number.parseInt(userId, 10) : null, // Явно устанавливаем null вместо undefined
+        currency: orderData.currency || "RUB", // ✅ Передаём валюту (KZT, RUB, USD и т.д.)
+        // Pricing information with discounts
+        original_price: orderData.original_price,
+        package_discount: orderData.package_discount || 0,
+        telegram_discount: orderData.telegram_discount || 0,
+        has_telegram_discount: orderData.has_telegram_discount || false,
+        referral_discount: orderData.referral_discount || 0,
+        coupon_discount: orderData.coupon_discount || 0,
+        final_price: orderData.final_price,
       };
 
       // Для кастомных заказов добавляем custom_amount и custom_price
