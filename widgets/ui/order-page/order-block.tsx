@@ -23,6 +23,7 @@ import { useValidateUser } from "@/entities/user/hooks/use-validate-user";
 import { useDebounce } from "@/shared/hooks/use-debounce";
 import { useCreateOrder } from "@/entities/order/hooks/use-create-order";
 import type { CreateOrderDto } from "@/entities/order/model/types";
+import { orderApi } from "@/entities/order/api/order.api";
 import { useProductWithHardcoded } from "@/entities/product/hooks/queries/use-product-with-hardcoded";
 import { OrderBlockSkeleton } from "./loading/skeleton-loading";
 import { useAuthStore } from "@/entities/auth/store/auth.store";
@@ -235,6 +236,7 @@ export function OrderBlock({
   const [telegramUsername, setTelegramUsername] = useState("");
   const [showTelegramCheck, setShowTelegramCheck] = useState(false);
   const [telegramMembershipValid, setTelegramMembershipValid] = useState(false);
+  const [bigoIdUsedDiscount, setBigoIdUsedDiscount] = useState(false); // ✅ Новое состояние для проверки BIGO ID
 
   // Встроенные состояния для SavedAccountsQuickSelect
   const [isAccountsExpanded, setIsAccountsExpanded] = useState(false);
@@ -1381,6 +1383,37 @@ export function OrderBlock({
     }
   }, [selectedPaymentMethod, currentCurrency]);
 
+  // ✅ Проверка использования Telegram скидки для BIGO ID
+  useEffect(() => {
+    const checkBigoIdDiscount = async () => {
+      // Проверяем только для BIGO игр и если введен ID
+      if (!isBigo || !userIdInput || userIdInput.trim() === "") {
+        setBigoIdUsedDiscount(false);
+        return;
+      }
+
+      try {
+        const result = await orderApi.checkTelegramDiscountUsage(userIdInput);
+        setBigoIdUsedDiscount(result.hasUsedDiscount);
+
+        if (result.hasUsedDiscount) {
+          console.log(
+            `🚫 BIGO ID ${userIdInput} has already used Telegram discount in order #${result.previousOrder?.orderId}`
+          );
+        } else {
+          console.log(
+            `✅ BIGO ID ${userIdInput} has NOT used Telegram discount yet`
+          );
+        }
+      } catch (error) {
+        console.error("Error checking BIGO ID discount usage:", error);
+        // В случае ошибки разрешаем использование скидки
+        setBigoIdUsedDiscount(false);
+      }
+    };
+
+    checkBigoIdDiscount();
+  }, [userIdInput, isBigo]);
   if (isProductLoading || isGameContentLoading || !game) {
     return <OrderBlockSkeleton />;
   }
@@ -1551,7 +1584,8 @@ export function OrderBlock({
     const canUseTelegramDiscount =
       telegramMembershipValid &&
       selectedCurrency.amount <= 300 &&
-      !me?.telegram_discount_used;
+      !me?.telegram_discount_used &&
+      !bigoIdUsedDiscount; // ✅ Проверяем также BIGO ID
 
     if (canUseTelegramDiscount) {
       telegramDiscountAmount = (originalPriceRub * 5) / 100; // 5% скидка
@@ -1564,6 +1598,10 @@ export function OrderBlock({
     } else if (me?.telegram_discount_used) {
       console.log(
         "📱 Telegram discount NOT applied - already used by this user"
+      );
+    } else if (bigoIdUsedDiscount) {
+      console.log(
+        "📱 Telegram discount NOT applied - already used by this BIGO ID"
       );
     }
 
@@ -2014,6 +2052,20 @@ export function OrderBlock({
                         : locale === "ru"
                         ? "Вы не подписаны на канал. Подпишитесь для получения скидки 5%."
                         : "You are not subscribed to the channel. Subscribe to get 5% discount."}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Предупреждение если BIGO ID уже использовал скидку */}
+              {bigoIdUsedDiscount && userIdInput && (
+                <div className="p-3 rounded-lg bg-yellow-50 border border-yellow-200">
+                  <div className="flex items-center text-yellow-700">
+                    <AlertTriangle size={16} className="mr-2" />
+                    <span className="font-medium">
+                      {locale === "ru"
+                        ? `⚠️ Этот BIGO ID уже использовал Telegram скидку`
+                        : `⚠️ This BIGO ID has already used Telegram discount`}
                     </span>
                   </div>
                 </div>
@@ -2671,6 +2723,20 @@ export function OrderBlock({
                               : locale === "ru"
                               ? "Вы не подписаны на канал. Подпишитесь для получения скидки 5%."
                               : "You are not subscribed to the channel. Subscribe to get 5% discount."}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Предупреждение если BIGO ID уже использовал скидку */}
+                    {bigoIdUsedDiscount && userIdInput && (
+                      <div className="p-3 rounded-lg bg-yellow-50 border border-yellow-200 mb-2">
+                        <div className="flex items-center text-yellow-700">
+                          <AlertTriangle size={16} className="mr-2" />
+                          <span className="font-medium">
+                            {locale === "ru"
+                              ? `⚠️ Этот BIGO ID уже использовал Telegram скидку`
+                              : `⚠️ This BIGO ID has already used Telegram discount`}
                           </span>
                         </div>
                       </div>

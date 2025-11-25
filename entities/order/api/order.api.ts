@@ -61,4 +61,24 @@ export const orderApi = {
     const response = await apiClient.post<Order>(`/order/${orderId}/repeat`);
     return response.data;
   },
+
+  /**
+   * Check if BIGO account has already used Telegram discount
+   */
+  checkTelegramDiscountUsage: async (
+    accountId: string
+  ): Promise<{
+    hasUsedDiscount: boolean;
+    accountId: string;
+    previousOrder: {
+      orderId: number;
+      createdAt: string;
+      discountAmount: number;
+    } | null;
+  }> => {
+    const response = await apiClient.get(
+      `/order/check-telegram-discount/${accountId}`
+    );
+    return response.data;
+  },
 };
